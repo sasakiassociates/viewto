@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>ViewTo</RootNamespace>
+        <LangVersion>8</LangVersion>
+        <Configurations>Debug;Release;Objects;Base</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <PackageId>ViewCore</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Objects\ViewObjects\ViewObjects.csproj" />
+    </ItemGroup>
+    
+</Project>

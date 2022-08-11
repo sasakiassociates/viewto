@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>ViewObjects.Converter.Grasshopper</RootNamespace>
+        <AssemblyName>ViewObjects.Converter.Grasshopper6</AssemblyName>
+        <PackageId>ViewObjects.Converter.Grasshopper6</PackageId>
+        <Title>ViewObjects.Converter.Grasshopper6</Title>
+        <Authors>Sasaki</Authors>
+    </PropertyGroup>
+    
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DefineConstants>TRACE;RHINO6;GRASSHOPPER;</DefineConstants>
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DefineConstants>TRACE;RHINO6;GRASSHOPPER;</DefineConstants>
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
+        <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+        <StartArguments></StartArguments>
+        <StartAction>Program</StartAction>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Grasshopper" Version="6.28.20199.17141" />
+        <PackageReference Include="RhinoCommon" Version="6.28.20199.17141" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj" />
+      <ProjectReference Include="..\..\..\ViewObjects\ViewObjects.csproj" />
+      <ProjectReference Include="..\..\ViewObjectsConverter\ViewObjectsConverter.csproj" />
+    </ItemGroup>
+
+    <Import Project="..\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems" Label="Shared" />
+
+    <PropertyGroup>
+        <IsDesktopBuild Condition="'$(IsDesktopBuild)' == ''">true</IsDesktopBuild>
+    </PropertyGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(IsDesktopBuild)' == true">
+        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;" />
+    </Target>
+</Project>

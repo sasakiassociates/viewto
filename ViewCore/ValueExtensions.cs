@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+using ViewObjects;
+
+namespace ViewTo
+{
+  public static class ValueExtensions
+  {
+    /// <summary>
+    ///   Simple command for normalizing view result data.
+    /// </summary>
+    /// <param name="inputValues">the result type for the dividend value</param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    public static IEnumerable<double> NormalizeValues(this List<double> inputValues, double max, double min)
+    {
+      if (!inputValues.Valid())
+        return null;
+
+      var values = new double[inputValues.Count];
+
+      for (var i = 0; i < values.Length; i++)
+        values[i] = inputValues[i].NormalizeBy(max, min);
+
+      return values;
+    }
+
+    /// <summary>
+    ///   Simple command for normalizing view result data.
+    ///   If the divisor value is 0 the value will be set to -1
+    /// </summary>
+    /// <param name="inputValues">the result type for the dividend value</param>
+    /// <param name="divisorValues">the result type for the divisor value</param>
+    public static IEnumerable<double> NormalizeValues(this List<double> inputValues, List<double> divisorValues)
+    {
+      if (!inputValues.Valid() || !divisorValues.Valid() || inputValues.Count != divisorValues.Count)
+        return null;
+
+      var values = new double[inputValues.Count];
+
+      for (var i = 0; i < values.Length; i++)
+      {
+        double value;
+
+        if (divisorValues[i] == 0) // no change in value so set it to -1 as a flag
+          value = -1;
+        else
+          value = inputValues[i].NormalizeBy(divisorValues[i]);
+
+        values[i] = value;
+      }
+
+      return values;
+    }
+
+    public static void GetMaxMin(this List<double> inputValues, out double max, out double min)
+    {
+      min = 0;
+      max = 0;
+
+      if (!inputValues.Valid())
+        return;
+
+      foreach (var value in inputValues)
+      {
+        if (value <= 0)
+          continue;
+
+        if (min > value) min = value;
+        if (max < value) max = value;
+      }
+    }
+
+    public static void GetMaxMin(this double[] inputValues, out double max, out double min)
+    {
+      min = 0;
+      max = 0;
+
+      if (!inputValues.Valid())
+        return;
+
+      foreach (var value in inputValues)
+      {
+        if (value <= 0)
+          continue;
+
+        if (min > value) min = value;
+        if (max < value) max = value;
+      }
+    }
+
+    public static float NormalizeBy(this float value, float max, float min = 0.0f) => (value - min) / (max - min);
+
+    public static double NormalizeBy(this double value, double max, double min = 0.0) => (value - min) / (max - min);
+
+    public static float Pow(this float value, double num = 1000) => (float)Math.Pow(value, 1 / num);
+
+    public static double Pow(this double value, double num = 1000) => Math.Pow(value, 1 / num);
+
+    //https://floating-point-gui.de/errors/comparison/
+    internal const double DBL_EPSILON = 2.22044604925031E-16;
+
+    //https://stackoverflow.com/questions/3874627/floating-point-comparison-functions-for-c-sharp
+    public static bool NearlyEqual(this double value1, double value2, double unimportantDifference = 0.0001)
+    {
+      if (double.IsNaN(value1) || double.IsNaN(value2))
+        return false;
+
+      return Math.Abs(value1 - value2) < unimportantDifference;
+    }
+
+  }
+}
