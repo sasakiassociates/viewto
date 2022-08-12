@@ -10,11 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Speckle.Core" Version="2.7.0" />
-      <PackageReference Include="Speckle.Objects" Version="2.7.0" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Speckle\speckle-sharp\Core\Core\Core.csproj" />
+      <ProjectReference Include="..\..\..\..\Speckle\speckle-sharp\Objects\Objects\Objects.csproj" />
       <ProjectReference Include="..\ViewObjects\ViewObjects.csproj" />
     </ItemGroup>
 

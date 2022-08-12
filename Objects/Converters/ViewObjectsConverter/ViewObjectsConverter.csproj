@@ -8,12 +8,6 @@
 
 
     <ItemGroup>
-      <PackageReference Include="Speckle.Core" Version="2.7.0" />
-      <PackageReference Include="Speckle.Objects" Version="2.7.0" />
-    </ItemGroup>
-
-
-    <ItemGroup>
       <ProjectReference Include="..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj" />
       <ProjectReference Include="..\..\ViewObjects\ViewObjects.csproj" />
     </ItemGroup>
