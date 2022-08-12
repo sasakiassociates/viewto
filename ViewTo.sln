@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterRhino7"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterGrasshopper7", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterGrasshopper7\ViewObjectsConverterGrasshopper7.csproj", "{1D381456-0256-47AB-ABC3-774EBAA9B4EA}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ViewObjectsConverterShared", "Objects\Converters\ViewObjectsConverterShared\ViewObjectsConverterShared.shproj", "{068BF55E-C3FC-46C9-9067-1D5C62696D0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,5 +99,6 @@ Global
 		{CB99F6A2-00BF-432D-9A29-612DD2BC92C3} = {1362A473-A3FE-48F5-833D-D84235E8893C}
 		{9CBB6B6F-040F-4B14-88E0-4F02A8081871} = {1362A473-A3FE-48F5-833D-D84235E8893C}
 		{1D381456-0256-47AB-ABC3-774EBAA9B4EA} = {1362A473-A3FE-48F5-833D-D84235E8893C}
+		{068BF55E-C3FC-46C9-9067-1D5C62696D0E} = {D75B10DF-F517-49D4-B70A-A3476F71E90B}
 	EndGlobalSection
 EndGlobal
