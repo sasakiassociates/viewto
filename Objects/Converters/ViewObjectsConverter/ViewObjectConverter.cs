@@ -16,10 +16,12 @@ namespace ViewObjects.Converter.Script
 		public ViewObjectSchema Schema;
 
 		// TODO: Check if this Kit and Converter are installed
-		public ISpeckleConverter supportConverter;
+		public ISpeckleConverter supportConverter { get; protected set; }
 
 		public ViewObjectConverter()
-		{ }
+		{
+			Schema = new ViewObjectSchema();
+		}
 
 		public ViewObjectConverter(ViewObjectSchema schema, ISpeckleConverter converter)
 		{

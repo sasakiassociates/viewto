@@ -17,13 +17,15 @@ namespace ViewObjects.Explorer
 
 	public interface IExploreRange
 	{
+		public double log { get; }
+
 		public double min { get; }
 
 		public double max { get; }
 
-		public System.Drawing.Color[] ramp { get; }
+		public System.Drawing.Color[] colorRamp { get; }
 
-		public System.Drawing.Color invalid { get; }
+		public System.Drawing.Color invalidColor { get; }
 
 	}
 
@@ -34,6 +36,8 @@ namespace ViewObjects.Explorer
 
 		public double max { get; set; }
 
+		public double log { get; set; }
+
 		public bool showAll { get; set; }
 
 		public string target { get; set; }
@@ -42,13 +46,12 @@ namespace ViewObjects.Explorer
 
 		public ResultType type { get; set; }
 
-		public System.Drawing.Color[] ramp { get; set; }
+		public System.Drawing.Color[] colorRamp { get; set; }
 
-		public System.Drawing.Color invalid { get; set; }
+		public System.Drawing.Color invalidColor { get; set; }
 
-		public System.Drawing.Color GetColor(double t) => ramp[(int)Math.Round((ramp.Length - 1.0) * t, 0)];
+		public System.Drawing.Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * t, 0)];
 
-		
 	}
 
 }

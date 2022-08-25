@@ -14,55 +14,25 @@ namespace ViewObjects.Converter.Script
 
 	public class ViewObjectSchema : IViewObjSchema, IViewerSchema, IViewContentSchema
 	{
-		public virtual IViewContentBundle nativeContentBundle
-		{
-			get => Create<ContentBundle>();
-		}
+		public virtual IViewContentBundle nativeContentBundle => Create<ContentBundle>();
 
-		public virtual ITargetContent nativeTargetContent
-		{
-			get => Create<TargetContent>();
-		}
+		public virtual ITargetContent nativeTargetContent => Create<TargetContent>();
 
-		public virtual IBlockerContent nativeBlockerContent
-		{
-			get => Create<BlockerContent>();
-		}
+		public virtual IBlockerContent nativeBlockerContent => Create<BlockerContent>();
 
-		public virtual IDesignContent nativeDesignContent
-		{
-			get => Create<DesignContent>();
-		}
+		public virtual IDesignContent nativeDesignContent => Create<DesignContent>();
 
-		public virtual IViewerLayout nativeViewerLayout
-		{
-			get => Create<ViewerLayout>();
-		}
+		public virtual IViewerLayout nativeViewerLayout => Create<ViewerLayout>();
 
-		public virtual IViewerBundle nativeViewerBundle
-		{
-			get => Create<ViewerBundle>();
-		}
+		public virtual IViewerBundle nativeViewerBundle => Create<ViewerBundle>();
 
-		public virtual IViewerBundleLinked nativeViewerBundleLinked
-		{
-			get => Create<ViewerBundleLinked>();
-		}
+		public virtual IViewerBundleLinked nativeViewerBundleLinked => Create<ViewerBundleLinked>();
 
-		public virtual IViewStudy nativeViewStudy
-		{
-			get => Create<ViewStudy>();
-		}
+		public virtual IViewStudy nativeViewStudy => Create<ViewStudy>();
 
-		public virtual IViewCloud nativeViewCloud
-		{
-			get => Create<ViewCloud>();
-		}
+		public virtual IViewCloud nativeViewCloud => Create<ViewCloud>();
 
-		public virtual IResultCloud nativeResultCloud
-		{
-			get => Create<ResultCloud>();
-		}
+		public virtual IResultCloud nativeResultCloud => Create<ResultCloud>();
 
 		private TObj Create<TObj>() where TObj : IViewObj => Activator.CreateInstance<TObj>();
 	}

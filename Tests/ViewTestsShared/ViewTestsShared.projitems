@@ -3,12 +3,14 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <SharedGUID>B06249B5-8ABB-42EA-89A4-2AE1BCC00314</SharedGUID>
+    <SharedGUID>FE8D3CA8-34F0-4063-BE77-8B869DAE7E93</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>ViewObjectsConverterRhinoGhShared</Import_RootNamespace>
+    <Import_RootNamespace>ViewTestsShared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)ViewObjectsConverterRhinoGh.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BaseMil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Categories.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjMil.cs" />
   </ItemGroup>
 </Project>

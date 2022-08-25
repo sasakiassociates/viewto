@@ -15,5 +15,13 @@
 		Existing = 2,
 		Proposed = 3
 	}
+	
+	public enum ExplorerValueType
+	{
+		ExistingOverPotential,
+		ProposedOverExisting,
+		ProposedOverPotential,
+		
+	}
 
 }
