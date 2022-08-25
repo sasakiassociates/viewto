@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
@@ -33,7 +32,7 @@ namespace ViewTo.RhinoGh.Results
 
 		double min = 1.0, max = 0.0;
 
-		(int Obj, int Settings, int Mask, int NormalizeByMask, int NormalizeInternal, int Size) _input;
+		(int Obj, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -47,17 +46,17 @@ namespace ViewTo.RhinoGh.Results
 			pManager.AddMeshParameter("Mask", "M", "Maskign area to filter points by form", GH_ParamAccess.tree);
 			_input.Mask = index++;
 
-			pManager.AddBooleanParameter("Normalize Mask", "NM", "Nomrlize the values by the masked point set", GH_ParamAccess.item, true);
+			pManager.AddBooleanParameter("Normalize Mask", "NM", "Nomarlize the values by the masked point set", GH_ParamAccess.item, true);
 			_input.NormalizeByMask = index++;
 
-			pManager.AddBooleanParameter("Normalize Internal", "NI", "When getting active values, normalize the return value", GH_ParamAccess.item, true);
-			_input.NormalizeInternal = index++;
+			pManager.AddBooleanParameter("Mask Only", "MO", "Show the values only within the mask", GH_ParamAccess.item, true);
+			_input.MaskOnly = index++;
 
 			pManager.AddIntegerParameter("Point Size", "P", "Size of Point in Cloud", GH_ParamAccess.item, 3);
 			_input.Size = index;
 
 			pManager[_input.NormalizeByMask].Optional = true;
-			pManager[_input.NormalizeInternal].Optional = true;
+			pManager[_input.MaskOnly].Optional = true;
 			pManager[_input.Mask].Optional = true;
 			pManager[_input.Size].Optional = true;
 		}
@@ -93,16 +92,25 @@ namespace ViewTo.RhinoGh.Results
 				args.Display.DrawPointCloud(_pc, _pointSize);
 		}
 
-		void SetMinMax(double value)
+		void SetMinMax(double[] value)
 		{
-			if (value < min)
-				min = value;
-			if (value > max)
-				max = value;
+			min = 1.0;
+			max = 0.0;
+
+			if (value.Valid())
+				foreach (var t in value)
+					if (!double.IsNaN(t))
+						SetMinMax(t);
 		}
 
-		const int MAX_ALPHA  = 255;
-		const int MIN_ALPHA  = 100;
+		void SetMinMax(double value)
+		{
+			if (value < min) min = value;
+			if (value > max) max = value;
+		}
+
+		const int MAX_ALPHA = 255;
+		const int MIN_ALPHA = 100;
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
@@ -111,8 +119,8 @@ namespace ViewTo.RhinoGh.Results
 			var normalizeMask = true;
 			DA.GetData(_input.NormalizeByMask, ref normalizeMask);
 
-			var normalizeInternal = true;
-			DA.GetData(_input.NormalizeInternal, ref normalizeInternal);
+			var maskOnly = true;
+			DA.GetData(_input.MaskOnly, ref maskOnly);
 
 			DA.GetDataTree(_input.Mask, out GH_Structure<GH_Mesh> maskTree);
 
@@ -139,7 +147,10 @@ namespace ViewTo.RhinoGh.Results
 
 				// NOTE: check if this is the same cloud as before
 				if (!_explorer.source.Check(resultCloud))
+				{
+					_explorer.activeType = settings.type;
 					_explorer.Load(resultCloud);
+				}
 			}
 			else
 			{
@@ -148,9 +159,16 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			// TODO: check if the values are being normalized correctly 
 			if (!_explorer.CheckActiveTarget(_settings.target) || _explorer.activeType != _settings.type)
-				_explorer.SetActiveValues(_settings.type, _settings.target, normalizeInternal);
+			{
+				// set the active values of the target and type
+				_explorer.SetActiveValues(_settings.type, _settings.target);
+				// need to store the current max and min of the values passed out
+				SetMinMax(_explorer.activeValues);
+				// HACK: this is needed to remap the values with power and log. 
+				// TODO: this should be replaced once the values are no longer stored as doubles
+				_explorer.activeValues = _explorer.activeValues.PowLog(max, max, 10000000.0, 1.0);
+			}
 
 			if (!_explorer.activeValues.Valid())
 			{
@@ -173,11 +191,13 @@ namespace ViewTo.RhinoGh.Results
 						var path = maskTree.Paths[treeIndex];
 
 						foreach (var t in branch)
-							if (t.Value.IsPointInside(point.Value, double.MinValue, false) || _settings.showAll)
+						{
+							if (!maskOnly || t.Value.IsPointInside(point.Value, double.MinValue, false))
 							{
 								points.Append(point, path);
 								values.Append(new GH_Number(_explorer.activeValues[i]), path);
 							}
+						}
 					}
 				}
 			}
@@ -220,11 +240,10 @@ namespace ViewTo.RhinoGh.Results
 					// if the value is negative and we are not showing all points, we skip!
 					if (vIn <= 0)
 					{
-						if (!_settings.showAll)
-							continue;
+						if (!_settings.showAll) continue;
 
 						fPoints.Append(pIn, path);
-						fColors.Append(new GH_Colour(_settings.invalid), path);
+						fColors.Append(new GH_Colour(_settings.invalidColor), path);
 						fValues.Append(new GH_Number(vIn), path);
 					}
 					else

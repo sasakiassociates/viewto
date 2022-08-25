@@ -135,7 +135,7 @@ namespace ViewTo.Tests.Integration
 		{
 			return new ResultPixelBase
 			{
-				values = Values(value),
+				values = ValuesDouble(value),
 				stage = stage,
 				content = contentName,
 				color = Color.Aqua.ToArgb(),
@@ -143,7 +143,7 @@ namespace ViewTo.Tests.Integration
 			};
 		}
 
-		public static List<uint> Values(int valueCount, Random rnd = null)
+		public static List<uint> ValuesUint(int valueCount, Random rnd = null)
 		{
 			rnd ??= new Random();
 			var values = new List<uint>();

@@ -6,166 +6,175 @@ using ViewObjects.Explorer;
 
 namespace ViewTo
 {
-  public static partial class Commander
-  {
+	public static partial class Commander
+	{
 
-    #region filtering commands
+		#region filtering commands
 
-    /// <summary>
-    /// Grab a collection of values from the explorer.
-    /// </summary>
-    /// <param name="explorer"></param>
-    /// <param name="type">The type of values to fetch for</param>
-    /// <param name="normalize">When set to true will normalize collection against max and min</param>
-    /// <returns></returns>
-    public static IEnumerable<double> Fetch(this IResultExplorer explorer, ResultType type, bool normalize = false)
-    {
-      var data = new List<double>();
+		/// <summary>
+		/// Grab a collection of values from the explorer.
+		/// </summary>
+		/// <param name="explorer"></param>
+		/// <param name="type">The type of values to fetch for</param>
+		/// <returns></returns>
+		public static IEnumerable<double> Fetch(this IResultExplorer explorer, ResultType type)
+		{
+			var data = new List<double>();
 
-      explorer.TryGetValues(type, ref data);
+			explorer.TryGetValues(type, ref data);
 
-      if (!normalize)
-        return data;
+			return data;
+		}
 
-      data.GetMaxMin(out var max, out var min);
+		public static void SetActiveValues(this ResultExplorer explorer, ResultType type, string target = null)
+		{
+			if (target.Valid() && explorer.targets.Contains(target) && !explorer.activeTarget.Valid() || !explorer.activeTarget.Equals(target))
+				explorer.activeTarget = target;
 
-      return data.NormalizeValues(max, min);
-    }
+			if (explorer.activeType != type)
+				explorer.activeType = type;
 
-    public static void SetActiveValues(this ResultExplorer explorer, ResultType type, string target = null, bool normalize = true)
-    {
-      if (target.Valid() && explorer.targets.Contains(target) && !explorer.activeTarget.Valid() || !explorer.activeTarget.Equals(target))
-        explorer.activeTarget = target;
+			var values = new List<double>();
 
-      if (explorer.activeType != type)
-        explorer.activeType = type;
+			if (!explorer.TryGetValues(explorer.activeType, ref values)) return;
 
-      var values = new List<double>();
-      if (!explorer.TryGetValues(explorer.activeType, ref values))
-        return;
+			explorer.activeValues = values.ToArray();
+		}
 
-      if (!normalize)
-      {
-        explorer.activeValues = values.ToArray();
-        return;
-      }
+		public static void SetActiveValues(this ResultExplorer explorer, ResultType type, bool normalize, string target = null)
+		{
+			if (target.Valid() && explorer.targets.Contains(target) && !explorer.activeTarget.Valid() || !explorer.activeTarget.Equals(target))
+				explorer.activeTarget = target;
 
-      values.GetMaxMin(out var max, out var min);
+			if (explorer.activeType != type)
+				explorer.activeType = type;
 
-      explorer.activeValues = values.NormalizeValues(max, min).ToArray();
-    }
+			var values = new List<double>();
+			if (!explorer.TryGetValues(explorer.activeType, ref values))
+				return;
 
-    public static IEnumerable<double> GetExistingOverPotential(this IResultExplorer explorer)
-    {
-      return explorer.GetComparedValues(ResultType.Existing, ResultType.Potential);
-    }
+			if (!normalize)
+			{
+				explorer.activeValues = values.ToArray();
+				return;
+			}
 
-    public static IEnumerable<double> GetProposedOverExisting(this IResultExplorer explorer)
-    {
-      return explorer.GetComparedValues(ResultType.Proposed, ResultType.Existing);
-    }
+			values.GetMaxMin(out var max, out var min);
 
-    public static IEnumerable<double> GetProposedOverPotential(this IResultExplorer explorer)
-    {
-      return explorer.GetComparedValues(ResultType.Proposed, ResultType.Potential);
-    }
+			explorer.activeValues = values.NormalizeValues(max, min).ToArray();
+		}
 
-    public static bool InRange(this IExploreRange obj, double value) => value >= obj.min && value <= obj.max;
+		public static IEnumerable<double> GetExistingOverPotential(this IResultExplorer explorer)
+		{
+			return explorer.GetComparedValues(ResultType.Existing, ResultType.Potential);
+		}
 
-    public static IEnumerable<double> GetComparedValues(this IResultExplorer explorer, ResultType typeA, ResultType typeB)
-    {
-      var dataA = new List<double>();
-      var dataB = new List<double>();
+		public static IEnumerable<double> GetProposedOverExisting(this IResultExplorer explorer)
+		{
+			return explorer.GetComparedValues(ResultType.Proposed, ResultType.Existing);
+		}
 
-      if (explorer.TryGetValues(typeA, ref dataA))
-        if (explorer.TryGetValues(typeB, ref dataB))
-          return dataA.NormalizeValues(dataB);
+		public static IEnumerable<double> GetProposedOverPotential(this IResultExplorer explorer)
+		{
+			return explorer.GetComparedValues(ResultType.Proposed, ResultType.Potential);
+		}
 
-      return null;
-    }
+		public static bool InRange(this IExploreRange obj, double value) => value >= obj.min && value <= obj.max;
 
-    #endregion
+		public static IEnumerable<double> GetComparedValues(this IResultExplorer explorer, ResultType typeA, ResultType typeB)
+		{
+			var dataA = new List<double>();
+			var dataB = new List<double>();
 
-    public static bool TryGetValues(this IResultExplorer explorer, ResultType type, ref List<double> data)
-    {
-      try
-      {
-        // select pixel data with target 
-        foreach (var d in explorer.storedData)
-        {
-          if (!d.content.Equals(explorer.activeTarget))
-            continue;
+			if (explorer.TryGetValues(typeA, ref dataA))
+				if (explorer.TryGetValues(typeB, ref dataB))
+					return dataA.NormalizeValues(dataB);
 
-          if (type.CheckAgainstString(d.stage))
-          {
-            data = d.values;
-            break;
-          }
-        }
-      }
-      catch (Exception e)
-      {
-        Console.WriteLine(e);
-        throw;
-      }
+			return null;
+		}
 
-      return data != null && data.Any();
-    }
+		#endregion
 
-    public static bool CheckActiveTarget(this IResultExplorer explorer, string target)
-    {
-      return target.Valid() && target.Equals(explorer.activeTarget);
-    }
+		public static bool TryGetValues(this IResultExplorer explorer, ResultType type, ref List<double> data)
+		{
+			try
+			{
+				// select pixel data with target 
+				foreach (var d in explorer.storedData)
+				{
+					if (!d.content.Equals(explorer.activeTarget))
+						continue;
 
-    public static bool DataIsReady(this IResultExplorer exp)
-    {
-      return exp.storedData.Valid() && exp.activeTarget.Valid();
-    }
+					if (type.CheckAgainstString(d.stage))
+					{
+						data = d.values;
+						break;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
 
-    /// <summary>
-    /// uses active values
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="valueToFind"></param>
-    /// <returns></returns>
-    public static int FindPointWithValue(this IResultExplorer obj, double valueToFind) => obj.activeValues.FindPointWithValue(valueToFind);
+			return data != null && data.Any();
+		}
 
-    public static int FindPointWithValue(this double[] values, double valueToFind, double unimportantDifference = 0.0001)
-    {
-      var res = -1;
+		public static bool CheckActiveTarget(this IResultExplorer explorer, string target)
+		{
+			return target.Valid() && target.Equals(explorer.activeTarget);
+		}
 
-      if (double.IsNaN(valueToFind) || !values.Valid())
-        return res;
+		public static bool DataIsReady(this IResultExplorer exp)
+		{
+			return exp.storedData.Valid() && exp.activeTarget.Valid();
+		}
 
-      var sampleOfValues = new List<int>();
+		/// <summary>
+		/// uses active values
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="valueToFind"></param>
+		/// <returns></returns>
+		public static int FindPointWithValue(this IResultExplorer obj, double valueToFind) => obj.activeValues.FindPointWithValue(valueToFind);
 
-      // compare data 
-      for (var i = 0; i < values.Length; i++)
-        if (values[i].NearlyEqual(valueToFind, unimportantDifference))
-          sampleOfValues.Add(i);
+		public static int FindPointWithValue(this double[] values, double valueToFind, double unimportantDifference = 0.0001)
+		{
+			var res = -1;
 
-      // if no values were found from sample set we keep searching
-      if (!sampleOfValues.Valid())
-      {
-        // if no values were found we look for the nearest values
-        var nearest = 1.0;
+			if (double.IsNaN(valueToFind) || !values.Valid())
+				return res;
 
-        for (var i = 0; i < values.Length; i++)
-        {
-          var diff = Math.Abs(values[i] - valueToFind);
-          if (diff < nearest)
-          {
-            nearest = diff;
-            res = i;
-          }
-        }
+			var sampleOfValues = new List<int>();
 
-        sampleOfValues.Add(res);
-      }
+			// compare data 
+			for (var i = 0; i < values.Length; i++)
+				if (values[i].NearlyEqual(valueToFind, unimportantDifference))
+					sampleOfValues.Add(i);
 
-      var r = new Random(DateTime.Now.Millisecond);
+			// if no values were found from sample set we keep searching
+			if (!sampleOfValues.Valid())
+			{
+				// if no values were found we look for the nearest values
+				var nearest = 1.0;
 
-      return sampleOfValues[r.Next(0, sampleOfValues.Count - 1)];
-    }
-  }
+				for (var i = 0; i < values.Length; i++)
+				{
+					var diff = Math.Abs(values[i] - valueToFind);
+					if (diff < nearest)
+					{
+						nearest = diff;
+						res = i;
+					}
+				}
+
+				sampleOfValues.Add(res);
+			}
+
+			var r = new Random(DateTime.Now.Millisecond);
+
+			return sampleOfValues[r.Next(0, sampleOfValues.Count - 1)];
+		}
+	}
 }
