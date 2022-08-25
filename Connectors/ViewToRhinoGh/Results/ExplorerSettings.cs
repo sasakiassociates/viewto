@@ -93,8 +93,8 @@ namespace ViewTo.RhinoGh.Results
 				point = index,
 				min = range.Min,
 				max = range.Max,
-				ramp = colors.ToArray(),
-				invalid = invalidColor,
+				colorRamp = colors.ToArray(),
+				invalidColor = invalidColor,
 				showAll = show,
 			};
 

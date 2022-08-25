@@ -10,6 +10,6 @@ namespace ViewTo.RhinoGh
 			name, nickname, description, ConnectorInfo.CATEGORY, sub)
 		{ }
 
-		
 	}
+
 }

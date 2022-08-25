@@ -78,6 +78,8 @@
         </ProjectReference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Base\ViewToCloudComponentBase.cs" />
+        <Compile Include="Base\ViewToComponentBase.cs" />
         <Compile Include="ConnectorInfo.cs" />
         <Compile Include="ConnectorPipe.cs" />
         <Compile Include="Goo\GH_ViewObj.cs" />
@@ -102,7 +104,6 @@
         <Compile Include="Setup\CreateViewContentTarget.cs" />
         <Compile Include="Utils\MoveToView.cs" />
         <Compile Include="Utils\RenderViewToFile.cs" />
-        <Compile Include="ViewToComponentBase.cs" />
         <Compile Include="ViewToHelper.Utilis.cs" />
         <Compile Include="ViewToRhinoGhInfo.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
