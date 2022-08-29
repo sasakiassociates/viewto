@@ -29,7 +29,7 @@ namespace ViewObjects.Converter
 
 		public virtual IResultCloud nativeResultCloud => Create<ResultCloud>();
 
-		private TObj Create<TObj>() where TObj : IViewObj => Activator.CreateInstance<TObj>();
+		TObj Create<TObj>() where TObj : IViewObj => Activator.CreateInstance<TObj>();
 	}
 
 	public interface IViewObjSchema
