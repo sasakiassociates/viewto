@@ -59,7 +59,7 @@ namespace ViewObjects.Converter
 			return null;
 		}
 
-		protected virtual ViewContentBase ViewContentToSpeckle(IViewContent content)
+		protected ViewContentBase ViewContentToSpeckle(IViewContent content)
 		{
 			ViewContentBase vc = null;
 			switch (content)
@@ -83,17 +83,17 @@ namespace ViewObjects.Converter
 			return vc;
 		}
 
-		protected virtual TargetContentBase TargetContentToSpeckle(ITargetContent @object) => new TargetContentBase
+		protected TargetContentBase TargetContentToSpeckle(ITargetContent @object) => new TargetContentBase
 		{
 			viewName = @object.viewName, isolate = @object.isolate, bundles = SafeConvert(@object.bundles)
 		};
 
-		protected virtual DesignContentBase DesignContentToSpeckle(IDesignContent @object) => new DesignContentBase
+		protected DesignContentBase DesignContentToSpeckle(IDesignContent @object) => new DesignContentBase
 		{
 			viewName = @object.viewName
 		};
 
-		protected virtual BlockerContentBase BlockerContentToSpeckle(IBlockerContent @object) => new BlockerContentBase
+		protected BlockerContentBase BlockerContentToSpeckle(IBlockerContent @object) => new BlockerContentBase
 		{
 			viewName = @object.viewName
 		};
@@ -119,7 +119,7 @@ namespace ViewObjects.Converter
 			return vc;
 		}
 
-		protected virtual TObj ViewContentToNative<TObj>(ViewContentBase @base) where TObj : IViewContent
+		protected TObj ViewContentToNative<TObj>(ViewContentBase @base) where TObj : IViewContent
 		{
 			if (ViewContentToNative(@base) is TObj casted)
 				return casted;
@@ -127,7 +127,7 @@ namespace ViewObjects.Converter
 			return default;
 		}
 
-		protected virtual ITargetContent TargetContentToNative(TargetContentBase @base)
+		protected ITargetContent TargetContentToNative(TargetContentBase @base)
 		{
 			var viewObj = Schema?.nativeTargetContent;
 
@@ -139,14 +139,14 @@ namespace ViewObjects.Converter
 			return viewObj;
 		}
 
-		protected virtual IDesignContent DesignContentToNative(DesignContentBase @base)
+		protected IDesignContent DesignContentToNative(DesignContentBase @base)
 		{
 			var viewObj = Schema?.nativeDesignContent;
 			viewObj.viewName = @base.viewName;
 			return viewObj;
 		}
 
-		protected virtual IBlockerContent BlockerContentToNative(BlockerContentBase @base)
+		protected IBlockerContent BlockerContentToNative(BlockerContentBase @base)
 		{
 			var viewObj = Schema?.nativeBlockerContent;
 			viewObj.viewName = @base.viewName;
@@ -319,7 +319,7 @@ namespace ViewObjects.Converter
 
 		#endregion
 
-		protected virtual ViewStudyBase StudyToSpeckle(IViewStudy @object)
+		protected ViewStudyBase StudyToSpeckle(IViewStudy @object)
 		{
 			var casted = new List<ViewObjBase>();
 			foreach (var obj in @object.objs)
@@ -339,7 +339,7 @@ namespace ViewObjects.Converter
 			};
 		}
 
-		protected virtual ContentBundleBase ContentBundleToSpeckle(IViewContentBundle @object) => new ContentBundleBase
+		protected ContentBundleBase ContentBundleToSpeckle(IViewContentBundle @object) => new ContentBundleBase
 		{
 			targets = SafeConvertToSpeckle<ITargetContent, TargetContentBase>(@object.contents),
 			blockers = SafeConvertToSpeckle<IBlockerContent, BlockerContentBase>(@object.contents),

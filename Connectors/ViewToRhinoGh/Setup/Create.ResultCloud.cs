@@ -62,7 +62,7 @@ namespace ViewTo.RhinoGh.Setup
 			DA.GetDataTree(_input.Values, out GH_Structure<GH_Number> treeValues);
 
 			DA.GetDataTree(_input.Target, out GH_Structure<GH_String> treeNames);
-			
+
 			GH_Boolean force = new GH_Boolean();
 			DA.GetData(_input.Force, ref force);
 
@@ -95,8 +95,17 @@ namespace ViewTo.RhinoGh.Setup
 				foreach (var v in branchValue)
 					values.Add(v.Value);
 
+				const int INDEX_CONTENT = 0;
+				const int INDEX_STAGE = 1;
+
 				var branchName = treeNames.Branches[bIndex];
-				dataContainer.Add(new ContentResultData(values, stage: branchName[1].Value, content: branchName[0].Value, 0));
+				dataContainer.Add(
+					new ContentResultData(
+						values,
+						branchName.Count >= INDEX_CONTENT ? branchName[INDEX_CONTENT].Value : "Invalid Content",
+						branchName.Count >= INDEX_STAGE ? branchName[INDEX_STAGE].Value : "Invalid Stage",
+						0)
+				);
 			}
 
 			var resulCloud = new ResultCloud

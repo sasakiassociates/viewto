@@ -2,7 +2,6 @@
 using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Rhino;
 using Rhino.Geometry;
 using ViewObjects;
 using ViewObjects.Cloud;
@@ -12,15 +11,6 @@ namespace ViewTo.RhinoGh
 
 	public class ConnectorPipe
 	{
-		public static bool isInit;
-
-		private static RhinoDoc doc { get; set; }
-
-		public static void SetDoc(RhinoDoc activeDoc)
-		{
-			doc = activeDoc;
-			// Init();
-		}
 
 		public static ViewCloud Prime(IEnumerable<GH_Point> points)
 		{
