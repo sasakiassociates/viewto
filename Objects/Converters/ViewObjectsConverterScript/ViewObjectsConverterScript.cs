@@ -12,6 +12,8 @@ namespace ViewObjects.Converter.Script
 			Schema = new ViewObjectSchema();
 		}
 
+		public ISpeckleConverter SupportConverter { get; set; }
+
 		public override ProgressReport Report { get; }
 
 		public override ReceiveMode ReceiveMode { get; set; }
@@ -47,6 +49,8 @@ namespace ViewObjects.Converter.Script
 			{
 				Base obj = null;
 
+				if (SupportConverter != null && SupportConverter.CanConvertToSpeckle(item))
+					obj = SupportConverter.ConvertToSpeckle(item);
 				if (CanConvertToSpeckle(item))
 					obj = ConvertToSpeckle(item);
 
@@ -69,8 +73,10 @@ namespace ViewObjects.Converter.Script
 			{
 				object obj = null;
 
-				if (CanConvertToSpeckle(item))
-					obj = ConvertToSpeckle(item);
+				if (SupportConverter != null && SupportConverter.CanConvertToNative(item))
+					obj = SupportConverter.ConvertToNative(item);
+				else if (CanConvertToNative(item))
+					obj = ConvertToNative(item);
 
 				if (obj == null)
 					continue;

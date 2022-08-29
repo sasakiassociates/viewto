@@ -1,0 +1,17 @@
+{
+  "name": "com.sasaki.viewobjects.converter",
+  "version": "0.0.1",
+  "displayName": "ViewObjects Converter",
+  "description": "ViewObjects Converter for Unity",
+  "unity": "2020.3",
+  "author": {
+    "name": "david morgan",
+    "email": "dmorgan@sasaki.com",
+    "url": "https://www.sasaki.com"
+  },
+  "type": "library",
+  "hideInEditor": false,
+  "dependencies": {
+    "com.speckle.objects": "1.0.4"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "com.sasaki.viewto.system",
+  "version": "0.0.1",
+  "displayName": "ViewTo System",
+  "description": "ViewTo Tool System",
+  "unity": "2020.3",
+  "keywords": [
+    "Analysis",
+    "Design",
+    "GPU"
+  ],
+  "author": {
+    "name": "david morgan",
+    "email": "dmorgan@sasaki.com",
+    "url": "https://www.sasaki.com"
+  },
+  "type": "library",
+  "hideInEditor": false,
+  "dependencies": {}
+}

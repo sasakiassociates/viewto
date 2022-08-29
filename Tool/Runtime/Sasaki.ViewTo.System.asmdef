@@ -1,0 +1,23 @@
+{
+    "name": "Sasaki.ViewTo.System",
+    "rootNamespace": "ViewTo",
+    "references": [
+        "Sasaki.PixelFinder",
+        "Sasaki.Utilities",
+        "Sasaki.ViewObjects",
+        "Sasaki.ViewObjects.Converter",
+        "Speckle.Connector",
+        "Speckle.Core",
+        "UniTask",
+        "Pcx"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

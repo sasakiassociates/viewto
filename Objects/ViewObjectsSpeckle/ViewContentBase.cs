@@ -5,18 +5,21 @@ using Speckle.Newtonsoft.Json;
 namespace ViewObjects.Speckle
 {
 
-  public abstract class ViewContentBase : ViewObjBase, IValidate, INameable
-  {
+	/// <summary>
+	/// 
+	/// </summary>
+	public abstract class ViewContentBase : ViewObjBase, IValidate, INameable
+	{
 
-    public ViewContentBase()
-    { }
-    
-    [DetachProperty]
-    public List<Base> objects { get; set; }
+		public ViewContentBase()
+		{ }
 
-    [JsonIgnore]
-    public virtual bool isValid => objects != null;
+		[DetachProperty] public List<Base> objects { get; set; }
 
-    public string viewName { get; set; }
-  }
+		[JsonIgnore] public virtual bool isValid => objects != null;
+
+		public string viewName { get; set; }
+
+		public ContentType contentType { get; set; }
+	}
 }
