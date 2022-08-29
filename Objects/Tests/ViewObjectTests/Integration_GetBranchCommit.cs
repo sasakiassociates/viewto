@@ -40,11 +40,11 @@ namespace ViewTests.Objects
 			Assert.IsNotNull(@base);
 			Console.WriteLine(@base.totalChildrenCount);
 
-			var converter = new ViewObjectConverter();
+			var converter = new ViewObjectsConverterScript();
 			var obj = converter.ConvertToNative(@base);
 
 			Assert.IsNotNull(obj);
 		}
-		
+
 	}
 }

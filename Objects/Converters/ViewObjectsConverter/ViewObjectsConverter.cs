@@ -7,12 +7,12 @@ using ViewObjects.Speckle;
 
 namespace ViewObjects.Converter
 {
-	public abstract partial class ViewToConverter : ISpeckleConverter
+	public abstract partial class ViewObjectsConverter : ISpeckleConverter
 	{
 
-		public IViewObjSchema Schema { get; set; }
+		public IViewObjSchema Schema { get; set; } = new ViewObjectSchema();
 
-		public virtual string Name => nameof(ViewToConverter);
+		public virtual string Name => nameof(ViewObjectsConverter);
 
 		public virtual string Description => "Converter for basic view objects";
 
@@ -23,8 +23,6 @@ namespace ViewObjects.Converter
 		public abstract ProgressReport Report { get; }
 
 		public abstract ReceiveMode ReceiveMode { get; set; }
-
-		public abstract ISpeckleConverter SupportConverter { get; set; }
 
 		public abstract IEnumerable<string> GetServicedApplications();
 

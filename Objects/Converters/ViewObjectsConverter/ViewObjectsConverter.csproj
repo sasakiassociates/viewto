@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>ViewObjects.Converter</RootNamespace>
-        <AssemblyName>ViewObjects.Converter.Script</AssemblyName>
+        <AssemblyName>ViewObjects.Converter</AssemblyName>
     </PropertyGroup>
 
 

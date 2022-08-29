@@ -10,7 +10,7 @@ using ViewObjects.Viewer;
 
 namespace ViewObjects.Converter
 {
-	public abstract partial class ViewToConverter
+	public abstract partial class ViewObjectsConverter
 	{
 
 		#region Clouds

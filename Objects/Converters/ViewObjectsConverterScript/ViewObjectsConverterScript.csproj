@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <AssemblyName>ViewObjects.Converter.Script</AssemblyName>
+        <RootNamespace>ViewObjects.Converter.Script</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ViewObjectsConverter\ViewObjectsConverter.csproj"/>
+    </ItemGroup>
+
+</Project>

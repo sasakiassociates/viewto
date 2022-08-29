@@ -43,7 +43,7 @@ namespace ViewTests.Objects
 		public async Task Convert_ResultCloud()
 		{
 			var commit = await myClient.CommitGet(_stream.id, _stream.commit);
-			
+
 			Assert.NotNull(commit);
 			myServerTransport = new ServerTransport(myClient.Account, _stream.id);
 
@@ -52,7 +52,7 @@ namespace ViewTests.Objects
 			Assert.IsNotNull(@base);
 			Console.WriteLine(@base.totalChildrenCount);
 
-			var converter = new ViewObjectConverter();
+			var converter = new ViewObjectsConverterScript();
 			var obj = converter.ConvertToNative(@base);
 
 			Assert.IsNotNull(obj);
@@ -63,7 +63,7 @@ namespace ViewTests.Objects
 		{
 			var study = Mil.Fabricate.Object.ViewStudy("Test_For_Conversion", true, false);
 
-			var converter = new ViewObjectConverter();
+			var converter = new ViewObjectsConverterScript();
 
 			Assert.IsTrue(converter.CanConvertToSpeckle(study));
 

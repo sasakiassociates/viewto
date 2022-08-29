@@ -21,6 +21,7 @@
       <ProjectReference Include="..\..\..\..\..\Speckle\speckle-sharp\Core\Core\Core.csproj" />
       <ProjectReference Include="..\..\..\..\..\Speckle\speckle-sharp\Objects\Objects\Objects.csproj" />
       <ProjectReference Include="..\..\..\ViewCore\ViewCore.csproj" />
+      <ProjectReference Include="..\..\Converters\ViewObjectsConverterScript\ViewObjectsConverterScript.csproj"/>
       <ProjectReference Include="..\..\Converters\ViewObjectsConverter\ViewObjectsConverter.csproj" />
       <ProjectReference Include="..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj" />
       <ProjectReference Include="..\..\ViewObjects\ViewObjects.csproj" />

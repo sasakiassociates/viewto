@@ -9,7 +9,7 @@ using Speckle.Core.Models;
 
 namespace ViewObjects.Converter.Rhino
 {
-	public class ViewObjRhinoConverter : ViewToConverter
+	public class ViewObjRhinoConverter : ViewObjectsConverter
 	{
 		public ViewObjRhinoConverter()
 		{
@@ -35,7 +35,7 @@ namespace ViewObjects.Converter.Rhino
 
 		public override ReceiveMode ReceiveMode { get; set; }
 
-		public sealed override ISpeckleConverter SupportConverter { get; set; }
+		public ISpeckleConverter SupportConverter { get; set; }
 
 		public RhinoDoc Doc { get; set; }
 
