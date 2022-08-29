@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using Rhino;
-using Rhino.DocObjects;
 using Rhino.Geometry;
 using Speckle.Core.Kits;
 using Speckle.Core.Models;
 using ViewObjects.Converter.Script;
-using ViewObjects.Speckle;
 
 namespace ViewObjects.Converter.Rhino
 {
@@ -50,27 +49,42 @@ namespace ViewObjects.Converter.Rhino
 			supportConverter?.SetContextDocument(Doc);
 		}
 
-		
-		protected override ViewContentBase ViewContentToSpeckle(IViewContent content)
+		protected override bool ViewContentDataToSpeckle(List<object> items, out List<Base> result)
 		{
-			var @base = base.ViewContentToSpeckle(content);
-			if (@base == null ) return null;
+			result = new List<Base>();
 
-			if (supportConverter == null) return @base; // check if dll loaded
+			if (items == null || supportConverter == null) return false;
 
-			Mesh m = null;
-			
-			if (content.objects[0] is Mesh) // if already converted
+			foreach (var item in items)
 			{
-				@base.objects = content.objects.Select(o => supportConverter.ConvertToSpeckle(o)).Where(i => i != null).ToList();
-			}
-			else // try converting from GH_Mesh
-			{
-				var meshes = (from i in content.objects where GH_Convert.ToMesh(i, ref m, GH_Conversion.Primary) select m).ToList();
-				@base.objects = meshes.Select(o => supportConverter.ConvertToSpeckle(o)).Where(i => i != null).ToList();
+				Base b = null;
+
+				if (supportConverter.CanConvertToSpeckle(item))
+				{
+					b = supportConverter.ConvertToSpeckle(item);
+				}
+				else if (item is GH_Mesh gm)
+				{
+					Mesh m = null;
+					GH_Convert.ToMesh(gm, ref m, GH_Conversion.Primary);
+					b = supportConverter.ConvertToSpeckle(m);
+				}
+				else
+				{
+					Console.WriteLine($"Not converted {item}");
+				}
+
+				if (b == null)
+				{
+					Console.WriteLine($"Object was not converted properly");
+					continue;
+				}
+
+				result.Add(b);
 			}
 
-			return @base;
+			return result.Valid();
 		}
+
 	}
 }

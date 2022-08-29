@@ -11,8 +11,6 @@ namespace ViewObjects.Converter.Script
 	public partial class ViewObjectConverter : ISpeckleConverter
 	{
 
-		public Action<List<object>> OnViewContentConverted;
-
 		public ViewObjectSchema Schema;
 
 		// TODO: Check if this Kit and Converter are installed
@@ -31,25 +29,13 @@ namespace ViewObjects.Converter.Script
 
 		public virtual List<ApplicationPlaceholderObject> ContextObjects { get; set; } = new List<ApplicationPlaceholderObject>();
 
-		public virtual string Description
-		{
-			get => "Converter for basic view objects";
-		}
+		public virtual string Description => "Converter for basic view objects";
 
-		public virtual string Name
-		{
-			get => nameof(ViewObjectConverter);
-		}
+		public virtual string Name => nameof(ViewObjectConverter);
 
-		public virtual string Author
-		{
-			get => "David Morgan";
-		}
+		public virtual string Author => "David Morgan";
 
-		public virtual string WebsiteOrEmail
-		{
-			get => "https://sasaki.com";
-		}
+		public virtual string WebsiteOrEmail => "https://sasaki.com";
 
 		public virtual HashSet<Exception> ConversionErrors { get; } = new HashSet<Exception>();
 
@@ -68,24 +54,18 @@ namespace ViewObjects.Converter.Script
 		public virtual void SetContextDocument(object doc)
 		{ }
 
-		public virtual void SetContextObjects(List<ApplicationPlaceholderObject> objects)
-		{
-			ContextObjects = objects;
-		}
+		public virtual void SetContextObjects(List<ApplicationPlaceholderObject> objects) => ContextObjects = objects;
 
 		public virtual void SetPreviousContextObjects(List<ApplicationPlaceholderObject> objects)
 		{ }
 
-		public void SetConverterSettings(object settings)
-		{
-			Console.WriteLine(settings);
-		}
+		public void SetConverterSettings(object settings) => Console.WriteLine(settings);
 
-		public virtual List<object> ConvertToNative(List<Base> objects) => objects.Select(ConvertToNative).ToList();
+		public List<object> ConvertToNative(List<Base> objects) => objects.Select(ConvertToNative).ToList();
 
-		public virtual object ConvertToNative(Base @base) => ConvertToViewObj(@base);
+		public object ConvertToNative(Base @base) => ConvertToViewObj(@base);
 
-		public virtual Base ConvertToSpeckle(object @object) => ConvertToViewObjBase(@object);
+		public Base ConvertToSpeckle(object @object) => ConvertToViewObjBase(@object);
 
 		public List<Base> ConvertToSpeckle(List<object> objects) => objects.Select(ConvertToSpeckle).ToList();
 
@@ -133,7 +113,7 @@ namespace ViewObjects.Converter.Script
 			}
 		}
 
-		public virtual IViewObj ConvertToViewObj(Base @base)
+		public IViewObj ConvertToViewObj(Base @base)
 		{
 			switch (@base)
 			{

@@ -20,8 +20,10 @@ namespace ViewObjects.Converter.Script
 					if (res != null)
 						results.Add(res);
 				}
+
 			return results;
 		}
+
 		protected List<TResult> SafeConvertToNative<TValue, TResult>(List<TValue> items)
 			where TValue : ViewContentBase
 			where TResult : IViewContent
@@ -35,6 +37,7 @@ namespace ViewObjects.Converter.Script
 				if (obj != null)
 					results.Add(obj);
 			}
+
 			return results;
 		}
 

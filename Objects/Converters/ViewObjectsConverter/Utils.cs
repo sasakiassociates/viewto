@@ -7,7 +7,7 @@ using Speckle.Core.Models;
 using ViewObjects.Cloud;
 using ViewObjects.Speckle;
 
-namespace ViewObjects.Converter.Script
+namespace ViewObjects.Converter
 {
 	public static class Utils
 	{
@@ -29,8 +29,8 @@ namespace ViewObjects.Converter.Script
 
 			return @base != null;
 		}
-		
-		public static IResultData CastTo(this IResultData @object) => new ResultPixelBase
+
+		public static IResultData Convert(this IResultData @object) => new ResultPixelBase
 		{
 			values = @object.values,
 			content = @object.content,
@@ -40,9 +40,9 @@ namespace ViewObjects.Converter.Script
 			layout = @object.layout
 		};
 
-		public static List<IResultData> CastTo(this List<IResultData> @object)
+		public static List<IResultData> Convert(this List<IResultData> @object)
 		{
-			return @object.Valid() ? @object.Select(data => data.CastTo()).ToList() : new List<IResultData>();
+			return @object.Valid() ? @object.Select(data => data.Convert()).ToList() : new List<IResultData>();
 		}
 
 		public static List<CloudPointBase> ToSpeckle(this List<CloudPoint> @object)

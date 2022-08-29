@@ -4,15 +4,10 @@ using ViewObjects.Content;
 using ViewObjects.Study;
 using ViewObjects.Viewer;
 
-namespace ViewObjects.Converter.Script
+namespace ViewObjects.Converter
 {
 
-	public interface IViewObjectBuilder : IViewerSchema, IViewObjSchema, IViewContentSchema
-	{
-		TObj Create<TObj>();
-	}
-
-	public class ViewObjectSchema : IViewObjSchema, IViewerSchema, IViewContentSchema
+	public class ViewObjectSchema : IViewObjSchema
 	{
 		public virtual IViewContentBundle nativeContentBundle => Create<ContentBundle>();
 
@@ -44,19 +39,11 @@ namespace ViewObjects.Converter.Script
 		IViewCloud nativeViewCloud { get; }
 
 		IResultCloud nativeResultCloud { get; }
-	}
-
-	public interface IViewerSchema
-	{
-		IViewerLayout nativeViewerLayout { get; }
 
 		IViewerBundle nativeViewerBundle { get; }
 
 		IViewerBundleLinked nativeViewerBundleLinked { get; }
-	}
 
-	public interface IViewContentSchema
-	{
 		IViewContentBundle nativeContentBundle { get; }
 
 		ITargetContent nativeTargetContent { get; }

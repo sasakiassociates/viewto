@@ -8,50 +8,11 @@ using ViewObjects.Cloud;
 using ViewObjects.Speckle;
 using ViewObjects.Viewer;
 
-namespace ViewObjects.Converter
+namespace ViewObjects.Converter.Script
 {
-	public abstract partial class ViewToConverter
+	public partial class ViewObjectConverter
 	{
-
-		#region Clouds
-
-		protected ResultCloudBase ResultCloudToSpeckle(IResultCloud @object) => new ResultCloudBase
-		{
-			data = @object.data.Convert(), points = @object.points.ToList().ToSpeckle(), viewID = @object.viewID
-		};
-
-		protected ViewCloudBase ViewCloudToSpeckle(IViewCloud @object) => @object is ResultCloud rc ?
-			ResultCloudToSpeckle(rc) : new ViewCloudBase
-			{
-				points = @object.points.ToList().ToSpeckle(), viewID = @object.viewID
-			};
-
-		protected IViewCloud ViewCloudToNative(ViewCloudBase @base)
-		{
-			var obj = Schema?.nativeViewCloud;
-			obj.viewID = @base.viewID;
-			obj.points = @base.points.ToView().ToArray();
-			return obj;
-		}
-
-		protected IResultCloud ResultCloudToNative(ResultCloudBase @base)
-		{
-			var obj = Schema?.nativeResultCloud;
-			obj.viewID = @base.viewID;
-			obj.points = @base.points.ToView().ToArray();
-			obj.data = @base.data.Convert();
-			return obj;
-		}
-
-		#endregion
-
-		#region View Content
-
-		protected abstract bool ViewContentDataToSpeckle(List<object> items, out List<Base> result);
-
-		protected abstract bool ViewContentDataToNative(List<Base> items, out List<object> result);
-
-		protected TObj ViewContentToSpeckle<TObj>(IViewContent content) where TObj : ViewContentBase
+		protected virtual TObj ViewContentToSpeckle<TObj>(IViewContent content) where TObj : ViewContentBase
 		{
 			if (ViewContentToSpeckle(content) is TObj casted)
 				return casted;
@@ -114,9 +75,22 @@ namespace ViewObjects.Converter
 					break;
 			}
 
-			if (ViewContentDataToNative(content.objects, out var result)) vc.objects = result;
+			if (ViewContentDataToNative(content.objects, out var result))
+				vc.objects = result;
 
 			return vc;
+		}
+
+		protected virtual bool ViewContentDataToSpeckle(List<object> items, out List<Base> result)
+		{
+			result = new List<Base>();
+			return true;
+		}
+
+		protected virtual bool ViewContentDataToNative(List<Base> items, out List<object> result)
+		{
+			result = new List<object>();
+			return true;
 		}
 
 		protected virtual TObj ViewContentToNative<TObj>(ViewContentBase @base) where TObj : IViewContent
@@ -129,7 +103,7 @@ namespace ViewObjects.Converter
 
 		protected virtual ITargetContent TargetContentToNative(TargetContentBase @base)
 		{
-			var viewObj = Schema?.nativeTargetContent;
+			var viewObj = CreateNativeTargetContent();
 
 			viewObj.isolate = @base.isolate;
 			viewObj.viewName = @base.viewName;
@@ -141,78 +115,21 @@ namespace ViewObjects.Converter
 
 		protected virtual IDesignContent DesignContentToNative(DesignContentBase @base)
 		{
-			var viewObj = Schema?.nativeDesignContent;
+			var viewObj = CreateNativeDesignContent();
+
 			viewObj.viewName = @base.viewName;
+
 			return viewObj;
 		}
 
 		protected virtual IBlockerContent BlockerContentToNative(BlockerContentBase @base)
 		{
-			var viewObj = Schema?.nativeBlockerContent;
+			var viewObj = CreateNativeBlockerContent();
+
 			viewObj.viewName = @base.viewName;
+
 			return viewObj;
 		}
-
-		#endregion
-
-		#region Safety
-
-		protected List<TResult> SafeConvertToSpeckle<TValue, TResult>(List<IViewContent> items)
-			where TValue : IViewContent
-			where TResult : ViewContentBase
-		{
-			var results = new List<TResult>();
-			if (!items.Valid()) return results;
-
-			foreach (var item in items)
-				if (item is TValue)
-				{
-					var res = ViewContentToSpeckle<TResult>(item);
-					if (res != null)
-						results.Add(res);
-				}
-
-			return results;
-		}
-
-		protected List<TResult> SafeConvertToNative<TValue, TResult>(List<TValue> items)
-			where TValue : ViewContentBase
-			where TResult : IViewContent
-		{
-			var results = new List<TResult>();
-			if (!items.Valid()) return results;
-
-			foreach (var item in items)
-			{
-				var obj = ViewContentToNative<TResult>(item);
-				if (obj != null)
-					results.Add(obj);
-			}
-
-			return results;
-		}
-
-		protected List<ViewerBundleBase> SafeConvert(List<IViewerBundle> items)
-		{
-			var results = new List<ViewerBundleBase>();
-			if (!items.Valid()) return results;
-
-			results.AddRange(items.Select(ViewerBundleToSpeckle).Where(i => i != null));
-			return results;
-		}
-
-		protected List<IViewerBundle> SafeConvert(List<ViewerBundleBase> items)
-		{
-			var results = new List<IViewerBundle>();
-			if (!items.Valid()) return results;
-
-			results.AddRange(items.Select(ViewerBundleToNative).Where(i => i != null));
-			return results;
-		}
-
-		#endregion
-
-		#region Viewers
 
 		protected ViewerLayout LayoutToNative(IViewerLayout @base)
 		{
@@ -246,7 +163,7 @@ namespace ViewObjects.Converter
 
 		protected IViewerBundle ViewerBundleToNative(ViewerBundleBase @base)
 		{
-			var viewObj = Schema?.nativeViewerBundle;
+			var viewObj = CreateNativeViewerBundle();
 
 			if (@base == null)
 				return viewObj;
@@ -256,7 +173,7 @@ namespace ViewObjects.Converter
 
 			if (@base is ViewerBundleBaseLinked vl)
 			{
-				var viewObjLink = Schema?.nativeViewerBundleLinked;
+				var viewObjLink = CreateNativeViewerBundleLinked();
 
 				viewObjLink.layouts = viewObj.layouts;
 				viewObjLink.linkedClouds = vl.linkedClouds.ToView();
@@ -317,19 +234,18 @@ namespace ViewObjects.Converter
 			}
 		}
 
-		#endregion
-
 		protected virtual ViewStudyBase StudyToSpeckle(IViewStudy @object)
 		{
 			var casted = new List<ViewObjBase>();
 			foreach (var obj in @object.objs)
 			{
-				var @base = ConvertToSpeckle(obj);
-				if (@base is ViewObjBase vo)
+				var @base = ConvertToViewObjBase(obj);
+				if (@base != null)
 				{
-					if (!vo.id.Valid()) vo.id = vo.GetId();
+					if (!@base.id.Valid())
+						@base.id = @base.GetId();
 
-					casted.Add(vo);
+					casted.Add(@base);
 				}
 			}
 
@@ -348,7 +264,7 @@ namespace ViewObjects.Converter
 
 		protected IViewContentBundle ContentBundleToNative(ContentBundleBase @base)
 		{
-			var obj = Schema?.nativeContentBundle;
+			var obj = CreateNativeViewContentBundle();
 
 			var items = new List<IViewContent>();
 			items.AddRange(SafeConvertToNative<TargetContentBase, ITargetContent>(@base.targets));
@@ -362,7 +278,7 @@ namespace ViewObjects.Converter
 
 		protected IViewStudy StudyToNative(ViewStudyBase @base)
 		{
-			var viewObj = Schema?.nativeViewStudy;
+			var viewObj = CreateNativeViewStudy();
 
 			viewObj.viewName = @base.viewName;
 			var items = new List<IViewObj>();
@@ -377,9 +293,9 @@ namespace ViewObjects.Converter
 					if (!obj.id.Valid())
 						obj.id = obj.GetId();
 
-					var item = ConvertToNative(obj);
-					if (item is IViewObj vo)
-						items.Add(vo);
+					var item = ConvertToViewObj(obj);
+					if (item != null)
+						items.Add(item);
 				}
 
 				viewObj.objs = items;
@@ -391,7 +307,7 @@ namespace ViewObjects.Converter
 		private IViewObj HandleDefault(Base @base)
 		{
 			IViewObj o = default;
-
+			// check if there are layers in the ref object
 			foreach (var item in @base.GetMemberNames())
 			{
 				var member = @base[item];
@@ -421,7 +337,7 @@ namespace ViewObjects.Converter
 			}
 
 			// is basic speckle type
-			if (@object is ViewObjBase vo && ConvertToNative(vo) is IViewObj viewObj) return viewObj;
+			if (@object is ViewObjBase vo) return ConvertToViewObj(vo);
 
 			if (@object.IsList())
 			{
@@ -433,10 +349,67 @@ namespace ViewObjects.Converter
 					if (res != default)
 						return res;
 				}
+
+				// if (list.Any())
+				// {
+				//   // NOTE: to avoid handling trees, we only use the top most item to convert
+				//   var item = list.FirstOrDefault();
+				//   if (item is ViewObjBase treeBase)
+				//     return ConvertToViewObj(treeBase);
+				// }
 			}
 
 			return default;
 		}
 
+		private bool IsList(object @object)
+		{
+			if (@object == null)
+				return false;
+
+			var type = @object.GetType();
+
+			return typeof(IEnumerable).IsAssignableFrom(type) && !typeof(IDictionary).IsAssignableFrom(type) && type != typeof(string);
+		}
+
+		#region Clouds
+
+		protected IResultCloud ResultCloudToNative(ResultCloudBase @base)
+		{
+			var obj = CreateNativeResultCloud();
+
+			obj.viewID = @base.viewID;
+			obj.data = @base.data.Convert();
+			obj.points = @base.points.ToView().ToArray();
+
+			return obj;
+		}
+
+		protected virtual ResultCloudBase ResultCloudToSpeckle(IResultCloud @object) => new ResultCloudBase
+		{
+			data = @object.data.Convert(), points = @object.points.ToList().ToSpeckle(), viewID = @object.viewID
+		};
+
+		protected virtual ViewCloudBase ViewCloudToSpeckle(IViewCloud @object) => @object is ResultCloud rc ?
+			ResultCloudToSpeckle(rc) :
+			new ViewCloudBase
+			{
+				points = @object.points.ToList().ToSpeckle(), viewID = @object.viewID
+			};
+
+		protected IViewCloud ViewCloudToNative(ViewCloudBase @base)
+		{
+			// current way of passing hash
+			var obj = CreateNativeViewCloud();
+
+			obj.viewID = @base.viewID;
+			obj.points = @base.points.ToView().ToArray();
+
+			return obj;
+		}
+
+		#endregion
+
 	}
+
 }
