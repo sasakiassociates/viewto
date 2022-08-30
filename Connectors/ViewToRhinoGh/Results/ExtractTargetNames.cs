@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
 using ViewObjects.Cloud;
@@ -12,6 +11,11 @@ namespace ViewTo.RhinoGh.Results
 {
 	public class ExtractTargetNames : GH_Component
 	{
+
+		bool _refresh;
+		GH_ValueList _activeList;
+		List<string> _storedValues;
+
 		public ExtractTargetNames() : base(
 			"Extract Targets",
 			"ET",
@@ -23,10 +27,8 @@ namespace ViewTo.RhinoGh.Results
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
 			pManager.AddGenericParameter("Result Cloud", "RC", "Result cloud to get target names from", GH_ParamAccess.item);
-			pManager.AddBooleanParameter("Create", "C", "Debugger call for not having the create call go forward", GH_ParamAccess.item);
-			pManager.AddBooleanParameter("Update", "U", "Run Update when object created", GH_ParamAccess.item);
 			pManager.AddTextParameter("Results", "R", "Results of data", GH_ParamAccess.list);
-			pManager[3].Optional = true;
+			pManager[1].Optional = true;
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -70,74 +72,65 @@ namespace ViewTo.RhinoGh.Results
 			return valueList;
 		}
 
-		GH_ValueList activeList;
-		List<string> storedValues;
-		bool create, runUpdate;
-
 		protected override void AfterSolveInstance()
 		{
 			base.AfterSolveInstance();
 
-			if (!create || !refresh || storedValues == null || !storedValues.Any())
+			if (!_refresh || _storedValues == null || !_storedValues.Any())
 				return;
 
-			var items = CreateValueListItems(storedValues);
-			if (activeList == null)
+			var items = CreateValueListItems(_storedValues);
+			if (_activeList == null)
 			{
-				activeList = PopulateValueList(
+				_activeList = PopulateValueList(
 					items,
 					"Targets",
 					"T",
 					"A list of view targets"
 				);
-				var point = new PointF(Attributes.Bounds.Location.X - activeList.Attributes.Bounds.Width,
+				var point = new PointF(Attributes.Bounds.Location.X - _activeList.Attributes.Bounds.Width,
 				                       Attributes.Bounds.Location.Y + (1 * 2 + 1) * Attributes.Bounds.Height / (Params.Input.Count * 2) - 12);
-				activeList.Attributes.Pivot = point;
-				activeList.SelectItem(0);
+				_activeList.Attributes.Pivot = point;
+				_activeList.SelectItem(0);
 
 				var doc = OnPingDocument();
-				doc?.AddObject(activeList, runUpdate);
-				Params.Input[3].AddSource(activeList);
+				doc?.AddObject(_activeList, true);
+				Params.Input[3].AddSource(_activeList);
 			}
 			else
 			{
-				activeList.ListItems.Clear();
+				_activeList.ListItems.Clear();
 				foreach (var i in items)
-					activeList.ListItems.Add(i);
+					_activeList.ListItems.Add(i);
 
-				activeList.SelectItem(0);
+				_activeList.SelectItem(0);
 			}
 
-			refresh = false;
+			_refresh = false;
 		}
-
-		bool refresh;
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
 			GH_ViewObj wrapper = null;
-
 			DA.GetData(0, ref wrapper);
-			DA.GetData(1, ref create);
-			DA.GetData(2, ref runUpdate);
 
 			var inputTargets = new List<string>();
-			DA.GetDataList(3, inputTargets);
+			DA.GetDataList(1, inputTargets);
 
 			if (wrapper?.Value is ResultCloud cloud)
 			{
 				if (!inputTargets.Any())
 				{
-					storedValues = cloud.GetTargets();
-					refresh = true;
+					_storedValues = cloud.GetTargets();
+					_refresh = true;
 				}
 				else
 				{
 					var tempValues = cloud.GetTargets();
 					if (tempValues != null && tempValues.Count != inputTargets.Count)
 					{
-						storedValues = tempValues;
-						refresh = true;
+						_storedValues = tempValues;
+						_refresh = true;
 					}
 					else
 					{
@@ -145,15 +138,15 @@ namespace ViewTo.RhinoGh.Results
 						{
 							if (!inputTargets[i].Equals(tempValues[i]))
 							{
-								storedValues = tempValues;
-								refresh = true;
+								_storedValues = tempValues;
+								_refresh = true;
 							}
 						}
 					}
 				}
 			}
 
-			DA.SetDataList(0, storedValues);
+			DA.SetDataList(0, _storedValues);
 		}
 
 		public override Guid ComponentGuid => new Guid("601505A6-A108-4DB4-AEFA-E15722C008A6");
