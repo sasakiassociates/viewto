@@ -20,10 +20,9 @@ using Debug = UnityEngine.Debug;
 
 namespace ViewTo.Connector.Unity
 {
+
 	public class ViewToHub : MonoBehaviour
 	{
-
-		// [SerializeField] SpeckleConnector _speckleConnector;
 
 		[SerializeField] Material _analysisMaterial;
 		[SerializeField] Material _renderedMat;
@@ -166,10 +165,9 @@ namespace ViewTo.Connector.Unity
 		const string BRANCH = BPY_Branch;
 
 		const string BPY_Stream = "96855cab4a";
-		const string BPY_Commit = "d199de0b99";
+		const string BPY_Commit = "e2bd8e95b9";
 		const string BPY_Branch = "viewstudy/framework-c2";
-		
-		
+
 		const string BCHP_Stream = "9b692137ca";
 		const string BCHP_Commit = "031307d6d5";
 		const string BCHP_Branch = "viewstudy/all-targets";
