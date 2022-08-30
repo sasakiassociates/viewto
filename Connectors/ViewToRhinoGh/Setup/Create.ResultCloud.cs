@@ -22,7 +22,7 @@ namespace ViewTo.RhinoGh.Setup
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 
-		(int Points, int Id, int Target, int Values, int Force) _input;
+		(int Points, int Id, int Target, int Values) _input;
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -38,21 +38,15 @@ namespace ViewTo.RhinoGh.Setup
 			_input.Values = index++;
 
 			pManager.AddTextParameter("Names", "T", "Target content to use", GH_ParamAccess.tree);
-			_input.Target = index++;
-
-			pManager.AddBooleanParameter("Force", "f", "Force the cloud to rebuild", GH_ParamAccess.item, false);
-			_input.Force = index;
+			_input.Target = index;
 
 			pManager[_input.Id].Optional = true;
-			pManager[_input.Force].Optional = true;
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
 		{
 			pManager.AddParameter(new ViewObjParam("Result Cloud", "R", "Rescult Cloud", GH_ParamAccess.item));
 		}
-
-		string _storedId = string.Empty;
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
@@ -63,27 +57,17 @@ namespace ViewTo.RhinoGh.Setup
 
 			DA.GetDataTree(_input.Target, out GH_Structure<GH_String> treeNames);
 
-			GH_Boolean force = new GH_Boolean();
-			DA.GetData(_input.Force, ref force);
-
 			var cloudPoints = (from t in points select new CloudPoint
 			{
 				x = t.Value.X, y = t.Value.Y, z = t.Value.Z
 			}).ToArray();
 
 			var id = string.Empty;
+
 			if (DA.GetData(_input.Id, ref id) && Guid.TryParse(id, out var r))
 				id = r.ToString();
 			else
 				id = Guid.NewGuid().ToString();
-
-			if (_storedId.Valid() && _storedId.Equals(id) && !force.Value)
-			{
-				AddRuntimeMessage(GH_RuntimeMessageLevel.Blank, "Cloud is already populated");
-				return;
-			}
-
-			_storedId = id;
 
 			var dataContainer = new List<IResultData>();
 
