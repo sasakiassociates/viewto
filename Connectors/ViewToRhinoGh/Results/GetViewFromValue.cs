@@ -2,6 +2,7 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
+using ViewObjects;
 using ViewObjects.Cloud;
 using ViewObjects.Explorer;
 using ViewTo.RhinoGh.Goo;
@@ -46,10 +47,10 @@ namespace ViewTo.RhinoGh.Results
 
 			pManager.AddPointParameter("Points", "P", "Points that were located", GH_ParamAccess.tree);
 			_output.Points = index++;
-			
+
 			pManager.AddColourParameter("Colors", "C", "Colors that were located", GH_ParamAccess.tree);
 			_output.Colors = index++;
-			
+
 			pManager.AddIntegerParameter("Indexes", "I", "Indexes that were located", GH_ParamAccess.tree);
 			_output.Indexes = index;
 		}
@@ -92,8 +93,9 @@ namespace ViewTo.RhinoGh.Results
 			if (!_explorer.source.Check(cloud))
 				_explorer.Load(cloud);
 
-			if (!_explorer.CheckActiveTarget(settings.target) || _explorer.activeType != settings.type)
-				_explorer.SetActiveValues(settings.type, settings.target);
+			// if there is only one option we only need to check once
+			if (settings.options.Valid(1) && !_explorer.CheckActiveTarget(settings.options[0].target) || _explorer.ActiveStage != settings.options[0].stage)
+				_explorer.SetActiveValues(settings.options[0].stage, settings.options[0].target);
 
 			var o_indexTree = new GH_Structure<GH_Integer>();
 			var o_valueTree = new GH_Structure<GH_Number>();

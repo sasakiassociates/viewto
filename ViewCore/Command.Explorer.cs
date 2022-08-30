@@ -15,42 +15,42 @@ namespace ViewTo
 		/// Grab a collection of values from the explorer.
 		/// </summary>
 		/// <param name="explorer"></param>
-		/// <param name="type">The type of values to fetch for</param>
+		/// <param name="stage>The type of values to fetch for</param>
 		/// <returns></returns>
-		public static IEnumerable<double> Fetch(this IResultExplorer explorer, ResultType type)
+		public static IEnumerable<double> Fetch(this IResultExplorer explorer, ResultStage stage)
 		{
 			var data = new List<double>();
 
-			explorer.TryGetValues(type, ref data);
+			explorer.TryGetValues(stage, ref data);
 
 			return data;
 		}
 
-		public static void SetActiveValues(this ResultExplorer explorer, ResultType type, string target = null)
+		public static void SetActiveValues(this ResultExplorer explorer, ResultStage stage, string target = null)
 		{
 			if (target.Valid() && explorer.targets.Contains(target) && !explorer.activeTarget.Valid() || !explorer.activeTarget.Equals(target))
 				explorer.activeTarget = target;
 
-			if (explorer.activeType != type)
-				explorer.activeType = type;
+			if (explorer.ActiveStage != stage)
+				explorer.ActiveStage = stage;
 
 			var values = new List<double>();
 
-			if (!explorer.TryGetValues(explorer.activeType, ref values)) return;
+			if (!explorer.TryGetValues(explorer.ActiveStage, ref values)) return;
 
 			explorer.activeValues = values.ToArray();
 		}
 
-		public static void SetActiveValues(this ResultExplorer explorer, ResultType type, bool normalize, string target = null)
+		public static void SetActiveValues(this ResultExplorer explorer, ResultStage stage, bool normalize, string target = null)
 		{
 			if (target.Valid() && explorer.targets.Contains(target) && !explorer.activeTarget.Valid() || !explorer.activeTarget.Equals(target))
 				explorer.activeTarget = target;
 
-			if (explorer.activeType != type)
-				explorer.activeType = type;
+			if (explorer.ActiveStage != stage)
+				explorer.ActiveStage = stage;
 
 			var values = new List<double>();
-			if (!explorer.TryGetValues(explorer.activeType, ref values))
+			if (!explorer.TryGetValues(explorer.ActiveStage, ref values))
 				return;
 
 			if (!normalize)
@@ -66,28 +66,28 @@ namespace ViewTo
 
 		public static IEnumerable<double> GetExistingOverPotential(this IResultExplorer explorer)
 		{
-			return explorer.GetComparedValues(ResultType.Existing, ResultType.Potential);
+			return explorer.GetComparedValues(ResultStage.Existing, ResultStage.Potential);
 		}
 
 		public static IEnumerable<double> GetProposedOverExisting(this IResultExplorer explorer)
 		{
-			return explorer.GetComparedValues(ResultType.Proposed, ResultType.Existing);
+			return explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Existing);
 		}
 
 		public static IEnumerable<double> GetProposedOverPotential(this IResultExplorer explorer)
 		{
-			return explorer.GetComparedValues(ResultType.Proposed, ResultType.Potential);
+			return explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Potential);
 		}
 
 		public static bool InRange(this IExploreRange obj, double value) => value >= obj.min && value <= obj.max;
 
-		public static IEnumerable<double> GetComparedValues(this IResultExplorer explorer, ResultType typeA, ResultType typeB)
+		public static IEnumerable<double> GetComparedValues(this IResultExplorer explorer, ResultStage stageA, ResultStage stageB)
 		{
 			var dataA = new List<double>();
 			var dataB = new List<double>();
 
-			if (explorer.TryGetValues(typeA, ref dataA))
-				if (explorer.TryGetValues(typeB, ref dataB))
+			if (explorer.TryGetValues(stageA, ref dataA))
+				if (explorer.TryGetValues(stageB, ref dataB))
 					return dataA.NormalizeValues(dataB);
 
 			return null;
@@ -95,7 +95,7 @@ namespace ViewTo
 
 		#endregion
 
-		public static bool TryGetValues(this IResultExplorer explorer, ResultType type, ref List<double> data)
+		public static bool TryGetValues(this IResultExplorer explorer, ResultStage stage, ref List<double> data)
 		{
 			try
 			{
@@ -105,7 +105,7 @@ namespace ViewTo
 					if (!d.content.Equals(explorer.activeTarget))
 						continue;
 
-					if (type.CheckAgainstString(d.stage))
+					if (stage.CheckAgainstString(d.stage))
 					{
 						data = d.values;
 						break;

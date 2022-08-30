@@ -9,34 +9,15 @@ namespace ViewObjects.Speckle
 		public ResultContainer()
 		{ }
 
-		[DetachProperty, Chunkable]
-		public List<double> values
-		{
-			get;
-			set;
-		}
+		[DetachProperty, Chunkable] public List<double> values { get; set; }
 
-		public string content
-		{
-			get;
-			set;
-		}
-		public ResultType stage
-		{
-			get;
-			set;
-		}
-		public string meta
-		{
-			get;
-			set;
-		}
+		public string content { get; set; }
 
-		public string layout
-		{
-			get;
-			set;
-		}
+		public ResultStage stage { get; set; }
+
+		public string meta { get; set; }
+
+		public string layout { get; set; }
 	}
 }
 

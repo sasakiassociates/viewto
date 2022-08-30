@@ -23,22 +23,22 @@ namespace ViewTo.RhinoGh.Results
 
 		public override Guid ComponentGuid => new Guid("4817C001-C72E-4992-AF53-5CDB16D55765");
 
-		(int Target, int Stage, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
+		(int Targets, int Stages, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
 			var index = 0;
 
-			pManager.AddTextParameter("View Target", "T", "Target content to use", GH_ParamAccess.item);
-			_input.Target = index++;
+			pManager.AddTextParameter("View Target", "T", "Target content to use", GH_ParamAccess.list);
+			_input.Targets = index++;
 
-			pManager.AddTextParameter("Stage", "S", "Stage for pixel data", GH_ParamAccess.item);
-			_input.Stage = index++;
+			pManager.AddTextParameter("Result Stage", "S", "Stage for pixel data", GH_ParamAccess.list);
+			_input.Stages = index++;
 
 			pManager.AddIntervalParameter("Range", "R", "Value Range of pixels to show", GH_ParamAccess.item, new Interval(0, 1));
 			_input.Range = index++;
 
-			pManager.AddIntegerParameter("Index", "I", "Active Point to set use", GH_ParamAccess.item, -1);
+			pManager.AddIntegerParameter("Index", "I", "Active Point to set use", GH_ParamAccess.item, 0);
 			_input.Point = index++;
 
 			pManager.AddBooleanParameter("Show", "S", "Option to show points with values only", GH_ParamAccess.item, true);
@@ -64,11 +64,27 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			var target = string.Empty;
-			DA.GetData(_input.Target, ref target);
+			var targets = new List<string>();
+			DA.GetDataList(_input.Targets, targets);
 
-			var stage = string.Empty;
-			DA.GetData(_input.Stage, ref stage);
+			var stages = new List<string>();
+			DA.GetDataList(_input.Stages, stages);
+
+			var options = new List<ContentOption>();
+
+			if (stages.Valid() && targets.Valid() && targets.Count == stages.Count)
+				for (int i = 0; i < stages.Count; i++)
+					options.Add(new ContentOption
+					{
+						target = targets[i],
+						stage = (ResultStage)Enum.Parse(typeof(ResultStage), stages[i])
+					});
+
+			if (!options.Valid())
+			{
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The content options are not valid");
+				return;
+			}
 
 			var show = false;
 			DA.GetData(_input.Show, ref show);
@@ -88,8 +104,7 @@ namespace ViewTo.RhinoGh.Results
 
 			var settings = new ExplorerSettings
 			{
-				target = target,
-				type = (ResultType)Enum.Parse(typeof(ResultType), stage),
+				options = options,
 				point = Math.Max(index, 0),
 				min = range.Min,
 				max = range.Max,

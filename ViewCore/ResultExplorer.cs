@@ -14,7 +14,7 @@ namespace ViewTo
 
 		public List<IResultData> storedData { get; private set; }
 
-		public ResultType activeType { get; set; } = ResultType.Existing;
+		public ResultStage ActiveStage { get; set; } = ResultStage.Existing;
 
 		public string activeTarget { get; set; }
 
@@ -34,7 +34,7 @@ namespace ViewTo
 
 			activePoint = 0;
 			// set default value
-			activeValues = this.Fetch(activeType).ToArray();
+			activeValues = this.Fetch(ActiveStage).ToArray();
 		}
 	}
 }

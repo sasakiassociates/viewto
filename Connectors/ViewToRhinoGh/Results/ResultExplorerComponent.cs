@@ -147,10 +147,7 @@ namespace ViewTo.RhinoGh.Results
 
 				// NOTE: check if this is the same cloud as before
 				if (!_explorer.source.Check(resultCloud))
-				{
-					_explorer.activeType = settings.type;
 					_explorer.Load(resultCloud);
-				}
 			}
 			else
 			{
@@ -159,18 +156,51 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			if (!_explorer.CheckActiveTarget(_settings.target) || _explorer.activeType != _settings.type)
+			double[] explorerValues = null;
+
+			if (!_settings.isValid)
 			{
-				// set the active values of the target and type
-				_explorer.SetActiveValues(_settings.type, _settings.target);
-				// need to store the current max and min of the values passed out
-				SetMinMax(_explorer.activeValues);
-				// HACK: this is needed to remap the values with power and log. 
-				// TODO: this should be replaced once the values are no longer stored as doubles
-				_explorer.activeValues = _explorer.activeValues.PowLog(max, max, 10000000.0, 1.0);
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Settings are not valid!");
+				return;
 			}
 
-			if (!_explorer.activeValues.Valid())
+			// if there is only one option we only need to check once
+			if (_settings.options.Valid(1))
+			{
+				if (!_explorer.CheckActiveTarget(_settings.options[0].target) || _explorer.ActiveStage != _settings.options[0].stage)
+				{
+					// set the active values of the target and type
+					_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
+					// need to store the current max and min of the values passed out
+					SetMinMax(_explorer.activeValues);
+					// HACK: this is needed to remap the values with power and log. 
+					// TODO: this should be replaced once the values are no longer stored as doubles
+					explorerValues = _explorer.activeValues.PowLog(max, max, 10000000.0, 1.0);
+				}
+			}
+			else
+			{
+				_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
+				explorerValues = _explorer.activeValues;
+				// skip the first one since we copy that value
+				for (var i = 1; i < _settings.options.Count; i++)
+				{
+					var option = _settings.options[i];
+					// set the active values of the target and type
+					_explorer.SetActiveValues(option.stage, option.target);
+					// composite the values
+					for (int j = 0; j < _explorer.activeValues.Length; j++)
+						explorerValues[j] += _explorer.activeValues[j];
+				}
+
+				// need to store the current max and min of the values passed out
+				SetMinMax(explorerValues);
+				// HACK: this is needed to remap the values with power and log. 
+				// TODO: this should be replaced once the values are no longer stored as doubles
+				explorerValues = explorerValues.PowLog(max, max, 10000000.0, 1.0);
+			}
+
+			if (!explorerValues.Valid())
 			{
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Explorer did not load result cloud properly!");
 				return;
@@ -181,7 +211,7 @@ namespace ViewTo.RhinoGh.Results
 
 			if (maskTree != null && !maskTree.IsEmpty)
 			{
-				for (int i = 0; i < _explorer.activeValues.Length; i++)
+				for (int i = 0; i < explorerValues.Length; i++)
 				{
 					var point = _explorer.source.points[i].ToGrass();
 
@@ -195,7 +225,7 @@ namespace ViewTo.RhinoGh.Results
 							if (!maskOnly || t.Value.IsPointInside(point.Value, double.MinValue, false))
 							{
 								points.Append(point, path);
-								values.Append(new GH_Number(_explorer.activeValues[i]), path);
+								values.Append(new GH_Number(explorerValues[i]), path);
 							}
 						}
 					}
@@ -203,10 +233,10 @@ namespace ViewTo.RhinoGh.Results
 			}
 			else
 			{
-				for (int i = 0; i < _explorer.activeValues.Length; i++)
+				for (int i = 0; i < explorerValues.Length; i++)
 				{
 					points.Append(_explorer.source.points[i].ToGrass());
-					values.Append(new GH_Number(_explorer.activeValues[i]));
+					values.Append(new GH_Number(explorerValues[i]));
 				}
 			}
 
@@ -285,8 +315,8 @@ namespace ViewTo.RhinoGh.Results
 			DA.SetDataTree(_output.Values, fValues);
 
 			DA.SetData(_output.ActivePoint, _explorer.source.points[_settings.point].ToRhino());
-			DA.SetData(_output.ActiveValue, _explorer.activeValues[_settings.point]);
-			DA.SetData(_output.ActiveColor, _settings.GetColor(_explorer.activeValues[_settings.point]));
+			DA.SetData(_output.ActiveValue, explorerValues[_settings.point]);
+			DA.SetData(_output.ActiveColor, _settings.GetColor(explorerValues[_settings.point]));
 		}
 
 		public override Guid ComponentGuid => new Guid("01ffe845-0a7b-4bf8-9d35-48f234fc8cfc");

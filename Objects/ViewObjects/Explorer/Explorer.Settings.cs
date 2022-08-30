@@ -1,7 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ViewObjects.Explorer
 {
+
+	[Serializable]
+	public struct ContentOption
+	{
+
+		public string target;
+		public ResultStage stage;
+	}
 
 	public interface IExploreView
 	{
@@ -10,14 +19,11 @@ namespace ViewObjects.Explorer
 
 	public interface IExploreContent
 	{
-		public string target { get; }
-
-		public ResultType type { get; }
+		public List<ContentOption> options { get; set; }
 	}
 
 	public interface IExploreRange
 	{
-		public double log { get; }
 
 		public double min { get; }
 
@@ -29,26 +35,23 @@ namespace ViewObjects.Explorer
 
 	}
 
-	public struct ExplorerSettings : IExploreContent, IExploreRange, IExploreView
+	public struct ExplorerSettings : IExploreContent, IExploreRange, IExploreView, IValidate
 	{
-
 		public double min { get; set; }
 
 		public double max { get; set; }
 
-		public double log { get; set; }
-
 		public bool showAll { get; set; }
 
-		public string target { get; set; }
-
 		public int point { get; set; }
-
-		public ResultType type { get; set; }
 
 		public System.Drawing.Color[] colorRamp { get; set; }
 
 		public System.Drawing.Color invalidColor { get; set; }
+
+		public List<ContentOption> options { get; set; }
+
+		public bool isValid => options.Valid();
 
 		public System.Drawing.Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * t, 0)];
 

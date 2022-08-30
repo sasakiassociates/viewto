@@ -2,26 +2,24 @@
 {
 	public enum ContentType
 	{
-		Undefined = 0,
-		Target = 1,
-		Blocker = 2,
-		Option = 3,
+		Target = 0,
+		Blocker = 1,
+		Option = 2,
 	}
 
-	public enum ResultType
+	public enum ResultStage
 	{
-		Undefined = 0,
-		Potential = 1,
-		Existing = 2,
-		Proposed = 3
+		Potential = 0,
+		Existing = 1,
+		Proposed = 2
 	}
-	
+
 	public enum ExplorerValueType
 	{
 		ExistingOverPotential,
 		ProposedOverExisting,
 		ProposedOverPotential,
-		
+
 	}
 
 }
