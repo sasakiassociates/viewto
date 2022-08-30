@@ -73,7 +73,7 @@ namespace ViewTo.RhinoGh.Results
 			var show = false;
 			DA.GetData(_input.Show, ref show);
 
-			var index = -1;
+			var index = 0;
 			DA.GetData(_input.Point, ref index);
 
 			Interval range = default;
@@ -85,12 +85,12 @@ namespace ViewTo.RhinoGh.Results
 			var colors = new List<Color>();
 			if (!DA.GetDataList(_input.Colors, colors))
 				colors = Commander.BasicColorRamp.ToList();
-			
+
 			var settings = new ExplorerSettings
 			{
 				target = target,
 				type = (ResultType)Enum.Parse(typeof(ResultType), stage),
-				point = index,
+				point = Math.Max(index, 0),
 				min = range.Min,
 				max = range.Max,
 				colorRamp = colors.ToArray(),
