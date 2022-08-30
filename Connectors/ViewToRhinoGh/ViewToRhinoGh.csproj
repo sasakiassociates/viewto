@@ -90,7 +90,7 @@
         <Compile Include="Points\PointGenFacade.cs" />
         <Compile Include="Points\PointGenFittedCloud.cs" />
         <Compile Include="Points\PointGenGround.cs" />
-        <Compile Include="Results\ExplorerSettings.cs" />
+        <Compile Include="Results\ExplorerSettingsComponent.cs"/>
         <Compile Include="Results\ExtractTargetNames.cs" />
         <Compile Include="Results\GetViewFromValue.cs" />
         <Compile Include="Results\ResultExplorerComponent.cs" />
@@ -99,6 +99,7 @@
         <Compile Include="Setup\Create.ViewCloud.cs" />
         <Compile Include="Setup\Create.ViewerLayout.cs" />
         <Compile Include="Setup\Create.ViewStudy.cs" />
+        <Compile Include="Setup\Create.ContentOption.cs"/>
         <Compile Include="Setup\CreateViewContentExisting.cs" />
         <Compile Include="Setup\CreateViewContentProposed.cs" />
         <Compile Include="Setup\CreateViewContentTarget.cs" />

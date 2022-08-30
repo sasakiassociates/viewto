@@ -17,10 +17,15 @@ namespace ViewObjects.Content
 		}
 
 		public List<double> values { get; }
+
 		public string content { get; }
+
 		public string meta { get; }
+
 		public int color { get; }
+
 		public string stage { get; }
+
 		public string layout { get; }
 	}
 }

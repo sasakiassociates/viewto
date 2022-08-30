@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using ViewObjects;
 using ViewObjects.Explorer;
@@ -10,30 +11,25 @@ using ViewObjects.Explorer;
 namespace ViewTo.RhinoGh.Results
 {
 
-	public class ExplorerSettingsComponent : GH_Component
+	public class ExplorerSettingsComponent : ViewToComponentBase
 	{
-		public ExplorerSettingsComponent() : base(
-			"Explorer Settings",
-			"ES",
-			"Result Explorer Settings",
-			ConnectorInfo.CATEGORY,
-			ConnectorInfo.Nodes.EXPLORER
-		)
+		public ExplorerSettingsComponent()
+			: base("Explorer Settings",
+			       "ES",
+			       "Result Explorer Settings",
+			       ConnectorInfo.Nodes.EXPLORER)
 		{ }
 
 		public override Guid ComponentGuid => new Guid("4817C001-C72E-4992-AF53-5CDB16D55765");
 
-		(int Targets, int Stages, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
+		(int Options, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
 			var index = 0;
 
-			pManager.AddTextParameter("View Target", "T", "Target content to use", GH_ParamAccess.list);
-			_input.Targets = index++;
-
-			pManager.AddTextParameter("Result Stage", "S", "Stage for pixel data", GH_ParamAccess.list);
-			_input.Stages = index++;
+			pManager.AddGenericParameter("Options", "O", "View Content Options to use", GH_ParamAccess.list);
+			_input.Options = index++;
 
 			pManager.AddIntervalParameter("Range", "R", "Value Range of pixels to show", GH_ParamAccess.item, new Interval(0, 1));
 			_input.Range = index++;
@@ -44,6 +40,9 @@ namespace ViewTo.RhinoGh.Results
 			pManager.AddBooleanParameter("Show", "S", "Option to show points with values only", GH_ParamAccess.item, true);
 			_input.Show = index++;
 
+			pManager.AddBooleanParameter("Normalize", "N", "Normalize the active values", GH_ParamAccess.item, false);
+			_input.Normalize = index++;
+
 			pManager.AddColourParameter("Colors", "C", "Ordered list of colors for use with display.", GH_ParamAccess.list);
 			_input.Colors = index++;
 
@@ -52,6 +51,7 @@ namespace ViewTo.RhinoGh.Results
 
 			pManager[_input.Range].Optional = true;
 			pManager[_input.Show].Optional = true;
+			pManager[_input.Normalize].Optional = true;
 			pManager[_input.Point].Optional = true;
 			pManager[_input.Colors].Optional = true;
 			pManager[_input.InvalidColor].Optional = true;
@@ -64,27 +64,33 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			var targets = new List<string>();
-			DA.GetDataList(_input.Targets, targets);
+			var wrapper = new List<GH_ObjectWrapper>();
+			DA.GetDataList(_input.Options, wrapper);
 
-			var stages = new List<string>();
-			DA.GetDataList(_input.Stages, stages);
+			if (!wrapper.Valid())
+			{
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "No View Content Options passed in. Need atleast one option to pass in!");
+				return;
+			}
 
 			var options = new List<ContentOption>();
 
-			if (stages.Valid() && targets.Valid() && targets.Count == stages.Count)
-				for (int i = 0; i < stages.Count; i++)
-					options.Add(new ContentOption
-					{
-						target = targets[i],
-						stage = (ResultStage)Enum.Parse(typeof(ResultStage), stages[i])
-					});
+			foreach (var g in wrapper)
+			{
+				if (g.Value is ContentOption co)
+				{
+					options.Add(co);
+				}
+			}
 
 			if (!options.Valid())
 			{
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The content options are not valid");
 				return;
 			}
+
+			var normalize = false;
+			DA.GetData(_input.Normalize, ref normalize);
 
 			var show = false;
 			DA.GetData(_input.Show, ref show);
@@ -111,9 +117,11 @@ namespace ViewTo.RhinoGh.Results
 				colorRamp = colors.ToArray(),
 				invalidColor = invalidColor,
 				showAll = show,
+				normalize = normalize
 			};
 
 			DA.SetData(0, settings);
 		}
+
 	}
 }

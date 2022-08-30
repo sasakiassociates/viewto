@@ -13,24 +13,17 @@ using ViewTo.RhinoGh.Properties;
 
 namespace ViewTo.RhinoGh.Results
 {
-	public class ResultExplorerComponent : GH_Component
+	public class ResultExplorerComponent : ViewToCloudComponentBase
 	{
-		public ResultExplorerComponent() : base(
-			"Result Explorer",
-			"EX",
-			"Explore a set of view study results",
-			ConnectorInfo.CATEGORY,
-			ConnectorInfo.Nodes.EXPLORER)
+
+		public ResultExplorerComponent() : base("Result Explorer", "EX", "Explore a set of view study results", ConnectorInfo.Nodes.EXPLORER)
 		{
 			_explorer = new ResultExplorer();
 		}
 
-		PointCloud _pc;
-		int _pointSize = 3;
 		ResultExplorer _explorer;
 		ExplorerSettings _settings;
-
-		double min = 1.0, max = 0.0;
+		double _min = 1.0, _max = 0.0;
 
 		(int Obj, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
 
@@ -88,14 +81,14 @@ namespace ViewTo.RhinoGh.Results
 
 		public override void DrawViewportWires(IGH_PreviewArgs args)
 		{
-			if (_pc != null)
-				args.Display.DrawPointCloud(_pc, _pointSize);
+			if (renderedCloud != null)
+				args.Display.DrawPointCloud(renderedCloud, pointSize);
 		}
 
 		void SetMinMax(double[] value)
 		{
-			min = 1.0;
-			max = 0.0;
+			_min = 1.0;
+			_max = 0.0;
 
 			if (value.Valid())
 				foreach (var t in value)
@@ -105,16 +98,17 @@ namespace ViewTo.RhinoGh.Results
 
 		void SetMinMax(double value)
 		{
-			if (value < min) min = value;
-			if (value > max) max = value;
+			if (value < _min) _min = value;
+			if (value > _max) _max = value;
 		}
 
 		const int MAX_ALPHA = 255;
+
 		const int MIN_ALPHA = 100;
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			DA.GetData(_input.Size, ref _pointSize);
+			DA.GetData(_input.Size, ref pointSize);
 
 			var normalizeMask = true;
 			DA.GetData(_input.NormalizeByMask, ref normalizeMask);
@@ -164,23 +158,17 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			// if there is only one option we only need to check once
-			if (_settings.options.Valid(1))
-			{
-				if (!_explorer.CheckActiveTarget(_settings.options[0].target) || _explorer.ActiveStage != _settings.options[0].stage)
-				{
-					// set the active values of the target and type
-					_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
-					// need to store the current max and min of the values passed out
-					SetMinMax(_explorer.activeValues);
-					// HACK: this is needed to remap the values with power and log. 
-					// TODO: this should be replaced once the values are no longer stored as doubles
-					explorerValues = _explorer.activeValues.PowLog(max, max, 10000000.0, 1.0);
-				}
-			}
-			else
+			// set the active values of the target and type
+			_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
+
+			// copy values
+			explorerValues = _explorer.activeValues;
+
+			// if there are more than one option, grab and composite them 
+			if (_settings.options.Valid(2))
 			{
 				_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
+
 				explorerValues = _explorer.activeValues;
 				// skip the first one since we copy that value
 				for (var i = 1; i < _settings.options.Count; i++)
@@ -192,18 +180,22 @@ namespace ViewTo.RhinoGh.Results
 					for (int j = 0; j < _explorer.activeValues.Length; j++)
 						explorerValues[j] += _explorer.activeValues[j];
 				}
-
-				// need to store the current max and min of the values passed out
-				SetMinMax(explorerValues);
-				// HACK: this is needed to remap the values with power and log. 
-				// TODO: this should be replaced once the values are no longer stored as doubles
-				explorerValues = explorerValues.PowLog(max, max, 10000000.0, 1.0);
 			}
 
 			if (!explorerValues.Valid())
 			{
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Explorer did not load result cloud properly!");
 				return;
+			}
+
+			// need to store the current max and min of the values passed out
+			SetMinMax(explorerValues);
+
+			if (_settings.normalize)
+			{
+				// HACK: this is needed to remap the values with power and log. 
+				// TODO: this should be replaced once the values are no longer stored as doubles
+				explorerValues = explorerValues.PowLog(maxScore: _max, maxValue: _max, multiplier: 10000000.0, minValue: _min);
 			}
 
 			var points = new GH_Structure<GH_Point>();
@@ -242,8 +234,8 @@ namespace ViewTo.RhinoGh.Results
 
 			if (normalizeMask)
 			{
-				min = 1.0;
-				max = 0.0;
+				_min = 1.0;
+				_max = 0.0;
 				// set the max and min values from the raw input 
 				foreach (var data in values.FlattenData())
 					SetMinMax(data.Value);
@@ -280,7 +272,7 @@ namespace ViewTo.RhinoGh.Results
 					{
 						// can now normalizing the value related to the masking
 						if (normalizeMask)
-							vIn = vIn.NormalizeBy(max, min);
+							vIn = vIn.NormalizeBy(_max, _min);
 
 						// get the color
 						var co = _settings.GetColor(vIn);
@@ -301,14 +293,14 @@ namespace ViewTo.RhinoGh.Results
 				}
 			}
 
-			_pc = new PointCloud();
-			_pc.ClearColors();
+			renderedCloud = new PointCloud();
+			renderedCloud.ClearColors();
 
 			var flattenPoints = fPoints.FlattenData();
 			var flattenColor = fColors.FlattenData();
 
 			for (var i = 0; i < flattenPoints.Count; i++)
-				_pc.Add(flattenPoints[i].Value, flattenColor[i].Value);
+				renderedCloud.Add(flattenPoints[i].Value, flattenColor[i].Value);
 
 			DA.SetDataTree(_output.Points, fPoints);
 			DA.SetDataTree(_output.Colors, fColors);
