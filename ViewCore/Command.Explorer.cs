@@ -15,7 +15,7 @@ namespace ViewTo
 		/// Grab a collection of values from the explorer.
 		/// </summary>
 		/// <param name="explorer"></param>
-		/// <param name="stage>The type of values to fetch for</param>
+		/// <param name="stage">The type of values to fetch for</param>
 		/// <returns></returns>
 		public static IEnumerable<double> Fetch(this IResultExplorer explorer, ResultStage stage)
 		{
@@ -64,22 +64,14 @@ namespace ViewTo
 			explorer.activeValues = values.NormalizeValues(max, min).ToArray();
 		}
 
-		public static IEnumerable<double> GetExistingOverPotential(this IResultExplorer explorer)
-		{
-			return explorer.GetComparedValues(ResultStage.Existing, ResultStage.Potential);
-		}
+		public static IEnumerable<double> GetExistingOverPotential(this IResultExplorer explorer) =>
+			explorer.GetComparedValues(ResultStage.Existing, ResultStage.Potential);
 
-		public static IEnumerable<double> GetProposedOverExisting(this IResultExplorer explorer)
-		{
-			return explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Existing);
-		}
+		public static IEnumerable<double> GetProposedOverExisting(this IResultExplorer explorer) =>
+			explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Existing);
 
-		public static IEnumerable<double> GetProposedOverPotential(this IResultExplorer explorer)
-		{
-			return explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Potential);
-		}
-
-		public static bool InRange(this IExploreRange obj, double value) => value >= obj.min && value <= obj.max;
+		public static IEnumerable<double> GetProposedOverPotential(this IResultExplorer explorer) =>
+			explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Potential);
 
 		public static IEnumerable<double> GetComparedValues(this IResultExplorer explorer, ResultStage stageA, ResultStage stageB)
 		{
@@ -94,6 +86,96 @@ namespace ViewTo
 		}
 
 		#endregion
+
+		public static bool TryGet(this IResultExplorer explorer, ExplorerValueType valueType, List<string> targets, out IEnumerable<double> results)
+		{
+			results = new List<double>();
+
+			if (!targets.Valid() || !explorer.HasTargets(targets))
+			{
+				Console.WriteLine("No Valid Targets to look for ");
+				return false;
+			}
+
+			valueType.GetStages(out var stageA, out var stageB);
+
+			var compiledStageA = new List<double>();
+			var compiledStageB = new List<double>();
+
+			foreach (var t in targets)
+			{
+				// set the active target
+				explorer.activeTarget = t;
+
+				var dataStageA = new List<double>();
+				var dataStageB = new List<double>();
+
+				if (!explorer.TryGetValues(stageA, ref dataStageA) || !explorer.TryGetValues(stageB, ref dataStageB))
+					return false;
+
+				// if this is the first stage
+				if (compiledStageA.Count == 0)
+				{
+					compiledStageA.AddRange(dataStageA);
+					compiledStageB.AddRange(dataStageB);
+				}
+				else
+				{
+					for (int i = 0; i < dataStageA.Count; i++)
+					{
+						compiledStageA[i] += dataStageA[i];
+						compiledStageB[i] += dataStageB[i];
+					}
+				}
+			}
+
+			results = compiledStageA.NormalizeValues(compiledStageB);
+
+			return results.Any();
+		}
+
+		public static bool TryGet(this IResultExplorer explorer, ExplorerValueType valueType, string target, out IEnumerable<double> results)
+		{
+			results = new List<double>();
+
+			if (!target.Valid() || !explorer.HasTarget(target))
+			{
+				Console.WriteLine("No Valid Targets to look for ");
+				return false;
+			}
+
+			if (!explorer.CheckActiveTarget(target))
+				explorer.activeTarget = target;
+
+			valueType.GetStages(out var stageA, out var stageB);
+
+			results = explorer.GetComparedValues(stageA, stageB);
+
+			return results.Any();
+		}
+
+		static void GetStages(this ExplorerValueType type, out ResultStage stageA, out ResultStage stageB)
+		{
+			switch (type)
+			{
+				case ExplorerValueType.ExistingOverPotential:
+					stageA = ResultStage.Existing;
+					stageB = ResultStage.Potential;
+					break;
+				case ExplorerValueType.ProposedOverExisting:
+					stageA = ResultStage.Proposed;
+					stageB = ResultStage.Existing;
+					break;
+				case ExplorerValueType.ProposedOverPotential:
+					stageA = ResultStage.Proposed;
+					stageB = ResultStage.Potential;
+					break;
+				default:
+					stageA = ResultStage.Potential;
+					stageB = ResultStage.Potential;
+					break;
+			}
+		}
 
 		public static bool TryGetValues(this IResultExplorer explorer, ResultStage stage, ref List<double> data)
 		{
@@ -121,10 +203,22 @@ namespace ViewTo
 			return data != null && data.Any();
 		}
 
-		public static bool CheckActiveTarget(this IResultExplorer explorer, string target)
+		public static bool CheckActiveTarget(this IResultExplorer explorer, string target) => target.Valid() && target.Equals(explorer.activeTarget);
+
+		public static bool HasTargets(this IResultExplorer explorer, List<string> targets)
 		{
-			return target.Valid() && target.Equals(explorer.activeTarget);
+			if (!targets.Valid())
+				return false;
+
+			foreach (var t in targets)
+				if (!explorer.HasTarget(t))
+					return false;
+
+			return true;
 		}
+
+		public static bool HasTarget(this IResultExplorer explorer, string target) =>
+			explorer.targets.Valid() && explorer.targets.Any(x => x.Valid() && x.Equals(target));
 
 		public static bool DataIsReady(this IResultExplorer exp)
 		{
@@ -176,5 +270,7 @@ namespace ViewTo
 
 			return sampleOfValues[r.Next(0, sampleOfValues.Count - 1)];
 		}
+
+		public static bool InRange(this IExploreRange obj, double value) => value >= obj.min && value <= obj.max;
 	}
 }
