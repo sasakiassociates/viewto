@@ -22,14 +22,17 @@ namespace ViewTo.RhinoGh.Results
 
 		public override Guid ComponentGuid => new Guid("4817C001-C72E-4992-AF53-5CDB16D55765");
 
-		(int Options, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
+		(int Options, int ValueType, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
 			var index = 0;
 
-			pManager.AddGenericParameter("Options", "O", "View Content Options to use", GH_ParamAccess.list);
+			pManager.AddGenericParameter("Options", "O", "View Conent Options to use", GH_ParamAccess.list);
 			_input.Options = index++;
+
+			pManager.AddTextParameter("Value Type", "V", "Explorer Value type to compare with", GH_ParamAccess.item);
+			_input.ValueType = index++;
 
 			pManager.AddIntervalParameter("Range", "R", "Value Range of pixels to show", GH_ParamAccess.item, new Interval(0, 1));
 			_input.Range = index++;
@@ -49,6 +52,7 @@ namespace ViewTo.RhinoGh.Results
 			pManager.AddColourParameter("Empty", "E", "Color to use for any value that's emtpty.", GH_ParamAccess.item);
 			_input.InvalidColor = index;
 
+			pManager[_input.ValueType].Optional = true;
 			pManager[_input.Range].Optional = true;
 			pManager[_input.Show].Optional = true;
 			pManager[_input.Normalize].Optional = true;
@@ -89,6 +93,9 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
+			var valueType = string.Empty;
+			DA.GetData(_input.ValueType, ref valueType);
+
 			var normalize = false;
 			DA.GetData(_input.Normalize, ref normalize);
 
@@ -117,7 +124,8 @@ namespace ViewTo.RhinoGh.Results
 				colorRamp = colors.ToArray(),
 				invalidColor = invalidColor,
 				showAll = show,
-				normalize = normalize
+				normalize = normalize,
+				valueType = (ExplorerValueType)Enum.Parse(typeof(ExplorerValueType), valueType)
 			};
 
 			DA.SetData(0, settings);

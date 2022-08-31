@@ -6,12 +6,12 @@ using ViewObjects;
 
 namespace ViewTo.RhinoGh.Objects
 {
-	public class ResultTypeComponent : GH_Component
+
+	public class ResultTypeComponent : ViewToComponentBase
 	{
 		public ResultTypeComponent() : base("Result Type",
 		                                    "RT",
 		                                    "A quick way of selecting a result type",
-		                                    ConnectorInfo.CATEGORY,
 		                                    ConnectorInfo.Nodes.RESULTS)
 		{ }
 

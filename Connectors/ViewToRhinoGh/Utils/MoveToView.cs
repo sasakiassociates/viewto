@@ -5,13 +5,12 @@ using Rhino.Geometry;
 
 namespace ViewTo.RhinoGh.Results
 {
-	public class MoveToView : GH_Component
+	public class MoveToView : ViewToComponentBase
 	{
 		public MoveToView(	) :
 			base("Move To View",
 			     "MV",
 			     "Move the rhino viewport to specific point and target",
-			     ConnectorInfo.CATEGORY,
 			     ConnectorInfo.Nodes.UTIL)
 		{ }
 
@@ -20,19 +19,19 @@ namespace ViewTo.RhinoGh.Results
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
 			var index = 0;
-			
+
 			pManager.AddPointParameter("Camera Point", "C", "The location for the camera to be positioned at", GH_ParamAccess.item);
 			_input.camera = index++;
-			
+
 			pManager.AddPointParameter("Target Point", "T", "The location for the camera target to be positioned at", GH_ParamAccess.item);
 			_input.target = index++;
-			
+
 			pManager.AddNumberParameter("Horizontal Angle", "H", "Set the Horizontal rotation of the camera", GH_ParamAccess.item, 0.0);
-			_input.horizontal = index++;		
-		
+			_input.horizontal = index++;
+
 			pManager.AddNumberParameter("Vertical Angle", "V", "Set the Vertical rotation of the camera", GH_ParamAccess.item, 0.0);
 			_input.vertical = index;
-			
+
 			pManager[_input.horizontal].Optional = true;
 			pManager[_input.vertical].Optional = true;
 		}
@@ -55,10 +54,10 @@ namespace ViewTo.RhinoGh.Results
 			DA.GetData(_input.vertical, ref verticalAngle);
 
 			var view = RhinoDoc.ActiveDoc.Views.ActiveView;
-			
+
 			view.ActiveViewport.SetCameraTarget(targetPoint, true);
 			view.ActiveViewport.SetCameraLocations(targetPoint, cameraPoint);
-			
+
 			view.ActiveViewport.Rotate(horizontalAngle, Vector3d.ZAxis, cameraPoint);
 			view.ActiveViewport.Rotate(verticalAngle, Vector3d.XAxis, cameraPoint);
 		}

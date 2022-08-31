@@ -9,7 +9,7 @@ using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Results
 {
-	public class ExtractTargetNames : GH_Component
+	public class ExtractTargetNames : ViewToComponentBase
 	{
 
 		bool _refresh;
@@ -20,7 +20,6 @@ namespace ViewTo.RhinoGh.Results
 			"Extract Targets",
 			"ET",
 			"Extract Targets from a result cloud into a value list",
-			ConnectorInfo.CATEGORY,
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 

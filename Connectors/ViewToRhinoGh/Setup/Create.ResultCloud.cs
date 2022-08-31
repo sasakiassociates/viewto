@@ -11,14 +11,13 @@ using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Setup
 {
-	public class CreateResultCloudComponent : GH_Component
+	public class CreateResultCloudComponent : ViewToComponentBase
 	{
 
 		public CreateResultCloudComponent() : base(
 			"Create Result Cloud",
 			"CRC",
 			"Create a cloud with view analysis data stored in it",
-			ConnectorInfo.CATEGORY,
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 

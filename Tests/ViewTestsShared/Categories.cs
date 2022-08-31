@@ -16,6 +16,7 @@
 		public const string RIG = "ViewerRig";
 		public const string BUN = "Bundle";
 
+		public const string CORE = "Core";
 		// Elements
 		public const string PNT = "CloudPoint";
 		public const string VIEW = "Viewer";

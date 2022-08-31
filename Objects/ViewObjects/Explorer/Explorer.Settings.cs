@@ -11,7 +11,11 @@ namespace ViewObjects.Explorer
 
 	public interface IExploreContent
 	{
-		public List<ContentOption> options { get; set; }
+		public ExplorerValueType valueType { get; }
+
+		public List<string> targets { get; }
+
+		public List<ContentOption> options { get; }
 	}
 
 	public interface IExploreRange
@@ -72,6 +76,11 @@ namespace ViewObjects.Explorer
 		public List<ContentOption> options { get; set; }
 
 		/// <summary>
+		/// Comparable value type to use when exploring values
+		/// </summary>
+		public ExplorerValueType valueType { get; set; }
+
+		/// <summary>
 		/// Returns true if <see cref="options"/> is valid
 		/// </summary>
 		public bool isValid => options.Valid();
@@ -83,6 +92,7 @@ namespace ViewObjects.Explorer
 		/// <returns></returns>
 		public System.Drawing.Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * t, 0)];
 
+		public List<string> targets { get; set; }
 	}
 
 }

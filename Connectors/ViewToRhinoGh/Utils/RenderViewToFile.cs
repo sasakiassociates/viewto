@@ -6,13 +6,12 @@ using Rhino;
 
 namespace ViewTo.RhinoGh.Results
 {
-	public class RenderViewToFile : GH_Component
+	public class RenderViewToFile : ViewToComponentBase
 	{
 		public RenderViewToFile() : base(
 			"Render View",
 			"RV",
 			"Render View to File",
-			ConnectorInfo.CATEGORY,
 			ConnectorInfo.Nodes.UTIL)
 		{ }
 
