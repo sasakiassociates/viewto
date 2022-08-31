@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
@@ -36,7 +37,7 @@ namespace ViewTo.RhinoGh.Results
 			pManager.AddGenericParameter("Explorer Settings", "S", "Explorer Input Settings", GH_ParamAccess.item);
 			_input.Settings = index++;
 
-			pManager.AddMeshParameter("Mask", "M", "Maskign area to filter points by form", GH_ParamAccess.tree);
+			pManager.AddMeshParameter("Mask", "M", "Masking area to filter points by form", GH_ParamAccess.tree);
 			_input.Mask = index++;
 
 			pManager.AddBooleanParameter("Normalize Mask", "NM", "Nomarlize the values by the masked point set", GH_ParamAccess.item, true);
@@ -158,29 +159,42 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			// set the active values of the target and type
-			_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
-
-			// copy values
-			explorerValues = _explorer.activeValues;
-
-			// if there are more than one option, grab and composite them 
-			if (_settings.options.Valid(2))
+			if (_settings.options.Count == 1)
 			{
-				_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
-
-				explorerValues = _explorer.activeValues;
-				// skip the first one since we copy that value
-				for (var i = 1; i < _settings.options.Count; i++)
+				if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out var data))
 				{
-					var option = _settings.options[i];
-					// set the active values of the target and type
-					_explorer.SetActiveValues(option.stage, option.target);
-					// composite the values
-					for (int j = 0; j < _explorer.activeValues.Length; j++)
-						explorerValues[j] += _explorer.activeValues[j];
+					explorerValues = data.ToArray();
 				}
 			}
+			else
+			{
+				if (_explorer.TryGet(_settings.valueType, _settings.options.Select(x => x.target).ToList(), out var data))
+					explorerValues = data.ToArray();
+			}
+			//
+			// // set the active values of the target and type
+			// _explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
+			//
+			// // copy values
+			// explorerValues = _explorer.activeValues;
+			//
+			// // if there are more than one option, grab and composite them 
+			// if (_settings.options.Valid(2))
+			// {
+			// 	_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
+			//
+			// 	explorerValues = _explorer.activeValues;
+			// 	// skip the first one since we copy that value
+			// 	for (var i = 1; i < _settings.options.Count; i++)
+			// 	{
+			// 		var option = _settings.options[i];
+			// 		// set the active values of the target and type
+			// 		_explorer.SetActiveValues(option.stage, option.target);
+			// 		// composite the values
+			// 		for (int j = 0; j < _explorer.activeValues.Length; j++)
+			// 			explorerValues[j] += _explorer.activeValues[j];
+			// 	}
+			// }
 
 			if (!explorerValues.Valid())
 			{
