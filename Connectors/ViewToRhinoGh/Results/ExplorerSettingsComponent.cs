@@ -93,7 +93,7 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			var valueType = string.Empty;
+			var valueType = ExplorerValueType.ExistingOverPotential.ToString();
 			DA.GetData(_input.ValueType, ref valueType);
 
 			var normalize = false;

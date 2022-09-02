@@ -57,7 +57,7 @@ namespace ViewTo.RhinoGh.Objects
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager) =>
-			pManager.AddTextParameter("Result Type", "R", "Name of Result Type", GH_ParamAccess.item);
+			pManager.AddTextParameter("Explorer Value Type", "V", "Type of Explorer Value Type", GH_ParamAccess.item);
 
 		protected override void SolveInstance(IGH_DataAccess DA) => DA.SetData(0, _type.ToString());
 	}
