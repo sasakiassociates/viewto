@@ -27,7 +27,7 @@ namespace ViewObjects
 		/// <param name="list"></param>
 		/// <param name="count">Any value above 0</param>
 		/// <returns>if list is not null and has the min <paramref name="count"/> of items </returns>
-		public static bool Valid(this IList list, int count) => list != null && list.Count >= count;
+		public static bool Valid(this IList list, int count) => list != null && list.Count > count;
 
 		/// <summary>
 		/// Shorthand for checking list object

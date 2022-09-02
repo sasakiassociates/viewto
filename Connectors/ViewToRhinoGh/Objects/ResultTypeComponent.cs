@@ -62,4 +62,5 @@ namespace ViewTo.RhinoGh.Objects
 
 		protected override void SolveInstance(IGH_DataAccess DA) => DA.SetData(0, _resultStage.ToString());
 	}
+
 }

@@ -90,7 +90,14 @@ namespace ViewObjects.Explorer
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public System.Drawing.Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * t, 0)];
+		public System.Drawing.Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * Clamp(t, 0.0, 1.0), 0)];
+
+		static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
+		{
+			if (val.CompareTo(min) < 0) return min;
+
+			return val.CompareTo(max) > 0 ? max : val;
+		}
 
 		public List<string> targets { get; set; }
 	}

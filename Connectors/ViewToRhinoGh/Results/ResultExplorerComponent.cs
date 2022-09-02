@@ -99,6 +99,9 @@ namespace ViewTo.RhinoGh.Results
 
 		void SetMinMax(double value)
 		{
+			// values that have no view are set to -1
+			if (value < 0) return;
+
 			if (value < _min) _min = value;
 			if (value > _max) _max = value;
 		}
@@ -171,30 +174,6 @@ namespace ViewTo.RhinoGh.Results
 				if (_explorer.TryGet(_settings.valueType, _settings.options.Select(x => x.target).ToList(), out var data))
 					explorerValues = data.ToArray();
 			}
-			//
-			// // set the active values of the target and type
-			// _explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
-			//
-			// // copy values
-			// explorerValues = _explorer.activeValues;
-			//
-			// // if there are more than one option, grab and composite them 
-			// if (_settings.options.Valid(2))
-			// {
-			// 	_explorer.SetActiveValues(_settings.options[0].stage, _settings.options[0].target);
-			//
-			// 	explorerValues = _explorer.activeValues;
-			// 	// skip the first one since we copy that value
-			// 	for (var i = 1; i < _settings.options.Count; i++)
-			// 	{
-			// 		var option = _settings.options[i];
-			// 		// set the active values of the target and type
-			// 		_explorer.SetActiveValues(option.stage, option.target);
-			// 		// composite the values
-			// 		for (int j = 0; j < _explorer.activeValues.Length; j++)
-			// 			explorerValues[j] += _explorer.activeValues[j];
-			// 	}
-			// }
 
 			if (!explorerValues.Valid())
 			{
