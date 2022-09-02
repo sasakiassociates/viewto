@@ -22,23 +22,23 @@ public struct ResultDataSample
 	public ResultDataSample(IResultExplorer obj)
 	{
 		target = obj.activeTarget;
-		potential = SafeGetValues(obj, ResultType.Potential);
-		existing = SafeGetValues(obj, ResultType.Existing);
-		proposed = SafeGetValues(obj, ResultType.Proposed);
+		potential = SafeGetValues(obj, ResultStage.Potential);
+		existing = SafeGetValues(obj, ResultStage.Existing);
+		proposed = SafeGetValues(obj, ResultStage.Proposed);
 	}
 
-	public double Get(ResultType type, int index)
+	public double Get(ResultStage type, int index)
 	{
 		return type switch
 		{
-			ResultType.Potential => potential.Valid(index) ? potential[index] : 0,
-			ResultType.Existing => existing.Valid(index) ? existing[index] : 0,
-			ResultType.Proposed => proposed.Valid(index) ? proposed[index] : 0,
+			ResultStage.Potential => potential.Valid(index) ? potential[index] : 0,
+			ResultStage.Existing => existing.Valid(index) ? existing[index] : 0,
+			ResultStage.Proposed => proposed.Valid(index) ? proposed[index] : 0,
 			_ => 0
 		};
 	}
 
-	public static List<double> SafeGetValues(IResultExplorer obj, ResultType type)
+	public static List<double> SafeGetValues(IResultExplorer obj, ResultStage type)
 	{
 		var data = new List<double>();
 

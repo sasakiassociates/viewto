@@ -40,7 +40,7 @@ namespace ViewTo.Connector.Unity
 		[Header("|| FILTERS ||")] [SerializeField] float _pow;
 		[SerializeField] Vector2 _range = new(0f, 1f);
 		[SerializeField] ObstructedFilters _obstructedFilter = ObstructedFilters.Potential;
-		[SerializeField] ResultType _activeMask = ResultType.Potential;
+		[SerializeField] ResultStage _activeMask = ResultStage.Potential;
 
 		#endregion
 
@@ -139,7 +139,7 @@ namespace ViewTo.Connector.Unity
 			}
 		}
 
-		public ResultType resultType
+		public ResultStage ResultStage
 		{
 			get => _activeMask;
 			set
@@ -150,7 +150,7 @@ namespace ViewTo.Connector.Unity
 					_rig.TrySetStage(_activeMask);
 
 				if (ViewToHub.Instance != null)
-					ViewToHub.Instance.OnResultTypeSet?.Invoke(_activeMask);
+					ViewToHub.Instance.OnResultStageSet?.Invoke(_activeMask);
 
 				ApplyValues();
 			}
@@ -180,13 +180,13 @@ namespace ViewTo.Connector.Unity
 			switch (_obstructedFilter)
 			{
 				case ObstructedFilters.Potential:
-					activeValues = this.Fetch(ResultType.Potential).ToArray();
+					activeValues = this.Fetch(ResultStage.Potential).ToArray();
 					break;
 				case ObstructedFilters.Existing:
-					activeValues = this.Fetch(ResultType.Existing).ToArray();
+					activeValues = this.Fetch(ResultStage.Existing).ToArray();
 					break;
 				case ObstructedFilters.Proposed:
-					activeValues = this.Fetch(ResultType.Proposed).ToArray();
+					activeValues = this.Fetch(ResultStage.Proposed).ToArray();
 					break;
 
 				case ObstructedFilters.ExistingOverPotential:
@@ -241,9 +241,9 @@ namespace ViewTo.Connector.Unity
 		{
 			var index = activePoint;
 
-			_resultValue.potential = (float)_targetData.Get(ResultType.Potential, index);
-			_resultValue.existing = (float)_targetData.Get(ResultType.Existing, index);
-			_resultValue.proposed = (float)_targetData.Get(ResultType.Proposed, index);
+			_resultValue.potential = (float)_targetData.Get(ResultStage.Potential, index);
+			_resultValue.existing = (float)_targetData.Get(ResultStage.Existing, index);
+			_resultValue.proposed = (float)_targetData.Get(ResultStage.Proposed, index);
 
 			ApplyValuesToCloud();
 
@@ -366,7 +366,7 @@ namespace ViewTo.Connector.Unity
 
 		#region inherited
 
-		public ResultType activeType
+		public ResultStage activeType
 		{
 			get => _activeMask;
 			set => _activeMask = value;
@@ -426,6 +426,8 @@ namespace ViewTo.Connector.Unity
 		{
 			get => _resultCloud != null && _resultCloud.targets.Valid() ? _resultCloud.targets : new List<string> { "no targets" };
 		}
+
+		public ResultStage ActiveStage { get; set; }
 
 		public List<IResultData> storedData
 		{

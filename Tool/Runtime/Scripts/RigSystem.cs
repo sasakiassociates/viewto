@@ -31,15 +31,11 @@ namespace ViewTo.Connector.Unity
 	public class RigSystem : MonoBehaviour, IRigSystem
 	{
 
-		[SerializeField]
-		RigStage _stage;
+		[SerializeField] RigStage _stage;
 
-		[SerializeField]
-		ViewStudyMono _study;
+		[SerializeField] ViewStudyMono _study;
 
-		[SerializeField]
-		[HideInInspector]
-		RigData _data;
+		[SerializeField] [HideInInspector] RigData _data;
 
 		int _activeViewerIndex;
 
@@ -66,6 +62,9 @@ namespace ViewTo.Connector.Unity
 		{
 			get => Application.isPlaying && viewers.Valid() && activeViewer != null;
 		}
+
+		public void Start()
+		{ }
 
 		public void Run(int startPoint = 0)
 		{
@@ -140,7 +139,7 @@ namespace ViewTo.Connector.Unity
 				activeViewer.SetToPoint(index);
 		}
 
-		public void TrySetStage(ResultType activeMask)
+		public void TrySetStage(ResultStage activeMask)
 		{
 			ViewConsole.Log($"Setting Stage to {activeMask}");
 

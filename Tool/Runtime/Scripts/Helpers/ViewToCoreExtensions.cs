@@ -78,19 +78,19 @@ namespace ViewTo.Connector.Unity
 			return res;
 		}
 
-		public static int FindPointWithValue(this IResultExplorer obj, double valueToFind, ResultType resultType = default, string target = null)
+		public static int FindPointWithValue(this IResultExplorer obj, double valueToFind, ResultStage ResultStage = default, string target = null)
 		{
 			if (!target.Valid())
 				target = obj.activeTarget;
-			if (resultType == default)
-				resultType = obj.activeType;
+			if (ResultStage == default)
+				ResultStage = obj.ActiveStage;
 
 			var res = 0;
 			foreach (var resultData in obj.storedData)
 				if (resultData.content.Valid()
 				    && resultData.content.Equals(target)
 				    && resultData.stage.Valid()
-				    && resultType.CheckAgainstString(resultData.stage))
+				    && ResultStage.CheckAgainstString(resultData.stage))
 					res = CheckCollection(resultData.values, valueToFind);
 
 			return res;

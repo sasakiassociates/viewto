@@ -59,7 +59,7 @@ namespace ViewTo.Connector.Unity
 		// [SerializeField, HideInInspector] private ViewProcessor processor;
 		[SerializeField]
 		[HideInInspector]
-		ResultType activeResultType;
+		ResultStage activeResultStage;
 
 		[SerializeField]
 		List<ViewerPointDebug> debugPoints;
@@ -175,13 +175,13 @@ namespace ViewTo.Connector.Unity
 			//   processor.Process(renderText);
 		}
 
-		void StartSequence(ResultType seq = ResultType.Potential)
+		void StartSequence(ResultStage seq = ResultStage.Potential)
 		{
-			if (seq == ResultType.Potential)
+			if (seq == ResultStage.Potential)
 				Setup();
 
-			activeResultType = seq;
-			cam.cullingMask = activeResultType.GetCullingMask();
+			activeResultStage = seq;
+			cam.cullingMask = activeResultStage.GetCullingMask();
 
 			pointIndex = amountToOffset;
 			transform.position = points[Math.Max(0, pointIndex)];
@@ -238,14 +238,14 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
-			if (activeResultType == ResultType.Existing && repeatedStepIndex == 0) Debug.Log(values.FirstOrDefault());
+			if (activeResultStage == ResultStage.Existing && repeatedStepIndex == 0) Debug.Log(values.FirstOrDefault());
 
 			debugPoints ??= new List<ViewerPointDebug>();
 			debugPoints.Add(new ViewerPointDebug
 			{
 				index = pointIndex,
 				value = values.FirstOrDefault(),
-				type = activeResultType
+				type = activeResultStage
 			});
 
 			Debug.Log($"STACK-Data Added at {pointIndex}");
@@ -278,12 +278,12 @@ namespace ViewTo.Connector.Unity
 				// NOTE : test when the camera should be valid for running
 				IsRunning(true);
 			}
-			else if (activeResultType != ResultType.Proposed)
+			else if (activeResultStage != ResultStage.Proposed)
 			{
-				if (activeResultType == ResultType.Potential)
-					StartSequence(ResultType.Existing);
-				else if (activeResultType == ResultType.Existing)
-					StartSequence(ResultType.Proposed);
+				if (activeResultStage == ResultStage.Potential)
+					StartSequence(ResultStage.Existing);
+				else if (activeResultStage == ResultStage.Existing)
+					StartSequence(ResultStage.Proposed);
 			}
 			else
 			{
@@ -372,6 +372,6 @@ namespace ViewTo.Connector.Unity
 	{
 		public int index;
 		public double value;
-		public ResultType type;
+		public ResultStage type;
 	}
 }

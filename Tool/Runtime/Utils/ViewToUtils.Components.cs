@@ -41,13 +41,13 @@ namespace ViewTo.Connector.Unity
 			};
 		}
 
-		public static int GetCullingMask(this ResultType value)
+		public static int GetCullingMask(this ResultStage value)
 		{
 			return value switch
 			{
-				ResultType.Potential => (1 << TargetLayer) | (1 << CloudLayer),
-				ResultType.Existing => (1 << TargetLayer) | (1 << BlockerLayer) | (1 << CloudLayer),
-				ResultType.Proposed => (1 << TargetLayer) | (1 << BlockerLayer) | (1 << DesignLayer) | (1 << CloudLayer),
+				ResultStage.Potential => (1 << TargetLayer) | (1 << CloudLayer),
+				ResultStage.Existing => (1 << TargetLayer) | (1 << BlockerLayer) | (1 << CloudLayer),
+				ResultStage.Proposed => (1 << TargetLayer) | (1 << BlockerLayer) | (1 << DesignLayer) | (1 << CloudLayer),
 				_ => -1
 			};
 		}

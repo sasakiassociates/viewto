@@ -15,24 +15,24 @@
 //     [SerializeField] private List<LayoutDebuggerValues> valuesList;
 //     [SerializeField] private LayoutDebuggerValues debugValues;
 //
-//     public double GetValue(ResultType type)
+//     public double GetValue(ResultStage type)
 //     {
 //       return debugValues == null ? 0 : type switch
 //       {
-//         ResultType.Potential => debugValues.potential,
-//         ResultType.Existing => debugValues.existing,
-//         ResultType.Proposed => debugValues.proposed,
+//         ResultStage.Potential => debugValues.potential,
+//         ResultStage.Existing => debugValues.existing,
+//         ResultStage.Proposed => debugValues.proposed,
 //         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
 //       };
 //     }
 //
-//     public void SetStage(ResultType type)
+//     public void SetStage(ResultStage type)
 //     {
 //       SetNewStage = type switch
 //       {
-//         ResultType.Potential => RigStage.Target,
-//         ResultType.Existing => RigStage.Blocker,
-//         ResultType.Proposed => RigStage.Design,
+//         ResultStage.Potential => RigStage.Target,
+//         ResultStage.Existing => RigStage.Blocker,
+//         ResultStage.Proposed => RigStage.Design,
 //         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
 //       };
 //     }

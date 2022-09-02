@@ -346,25 +346,25 @@ namespace ViewTo.Connector.Unity.Commands
 			return nameWithColor;
 		}
 
-		public static ResultType Convert(this RigStage value)
+		public static ResultStage Convert(this RigStage value)
 		{
 			return value switch
 			{
-				RigStage.Target => ResultType.Potential,
-				RigStage.Blocker => ResultType.Existing,
-				RigStage.Design => ResultType.Proposed,
-				RigStage.Complete => ResultType.Proposed,
+				RigStage.Target => ResultStage.Potential,
+				RigStage.Blocker => ResultStage.Existing,
+				RigStage.Design => ResultStage.Proposed,
+				RigStage.Complete => ResultStage.Proposed,
 				_ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 			};
 		}
 
-		public static RigStage Convert(this ResultType value)
+		public static RigStage Convert(this ResultStage value)
 		{
 			return value switch
 			{
-				ResultType.Potential => RigStage.Target,
-				ResultType.Existing => RigStage.Blocker,
-				ResultType.Proposed => RigStage.Design,
+				ResultStage.Potential => RigStage.Target,
+				ResultStage.Existing => RigStage.Blocker,
+				ResultStage.Proposed => RigStage.Design,
 				_ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 			};
 		}

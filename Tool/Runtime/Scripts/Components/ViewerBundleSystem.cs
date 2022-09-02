@@ -17,8 +17,7 @@ namespace ViewTo.Connector.Unity
 {
 	public class ViewerBundleSystem : PixelFinderSystem
 	{
-		[SerializeField]
-		bool _isGlobal;
+		[SerializeField] bool _isGlobal;
 
 		// public bool _saveScreenShot;
 
@@ -140,14 +139,14 @@ namespace ViewTo.Connector.Unity
 		{
 			// store the data!
 			var meta = "meta";
-			var type = ResultType.Proposed;
+			var type = ResultStage.Proposed;
 
 			if (stage == RigStage.Target)
-				type = ResultType.Potential;
+				type = ResultStage.Potential;
 			else if (stage == RigStage.Blocker)
-				type = ResultType.Existing;
+				type = ResultStage.Existing;
 			else if (stage == RigStage.Design)
-				type = ResultType.Proposed;
+				type = ResultStage.Proposed;
 
 			_bundleDataForCloud ??= new List<IResultData>();
 

@@ -161,12 +161,16 @@ namespace ViewTo.Connector.Unity
 		}
 
 		const string STREAM = BPY_Stream;
-		const string COMMIT = BPY_Commit;
-		const string BRANCH = BPY_Branch;
+		const string BRANCH = BPY_Branch_3;
+		const string COMMIT = BPY_Commit_3;
 
 		const string BPY_Stream = "96855cab4a";
-		const string BPY_Commit = "e2bd8e95b9";
-		const string BPY_Branch = "viewstudy/framework-c2";
+		const string BPY_Branch_1 = "viewstudy/largewaterfront";
+		const string BPY_Commit_1 =  "deb54ce87c";
+		const string BPY_Branch_2 = "viewstudy/gridofparks";
+		const string BPY_Commit_2 =  "dafc49783b";
+		const string BPY_Branch_3 = "viewstudy/eastwestparks";
+		const string BPY_Commit_3 =  "f5b36c93d2";
 
 		const string BCHP_Stream = "9b692137ca";
 		const string BCHP_Commit = "031307d6d5";
@@ -378,7 +382,7 @@ namespace ViewTo.Connector.Unity
 
 		public UnityEvent<Bounds> OnContentBoundsSet;
 
-		public UnityEvent<ResultType> OnResultTypeSet;
+		public UnityEvent<ResultStage> OnResultStageSet;
 
 		// public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 
