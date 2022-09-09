@@ -8,7 +8,7 @@ namespace ViewTo
     
     public string activeTarget { get; set; }
 
-    public double[] activeValues { get; set; }
+    public int[] activeValues { get; set; }
 
     public int activePoint { get; set; }
   }

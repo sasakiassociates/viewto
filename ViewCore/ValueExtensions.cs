@@ -53,6 +53,72 @@ namespace ViewTo
 			return values;
 		}
 
+		/// <summary>
+		///   Simple command for normalizing view result data.
+		///   If the divisor value is 0 the value will be set to -1
+		/// </summary>
+		/// <param name="inputValues">the result type for the dividend value</param>
+		/// <param name="divisorValues">the result type for the divisor value</param>
+		public static IEnumerable<double> NormalizeValues(this List<int> inputValues, List<int> divisorValues)
+		{
+			if (!inputValues.Valid() || !divisorValues.Valid() || inputValues.Count != divisorValues.Count)
+				return null;
+
+			var values = new double[inputValues.Count];
+
+			for (var i = 0; i < values.Length; i++)
+			{
+				double value;
+
+				if (divisorValues[i] == 0) // no change in value so set it to -1 as a flag
+					value = -1;
+				else
+					value = inputValues[i].NormalizeBy(divisorValues[i]);
+
+				values[i] = value;
+			}
+
+			return values;
+		}
+
+		
+		public static void GetMaxMin(this List<int> inputValues, out int max, out int min)
+		{
+			min = 0;
+			max = 0;
+
+			if (!inputValues.Valid())
+				return;
+
+			foreach (var value in inputValues)
+			{
+				if (value <= 0)
+					continue;
+
+				if (min > value) min = value;
+				if (max < value) max = value;
+			}
+		}
+
+		
+		public static void GetMaxMin(this List<uint> inputValues, out uint max, out uint min)
+		{
+			min = 0;
+			max = 0;
+
+			if (!inputValues.Valid())
+				return;
+
+			foreach (var value in inputValues)
+			{
+				if (value <= 0)
+					continue;
+
+				if (min > value) min = value;
+				if (max < value) max = value;
+			}
+		}
+
 		public static void GetMaxMin(this List<double> inputValues, out double max, out double min)
 		{
 			min = 0;
@@ -88,6 +154,10 @@ namespace ViewTo
 				if (max < value) max = value;
 			}
 		}
+
+		public static uint NormalizeBy(this uint value, uint max, uint min = 0) => (value - min) / (max - min);
+		
+		public static int NormalizeBy(this int value, int max, int min = 0) => (value - min) / (max - min);
 
 		public static float NormalizeBy(this float value, float max, float min = 0.0f) => (value - min) / (max - min);
 

@@ -159,19 +159,23 @@ namespace ViewTo.Connector.Unity
 				// each view color is associated with the second array (double[pointIndex][colorIndex])
 				for (var colorIndex = 0; colorIndex < _data.viewColors.Count; colorIndex++)
 				{
-					var layoutValues = new List<double>();
+					var layoutValues = new List<int>();
 
 					// go through each finder and compile each point for that color
 					foreach (var finder in layout.data)
+					{
+						var data = finder.Get();
+
 						// raw data from finder
-						for (var i = 0; i < finder.data.Length; i++)
+						for (var i = 0; i < data.Length; i++)
 						{
-							var value = finder.data[i][colorIndex];
+							var value = data[i][colorIndex];
 							if (layoutValues.Count <= i)
 								layoutValues.Add(value);
 							else
 								layoutValues[i] += value;
 						}
+					}
 
 					_bundleDataForCloud.Add(
 						new ContentResultData(

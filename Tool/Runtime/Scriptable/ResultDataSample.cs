@@ -11,11 +11,11 @@ using ViewTo;
 public struct ResultDataSample
 {
 
-	public readonly List<double> existing;
+	public readonly List<int> existing;
 
-	public readonly List<double> potential;
+	public readonly List<int> potential;
 
-	public readonly List<double> proposed;
+	public readonly List<int> proposed;
 
 	public readonly string target;
 
@@ -38,12 +38,12 @@ public struct ResultDataSample
 		};
 	}
 
-	public static List<double> SafeGetValues(IResultExplorer obj, ResultStage type)
+	public static List<int> SafeGetValues(IResultExplorer obj, ResultStage type)
 	{
-		var data = new List<double>();
+		var data = new List<int>();
 
 		obj.TryGetValues(type, ref data);
 
-		return data.Valid() ? data : new List<double>();
+		return data.Valid() ? data : new List<int>();
 	}
 }

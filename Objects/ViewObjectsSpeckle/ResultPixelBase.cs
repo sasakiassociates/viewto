@@ -9,7 +9,7 @@ namespace ViewObjects.Speckle
     { }
 
     [DetachProperty] [Chunkable]
-    public List<double> values { get; set; }
+    public List<int> values { get; set; }
 
     public string content { get; set; }
     public string stage { get; set; }

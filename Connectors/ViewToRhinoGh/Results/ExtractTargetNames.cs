@@ -110,6 +110,10 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
+			
+			var graphMapper = new GH_GraphMapper();
+			var graphMapperAttributes = new GH_GraphMapperAttributes(graphMapper);
+			
 			GH_ViewObj wrapper = null;
 			DA.GetData(0, ref wrapper);
 

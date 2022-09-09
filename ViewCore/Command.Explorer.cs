@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Explorer;
+using ViewTo.Values;
 
 namespace ViewTo
 {
@@ -17,9 +18,9 @@ namespace ViewTo
 		/// <param name="explorer"></param>
 		/// <param name="stage">The type of values to fetch for</param>
 		/// <returns></returns>
-		public static IEnumerable<double> Fetch(this IResultExplorer explorer, ResultStage stage)
+		public static IEnumerable<int> Fetch(this IResultExplorer explorer, ResultStage stage)
 		{
-			var data = new List<double>();
+			var data = new List<int>();
 
 			explorer.TryGetValues(stage, ref data);
 
@@ -31,12 +32,12 @@ namespace ViewTo
 			if (target.Valid() && explorer.targets.Contains(target) && !explorer.activeTarget.Valid() || !explorer.activeTarget.Equals(target))
 				explorer.activeTarget = target;
 
-			if (explorer.ActiveStage != stage)
-				explorer.ActiveStage = stage;
+			if (explorer.activeStage != stage)
+				explorer.activeStage = stage;
 
-			var values = new List<double>();
+			var values = new List<int>();
 
-			if (!explorer.TryGetValues(explorer.ActiveStage, ref values)) return;
+			if (!explorer.TryGetValues(explorer.activeStage, ref values)) return;
 
 			explorer.activeValues = values.ToArray();
 		}
@@ -46,11 +47,11 @@ namespace ViewTo
 			if (target.Valid() && explorer.targets.Contains(target) && !explorer.activeTarget.Valid() || !explorer.activeTarget.Equals(target))
 				explorer.activeTarget = target;
 
-			if (explorer.ActiveStage != stage)
-				explorer.ActiveStage = stage;
+			if (explorer.activeStage != stage)
+				explorer.activeStage = stage;
 
-			var values = new List<double>();
-			if (!explorer.TryGetValues(explorer.ActiveStage, ref values))
+			var values = new List<int>();
+			if (!explorer.TryGetValues(explorer.activeStage, ref values))
 				return;
 
 			if (!normalize)
@@ -59,30 +60,49 @@ namespace ViewTo
 				return;
 			}
 
+			var math = new IntMath();
+
 			values.GetMaxMin(out var max, out var min);
 
-			explorer.activeValues = values.NormalizeValues(max, min).ToArray();
+			explorer.activeValues = new int[values.Count];
+
+			for (int i = 0; i < values.Count; i++)
+			{
+				explorer.activeValues[i] = math.Normalize(values[i], max, min);
+			}
 		}
-
-		public static IEnumerable<double> GetExistingOverPotential(this IResultExplorer explorer) =>
-			explorer.GetComparedValues(ResultStage.Existing, ResultStage.Potential);
-
-		public static IEnumerable<double> GetProposedOverExisting(this IResultExplorer explorer) =>
-			explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Existing);
-
-		public static IEnumerable<double> GetProposedOverPotential(this IResultExplorer explorer) =>
-			explorer.GetComparedValues(ResultStage.Proposed, ResultStage.Potential);
 
 		public static IEnumerable<double> GetComparedValues(this IResultExplorer explorer, ResultStage stageA, ResultStage stageB)
 		{
-			var dataA = new List<double>();
-			var dataB = new List<double>();
+			var dataA = new List<int>();
+			var dataB = new List<int>();
 
 			if (explorer.TryGetValues(stageA, ref dataA))
 				if (explorer.TryGetValues(stageB, ref dataB))
 					return dataA.NormalizeValues(dataB);
 
 			return null;
+		}
+
+		public static IEnumerable<int> GetComparedValuesRaw(this IResultExplorer explorer, ResultStage dividendStage, ResultStage divisorStage)
+		{
+			var dividendValues = new List<int>();
+			var divisorValues = new List<int>();
+
+			var result = new List<int>();
+
+			var math = new IntMath();
+
+			if (explorer.TryGetValues(dividendStage, ref dividendValues) && explorer.TryGetValues(divisorStage, ref divisorValues))
+			{
+				var max = divisorValues.Max();
+				var min = divisorValues.Min();
+
+				for (int i = 0; i < dividendValues.Count; i++)
+					result.Add(math.Normalize(dividendValues[i], divisorValues[i], min));
+			}
+
+			return result;
 		}
 
 		#endregion
@@ -99,16 +119,16 @@ namespace ViewTo
 
 			valueType.GetStages(out var stageA, out var stageB);
 
-			var compiledStageA = new List<double>();
-			var compiledStageB = new List<double>();
+			var compiledStageA = new List<int>();
+			var compiledStageB = new List<int>();
 
 			foreach (var t in targets)
 			{
 				// set the active target
 				explorer.activeTarget = t;
 
-				var dataStageA = new List<double>();
-				var dataStageB = new List<double>();
+				var dataStageA = new List<int>();
+				var dataStageB = new List<int>();
 
 				if (!explorer.TryGetValues(stageA, ref dataStageA) || !explorer.TryGetValues(stageB, ref dataStageB))
 					return false;
@@ -130,6 +150,26 @@ namespace ViewTo
 			}
 
 			results = compiledStageA.NormalizeValues(compiledStageB);
+
+			return results.Any();
+		}
+
+		public static bool TryGet(this IResultExplorer explorer, ExplorerValueType valueType, string target, out IEnumerable<int> results)
+		{
+			results = new List<int>();
+
+			if (!target.Valid() || !explorer.HasTarget(target))
+			{
+				Console.WriteLine("No Valid Targets to look for ");
+				return false;
+			}
+
+			if (!explorer.CheckActiveTarget(target))
+				explorer.activeTarget = target;
+
+			valueType.GetStages(out var stageA, out var stageB);
+
+			results = explorer.GetComparedValuesRaw(stageA, stageB);
 
 			return results.Any();
 		}
@@ -177,7 +217,7 @@ namespace ViewTo
 			}
 		}
 
-		public static bool TryGetValues(this IResultExplorer explorer, ResultStage stage, ref List<double> data)
+		public static bool TryGetValues(this IResultExplorer explorer, ResultStage stage, ref List<int> data)
 		{
 			try
 			{
@@ -224,6 +264,14 @@ namespace ViewTo
 		{
 			return exp.storedData.Valid() && exp.activeTarget.Valid();
 		}
+		//
+		// /// <summary>
+		// /// uses active values
+		// /// </summary>
+		// /// <param name="obj"></param>
+		// /// <param name="valueToFind"></param>
+		// /// <returns></returns>
+		// public static int FindPointWithValue(this IResultExplorer obj, double valueToFind) => obj.activeValues.FindPointWithValue(valueToFind);
 
 		/// <summary>
 		/// uses active values
@@ -231,7 +279,45 @@ namespace ViewTo
 		/// <param name="obj"></param>
 		/// <param name="valueToFind"></param>
 		/// <returns></returns>
-		public static int FindPointWithValue(this IResultExplorer obj, double valueToFind) => obj.activeValues.FindPointWithValue(valueToFind);
+		public static int FindPointWithValue(this IResultExplorer obj, int valueToFind) => obj.activeValues.FindPointWithValue(valueToFind);
+
+		public static int FindPointWithValue(this int[] values, int valueToFind)
+		{
+			var res = -1;
+
+			if (double.IsNaN(valueToFind) || !values.Valid())
+				return res;
+
+			var sampleOfValues = new List<int>();
+
+			// compare data 
+			for (var i = 0; i < values.Length; i++)
+				if (values[i].Equals(valueToFind))
+					sampleOfValues.Add(i);
+
+			// if no values were found from sample set we keep searching
+			if (!sampleOfValues.Valid())
+			{
+				// if no values were found we look for the nearest values
+				var nearest = 1.0;
+
+				for (var i = 0; i < values.Length; i++)
+				{
+					var diff = Math.Abs(values[i] - valueToFind);
+					if (diff < nearest)
+					{
+						nearest = diff;
+						res = i;
+					}
+				}
+
+				sampleOfValues.Add(res);
+			}
+
+			var r = new Random(DateTime.Now.Millisecond);
+
+			return sampleOfValues[r.Next(0, sampleOfValues.Count - 1)];
+		}
 
 		public static int FindPointWithValue(this double[] values, double valueToFind, double unimportantDifference = 0.0001)
 		{

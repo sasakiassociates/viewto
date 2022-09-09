@@ -94,7 +94,7 @@ namespace ViewTo.RhinoGh.Results
 				_explorer.Load(cloud);
 
 			// if there is only one option we only need to check once
-			if (settings.options.Valid(1) && !_explorer.CheckActiveTarget(settings.options[0].target) || _explorer.ActiveStage != settings.options[0].stage)
+			if (settings.options.Valid(1) && !_explorer.CheckActiveTarget(settings.options[0].target) || _explorer.activeStage != settings.options[0].stage)
 				_explorer.SetActiveValues(settings.options[0].stage, settings.options[0].target);
 
 			var o_indexTree = new GH_Structure<GH_Integer>();
@@ -102,26 +102,26 @@ namespace ViewTo.RhinoGh.Results
 			var o_pointTree = new GH_Structure<GH_Point>();
 			var o_colorTree = new GH_Structure<GH_Colour>();
 
-			for (var i = 0; i < valueTree.Branches.Count; i++)
-			{
-				var branch = valueTree.Branches[i];
-				var path = valueTree.Paths[i];
-				foreach (var v in branch)
-				{
-					var indexResult = _explorer.FindPointWithValue(v.Value);
-					var pointValue = _explorer.activeValues[indexResult];
-
-					o_indexTree.Append(new GH_Integer(indexResult), path);
-					o_valueTree.Append(new GH_Number(pointValue), path);
-					o_pointTree.Append(_explorer.source.points[indexResult].ToGrass(), path);
-					o_colorTree.Append(new GH_Colour(settings.GetColor(pointValue)), path);
-				}
-			}
-
-			DA.SetDataTree(_output.Indexes, o_indexTree);
-			DA.SetDataTree(_output.Values, o_valueTree);
-			DA.SetDataTree(_output.Points, o_pointTree);
-			DA.SetDataTree(_output.Colors, o_colorTree);
+			// for (var i = 0; i < valueTree.Branches.Count; i++)
+			// {
+			// 	var branch = valueTree.Branches[i];
+			// 	var path = valueTree.Paths[i];
+			// 	foreach (var v in branch)
+			// 	{
+			// 		var indexResult = _explorer.FindPointWithValue(v.Value);
+			// 		var pointValue = _explorer.activeValues[indexResult];
+			//
+			// 		o_indexTree.Append(new GH_Integer(indexResult), path);
+			// 		o_valueTree.Append(new GH_Number(pointValue), path);
+			// 		o_pointTree.Append(_explorer.source.points[indexResult].ToGrass(), path);
+			// 		o_colorTree.Append(new GH_Colour(settings.GetColor(pointValue)), path);
+			// 	}
+			// }
+			//
+			// DA.SetDataTree(_output.Indexes, o_indexTree);
+			// DA.SetDataTree(_output.Values, o_valueTree);
+			// DA.SetDataTree(_output.Points, o_pointTree);
+			// DA.SetDataTree(_output.Colors, o_colorTree);
 		}
 
 		public override Guid ComponentGuid => new Guid("B3DC5CEC-D4A4-4769-864B-D6E7D00357AA");

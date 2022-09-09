@@ -7,15 +7,15 @@ namespace ViewTo.Connector.Unity
 {
 
 	[Serializable]
-	public readonly struct ResultData32
+	public struct ResultData32
 	{
-		public readonly Color32 color;
-		public readonly string meta;
-		public readonly RigStage stage;
+		public Color32 color;
+		public string meta;
+		public RigStage stage;
 
-		public readonly double[] values;
+		public int[] values;
 
-		public ResultData32(double[] values, Color32 color, RigStage stage, string meta = null)
+		public ResultData32(int[] values, Color32 color, RigStage stage, string meta = null)
 		{
 			this.values = values;
 			this.color = color;

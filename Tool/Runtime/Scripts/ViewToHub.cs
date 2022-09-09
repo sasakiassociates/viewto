@@ -37,7 +37,7 @@ namespace ViewTo.Connector.Unity
 
 		[SerializeField] [HideInInspector] RigSystem _rig;
 
-		[SerializeField] [HideInInspector] ResultExplorerMono _explorer;
+		// [SerializeField] [HideInInspector] ResultExplorerMono _explorer;
 
 		[SerializeField, HideInInspector] StreamAdapter _stream;
 
@@ -53,21 +53,21 @@ namespace ViewTo.Connector.Unity
 
 		public bool inProcess { get; private set; }
 
-		public ResultExplorerMono explorer
-		{
-			get
-			{
-				if (_explorer != null)
-					return _explorer;
-
-				var res = FindObjectOfType<ResultExplorerMono>();
-
-				if (res == null)
-					res = new GameObject("ResultExplorer").AddComponent<ResultExplorerMono>();
-
-				return res;
-			}
-		}
+		// public ResultExplorerMono explorer
+		// {
+		// 	get
+		// 	{
+		// 		if (_explorer != null)
+		// 			return _explorer;
+		//
+		// 		var res = FindObjectOfType<ResultExplorerMono>();
+		//
+		// 		if (res == null)
+		// 			res = new GameObject("ResultExplorer").AddComponent<ResultExplorerMono>();
+		//
+		// 		return res;
+		// 	}
+		// }
 
 		#region static methods
 
@@ -160,9 +160,9 @@ namespace ViewTo.Connector.Unity
 			WhatIsThis(node);
 		}
 
-		const string STREAM = BPY_Stream;
-		const string BRANCH = BPY_Branch_3;
-		const string COMMIT = BPY_Commit_3;
+		const string STREAM = Inglewood_Stream;
+		const string BRANCH = Inglewood_Branch;
+		const string COMMIT = Inglewood_Commit;
 
 		const string BPY_Stream = "96855cab4a";
 		const string BPY_Branch_1 = "viewstudy/largewaterfront";
@@ -176,6 +176,10 @@ namespace ViewTo.Connector.Unity
 		const string BCHP_Commit = "031307d6d5";
 		const string BCHP_Branch = "viewstudy/all-targets";
 
+		const string Inglewood_Stream = "4777dea055";
+		const string Inglewood_Commit = "e5c5e624a8";
+		const string Inglewood_Branch = "viewstudy/workflow-test";
+		
 		const string TEST_Stream = "1da7b18b31";
 		const string TEST_Commit = "1518e1cc4c";
 		const string TEST_Branch = "viewstudy/sphere";
@@ -261,7 +265,7 @@ namespace ViewTo.Connector.Unity
 			ViewConsole.Log($"Loading Result Cloud to explorer {cloud.name}");
 
 			OnContentBoundsSet?.Invoke(cloud.GetBounds());
-			explorer.Attach(cloud);
+			// explorer.Attach(cloud);
 		}
 
 		void ProcessReceiver(Receiver r)

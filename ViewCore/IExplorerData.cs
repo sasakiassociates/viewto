@@ -5,7 +5,7 @@ namespace ViewTo
 {
 	public interface IExplorerData
 	{
-		public ResultStage ActiveStage { get; set; }
+		public ResultStage activeStage { get; set; }
 
 		public List<IResultData> storedData { get; }
 

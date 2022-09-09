@@ -10,19 +10,19 @@ namespace ViewTo.Connector.Unity
 	public class ViewPointClicker : MonoBehaviour
 	{
 		[SerializeField]
-		ResultExplorerMono _resultExplorer;
+		// ResultExplorerMono _resultExplorer;
 		Vector3[] _points;
 		Vector3 lastPos;
 
 		void Start()
 		{
-			if (_resultExplorer != null)
-				_resultExplorer.OnNewCloudSet += () =>
-				{
-					_points = _resultExplorer.points;
-					transform.position = _points[_resultExplorer.activePoint];
-					lastPos = transform.position;
-				};
+			// if (_resultExplorer != null)
+                  			// 	_resultExplorer.OnNewCloudSet += () =>
+                  			// 	{
+                  			// 		_points = _resultExplorer.points;
+                  			// 		transform.position = _points[_resultExplorer.activePoint];
+                  			// 		lastPos = transform.position;
+                  			// 	};
 		}
 
 		public void Update()
@@ -47,7 +47,7 @@ namespace ViewTo.Connector.Unity
 
 			if (minPoint >= 0)
 			{
-				_resultExplorer.activePoint = minPoint;
+				// _resultExplorer.activePoint = minPoint;
 				lastPos = transform.position;
 			}
 		}

@@ -83,15 +83,15 @@ namespace ViewTo.Connector.Unity
 			if (!target.Valid())
 				target = obj.activeTarget;
 			if (ResultStage == default)
-				ResultStage = obj.ActiveStage;
+				ResultStage = obj.activeStage;
 
 			var res = 0;
-			foreach (var resultData in obj.storedData)
-				if (resultData.content.Valid()
-				    && resultData.content.Equals(target)
-				    && resultData.stage.Valid()
-				    && ResultStage.CheckAgainstString(resultData.stage))
-					res = CheckCollection(resultData.values, valueToFind);
+			// foreach (var resultData in obj.storedData)
+			// 	if (resultData.content.Valid()
+			// 	    && resultData.content.Equals(target)
+			// 	    && resultData.stage.Valid()
+			// 	    && ResultStage.CheckAgainstString(resultData.stage))
+			// 		res = CheckCollection(resultData.values, valueToFind);
 
 			return res;
 		}

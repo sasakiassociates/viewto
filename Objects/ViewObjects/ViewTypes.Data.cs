@@ -7,7 +7,7 @@ namespace ViewObjects
 
 	public interface IPixelResults
 	{
-		List<double> values { get; }
+		List<int> values { get; }
 	}
 
 	public interface ILayoutResults

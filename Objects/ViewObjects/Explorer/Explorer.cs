@@ -18,6 +18,11 @@
 		public ExplorerSettings settings { get; }
 
 		/// <summary>
+		/// Container for result values being explored
+		/// </summary>
+		public ExplorerData data { get; }
+
+		/// <summary>
 		/// Load in a new cloud for the explorer to explore!
 		/// </summary>
 		/// <param name="viewObj"></param>
@@ -47,6 +52,13 @@
 		/// </summary>
 		/// <returns></returns>
 		public ResultPoint GetResultPoint();
+
+	}
+
+	public struct ExplorerData
+	{
+		public double[] normalizedValues { get; set; }
+
 	}
 
 }

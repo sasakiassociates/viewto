@@ -5,10 +5,14 @@ using ViewTests;
 
 namespace ViewCoreTests
 {
+
+
+
 	[TestFixture]
 	[Category(ViewCat.CORE)]
 	public class ValueTests
 	{
+		
 
 		[Test]
 		public void SimpleListCheck()
@@ -23,5 +27,6 @@ namespace ViewCoreTests
 
 			Assert.Pass();
 		}
+
 	}
 }

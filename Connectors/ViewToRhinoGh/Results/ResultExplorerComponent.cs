@@ -164,10 +164,10 @@ namespace ViewTo.RhinoGh.Results
 
 			if (_settings.options.Count == 1)
 			{
-				if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out var data))
-				{
-					explorerValues = data.ToArray();
-				}
+				// if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out var data))
+				// {
+				// 	explorerValues = data.ToArray();
+				// }
 			}
 			else
 			{

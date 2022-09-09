@@ -6,7 +6,7 @@ namespace ViewObjects.Content
 	[Serializable]
 	public struct ContentResultData : IResultData
 	{
-		public ContentResultData(List<double> values, string stage, string content, int color, string meta = null, string layout = null)
+		public ContentResultData(List<int> values, string stage, string content, int color, string meta = null, string layout = null)
 		{
 			this.values = values;
 			this.stage = stage;
@@ -16,7 +16,7 @@ namespace ViewObjects.Content
 			this.layout = layout;
 		}
 
-		public List<double> values { get; }
+		public List<int> values { get; }
 
 		public string content { get; }
 

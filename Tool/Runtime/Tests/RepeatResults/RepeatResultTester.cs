@@ -79,8 +79,8 @@ namespace ViewTo.Connector.Unity
 				var dataA = cloudA.data[dIndex];
 				var dataB = cloudB.data[dIndex];
 
-				valuesA.Add(Enum.Parse<ResultStage>(dataA.stage), dataA.values);
-				valuesB.Add(Enum.Parse<ResultStage>(dataB.stage), dataB.values);
+				// valuesA.Add(Enum.Parse<ResultStage>(dataA.stage), dataA.values);
+				// valuesB.Add(Enum.Parse<ResultStage>(dataB.stage), dataB.values);
 
 				// Test compare target count
 				if (dataA.values.Count != dataB.values.Count)
@@ -233,8 +233,8 @@ namespace ViewTo.Connector.Unity
 
 			public TestResultContainer(ResultsForCloud cloud)
 			{
-				foreach (var container in cloud.data)
-					Set(container.stage, container.values);
+				// foreach (var container in cloud.data)
+				// 	Set(container.stage, container.values);
 			}
 
 			public void Set(string key, List<double> values)

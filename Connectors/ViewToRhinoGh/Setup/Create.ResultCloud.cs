@@ -82,13 +82,13 @@ namespace ViewTo.RhinoGh.Setup
 				const int INDEX_STAGE = 1;
 
 				var branchName = treeNames.Branches[bIndex];
-				dataContainer.Add(
-					new ContentResultData(
-						values,
-						branchName.Count >= INDEX_CONTENT ? branchName[INDEX_CONTENT].Value : "Invalid Content",
-						branchName.Count >= INDEX_STAGE ? branchName[INDEX_STAGE].Value : "Invalid Stage",
-						0)
-				);
+				// dataContainer.Add(
+				// 	new ContentResultData(
+				// 		values,
+				// 		branchName.Count >= INDEX_CONTENT ? branchName[INDEX_CONTENT].Value : "Invalid Content",
+				// 		branchName.Count >= INDEX_STAGE ? branchName[INDEX_STAGE].Value : "Invalid Stage",
+				// 		0)
+				// );
 			}
 
 			var resulCloud = new ResultCloud

@@ -62,9 +62,7 @@ namespace ViewTo.Connector.Unity
 		{
 			get => Application.isPlaying && viewers.Valid() && activeViewer != null;
 		}
-
-		public void Start()
-		{ }
+		
 
 		public void Run(int startPoint = 0)
 		{

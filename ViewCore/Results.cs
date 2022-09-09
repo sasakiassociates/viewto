@@ -100,9 +100,9 @@ namespace ViewTo
 				var contentName = header[colIndex].Split('-').First();
 				var stageName = header[colIndex].Split('-').Last();
 
-				var values = new List<double>();
+				var values = new List<int>();
 				for (var i = 1; i < lines.Length; i++)
-					values.Add(double.Parse(lines[i].Split(',')[colIndex]));
+					values.Add(int.Parse(lines[i].Split(',')[colIndex]));
 
 				var d = new ContentResultData(values, stageName, contentName, 0);
 				rc.data.Add(d);
