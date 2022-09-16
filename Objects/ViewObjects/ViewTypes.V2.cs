@@ -7,11 +7,10 @@ namespace ViewObjects
 
 	public class ResultDataV2
 	{
-		public ResultDataV2(string content, string stage, string meta, string layout, List<double> values)
+		public ResultDataV2(string content, string stage, string layout, List<int> values)
 		{
 			this.content = content;
 			this.stage = stage;
-			this.meta = meta;
 			this.layout = layout;
 			this.values = values;
 		}
@@ -20,11 +19,9 @@ namespace ViewObjects
 
 		string stage { get; }
 
-		string meta { get; }
-
 		string layout { get; }
 
-		List<double> values { get; }
+		List<int> values { get; }
 
 	}
 
@@ -64,11 +61,14 @@ namespace ViewObjects
 
 	public interface IViewCloudV2 : IViewObj, IId
 	{
+		/// <summary>
+		/// The cloud of points to use
+		/// </summary>
 		public CloudPoint[] points { get; set; }
-	}
 
-	public interface IResultCloudV2 : IViewCloudV2
-	{
+		/// <summary>
+		/// The view analysis data gathered
+		/// </summary>
 		public List<IResultData> data { get; set; }
 	}
 
@@ -80,21 +80,26 @@ namespace ViewObjects
 	/// <summary>
 	/// Grouping object for bundling the objects
 	/// </summary>
-	public interface IViewContents : IViewObj
+	public interface IContents : IViewObj
 	{
-		public List<IViewContentV2> contents { get; }
+		public List<IContent> contents { get; }
 	}
 
 	/// <summary>
 	/// basic view content type object
 	/// </summary>
-	public interface IViewContentV2 : IViewObj, INameable, IId
+	public interface IContent : IViewObj, INameable, IId
 	{
-		public List<object> objects { get; }
+		/// <summary>
+		/// A list of references to be used for this view content
+		/// </summary>
+		public List<string> references { get; }
 
-		public string[] references { get; }
-
+		/// <summary>
+		/// The style of view content
+		/// </summary>
 		public ContentType type { get; }
+
 	}
 
 }

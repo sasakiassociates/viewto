@@ -25,9 +25,7 @@ namespace ViewObjects.Converter.Unity
 		protected override void OnEnable()
 		{
 			base.OnEnable();
-
-			// _supportConverter.SetConverterSettings(new ScriptableConverterSettings() { style = ConverterStyle.Queue });
-
+			
 			wrappedConverter ??= new ViewObjectsConverterScript()
 			{
 				SupportConverter = _supportConverter,
@@ -41,9 +39,21 @@ namespace ViewObjects.Converter.Unity
 			{
 				foreach (var c in sc.converters)
 				{
-					if (c != null)
-						await c.PostWorkAsync();
+					if (c == null)
+						continue;
+
+					await c.PostWorkAsync();
+					await UniTask.Yield();
 				}
+			}
+			
+			foreach (var c in converters)
+			{
+				if (c == null)
+					continue;
+
+				await c.PostWorkAsync();
+				await UniTask.Yield();
 			}
 		}
 

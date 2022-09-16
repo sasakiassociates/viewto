@@ -177,8 +177,8 @@ namespace ViewTo.Connector.Unity
 		const string BCHP_Branch = "viewstudy/all-targets";
 
 		const string Inglewood_Stream = "4777dea055";
-		const string Inglewood_Commit = "e5c5e624a8";
-		const string Inglewood_Branch = "viewstudy/workflow-test";
+		const string Inglewood_Commit = "c3258e3979";
+		const string Inglewood_Branch = "viewstudy/massing-from-road";
 		
 		const string TEST_Stream = "1da7b18b31";
 		const string TEST_Commit = "1518e1cc4c";
