@@ -28,9 +28,9 @@ namespace ViewObjects.Converter
 
 		public abstract void SetContextDocument(object doc);
 
-		public abstract void SetContextObjects(List<ApplicationPlaceholderObject> objects);
+		public abstract void SetContextObjects(List<ApplicationObject> objects);
 
-		public abstract void SetPreviousContextObjects(List<ApplicationPlaceholderObject> objects);
+		public abstract void SetPreviousContextObjects(List<ApplicationObject> objects);
 
 		public abstract void SetConverterSettings(object settings);
 

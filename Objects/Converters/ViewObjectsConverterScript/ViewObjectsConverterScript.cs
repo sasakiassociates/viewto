@@ -25,12 +25,12 @@ namespace ViewObjects.Converter.Script
 			throw new NotImplementedException();
 		}
 
-		public override void SetContextObjects(List<ApplicationPlaceholderObject> objects)
+		public override void SetContextObjects(List<ApplicationObject> objects)
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void SetPreviousContextObjects(List<ApplicationPlaceholderObject> objects)
+		public override void SetPreviousContextObjects(List<ApplicationObject> objects)
 		{
 			throw new NotImplementedException();
 		}
