@@ -58,14 +58,14 @@
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="System.Resources.Extensions">
-            <Version>4.7.1</Version>
-        </PackageReference>
+
         <PackageReference Include="MSBuild.AssemblyVersion">
             <Version>1.3.0</Version>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+
+        <PackageReference Include="System.Resources.Extensions" Version="7.0.0-rc.1.22426.10"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\Objects\ViewObjects\ViewObjects.csproj">
@@ -80,16 +80,16 @@
     <ItemGroup>
         <Compile Include="Base\ViewToCloudComponentBase.cs" />
         <Compile Include="Base\ViewToComponentBase.cs" />
-        <Compile Include="ConnectorInfo.cs" />
-        <Compile Include="ConnectorPipe.cs" />
-        <Compile Include="Goo\GH_ViewObj.cs" />
-        <Compile Include="Goo\ViewObjParam.cs" />
+        <Compile Include="ConnectorInfo.cs"/>
+        <Compile Include="ConnectorPipe.cs"/>
+        <Compile Include="Goo\GH_ViewObj.cs"/>
+        <Compile Include="Goo\ViewObjParam.cs"/>
         <Compile Include="Objects\ExplorerValueTypeComponent.cs"/>
-        <Compile Include="Objects\ResultTypeComponent.cs" />
-        <Compile Include="Points\Helpers.Points.cs" />
-        <Compile Include="Points\PointGenCloud.cs" />
-        <Compile Include="Points\PointGenFacade.cs" />
-        <Compile Include="Points\PointGenFittedCloud.cs" />
+        <Compile Include="Objects\ResultTypeComponent.cs"/>
+        <Compile Include="Points\Helpers.Points.cs"/>
+        <Compile Include="Points\PointGenCloud.cs"/>
+        <Compile Include="Points\PointGenFacade.cs"/>
+        <Compile Include="Points\PointGenFittedCloud.cs"/>
         <Compile Include="Points\PointGenGround.cs"/>
         <Compile Include="Results\ExplorerSettingsComponent.cs"/>
         <Compile Include="Results\ExtractTargetNames.cs"/>
@@ -139,11 +139,9 @@
             <LastGenOutput>Icons.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
-    <!--  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />-->
     <Target Name="Clean">
         <RemoveDir Directories="$(TargetDir);$(AppData)\Grasshopper\Libraries\ViewTo" />
     </Target>
-    <!--  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />-->
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="Copy &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(TargetDir)$(AssemblyName).gha&quot;" />
     </Target>
