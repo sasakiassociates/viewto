@@ -5,6 +5,16 @@ using ViewObjects.Cloud;
 namespace ViewObjects.Viewer
 {
 
+	public class ViewerLayout_v2 : IViewerLayout_v2, IViewObj
+	{
+		public List<ViewerDirection> Viewers { get; set; }
+
+		public ViewerLayout_v2(List<ViewerDirection> viewers)
+		{
+			this.Viewers = viewers;
+		}
+	}
+
 	public class ViewerLayout : IViewerLayout
 	{
 		public ViewerLayout()
@@ -39,7 +49,9 @@ namespace ViewObjects.Viewer
 	public class ViewerLayoutFocus : ViewerLayout
 	{
 		public double x { get; set; }
+
 		public double y { get; set; }
+
 		public double z { get; set; }
 	}
 

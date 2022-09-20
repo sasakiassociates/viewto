@@ -54,9 +54,9 @@ namespace ViewObjects.Converter.Rhino
 			SupportConverter?.SetContextDocument(Doc);
 		}
 
-		public override void SetContextObjects(List<ApplicationPlaceholderObject> objects) => SupportConverter?.SetContextObjects(objects);
+		public override void SetContextObjects(List<ApplicationObject> objects) => SupportConverter?.SetContextObjects(objects);
 
-		public override void SetPreviousContextObjects(List<ApplicationPlaceholderObject> objects) => SupportConverter?.SetPreviousContextObjects(objects);
+		public override void SetPreviousContextObjects(List<ApplicationObject> objects) => SupportConverter?.SetPreviousContextObjects(objects);
 
 		public override void SetConverterSettings(object settings) => SupportConverter?.SetConverterSettings(settings);
 

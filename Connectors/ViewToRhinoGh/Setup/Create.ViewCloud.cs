@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
+using ViewObjects.Cloud;
 using ViewTo.RhinoGh.Goo;
 using Pipe = ViewTo.RhinoGh.ConnectorPipe;
 
@@ -10,7 +10,8 @@ namespace ViewTo.RhinoGh.Setup
 	public class CreateViewCloud : ViewToComponentBase
 	{
 		public CreateViewCloud() : base(
-			"Create View Cloud", "CVC",
+			"Create View Cloud",
+			"CVC",
 			"Cast a list of points to a view cloud",
 			ConnectorInfo.Nodes.CLOUD)
 		{ }
@@ -21,21 +22,19 @@ namespace ViewTo.RhinoGh.Setup
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
-			pManager.AddPointParameter("Points", "P", "Points to Convert to Cloud", GH_ParamAccess.list);
+			pManager.AddTextParameter("Reference", "R", "Reference to a commit with a Point Cloud", GH_ParamAccess.item);
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
 		{
-			pManager.AddParameter(new ViewObjParam("ViewCloud", "viewobj", "View Obj as ViewObj Parameter Object", GH_ParamAccess.item));
+			pManager.AddParameter(new ViewObjParam("Cloud", "C", "View Cloud that references to a commit", GH_ParamAccess.item));
 		}
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			var points = new List<GH_Point>();
-			DA.GetDataList(0, points);
-
-			var viewObj = Pipe.Prime(points);
-			DA.SetData(0, viewObj);
+			string reference = string.Empty;
+			DA.GetData(0, ref reference);
+			DA.SetData(0, new ViewCloudReference(new List<string>() { reference }));
 		}
 	}
 }

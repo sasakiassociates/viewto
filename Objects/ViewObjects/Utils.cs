@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 
 namespace ViewObjects
@@ -51,5 +52,10 @@ namespace ViewObjects
 		/// <param name="value"></param>
 		/// <returns>returns true if value contains something</returns>
 		public static bool Valid(this string value) => !string.IsNullOrEmpty(value);
+
+		public static string CheckIfValidId(string valueId) =>
+			!string.IsNullOrEmpty(valueId) && Guid.TryParse(valueId, out _) ? valueId : Guid.NewGuid().ToString();
+
+		public static string InitGuid => Guid.NewGuid().ToString();
 	}
 }

@@ -28,32 +28,30 @@ namespace ViewObjects.Converter
 
 		public abstract void SetContextDocument(object doc);
 
-		public abstract void SetContextObjects(List<ApplicationPlaceholderObject> objects);
+		public abstract void SetContextObjects(List<ApplicationObject> objects);
 
-		public abstract void SetPreviousContextObjects(List<ApplicationPlaceholderObject> objects);
+		public abstract void SetPreviousContextObjects(List<ApplicationObject> objects);
 
 		public abstract void SetConverterSettings(object settings);
 
 		public List<Base> ConvertToSpeckle(List<object> objects) => objects.Select(ConvertToSpeckle).ToList();
 
-		public Base ConvertToSpeckle(object @object)
+		public Base ConvertToSpeckle(object @object) => ConvertToSpeckleViewObject(@object);
+
+		public ViewObjectBase ConvertToSpeckleViewObject(object @object)
 		{
 			switch (@object)
 			{
-				case IViewStudy o:
+				case IViewStudy_v2<IViewObj> o:
 					return StudyToSpeckle(o);
-				case IResultCloud o:
-					return ResultCloudToSpeckle(o);
-				case IViewCloud o:
+				case IViewCloud_v2 o:
 					return ViewCloudToSpeckle(o);
-				case IViewContentBundle o:
-					return ContentBundleToSpeckle(o);
-				case IViewContent o:
+				case IContent o:
 					return ViewContentToSpeckle(o);
-				case IViewerBundle o:
-					return ViewerBundleToSpeckle(o);
-				case IViewerLayout o:
-					return LayoutToSpeckle(o);
+				case IViewerLayout_v2 o:
+					return ViewerLayoutToSpeckle(o);
+				case IViewerSystem_v2<IViewerLayout_v2> o:
+					return ViewerSystemToSpeckle(o);
 				default:
 					throw new ArgumentOutOfRangeException(nameof(@object), @object, null);
 			}
@@ -61,24 +59,22 @@ namespace ViewObjects.Converter
 
 		public List<object> ConvertToNative(List<Base> objects) => objects.Select(ConvertToNative).ToList();
 
-		public object ConvertToNative(Base @object)
+		public object ConvertToNative(Base @object) => ConvertToNativeViewObject(@object);
+
+		public IViewObj ConvertToNativeViewObject(Base @object)
 		{
 			switch (@object)
 			{
-				case ViewStudyBase o:
+				case ViewStudyBase_v2 o:
 					return StudyToNative(o);
-				case ResultCloudBase o:
-					return ResultCloudToNative(o);
-				case ViewCloudBase o:
+				case ViewCloudBase_v2 o:
 					return ViewCloudToNative(o);
-				case ContentBundleBase o:
-					return ContentBundleToNative(o);
-				case ViewContentBase o:
+				case ContentBase_v2 o:
 					return ViewContentToNative(o);
-				case ViewerBundleBase o:
-					return ViewerBundleToNative(o);
-				case ViewerLayoutBase o:
-					return LayoutToNative(o);
+				case ViewerLayoutBase_v2 o:
+					return ViewerLayoutToNative(o);
+				case ViewerSystemBase_v2 o:
+					return ViewerSystemToNative(o);
 				case Base o:
 					return HandleDefault(o);
 				default:
@@ -104,6 +100,17 @@ namespace ViewObjects.Converter
 					return true;
 				case IViewerLayout _:
 					return true;
+				// V2 objects
+				case IViewStudy_v2<IViewObj> _:
+					return true;
+				case IViewCloud_v2 _:
+					return true;
+				case IContent _:
+					return true;
+				case IViewerLayout_v2 _:
+					return true;
+				case IViewerSystem_v2<IViewerLayout_v2> _:
+					return true;
 				default:
 					return false;
 			}
@@ -124,6 +131,17 @@ namespace ViewObjects.Converter
 				case ViewerBundleBase _:
 					return true;
 				case ViewerLayoutBase _:
+					return true;
+				// V2 objects
+				case ViewStudyBase_v2 _:
+					return true;
+				case ViewCloudBase_v2 _:
+					return true;
+				case ContentBase_v2 _:
+					return true;
+				case ViewerLayoutBase_v2 _:
+					return true;
+				case ViewerSystemBase_v2 _:
 					return true;
 				default:
 					return false;

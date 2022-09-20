@@ -34,48 +34,76 @@ namespace ViewTo.RhinoGh.Setup
 			var i = 0;
 			pManager.AddTextParameter("Name", "N", "Name of Study", GH_ParamAccess.item);
 			_input.Name = i++;
-			pManager.AddGenericParameter("ViewClouds", "C", "View Clouds for Study", GH_ParamAccess.list);
+			pManager.AddGenericParameter("Clouds", "C", "View Clouds for Study", GH_ParamAccess.list);
 			_input.Cloud = i++;
-			pManager.AddGenericParameter("ViewContent Bundle", "B", "Bundle of View Content for a study to use", GH_ParamAccess.list);
+			pManager.AddGenericParameter("Contents", "V", "Bundle of View Content for a study to use", GH_ParamAccess.list);
 			_input.Content = i++;
-			pManager.AddGenericParameter("Viewer Bundle", "V", "Viewer Bundles for Study", GH_ParamAccess.list);
+			pManager.AddGenericParameter("Layouts", "L", "Viewer Bundles for Study", GH_ParamAccess.list);
 			_input.Params = i;
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
 		{
-			pManager.AddParameter(new ViewObjParam("ViewObj", "V", "View Obj as ViewObj Parameter Object", GH_ParamAccess.item));
+			pManager.AddParameter(new ViewObjParam("Study", "S", "View Study created and outputted as ViewObj Object", GH_ParamAccess.item));
 		}
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
 			var wrappers = new List<GH_ViewObj>();
 			DA.GetDataList(_input.Cloud, wrappers);
-			var clouds = wrappers.Unwrap<ViewCloud>();
+			var clouds = wrappers.Unwrap<ViewCloudReference>();
 
 			wrappers.Clear();
 			DA.GetDataList(_input.Content, wrappers);
-			var contentBundle = wrappers.Unwrap<ContentBundle>();
+			var contents = wrappers.Unwrap<ViewContent_v2>();
 
 			wrappers.Clear();
 			DA.GetDataList(_input.Params, wrappers);
-			var viewerBundles = wrappers.Unwrap<ViewerBundle>();
+			var systems = wrappers.Unwrap<ViewerSystem_v2>();
 
-			var res = new GH_String();
+			var ghName = new GH_String();
+			DA.GetData(_input.Name, ref ghName);
 
-			DA.GetData(_input.Name, ref res);
-			var viewObj = new ViewStudy
-			{
-				viewName = res.Value,
-				objs = new List<IViewObj>()
-			};
+			var objs = new List<IViewObj>();
 
-			viewObj.objs.AddRange(contentBundle);
-			viewObj.objs.AddRange(clouds);
-			viewObj.objs.AddRange(viewerBundles);
+			objs.AddRange(contents);
+			objs.AddRange(clouds);
+			objs.AddRange(systems);
+
+			var viewObj = new ViewStudy_v2(objs, ghName.Value);
 
 			DA.SetData(0, viewObj);
 		}
+
+		// protected override void SolveInstance(IGH_DataAccess DA)
+		// {
+		// 	var wrappers = new List<GH_ViewObj>();
+		// 	DA.GetDataList(_input.Cloud, wrappers);
+		// 	var clouds = wrappers.Unwrap<ViewCloud>();
+		//
+		// 	wrappers.Clear();
+		// 	DA.GetDataList(_input.Content, wrappers);
+		// 	var contentBundle = wrappers.Unwrap<ContentBundle>();
+		//
+		// 	wrappers.Clear();
+		// 	DA.GetDataList(_input.Params, wrappers);
+		// 	var viewerBundles = wrappers.Unwrap<ViewerBundle>();
+		//
+		// 	var res = new GH_String();
+		//
+		// 	DA.GetData(_input.Name, ref res);
+		// 	var viewObj = new ViewStudy
+		// 	{
+		// 		ViewName = res.Value,
+		// 		objs = new List<IViewObj>()
+		// 	};
+		//
+		// 	viewObj.objs.AddRange(contentBundle);
+		// 	viewObj.objs.AddRange(clouds);
+		// 	viewObj.objs.AddRange(viewerBundles);
+		//
+		// 	DA.SetData(0, viewObj);
+		// }
 
 	}
 }

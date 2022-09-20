@@ -7,6 +7,7 @@ using Speckle.Core.Kits;
 
 namespace ViewObjects.Speckle
 {
+
 	public class ViewToKit : ISpeckleKit
 	{
 		private Dictionary<string, Type> _LoadedConverters = new Dictionary<string, Type>();

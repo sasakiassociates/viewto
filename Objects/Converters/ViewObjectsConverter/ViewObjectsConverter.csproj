@@ -8,6 +8,7 @@
 
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\..\..\Speckle\speckle-sharp\Core\Core\Core.csproj"/>
       <ProjectReference Include="..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj" />
       <ProjectReference Include="..\..\ViewObjects\ViewObjects.csproj" />
     </ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using ViewObjects;
 
@@ -65,7 +64,7 @@ namespace ViewTo.Values
 
 	public class DoubleMath : MathProvider<double>
 	{
-		public override double Divide(double a, double b) => a / b;
+		public override double Divide(double a, double b) => !double.IsNaN(b) ? a / b : double.NaN;
 
 		public override double Multiply(double a, double b) => a * b;
 
@@ -76,7 +75,7 @@ namespace ViewTo.Values
 
 	public class UintMath : MathProvider<uint>
 	{
-		public override uint Divide(uint a, uint b) => a / b;
+		public override uint Divide(uint a, uint b) => b != 0 ? a / b : 0;
 
 		public override uint Multiply(uint a, uint b) => a * b;
 
@@ -87,7 +86,7 @@ namespace ViewTo.Values
 
 	public class IntMath : MathProvider<int>
 	{
-		public override int Divide(int a, int b) => a / b;
+		public override int Divide(int a, int b) => b != 0 ? a / b : 0;
 
 		public override int Multiply(int a, int b) => a * b;
 

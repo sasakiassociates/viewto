@@ -80,16 +80,16 @@
     <ItemGroup>
         <Compile Include="Base\ViewToCloudComponentBase.cs" />
         <Compile Include="Base\ViewToComponentBase.cs" />
-        <Compile Include="ConnectorInfo.cs" />
-        <Compile Include="ConnectorPipe.cs" />
-        <Compile Include="Goo\GH_ViewObj.cs" />
-        <Compile Include="Goo\ViewObjParam.cs" />
+        <Compile Include="ConnectorInfo.cs"/>
+        <Compile Include="ConnectorPipe.cs"/>
+        <Compile Include="Goo\GH_ViewObj.cs"/>
+        <Compile Include="Goo\ViewObjParam.cs"/>
         <Compile Include="Objects\ExplorerValueTypeComponent.cs"/>
-        <Compile Include="Objects\ResultTypeComponent.cs" />
-        <Compile Include="Points\Helpers.Points.cs" />
-        <Compile Include="Points\PointGenCloud.cs" />
-        <Compile Include="Points\PointGenFacade.cs" />
-        <Compile Include="Points\PointGenFittedCloud.cs" />
+        <Compile Include="Objects\ResultTypeComponent.cs"/>
+        <Compile Include="Points\Helpers.Points.cs"/>
+        <Compile Include="Points\PointGenCloud.cs"/>
+        <Compile Include="Points\PointGenFacade.cs"/>
+        <Compile Include="Points\PointGenFittedCloud.cs"/>
         <Compile Include="Points\PointGenGround.cs"/>
         <Compile Include="Results\ExplorerSettingsComponent.cs"/>
         <Compile Include="Results\ExtractTargetNames.cs"/>
@@ -103,7 +103,7 @@
         <Compile Include="Setup\Create.ContentOption.cs"/>
         <Compile Include="Setup\Create.ViewContentExisting.cs"/>
         <Compile Include="Setup\Create.ViewContentProposed.cs"/>
-        <Compile Include="Setup\Create.ViewContentTarget.cs"/>
+        <Compile Include="Setup\Create.ViewContent.cs"/>
         <Compile Include="Utils\MoveToView.cs"/>
         <Compile Include="Utils\RenderViewToFile.cs"/>
         <Compile Include="ViewToHelper.Utilis.cs"/>

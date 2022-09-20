@@ -84,7 +84,7 @@ namespace ViewTo
 			return null;
 		}
 
-		public static IEnumerable<int> GetComparedValuesRaw(this IResultExplorer explorer, ResultStage dividendStage, ResultStage divisorStage)
+		public static ICollection<int> GetComparedValuesRaw(this IResultExplorer explorer, ResultStage dividendStage, ResultStage divisorStage)
 		{
 			var dividendValues = new List<int>();
 			var divisorValues = new List<int>();
@@ -154,7 +154,7 @@ namespace ViewTo
 			return results.Any();
 		}
 
-		public static bool TryGet(this IResultExplorer explorer, ExplorerValueType valueType, string target, out IEnumerable<int> results)
+		public static bool TryGet(this IResultExplorer explorer, ExplorerValueType valueType, string target, out ICollection<int> results)
 		{
 			results = new List<int>();
 

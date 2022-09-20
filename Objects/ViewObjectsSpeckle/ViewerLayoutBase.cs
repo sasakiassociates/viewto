@@ -1,78 +1,79 @@
 ﻿using System.Collections.Generic;
 using Objects.Geometry;
 using Speckle.Newtonsoft.Json;
-using ViewObjects.Viewer;
 
 namespace ViewObjects.Speckle
 {
 
-  public class ViewerLayoutBase : ViewObjBase, IViewerLayout
-  {
+	public class ViewerLayoutBase : ViewObjBase, IViewerLayout
+	{
 
-    public ViewerLayoutBase()
-    { }
-    [JsonIgnore]
-    public virtual List<IViewer> viewers =>
-      new List<IViewer>
-      {
-        new Viewer.Viewer(ViewerDirection.Front)
-      };
-  }
+		public ViewerLayoutBase()
+		{ }
 
-  public class ViewerLayoutBaseFocus : ViewerLayoutBase
-  {
+		[JsonIgnore] public virtual List<IViewer> viewers =>
+			new List<IViewer>
+			{
+				new Viewer.Viewer(ViewerDirection.Front)
+			};
+	}
 
-    public ViewerLayoutBaseFocus()
-    { }
-    public Point focusPoint { get; set; }
-  }
+	public class ViewerLayoutBaseFocus : ViewerLayoutBase
+	{
 
-  public class ViewerLayoutBaseNormal : ViewerLayoutBase
-  {
+		public ViewerLayoutBaseFocus()
+		{ }
 
-    public string shellId;
+		public Point focusPoint { get; set; }
+	}
 
-    public ViewerLayoutBaseNormal()
-    { }
-  }
+	public class ViewerLayoutBaseNormal : ViewerLayoutBase
+	{
 
-  public class ViewerLayoutBaseOrtho : ViewerLayoutBase
-  {
+		public string shellId;
 
-    public double size;
+		public ViewerLayoutBaseNormal()
+		{ }
+	}
 
-    public ViewerLayoutBaseOrtho()
-    { }
-  }
+	public class ViewerLayoutBaseOrtho : ViewerLayoutBase
+	{
 
-  public class ViewerLayoutBaseCube : ViewerLayoutBase
-  {
+		public double size;
 
-    public ViewerLayoutBaseCube()
-    { }
-    [JsonIgnore]
-    public override List<IViewer> viewers =>
-      new List<IViewer>
-      {
-        new Viewer.Viewer(ViewerDirection.Front),
-        new Viewer.Viewer(ViewerDirection.Right),
-        new Viewer.Viewer(ViewerDirection.Back),
-        new Viewer.Viewer(ViewerDirection.Left),
-        new Viewer.Viewer(ViewerDirection.Up),
-        new Viewer.Viewer(ViewerDirection.Down)
-      };
-  }
+		public ViewerLayoutBaseOrtho()
+		{ }
+	}
 
-  public class ViewerLayoutBaseHorizontal : ViewerLayoutBase
-  {
+	public class ViewerLayoutBaseCube : ViewerLayoutBase
+	{
 
-    public ViewerLayoutBaseHorizontal()
-    { }
-    [JsonIgnore]
-    public override List<IViewer> viewers =>
-      new List<IViewer>
-      {
-        new Viewer.Viewer(ViewerDirection.Front), new Viewer.Viewer(ViewerDirection.Right), new Viewer.Viewer(ViewerDirection.Back), new Viewer.Viewer(ViewerDirection.Left)
-      };
-  }
+		public ViewerLayoutBaseCube()
+		{ }
+
+		[JsonIgnore] public override List<IViewer> viewers =>
+			new List<IViewer>
+			{
+				new Viewer.Viewer(ViewerDirection.Front),
+				new Viewer.Viewer(ViewerDirection.Right),
+				new Viewer.Viewer(ViewerDirection.Back),
+				new Viewer.Viewer(ViewerDirection.Left),
+				new Viewer.Viewer(ViewerDirection.Up),
+				new Viewer.Viewer(ViewerDirection.Down)
+			};
+	}
+
+	public class ViewerLayoutBaseHorizontal : ViewerLayoutBase
+	{
+
+		public ViewerLayoutBaseHorizontal()
+		{ }
+
+		[JsonIgnore] public override List<IViewer> viewers =>
+			new List<IViewer>
+			{
+				new Viewer.Viewer(ViewerDirection.Front), new Viewer.Viewer(ViewerDirection.Right), new Viewer.Viewer(ViewerDirection.Back),
+				new Viewer.Viewer(ViewerDirection.Left)
+			};
+	}
 }

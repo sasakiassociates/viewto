@@ -18,7 +18,7 @@ namespace ViewObjects.Speckle
 
 		[JsonIgnore] public virtual bool isValid => objects != null;
 
-		public string viewName { get; set; }
+		public string ViewName { get; set; }
 
 		public ContentType contentType { get; set; }
 	}

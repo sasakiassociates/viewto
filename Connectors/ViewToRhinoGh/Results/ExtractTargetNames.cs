@@ -23,11 +23,17 @@ namespace ViewTo.RhinoGh.Results
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 
+		(int Object, int Values ) _input;
+
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
+			var index = 0;
 			pManager.AddGenericParameter("Result Cloud", "RC", "Result cloud to get target names from", GH_ParamAccess.item);
+			_input.Object = index++;
 			pManager.AddTextParameter("Results", "R", "Results of data", GH_ParamAccess.list);
-			pManager[1].Optional = true;
+			_input.Values = index;
+
+			pManager[_input.Values].Optional = true;
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -94,7 +100,7 @@ namespace ViewTo.RhinoGh.Results
 
 				var doc = OnPingDocument();
 				doc?.AddObject(_activeList, true);
-				Params.Input[3].AddSource(_activeList);
+				Params.Input[_input.Values].AddSource(_activeList);
 			}
 			else
 			{
@@ -110,15 +116,14 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			
 			var graphMapper = new GH_GraphMapper();
 			var graphMapperAttributes = new GH_GraphMapperAttributes(graphMapper);
-			
+
 			GH_ViewObj wrapper = null;
-			DA.GetData(0, ref wrapper);
+			DA.GetData(_input.Object, ref wrapper);
 
 			var inputTargets = new List<string>();
-			DA.GetDataList(1, inputTargets);
+			DA.GetDataList(_input.Values, inputTargets);
 
 			if (wrapper?.Value is ResultCloud cloud)
 			{

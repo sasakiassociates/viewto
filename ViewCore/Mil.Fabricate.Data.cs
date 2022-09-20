@@ -23,11 +23,11 @@ namespace ViewTo
 					{
 						new TargetContent
 						{
-							viewName = TAR_A
+							ViewName = TAR_A
 						},
 						new TargetContent
 						{
-							viewName = TAR_B
+							ViewName = TAR_B
 						}
 					};
 
@@ -42,7 +42,7 @@ namespace ViewTo
 					{
 						new DesignContent
 						{
-							viewName = "DesignA"
+							ViewName = "DesignA"
 						}
 					};
 
@@ -100,7 +100,7 @@ namespace ViewTo
 
 					return values;
 				}
-				
+
 				public static int[] ValuesInt(int valueCount, Random rnd = null)
 				{
 					rnd ??= new Random();
@@ -123,7 +123,7 @@ namespace ViewTo
 					for (uint i = 0; i < testValues.Length; i++) testValues[i] = ValuesInt(contentCount, rnd);
 					return testValues;
 				}
-				
+
 				public static uint[][] ValuesUint(int valueCount, int contentCount)
 				{
 					var rnd = new Random();

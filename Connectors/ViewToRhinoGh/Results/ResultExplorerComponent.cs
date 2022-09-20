@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Grasshopper.Kernel;
@@ -24,6 +25,7 @@ namespace ViewTo.RhinoGh.Results
 
 		ResultExplorer _explorer;
 		ExplorerSettings _settings;
+		int _minInt = 0, _maxInt = 1;
 		double _min = 1.0, _max = 0.0;
 
 		(int Obj, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
@@ -106,6 +108,25 @@ namespace ViewTo.RhinoGh.Results
 			if (value > _max) _max = value;
 		}
 
+		void SetMinMax(ICollection<int> value)
+		{
+			_minInt = 1;
+			_maxInt = 0;
+
+			if (value.Any())
+				foreach (var t in value)
+					SetMinMax(t);
+		}
+
+		void SetMinMax(int value)
+		{
+			// values that have no view are set to -1
+			if (value < 0) return;
+
+			if (value < _minInt) _minInt = value;
+			if (value > _maxInt) _maxInt = value;
+		}
+
 		const int MAX_ALPHA = 255;
 
 		const int MIN_ALPHA = 100;
@@ -164,15 +185,18 @@ namespace ViewTo.RhinoGh.Results
 
 			if (_settings.options.Count == 1)
 			{
-				// if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out var data))
-				// {
-				// 	explorerValues = data.ToArray();
-				// }
+				if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out ICollection<int> data))
+				{
+					// need to store the current max and min of the values passed out
+					SetMinMax(data);
+					explorerValues = data.ToArray().Log(_maxInt, _minInt);
+				}
 			}
 			else
 			{
-				if (_explorer.TryGet(_settings.valueType, _settings.options.Select(x => x.target).ToList(), out var data))
-					explorerValues = data.ToArray();
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Composite based targets are not supported at the moment");
+				// if (_explorer.TryGet(_settings.valueType, _settings.options.Select(x => x.target).ToList(), out IEnumerable<int> data))
+				// 	explorerValues = data.ToArray();
 			}
 
 			if (!explorerValues.Valid())
@@ -181,15 +205,12 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			// need to store the current max and min of the values passed out
-			SetMinMax(explorerValues);
-
-			if (_settings.normalize)
-			{
-				// HACK: this is needed to remap the values with power and log. 
-				// TODO: this should be replaced once the values are no longer stored as doubles
-				explorerValues = explorerValues.PowLog(maxScore: _max, maxValue: _max, multiplier: 10000000.0, minValue: _min);
-			}
+			// if (_settings.normalize)
+			// {
+			// 	// HACK: this is needed to remap the values with power and log. 
+			// 	// TODO: this should be replaced once the values are no longer stored as doubles
+			// 	explorerValues = explorerValues.PowLog(maxScore: _max, maxValue: _max, multiplier: 10000000.0, minValue: _min);
+			// }
 
 			var points = new GH_Structure<GH_Point>();
 			var values = new GH_Structure<GH_Number>();

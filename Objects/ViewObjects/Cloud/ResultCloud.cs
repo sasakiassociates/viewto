@@ -6,7 +6,7 @@ namespace ViewObjects.Cloud
 {
 	public class ResultCloud : ViewCloud, IResultCloud
 	{
-		public ResultCloud() => viewID = Guid.NewGuid().ToString();
+		public ResultCloud() => ViewId = Guid.NewGuid().ToString();
 
 		public override bool isValid
 		{

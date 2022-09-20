@@ -14,20 +14,16 @@ namespace ViewObjects.Speckle
 		public ViewCloudBase()
 		{
 			// temporary solution for keeping track of clouds in a study
-			viewID = Guid.NewGuid().ToString();
+			ViewId = Guid.NewGuid().ToString();
 		}
 
-		[DetachProperty]
-		public Pointcloud cloud { get; set; }
+		[DetachProperty] public Pointcloud cloud { get; set; }
 
-		[DetachProperty]
-		public List<string> cloudMetaData { get; set; }
+		[DetachProperty] public List<string> cloudMetaData { get; set; }
 
-		[JsonIgnore]
-		public int count => cloud?.points?.Count / 3 ?? 0;
+		[JsonIgnore] public int count => cloud?.points?.Count / 3 ?? 0;
 
-		[JsonIgnore]
-		public List<CloudPointBase> points
+		[JsonIgnore] public List<CloudPointBase> points
 		{
 			get =>
 				cloud?.GetPoints().Select(p => new CloudPointBase
@@ -53,9 +49,8 @@ namespace ViewObjects.Speckle
 			}
 		}
 
-		[JsonIgnore]
-		public virtual bool isValid => cloud != null;
+		[JsonIgnore] public virtual bool isValid => cloud != null;
 
-		public string viewID { get; set; }
+		public string ViewId { get; set; }
 	}
 }

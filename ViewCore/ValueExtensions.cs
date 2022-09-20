@@ -81,7 +81,6 @@ namespace ViewTo
 			return values;
 		}
 
-		
 		public static void GetMaxMin(this List<int> inputValues, out int max, out int min)
 		{
 			min = 0;
@@ -100,7 +99,6 @@ namespace ViewTo
 			}
 		}
 
-		
 		public static void GetMaxMin(this List<uint> inputValues, out uint max, out uint min)
 		{
 			min = 0;
@@ -156,7 +154,7 @@ namespace ViewTo
 		}
 
 		public static uint NormalizeBy(this uint value, uint max, uint min = 0) => (value - min) / (max - min);
-		
+
 		public static int NormalizeBy(this int value, int max, int min = 0) => (value - min) / (max - min);
 
 		public static float NormalizeBy(this float value, float max, float min = 0.0f) => (value - min) / (max - min);
@@ -191,6 +189,30 @@ namespace ViewTo
 				var pxValue = values[i];
 
 				outputValues[i] = !double.IsNaN(pxValue) && pxValue > minValue ? Math.Log(pxValue * multiplier, logCustomBase) : pxValue;
+			}
+
+			return outputValues;
+		}
+
+		public static double[] Log(this int[] values, int maxValue, int minValue = 0)
+		{
+			// var maxCount = maxValue * multiplier;
+			// var logCustomBase = Math.Pow(maxValue, 1 / maxScore);
+
+			var outputValues = new double[values.Length];
+
+			for (var i = 0; i < values.Length; i++)
+			{
+				var pxValue = values[i];
+
+				if (pxValue > minValue)
+					outputValues[i] = minValue;
+				else if (pxValue < maxValue)
+					outputValues[i] = maxValue;
+				else
+					outputValues[i] = Math.Log10(pxValue);
+
+				// outputValues[i] = values[i] > minValue ? Math.Log(pxValue,logCustomBase) : values[i];
 			}
 
 			return outputValues;

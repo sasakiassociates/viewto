@@ -34,7 +34,7 @@ namespace ViewTo.RhinoGh
 			GH_Convert.ToString(name, out var viewName, GH_Conversion.Both);
 			return new TContent
 			{
-				objects = (from i in meshes where GH_Convert.ToMesh(i, ref m, GH_Conversion.Primary) select m).Cast<object>().ToList(), viewName = viewName
+				objects = (from i in meshes where GH_Convert.ToMesh(i, ref m, GH_Conversion.Primary) select m).Cast<object>().ToList(), ViewName = viewName
 			};
 		}
 	}

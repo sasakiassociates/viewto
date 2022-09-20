@@ -14,17 +14,24 @@ namespace ViewObjects
 
 	public interface IId
 	{
-		string viewID { get; set; }
+		/// <summary>
+		/// View id in the format of <see cref="System.Guid"/>
+		/// </summary>
+		string ViewId { get; set; }
 	}
 
 	public interface INameable
 	{
-		string viewName { get; set; }
+		/// <summary>
+		/// Simple name for view objects
+		/// </summary>
+		string ViewName { get; set; }
 	}
 
 	public interface IMetaShell
 	{
 		string objId { get; }
+
 		Type objType { get; }
 	}
 }

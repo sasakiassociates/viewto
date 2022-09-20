@@ -17,19 +17,19 @@ namespace ViewObjects.Converter
 
 		protected ResultCloudBase ResultCloudToSpeckle(IResultCloud @object) => new ResultCloudBase
 		{
-			data = @object.data.Convert(), points = @object.points.ToList().ToSpeckle(), viewID = @object.viewID
+			data = @object.data.Convert(), points = @object.points.ToList().ToSpeckle(), ViewId = @object.ViewId
 		};
 
 		protected ViewCloudBase ViewCloudToSpeckle(IViewCloud @object) => @object is ResultCloud rc ?
 			ResultCloudToSpeckle(rc) : new ViewCloudBase
 			{
-				points = @object.points.ToList().ToSpeckle(), viewID = @object.viewID
+				points = @object.points.ToList().ToSpeckle(), ViewId = @object.ViewId
 			};
 
 		protected IViewCloud ViewCloudToNative(ViewCloudBase @base)
 		{
 			var obj = Schema?.nativeViewCloud;
-			obj.viewID = @base.viewID;
+			obj.ViewId = @base.ViewId;
 			obj.points = @base.points.ToView().ToArray();
 			return obj;
 		}
@@ -37,7 +37,7 @@ namespace ViewObjects.Converter
 		protected IResultCloud ResultCloudToNative(ResultCloudBase @base)
 		{
 			var obj = Schema?.nativeResultCloud;
-			obj.viewID = @base.viewID;
+			obj.ViewId = @base.ViewId;
 			obj.points = @base.points.ToView().ToArray();
 			obj.data = @base.data.Convert();
 			return obj;
@@ -85,17 +85,17 @@ namespace ViewObjects.Converter
 
 		protected TargetContentBase TargetContentToSpeckle(ITargetContent @object) => new TargetContentBase
 		{
-			viewName = @object.viewName, isolate = @object.isolate, bundles = SafeConvert(@object.bundles)
+			ViewName = @object.ViewName, isolate = @object.isolate, bundles = SafeConvert(@object.bundles)
 		};
 
 		protected DesignContentBase DesignContentToSpeckle(IDesignContent @object) => new DesignContentBase
 		{
-			viewName = @object.viewName
+			ViewName = @object.ViewName
 		};
 
 		protected BlockerContentBase BlockerContentToSpeckle(IBlockerContent @object) => new BlockerContentBase
 		{
-			viewName = @object.viewName
+			ViewName = @object.ViewName
 		};
 
 		protected IViewContent ViewContentToNative(ViewContentBase content)
@@ -132,7 +132,7 @@ namespace ViewObjects.Converter
 			var viewObj = Schema?.nativeTargetContent;
 
 			viewObj.isolate = @base.isolate;
-			viewObj.viewName = @base.viewName;
+			viewObj.ViewName = @base.ViewName;
 			viewObj.viewColor = @base.viewColor;
 			viewObj.bundles = SafeConvert(@base.bundles);
 
@@ -142,14 +142,14 @@ namespace ViewObjects.Converter
 		protected IDesignContent DesignContentToNative(DesignContentBase @base)
 		{
 			var viewObj = Schema?.nativeDesignContent;
-			viewObj.viewName = @base.viewName;
+			viewObj.ViewName = @base.ViewName;
 			return viewObj;
 		}
 
 		protected IBlockerContent BlockerContentToNative(BlockerContentBase @base)
 		{
 			var viewObj = Schema?.nativeBlockerContent;
-			viewObj.viewName = @base.viewName;
+			viewObj.ViewName = @base.ViewName;
 			return viewObj;
 		}
 
@@ -335,7 +335,7 @@ namespace ViewObjects.Converter
 
 			return new ViewStudyBase
 			{
-				viewName = @object.viewName, objs = casted
+				ViewName = @object.ViewName, objs = casted
 			};
 		}
 
@@ -364,7 +364,7 @@ namespace ViewObjects.Converter
 		{
 			var viewObj = Schema?.nativeViewStudy;
 
-			viewObj.viewName = @base.viewName;
+			viewObj.ViewName = @base.ViewName;
 			var items = new List<IViewObj>();
 
 			if (@base.objs.Valid())

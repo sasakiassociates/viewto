@@ -38,28 +38,20 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var wrappers = new List<GH_ViewObj>();
 			DA.GetDataList(0, wrappers);
-			var clouds = wrappers.Unwrap<ViewCloud>();
+			var clouds = wrappers.Unwrap<ViewCloudReference>();
 
-			IViewerBundle vb;
-			if (clouds != null && clouds.Any())
-				vb = new ViewerBundleLinked
-				{
-					linkedClouds = clouds.Where(x => x != null).Select(x => x.Build()).ToList(),
-					layouts = new List<IViewerLayout>
-					{
-						new ViewerLayoutHorizontal()
-					}
-				};
-			else
-				vb = new ViewerBundle
-				{
-					layouts = new List<IViewerLayout>
-					{
-						new ViewerLayoutHorizontal()
-					}
-				};
+			var layout = new ViewerLayout_v2(new List<ViewerDirection>()
+			{
+				ViewerDirection.Front,
+				ViewerDirection.Right,
+				ViewerDirection.Back,
+				ViewerDirection.Left,
+				ViewerDirection.Up,
+				ViewerDirection.Down
+			});
 
-			DA.SetData(0, vb);
+			var viewerSystem = new ViewerSystem_v2(new List<IViewerLayout_v2>() { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
+			DA.SetData(0, viewerSystem);
 		}
 
 	}

@@ -67,7 +67,7 @@ namespace ViewTo
 
 		public static bool Check(this IId obj, IId input)
 		{
-			return obj != default && obj.viewID.Valid() && input != default && input.viewID.Valid() && obj.viewID.Equals(input.viewID);
+			return obj != default && obj.ViewId.Valid() && input != default && input.ViewId.Valid() && obj.ViewId.Equals(input.ViewId);
 		}
 
 		public static ResultCloud GetResults(string path)

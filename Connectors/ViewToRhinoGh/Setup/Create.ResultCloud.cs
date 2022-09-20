@@ -33,7 +33,7 @@ namespace ViewTo.RhinoGh.Setup
 			pManager.AddTextParameter("ID", "I", "Id for the View Cloud", GH_ParamAccess.item);
 			_input.Id = index++;
 
-			pManager.AddNumberParameter("Values", "V", "Values to use", GH_ParamAccess.tree);
+			pManager.AddIntegerParameter("Values", "V", "Values to use", GH_ParamAccess.tree);
 			_input.Values = index++;
 
 			pManager.AddTextParameter("Names", "T", "Target content to use", GH_ParamAccess.tree);
@@ -52,7 +52,7 @@ namespace ViewTo.RhinoGh.Setup
 			var points = new List<GH_Point>();
 			DA.GetDataList(_input.Points, points);
 
-			DA.GetDataTree(_input.Values, out GH_Structure<GH_Number> treeValues);
+			DA.GetDataTree(_input.Values, out GH_Structure<GH_Integer> treeValues);
 
 			DA.GetDataTree(_input.Target, out GH_Structure<GH_String> treeNames);
 
@@ -70,30 +70,30 @@ namespace ViewTo.RhinoGh.Setup
 
 			var dataContainer = new List<IResultData>();
 
+			const int INDEX_CONTENT = 0;
+			const int INDEX_STAGE = 1;
+
 			for (int bIndex = 0; bIndex < treeNames.Branches.Count; bIndex++)
 			{
 				var branchValue = treeValues.Branches[bIndex];
 
-				var values = new List<double>();
+				var values = new List<int>();
 				foreach (var v in branchValue)
 					values.Add(v.Value);
 
-				const int INDEX_CONTENT = 0;
-				const int INDEX_STAGE = 1;
-
 				var branchName = treeNames.Branches[bIndex];
-				// dataContainer.Add(
-				// 	new ContentResultData(
-				// 		values,
-				// 		branchName.Count >= INDEX_CONTENT ? branchName[INDEX_CONTENT].Value : "Invalid Content",
-				// 		branchName.Count >= INDEX_STAGE ? branchName[INDEX_STAGE].Value : "Invalid Stage",
-				// 		0)
-				// );
+				dataContainer.Add(
+					new ContentResultData(
+						values,
+						branchName.Count >= INDEX_CONTENT ? branchName[INDEX_CONTENT].Value : "Invalid Content",
+						branchName.Count >= INDEX_STAGE ? branchName[INDEX_STAGE].Value : "Invalid Stage",
+						0)
+				);
 			}
 
 			var resulCloud = new ResultCloud
 			{
-				viewID = id,
+				ViewId = id,
 				points = cloudPoints,
 				data = dataContainer
 			};

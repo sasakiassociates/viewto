@@ -15,7 +15,7 @@ namespace ViewObjects.Speckle
 		public ViewStudyBase()
 		{ }
 
-		public string viewName { get; set; }
+		public string ViewName { get; set; }
 
 		public List<ViewObjBase> objs { get; set; }
 	}
