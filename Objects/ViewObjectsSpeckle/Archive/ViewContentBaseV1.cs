@@ -8,10 +8,10 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// 
 	/// </summary>
-	public abstract class ViewContentBase : ViewObjBase, IValidate, INameable
+	public abstract class ViewContentBaseV1 : ViewObjectBase_v1, IValidate, INameable
 	{
 
-		public ViewContentBase()
+		public ViewContentBaseV1()
 		{ }
 
 		[DetachProperty] public List<Base> objects { get; set; }

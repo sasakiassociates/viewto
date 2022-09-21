@@ -16,9 +16,9 @@ namespace ViewTo.Tests.Integration
 		public const string OPT_A = "DesignA";
 		public const string OPT_B = "DesignB";
 
-		public static List<BlockerContentBase> Blockers()
+		public static List<BlockerContentBaseV1> Blockers()
 		{
-			return new List<BlockerContentBase>
+			return new List<BlockerContentBaseV1>
 			{
 				new()
 				{
@@ -37,13 +37,13 @@ namespace ViewTo.Tests.Integration
 			};
 		}
 
-		public static List<DesignContentBase> Designs()
+		public static List<DesignContentBaseV1> Designs()
 		{
-			return new List<DesignContentBase>
+			return new List<DesignContentBaseV1>
 			{
 				new()
 				{
-					viewName = "Target 1",
+					ViewName = "Target 1",
 					objects = new List<Base>
 					{
 						new Box()
@@ -51,7 +51,7 @@ namespace ViewTo.Tests.Integration
 				},
 				new()
 				{
-					viewName = "Target 2",
+					ViewName = "Target 2",
 					objects = new List<Base>
 					{
 						new Box()
@@ -60,13 +60,13 @@ namespace ViewTo.Tests.Integration
 			};
 		}
 
-		public static List<TargetContentBase> Targets()
+		public static List<TargetContentBaseV1> Targets()
 		{
-			return new List<TargetContentBase>
+			return new List<TargetContentBaseV1>
 			{
 				new()
 				{
-					viewName = "Target 1",
+					ViewName = "Target 1",
 					objects = new List<Base>
 					{
 						new Box()
@@ -74,7 +74,7 @@ namespace ViewTo.Tests.Integration
 				},
 				new()
 				{
-					viewName = "Target 2",
+					ViewName = "Target 2",
 					objects = new List<Base>
 					{
 						new Box()
@@ -83,17 +83,17 @@ namespace ViewTo.Tests.Integration
 			};
 		}
 
-		public static ContentBundleBase Content()
+		public static ContentBundleBaseV1 Content()
 		{
-			return new ContentBundleBase
+			return new ContentBundleBaseV1
 			{
 				targets = Targets(), blockers = Blockers(), designs = Designs()
 			};
 		}
 
-		public static ViewCloudBase ViewCloud(int count)
+		public static ViewCloudBaseV1 ViewCloud(int count)
 		{
-			return new ViewCloudBase
+			return new ViewCloudBaseV1
 			{
 				points = CloudPoints(count)
 			};
@@ -112,28 +112,28 @@ namespace ViewTo.Tests.Integration
 			return points;
 		}
 
-		public static ViewerBundleBase ViewerBundle()
+		public static ViewerBundleBaseV1 ViewerBundle()
 		{
-			return new ViewerBundleBase
+			return new ViewerBundleBaseV1
 			{
 				layouts = new List<IViewerLayout>
 				{
-					new ViewerLayoutBaseOrtho(), new ViewerLayoutBaseCube()
+					new ViewerLayoutBaseV1Ortho(), new ViewerLayoutBaseV1Cube()
 				}
 			};
 		}
 
-		public static ResultCloudBase ResultCloud(int count)
+		public static ResultCloudBaseV1 ResultCloud(int count)
 		{
-			return new ResultCloudBase
+			return new ResultCloudBaseV1
 			{
 				points = CloudPoints(count), data = PixelCollection(count)
 			};
 		}
 
-		public static ResultPixelBase PixelData(int value, string contentName, string stage, string meta = null)
+		public static ResultPixelBaseV1 PixelData(int value, string contentName, string stage, string meta = null)
 		{
-			return new ResultPixelBase
+			return new ResultPixelBaseV1
 			{
 				values = ValuesInt(value),
 				stage = stage,
@@ -152,7 +152,7 @@ namespace ViewTo.Tests.Integration
 				values.Add((uint)rnd.Next());
 			return values;
 		}
-		
+
 		public static List<int> ValuesInt(int valueCount, Random rnd = null)
 		{
 			rnd ??= new Random();

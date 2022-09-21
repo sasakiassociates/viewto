@@ -8,7 +8,7 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// View Content Object adapted to <see cref="Base"/>
 	/// </summary>
-	public class ContentBase_v2 : ViewObjectBase, IContent
+	public class ContentBase_v2 : ViewObjectBase_v2, IContent
 	{
 		/// <inheritdoc />
 		public string ViewName { get; set; }

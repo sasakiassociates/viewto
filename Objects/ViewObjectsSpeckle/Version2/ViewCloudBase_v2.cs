@@ -7,7 +7,7 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// 
 	/// </summary>
-	public class ViewCloudBase_v2 : ViewObjectBase, IViewCloud_v2
+	public class ViewCloudBase_v2 : ViewObjectBase_v2, IViewCloud_v2
 	{
 
 		/// <inheritdoc />

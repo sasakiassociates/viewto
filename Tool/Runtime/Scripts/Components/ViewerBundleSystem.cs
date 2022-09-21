@@ -224,7 +224,7 @@ namespace ViewTo.Connector.Unity
 			}
 
 			// if we reached the last stage for a cloud, we send that data to morph the view cloud into a result cloud
-			OnDataReadyForCloud?.Invoke(new ResultsForCloud(activeCloud.viewID, _bundleDataForCloud));
+			OnDataReadyForCloud?.Invoke(new ResultsForCloud(activeCloud.ViewId, _bundleDataForCloud));
 
 			// remove the previous index
 			clouds.RemoveAt(_active.cloud);

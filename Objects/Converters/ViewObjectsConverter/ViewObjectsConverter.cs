@@ -38,7 +38,7 @@ namespace ViewObjects.Converter
 
 		public Base ConvertToSpeckle(object @object) => ConvertToSpeckleViewObject(@object);
 
-		public ViewObjectBase ConvertToSpeckleViewObject(object @object)
+		public ViewObjectBase_v2 ConvertToSpeckleViewObject(object @object)
 		{
 			switch (@object)
 			{
@@ -120,17 +120,17 @@ namespace ViewObjects.Converter
 		{
 			switch (@base)
 			{
-				case ViewStudyBase _:
+				case ViewStudyBaseV1 _:
 					return true;
-				case ResultCloudBase _:
+				case ResultCloudBaseV1 _:
 					return true;
-				case ViewCloudBase _:
+				case ViewCloudBaseV1 _:
 					return true;
-				case ContentBundleBase _:
+				case ContentBundleBaseV1 _:
 					return true;
-				case ViewerBundleBase _:
+				case ViewerBundleBaseV1 _:
 					return true;
-				case ViewerLayoutBase _:
+				case ViewerLayoutBaseV1 _:
 					return true;
 				// V2 objects
 				case ViewStudyBase_v2 _:

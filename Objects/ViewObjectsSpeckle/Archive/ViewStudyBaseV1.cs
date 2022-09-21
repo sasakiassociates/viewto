@@ -6,17 +6,17 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// A View Study for Speckle  
 	/// </summary>
-	public class ViewStudyBase : ViewObjBase
+	public class ViewStudyBaseV1 : ViewObjectBase_v1
 	{
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public ViewStudyBase()
+		public ViewStudyBaseV1()
 		{ }
 
 		public string ViewName { get; set; }
 
-		public List<ViewObjBase> objs { get; set; }
+		public List<ViewObjectBase_v1> objs { get; set; }
 	}
 }

@@ -17,7 +17,7 @@ namespace ViewObjects.Converter.Unity
 
 		protected override void ConvertBase(BlockerContentBase @base, ref BlockerContentMono instance)
 		{
-			instance.viewName = @base.viewName;
+			instance.ViewName = @base.ViewName;
 
 			throw new System.NotImplementedException();
 		}

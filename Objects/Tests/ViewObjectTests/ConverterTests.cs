@@ -67,33 +67,33 @@ namespace ViewTests.Objects
 
 			Assert.IsTrue(converter.CanConvertToSpeckle(study));
 
-			var res = (ViewStudyBase)converter.ConvertToSpeckle(study);
+			var res = (ViewStudyBaseV1)converter.ConvertToSpeckle(study);
 
 			Assert.IsNotNull(study);
 
 			Assert.IsTrue(res.objs.Count == study.objs.Count);
-			Assert.IsTrue(res.viewName.Equals(study.viewName));
+			Assert.IsTrue(res.ViewName.Equals(study.ViewName));
 
 			foreach (var obj in res.objs)
 			{
 				switch (obj)
 				{
-					case ResultCloudBase o:
+					case ResultCloudBaseV1 o:
 						var rc = (IResultCloud)study.objs.First(x => x is IResultCloud);
-						Assert.IsTrue(rc != default && rc.viewID.Equals(o.viewID));
+						Assert.IsTrue(rc != default && rc.ViewId.Equals(o.ViewId));
 						Assert.IsTrue(rc.points.Length == o.points.Count);
 						Assert.IsTrue(rc.data.Count == o.data.Count);
 						break;
-					case ViewCloudBase o:
+					case ViewCloudBaseV1 o:
 						var vc = (IViewCloud)study.objs.First(x => x is IViewCloud);
-						Assert.IsTrue(vc != default && vc.viewID.Equals(o.viewID));
+						Assert.IsTrue(vc != default && vc.ViewId.Equals(o.ViewId));
 						Assert.IsTrue(vc.points.Length == o.points.Count);
 						break;
-					case ContentBundleBase o:
+					case ContentBundleBaseV1 o:
 						var cb = (IViewContentBundle)study.objs.First(x => x is IViewContentBundle);
 						Assert.IsTrue(cb != default && cb.contents.Count == o.targets.Count + o.blockers.Count + o.designs.Count);
 						break;
-					case ViewerBundleBase o:
+					case ViewerBundleBaseV1 o:
 						var vb = (IViewerBundle)study.objs.First(x => x is IViewerBundle);
 						Assert.IsTrue(vb != default && vb.layouts.Count == o.layouts.Count);
 						break;

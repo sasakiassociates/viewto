@@ -5,10 +5,10 @@ using Speckle.Newtonsoft.Json;
 namespace ViewObjects.Speckle
 {
 
-	public class ViewerLayoutBase : ViewObjBase, IViewerLayout
+	public class ViewerLayoutBaseV1 : ViewObjectBase_v1, IViewerLayout
 	{
 
-		public ViewerLayoutBase()
+		public ViewerLayoutBaseV1()
 		{ }
 
 		[JsonIgnore] public virtual List<IViewer> viewers =>
@@ -18,37 +18,37 @@ namespace ViewObjects.Speckle
 			};
 	}
 
-	public class ViewerLayoutBaseFocus : ViewerLayoutBase
+	public class ViewerLayoutBaseV1Focus : ViewerLayoutBaseV1
 	{
 
-		public ViewerLayoutBaseFocus()
+		public ViewerLayoutBaseV1Focus()
 		{ }
 
 		public Point focusPoint { get; set; }
 	}
 
-	public class ViewerLayoutBaseNormal : ViewerLayoutBase
+	public class ViewerLayoutBaseV1Normal : ViewerLayoutBaseV1
 	{
 
 		public string shellId;
 
-		public ViewerLayoutBaseNormal()
+		public ViewerLayoutBaseV1Normal()
 		{ }
 	}
 
-	public class ViewerLayoutBaseOrtho : ViewerLayoutBase
+	public class ViewerLayoutBaseV1Ortho : ViewerLayoutBaseV1
 	{
 
 		public double size;
 
-		public ViewerLayoutBaseOrtho()
+		public ViewerLayoutBaseV1Ortho()
 		{ }
 	}
 
-	public class ViewerLayoutBaseCube : ViewerLayoutBase
+	public class ViewerLayoutBaseV1Cube : ViewerLayoutBaseV1
 	{
 
-		public ViewerLayoutBaseCube()
+		public ViewerLayoutBaseV1Cube()
 		{ }
 
 		[JsonIgnore] public override List<IViewer> viewers =>
@@ -63,10 +63,10 @@ namespace ViewObjects.Speckle
 			};
 	}
 
-	public class ViewerLayoutBaseHorizontal : ViewerLayoutBase
+	public class ViewerLayoutBaseV1Horizontal : ViewerLayoutBaseV1
 	{
 
-		public ViewerLayoutBaseHorizontal()
+		public ViewerLayoutBaseV1Horizontal()
 		{ }
 
 		[JsonIgnore] public override List<IViewer> viewers =>

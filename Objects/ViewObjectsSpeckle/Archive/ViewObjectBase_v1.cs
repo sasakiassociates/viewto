@@ -5,10 +5,10 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	///   simple parent view object for base type
 	/// </summary>
-	public abstract class ViewObjBase : Base, IViewObj
+	public abstract class ViewObjectBase_v1 : Base, IViewObj
 	{
 
-		public ViewObjBase()
+		public ViewObjectBase_v1()
 		{ }
 	}
 }

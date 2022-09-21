@@ -106,7 +106,7 @@ namespace ViewTo.Connector.Unity
 			// store study
 			_study = obj;
 
-			name = $"Rig-{_study.viewName}";
+			name = $"Rig-{_study.ViewName}";
 
 			// store all colors from scene
 			_data.activeColorsInScene = _study.GetViewColors();

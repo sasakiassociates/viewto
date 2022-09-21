@@ -4,15 +4,15 @@ using Speckle.Newtonsoft.Json;
 
 namespace ViewObjects.Speckle
 {
-	public class ViewerBundleBaseLinked : ViewerBundleBase
+	public class ViewerBundleBaseV1Linked : ViewerBundleBaseV1
 	{
 
-		public ViewerBundleBaseLinked()
+		public ViewerBundleBaseV1Linked()
 		{ }
 
 		[JsonIgnore] public override bool isValid => base.isValid && linkedClouds.Valid();
 
-		[DetachProperty] public List<ViewCloudBase> linkedClouds { get; set; }
+		[DetachProperty] public List<ViewCloudBaseV1> linkedClouds { get; set; }
 
 		/// <summary>
 		///   temporary list for storing view cloud info to find

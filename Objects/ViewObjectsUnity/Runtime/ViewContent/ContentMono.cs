@@ -98,7 +98,7 @@ namespace ViewObjects.Unity
 			}
 		}
 
-		public string viewName
+		public string ViewName
 		{
 			get => contentName;
 			set
@@ -110,7 +110,7 @@ namespace ViewObjects.Unity
 
 		public string FullName
 		{
-			get => this.TypeName() + "-" + viewName;
+			get => this.TypeName() + "-" + ViewName;
 		}
 
 		void ApplyColor()
@@ -159,7 +159,7 @@ namespace ViewObjects.Unity
 				onAfterPrime?.Invoke(obj);
 			}
 
-			Debug.Log($"{viewName} is primed!\nview color {viewColor.ToUnity()}");
+			Debug.Log($"{ViewName} is primed!\nview color {viewColor.ToUnity()}");
 		}
 	}
 }

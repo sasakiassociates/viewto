@@ -5,17 +5,17 @@ using Speckle.Newtonsoft.Json;
 namespace ViewObjects.Speckle
 {
 
-	public class TargetContentBase : ViewContentBase
+	public class TargetContentBaseV1 : ViewContentBaseV1
 	{
 
-		public TargetContentBase()
+		public TargetContentBaseV1()
 		{ }
 
 		public bool isolate { set; get; }
 
 		public ViewColor viewColor { get; set; }
 
-		[DetachProperty] public List<ViewerBundleBase> bundles { get; set; }
+		[DetachProperty] public List<ViewerBundleBaseV1> bundles { get; set; }
 
 		[JsonIgnore] public override bool isValid => base.isValid && ViewName.Valid();
 	}

@@ -30,7 +30,7 @@ namespace ViewObjects.Converter
 			return @base != null;
 		}
 
-		public static IResultData Convert(this IResultData @object) => new ResultPixelBase
+		public static IResultData Convert(this IResultData @object) => new ResultPixelBaseV1
 		{
 			values = @object.values,
 			content = @object.content,
@@ -64,13 +64,13 @@ namespace ViewObjects.Converter
 				}).ToList();
 		}
 
-		public static List<CloudShell> ToView(this List<ViewCloudBase> @base)
+		public static List<CloudShell> ToView(this List<ViewCloudBaseV1> @base)
 		{
 			return!@base.Valid() ? new List<CloudShell>() :
 				@base.Select(c => c.ToView()).ToList();
 		}
 
-		public static CloudShell ToView(this ViewCloudBase @base) => new CloudShell(@base, @base.id, @base.count);
+		public static CloudShell ToView(this ViewCloudBaseV1 baseV1) => new CloudShell(baseV1, baseV1.id, baseV1.count);
 
 		public static CloudPoint ToView(this Point p) => new CloudPoint(p.x, p.y, p.z);
 	}

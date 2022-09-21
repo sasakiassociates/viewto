@@ -175,7 +175,6 @@ MonoBehaviour:
   _runRepeatCommand: 0
   _study: {fileID: 0}
   _rig: {fileID: 0}
-  _explorer: {fileID: 0}
   _stream:
     _id: 
     _name: 

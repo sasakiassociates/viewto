@@ -3,13 +3,13 @@
 	/// <summary>
 	/// 
 	/// </summary>
-	public class BlockerContentBase : ViewContentBase
+	public class BlockerContentBaseV1 : ViewContentBaseV1
 	{
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public BlockerContentBase()
+		public BlockerContentBaseV1()
 		{ }
 	}
 }

@@ -12,6 +12,7 @@ using Speckle.Core.Credentials;
 using UnityEngine;
 using UnityEngine.Events;
 using ViewObjects;
+using ViewObjects.Speckle;
 using ViewObjects.Unity;
 using ViewTo.Connector.Unity.Commands;
 using Debug = UnityEngine.Debug;
@@ -53,22 +54,6 @@ namespace ViewTo.Connector.Unity
 
 		public bool inProcess { get; private set; }
 
-		// public ResultExplorerMono explorer
-		// {
-		// 	get
-		// 	{
-		// 		if (_explorer != null)
-		// 			return _explorer;
-		//
-		// 		var res = FindObjectOfType<ResultExplorerMono>();
-		//
-		// 		if (res == null)
-		// 			res = new GameObject("ResultExplorer").AddComponent<ResultExplorerMono>();
-		//
-		// 		return res;
-		// 	}
-		// }
-
 		#region static methods
 
 		public static ViewToHub Initialize()
@@ -90,7 +75,7 @@ namespace ViewTo.Connector.Unity
 			if (!IsInit)
 				Init();
 
-			ViewConsole.Log($"{name} is loading View Study {obj.viewName} ");
+			ViewConsole.Log($"{name} is loading View Study {obj.ViewName} ");
 			_study = obj;
 			_study.OnResultsSet += SendResultsToStream;
 
@@ -120,7 +105,7 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
-			ViewConsole.Log($"Starting Run for {_study.viewName}");
+			ViewConsole.Log($"Starting Run for {_study.ViewName}");
 
 			inProcess = true;
 
@@ -143,6 +128,42 @@ namespace ViewTo.Connector.Unity
 
 		async UniTask AutoStart()
 		{
+			const string testStream = "4777dea055";
+			const string testCommit = "256ff84cf7";
+
+			Debug.Log("Starting");
+			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
+
+			client.token = this.GetCancellationTokenOnDestroy();
+			
+			var commit = await client.CommitGet(testStream, testCommit);
+
+			if (commit == null) return;
+
+			Debug.Log($"Commit Found {commit.id}");
+
+			var @base = await SpeckleOps.Receive(client, testStream, commit.referencedObject);
+
+			if (@base == null) return;
+
+			Debug.Log($"Receive Done {@base.totalChildrenCount}");
+
+			Debug.Log("Looking for object type");
+
+			var studyRef = await @base.SearchForType<ViewStudyBase_v2>(client.token);
+
+			if (studyRef == null) return;
+
+			Debug.Log($"Found Study {studyRef.ViewName} with {studyRef.Objects.Count} objects\n({studyRef.ViewId})");
+
+			foreach (var obj in studyRef.Objects)
+			{
+				Debug.Log($"Study object type{obj.speckle_type}");
+			}
+		}
+
+		async UniTask AutoStartViewStudy()
+		{
 			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
 			Debug.Log("Starting");
 			client.token = this.GetCancellationTokenOnDestroy();
@@ -150,7 +171,6 @@ namespace ViewTo.Connector.Unity
 			Debug.Log("Commit Found");
 			// var @base = await Operations.Receive(commit.referencedObject, this.GetCancellationTokenOnDestroy(), transport);
 			var @base = await SpeckleOps.Receive(client, STREAM, commit.referencedObject);
-			Debug.Log("Receive Done");
 
 			var node = new GameObject().AddComponent<SpeckleObjectBehaviour>();
 			_converterUnity.SetConverterSettings(new ScriptableConverterSettings { style = ConverterStyle.Queue });
@@ -160,17 +180,17 @@ namespace ViewTo.Connector.Unity
 			WhatIsThis(node);
 		}
 
-		const string STREAM = Inglewood_Stream;
-		const string BRANCH = Inglewood_Branch;
-		const string COMMIT = Inglewood_Commit;
+		const string STREAM = BPY_Stream;
+		const string BRANCH = BPY_Branch_1;
+		const string COMMIT = BPY_Commit_1;
 
 		const string BPY_Stream = "96855cab4a";
 		const string BPY_Branch_1 = "viewstudy/largewaterfront";
-		const string BPY_Commit_1 =  "deb54ce87c";
+		const string BPY_Commit_1 = "deb54ce87c";
 		const string BPY_Branch_2 = "viewstudy/gridofparks";
-		const string BPY_Commit_2 =  "dafc49783b";
+		const string BPY_Commit_2 = "dafc49783b";
 		const string BPY_Branch_3 = "viewstudy/eastwestparks";
-		const string BPY_Commit_3 =  "f5b36c93d2";
+		const string BPY_Commit_3 = "f5b36c93d2";
 
 		const string BCHP_Stream = "9b692137ca";
 		const string BCHP_Commit = "031307d6d5";
@@ -179,7 +199,7 @@ namespace ViewTo.Connector.Unity
 		const string Inglewood_Stream = "4777dea055";
 		const string Inglewood_Commit = "c3258e3979";
 		const string Inglewood_Branch = "viewstudy/massing-from-road";
-		
+
 		const string TEST_Stream = "1da7b18b31";
 		const string TEST_Commit = "1518e1cc4c";
 		const string TEST_Branch = "viewstudy/sphere";
@@ -211,7 +231,7 @@ namespace ViewTo.Connector.Unity
 					await client.CommitCreate(new CommitCreateInput()
 					{
 						objectId = res,
-						message = $"{_study.viewName} is complete! {mono.count}",
+						message = $"{_study.ViewName} is complete! {mono.count}",
 						branchName = BRANCH,
 						sourceApplication = SpeckleUnity.APP,
 						streamId = STREAM
@@ -344,6 +364,7 @@ namespace ViewTo.Connector.Unity
 
 		void Start()
 		{
+			// AutoStartViewStudy().Forget();
 			AutoStart().Forget();
 		}
 

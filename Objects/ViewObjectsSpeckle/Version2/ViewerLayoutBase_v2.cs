@@ -6,7 +6,7 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// 
 	/// </summary>
-	public class ViewerSystemBase_v2 : ViewObjectBase, IViewerSystem_v2<ViewerLayoutBase_v2>
+	public class ViewerSystemBase_v2 : ViewObjectBase_v2, IViewerSystem_v2<ViewerLayoutBase_v2>
 	{
 
 		/// <inheritdoc />
@@ -39,7 +39,7 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// Simple Viewer object
 	/// </summary>
-	public class ViewerLayoutBase_v2 : ViewObjectBase, IViewerLayout_v2
+	public class ViewerLayoutBase_v2 : ViewObjectBase_v2, IViewerLayout_v2
 	{
 		/// <inheritdoc />
 		public List<ViewerDirection> Viewers { get; set; }

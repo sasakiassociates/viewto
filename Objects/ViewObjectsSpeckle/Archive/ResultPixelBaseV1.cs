@@ -3,9 +3,9 @@ using Speckle.Core.Models;
 
 namespace ViewObjects.Speckle
 {
-	public class ResultPixelBase : ViewObjBase, IResultData
+	public class ResultPixelBaseV1 : ViewObjectBase_v1, IResultData
 	{
-		public ResultPixelBase()
+		public ResultPixelBaseV1()
 		{ }
 
 		[DetachProperty] [Chunkable] public List<int> values { get; set; }

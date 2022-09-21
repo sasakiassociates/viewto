@@ -32,7 +32,7 @@ namespace ViewTo.Connector.Unity
 
 		public ViewColorWithName(IViewContent viewContent)
 		{
-			content = viewContent.viewName;
+			content = viewContent.ViewName;
 
 			R = viewContent.viewColor.R;
 			G = viewContent.viewColor.G;

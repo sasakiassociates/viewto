@@ -69,7 +69,7 @@ namespace ViewTo.Connector.Unity
 		//   if (obj is ViewerBundleLinked linkedBundle)
 		//     foreach (var shell in linkedBundle.linkedClouds)
 		//     foreach (var c in clouds)
-		//       if (c.viewID.Equals(shell.objId))
+		//       if (c.ViewId.Equals(shell.objId))
 		//       {
 		//         soItem.linkedCloud.Add(c);
 		//         break;
@@ -166,8 +166,8 @@ namespace ViewTo.Connector.Unity
 					try
 					{
 						if (monoToCheck is IViewCloud obj
-						    && obj.viewID.Valid()
-						    && obj.viewID.Equals(idToFind))
+						    && obj.ViewId.Valid()
+						    && obj.ViewId.Equals(idToFind))
 							return obj;
 					}
 					catch (Exception e)

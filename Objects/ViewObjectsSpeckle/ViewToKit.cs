@@ -18,7 +18,7 @@ namespace ViewObjects.Speckle
 
 		public string ConverterBaseName => "ViewObjects.Converter";
 
-		public static AssemblyName AssemblyName => typeof(ViewObjBase).GetTypeInfo().Assembly.GetName();
+		public static AssemblyName AssemblyName => typeof(ViewObjectBase_v1).GetTypeInfo().Assembly.GetName();
 
 		public string Description => "View To kit for converting";
 
@@ -28,7 +28,17 @@ namespace ViewObjects.Speckle
 
 		public string WebsiteOrEmail => "https://sasaki.com";
 
-		public IEnumerable<Type> Types => Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(ViewObjBase)) && !t.IsAbstract);
+		public IEnumerable<Type> Types
+		{
+			get =>
+				Assembly.GetExecutingAssembly().GetTypes().Where
+				(t =>
+					 t.IsSubclassOf(typeof(ViewObjectBase_v2))
+					 || t.IsSubclassOf(typeof(ViewObjectBase_v1))
+					 || t.IsSubclassOf(typeof(Container))
+					 && !t.IsAbstract
+				);
+		}
 
 		public ISpeckleConverter LoadConverter(string app)
 		{

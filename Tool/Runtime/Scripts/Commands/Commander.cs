@@ -22,7 +22,7 @@ namespace ViewTo.Connector.Unity.Commands
 		{
 			rigArgs = mono.LoadStudyForRig();
 
-			return new StudyLoadedArgs(mono.viewName,
+			return new StudyLoadedArgs(mono.ViewName,
 			                           rigArgs.Valid() ? rigArgs.clouds.GetSum() : 0,
 			                           mono.CanRun(),
 			                           mono.CanVisualize());
@@ -172,7 +172,7 @@ namespace ViewTo.Connector.Unity.Commands
 					var targetCount = content.GetContentCount<ITargetContent>();
 
 					var clouds = obj.GetAll<IViewCloud>()
-						.ToDictionary(cld => cld?.viewID, cld => cld != null && cld.points.Valid() ? cld.points.Length : 0);
+						.ToDictionary(cld => cld?.ViewId, cld => cld != null && cld.points.Valid() ? cld.points.Length : 0);
 
 					var bundles = obj.GetAll<IViewerBundle>().ToList();
 					var globalBundleCount = 0;
@@ -214,7 +214,7 @@ namespace ViewTo.Connector.Unity.Commands
 				throw;
 			}
 
-			return new ValidStudyArg(greatSuccess, obj.viewName, greatSuccess ? "Succes" : Study.LoadError.MissingObjects.ToString());
+			return new ValidStudyArg(greatSuccess, obj.ViewName, greatSuccess ? "Succes" : Study.LoadError.MissingObjects.ToString());
 		}
 
 		public static int GetLayoutCount(this List<IViewerBundle> objs)
@@ -312,7 +312,7 @@ namespace ViewTo.Connector.Unity.Commands
 				// reference game object with view cloud attached
 				var go = cloud.gameObject;
 				mono = go.AddComponent<ResultCloudMono>();
-				mono.viewID = cloud.viewID;
+				mono.ViewId = cloud.ViewId;
 				mono.points = cloud.points;
 				mono.data = container.data;
 			}
@@ -337,10 +337,10 @@ namespace ViewTo.Connector.Unity.Commands
 					continue;
 
 				if (nameWithColor.Count == 0)
-					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.viewName));
+					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.ViewName));
 
-				else if (!nameWithColor.Any(x => x.content.Equals(vc.viewName)))
-					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.viewName));
+				else if (!nameWithColor.Any(x => x.content.Equals(vc.ViewName)))
+					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.ViewName));
 			}
 
 			return nameWithColor;

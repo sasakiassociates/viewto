@@ -86,7 +86,7 @@ namespace ViewObjects.Unity
 			get => this.GetCount();
 		}
 
-		public string viewID
+		public string ViewId
 		{
 			get => id;
 			set => id = value;

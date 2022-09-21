@@ -8,10 +8,10 @@ using Speckle.Newtonsoft.Json;
 namespace ViewObjects.Speckle
 {
 
-	public class ViewCloudBase : ViewObjBase, IValidate, IId
+	public class ViewCloudBaseV1 : ViewObjectBase_v1, IValidate, IId
 	{
 
-		public ViewCloudBase()
+		public ViewCloudBaseV1()
 		{
 			// temporary solution for keeping track of clouds in a study
 			ViewId = Guid.NewGuid().ToString();

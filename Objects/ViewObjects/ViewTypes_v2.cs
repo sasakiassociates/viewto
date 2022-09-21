@@ -11,8 +11,7 @@ namespace ViewObjects
 		public List<string> References { get; set; }
 	}
 
-	/// <typeparam name="TObject">Type of <see cref="IViewObj"/></typeparam> 
-	public interface IViewStudy_v2<TObject> : INameable, IId where TObject : IViewObj
+	public interface IViewStudy_v2<TObject> : INameable, IId
 	{
 		/// <summary>
 		/// A list of <typeparamref name="TObject"/> objects to group in a study
