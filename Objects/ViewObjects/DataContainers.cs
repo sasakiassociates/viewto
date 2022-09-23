@@ -1,4 +1,6 @@
-﻿namespace ViewObjects
+﻿using System.Collections.Generic;
+
+namespace ViewObjects
 {
 	public abstract class Container
 	{ }
@@ -16,7 +18,7 @@
 		public string Layout { get; set; }
 
 		/// <inheritdoc />
-		public int[] Values { get; set; }
+		public List<int> Values { get; set; }
 
 		/// <summary>
 		/// 

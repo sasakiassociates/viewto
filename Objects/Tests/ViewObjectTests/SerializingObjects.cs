@@ -74,37 +74,37 @@ namespace ViewTests.Objects
 				Console.WriteLine(t.Name);
 		}
 
-		[Test, Ignore("Data Container types are only available in View Objects")]
-		public void Serialize_Containers()
-		{
-			var obj_v1 = new ResultCloudBase_v2()
-			{
-				Data = new List<PixelDataContainer>()
-				{
-					new PixelDataContainer()
-					{
-						ContentId = "123",
-						Layout = "Horizontal",
-						Stage = ResultStage.Potential,
-						Values = Array.Empty<int>()
-					}
-				}
-			};
-
-			var json = Operations.Serialize(obj_v1);
-			var res = Operations.Deserialize(json);
-
-			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ResultCloudBase_v2);
-			var obj_v2 = res as ResultCloudBase_v2;
-
-			Assert.IsNotNull(obj_v2);
-			Assert.IsTrue(obj_v2.Data.Count == obj_v1.Data.Count);
-			Assert.IsTrue(obj_v2.Data.FirstOrDefault().Stage.Equals(obj_v1.Data.FirstOrDefault().Stage));
-			Assert.IsTrue(obj_v2.Data.FirstOrDefault().Layout.Equals(obj_v1.Data.FirstOrDefault().Layout));
-			Assert.IsTrue(obj_v2.Data.FirstOrDefault().ContentId.Equals(obj_v1.Data.FirstOrDefault().ContentId));
-			Assert.IsTrue(obj_v2.Data.FirstOrDefault().Values.Length.Equals(obj_v1.Data.FirstOrDefault().Values.Length));
-		}
+		// [Test, Ignore("Data Container types are only available in View Objects")]
+		// public void Serialize_Containers()
+		// {
+		// 	var obj_v1 = new ResultCloudBase_v2()
+		// 	{
+		// 		Data = new List<IResultData>()
+		// 		{
+		// 			new ContentResultData()
+		// 			{
+		// 				ContentId = "123",
+		// 				Layout = "Horizontal",
+		// 				Stage = ResultStage.Potential,
+		// 				Values = Array.Empty<int>()
+		// 			}
+		// 		}
+		// 	};
+		//
+		// 	var json = Operations.Serialize(obj_v1);
+		// 	var res = Operations.Deserialize(json);
+		//
+		// 	Assert.IsNotNull(res);
+		// 	Assert.IsTrue(res is ResultCloudBase_v2);
+		// 	var obj_v2 = res as ResultCloudBase_v2;
+		//
+		// 	Assert.IsNotNull(obj_v2);
+		// 	Assert.IsTrue(obj_v2.Data.Count == obj_v1.Data.Count);
+		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().Stage.Equals(obj_v1.Data.FirstOrDefault().Stage));
+		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().Layout.Equals(obj_v1.Data.FirstOrDefault().Layout));
+		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().ContentId.Equals(obj_v1.Data.FirstOrDefault().ContentId));
+		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().Values.Length.Equals(obj_v1.Data.FirstOrDefault().Values.Length));
+		// }
 
 		[Test]
 		public void Serialize_Study()

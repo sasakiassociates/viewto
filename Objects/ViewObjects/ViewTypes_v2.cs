@@ -82,7 +82,7 @@ namespace ViewObjects
 		/// <summary>
 		/// the raw values gathered 
 		/// </summary>
-		int[] Values { get; }
+		List<int> Values { get; }
 
 	}
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Speckle.Core.Models;
 
 namespace ViewObjects.Speckle
 {
@@ -9,9 +10,14 @@ namespace ViewObjects.Speckle
 	{
 
 		/// <summary>
+		/// List of point positions as x,y,z
+		/// </summary>
+		[DetachProperty] [Chunkable(31250)] public List<double> Points { get; set; } = new List<double>();
+
+		/// <summary>
 		/// 
 		/// </summary>
-		public List<PixelDataContainer> Data { get; set; }
+		[DetachProperty] public List<IResultCloudData> Data { get; set; } = new List<IResultCloudData>();
 
 		/// <summary>
 		/// 

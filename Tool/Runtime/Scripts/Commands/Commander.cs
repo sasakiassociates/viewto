@@ -45,7 +45,7 @@ namespace ViewTo.Connector.Unity.Commands
 
 			// studyMono.Get<IResultCloud>()
 			// TODO: set this when the conversion happens
-
+			
 			if (mono.Get<IViewContentBundle>() is ContentBundleMono contentBundle)
 			{
 				contentBundle.Prime(ViewToHub.AnalysisMat);
@@ -337,10 +337,10 @@ namespace ViewTo.Connector.Unity.Commands
 					continue;
 
 				if (nameWithColor.Count == 0)
-					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.ViewName));
+					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.ViewId));
 
-				else if (!nameWithColor.Any(x => x.content.Equals(vc.ViewName)))
-					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.ViewName));
+				else if (!nameWithColor.Any(x => x.content.Equals(vc.ViewId)))
+					nameWithColor.Add(new ViewColorWithName(vc.viewColor, vc.ViewId));
 			}
 
 			return nameWithColor;

@@ -211,7 +211,7 @@ MonoBehaviour:
       speckleType: 
       applicationId: 
       totalChildrenCount: 0
-  _converterUnity: {fileID: 11400000, guid: 5e8aec8b7a88634468582d648fcc20f8, type: 2}
+  _converterUnity: {fileID: 11400000, guid: cb3ad0f50505ffe498bd3cd56e4f5520, type: 2}
   OnContentBoundsSet:
     m_PersistentCalls:
       m_Calls: []

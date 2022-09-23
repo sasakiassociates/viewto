@@ -3,12 +3,11 @@ using Speckle.Core.Models;
 
 namespace ViewObjects.Speckle
 {
+
 	public class ResultPixelBaseV1 : ViewObjectBase_v1, IResultData
 	{
-		public ResultPixelBaseV1()
-		{ }
 
-		[DetachProperty] [Chunkable] public List<int> values { get; set; }
+		[DetachProperty] [Chunkable] public List<int> values { get; set; } = new List<int>();
 
 		public string content { get; set; }
 
@@ -19,5 +18,8 @@ namespace ViewObjects.Speckle
 		public int color { get; set; }
 
 		public string layout { get; set; }
+
+		public ResultPixelBaseV1()
+		{ }
 	}
 }

@@ -1,19 +1,27 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Mono.Collections.Generic;
+using Objects.Geometry;
+using Objects.Structural.Analysis;
 using Speckle.ConnectorUnity;
 using Speckle.ConnectorUnity.Converter;
 using Speckle.ConnectorUnity.Models;
 using Speckle.ConnectorUnity.Ops;
 using Speckle.Core.Api;
 using Speckle.Core.Credentials;
+using Speckle.Core.Kits;
+using Speckle.Core.Models;
 using UnityEngine;
 using UnityEngine.Events;
 using ViewObjects;
 using ViewObjects.Speckle;
 using ViewObjects.Unity;
+using ViewObjects.Viewer;
 using ViewTo.Connector.Unity.Commands;
 using Debug = UnityEngine.Debug;
 
@@ -46,6 +54,8 @@ namespace ViewTo.Connector.Unity
 		RepeatResultTester _tester;
 
 		Stopwatch _timer;
+
+		ViewStudyBase_v2 _studyBase;
 
 		public bool canRun
 		{
@@ -128,21 +138,18 @@ namespace ViewTo.Connector.Unity
 
 		async UniTask AutoStart()
 		{
-			const string testStream = "4777dea055";
-			const string testCommit = "256ff84cf7";
-
 			Debug.Log("Starting");
 			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
 
 			client.token = this.GetCancellationTokenOnDestroy();
-			
-			var commit = await client.CommitGet(testStream, testCommit);
+
+			var commit = await client.CommitGet(STREAM, COMMIT);
 
 			if (commit == null) return;
 
 			Debug.Log($"Commit Found {commit.id}");
 
-			var @base = await SpeckleOps.Receive(client, testStream, commit.referencedObject);
+			var @base = await SpeckleOps.Receive(client, STREAM, commit.referencedObject);
 
 			if (@base == null) return;
 
@@ -150,16 +157,176 @@ namespace ViewTo.Connector.Unity
 
 			Debug.Log("Looking for object type");
 
-			var studyRef = await @base.SearchForType<ViewStudyBase_v2>(client.token);
+			_studyBase = await @base.SearchForType<ViewStudyBase_v2>(true, client.token);
 
-			if (studyRef == null) return;
+			if (_studyBase == null) return;
 
-			Debug.Log($"Found Study {studyRef.ViewName} with {studyRef.Objects.Count} objects\n({studyRef.ViewId})");
+			Debug.Log($"Found Study {_studyBase.ViewName} with {_studyBase.Objects.Count} objects\n({_studyBase.ViewId})");
 
-			foreach (var obj in studyRef.Objects)
+			var objectsToConvert = new List<IViewObj>();
+
+			var contents = new List<IViewContent>();
+
+			foreach (var obj in _studyBase.Objects)
 			{
-				Debug.Log($"Study object type{obj.speckle_type}");
+				var go = new GameObject();
+
+				Debug.Log($"Object {obj.speckle_type}");
+
+				switch (obj)
+				{
+					case ContentBase_v2 o:
+						ContentMono content;
+
+						// TODO: Remove different object types when ViewCore commands have been updated
+						switch (o.ContentType)
+						{
+							case ContentType.Target:
+
+								content = go.AddComponent<TargetContentMono>();
+								await GetContentData(content, o, client, STREAM);
+								contents.Add((IViewContent)content);
+
+								break;
+							case ContentType.Existing:
+
+								content = go.AddComponent<BlockerContentMono>();
+								await GetContentData(content, o, client, STREAM);
+								contents.Add((IViewContent)content);
+
+								break;
+							case ContentType.Proposed:
+
+								content = go.AddComponent<DesignContentMono>();
+								await GetContentData(content, o, client, STREAM);
+								contents.Add((IViewContent)content);
+
+								break;
+							default:
+								Debug.Log("Not supported");
+								return;
+						}
+
+						break;
+					case ViewCloudBase_v2 o:
+						var cloud = go.AddComponent<ViewCloudMono>();
+						cloud.ViewId = Guid.NewGuid().ToString();
+
+						var baseCloud = await ReceiveCommitWithData(client, STREAM, o.References.FirstOrDefault());
+
+						var pc = await baseCloud.SearchForType<Pointcloud>(true, client.token);
+
+						if (pc != null)
+						{
+							cloud.points = ArrayToCloudPoint(pc.points, pc.units).ToArray();
+							objectsToConvert.Add(cloud);
+						}
+						else
+						{
+							Debug.Log("Did not Find cloud");
+						}
+
+						break;
+					case ViewerSystemBase_v2 o:
+						// TODO: Bypassing linked clouds and different layout types but should be fixed in the near future
+						var bundle = go.AddComponent<ViewerBundleMono>();
+						bundle.layouts = new List<IViewerLayout>() { new ViewerLayoutCube() };
+						objectsToConvert.Add(bundle);
+						break;
+					default:
+						Debug.LogWarning($"Study object type {obj.speckle_type} was not converted");
+						break;
+				}
 			}
+
+			var contentBundle = new GameObject("Content Bundle").AddComponent<ContentBundleMono>();
+			contentBundle.contents = contents;
+			objectsToConvert.Add(contentBundle);
+
+			var studyToBuild = new GameObject().AddComponent<ViewStudyMono>();
+			studyToBuild.objs = objectsToConvert;
+
+			TryLoadStudy(studyToBuild);
+		}
+
+		public static IEnumerable<CloudPoint> ArrayToCloudPoint(IReadOnlyCollection<double> arr, string units)
+		{
+			if (arr == null)
+				throw new Exception("point array is not valid ");
+
+			if (arr.Count % 3 != 0)
+				throw new Exception("Array malformed: length%3 != 0.");
+
+			var points = new CloudPoint[arr.Count / 3];
+			var asArray = arr.ToArray();
+			
+			for (int i = 2, k = 0; i < arr.Count; i += 3)			
+				points[k++] = CloudByCoordinates(asArray[i - 2], asArray[i - 1], asArray[i], units);
+
+			return points;
+		}
+
+		public static List<double> ToSpeckle(IEnumerable<CloudPoint> points)
+		{
+			var res = new List<double>();
+
+			if (points == null)
+			{
+				Debug.LogException(new Exception("point array is not valid "));
+				return res;
+			}
+
+			foreach (var point in points)
+			{
+				res.Add(point.x);
+				res.Add(point.y);
+				res.Add(point.z);
+			}
+
+			return res;
+		}
+
+		public static CloudPoint CloudByCoordinates(double x, double y, double z, string units) =>
+			new((float)ScaleToNative(x, units), (float)ScaleToNative(y, units), (float)ScaleToNative(z, units));
+
+		public static double ScaleToNative(double value, string units) => value * Units.GetConversionFactor(units, Units.Meters);
+
+		static async UniTask<Base> ReceiveCommitWithData(SpeckleUnityClient client, string stream, string refId)
+		{
+			var refCommit = await client.CommitGet(stream, refId);
+			return await SpeckleOps.Receive(client, stream, refCommit.referencedObject);
+		}
+
+		async UniTask GetContentData(ContentMono content, ContentBase_v2 contentBase, SpeckleUnityClient client, string stream)
+		{
+			content.ViewId = contentBase.ViewId;
+			content.ViewName = contentBase.ViewName;
+			content.ContentType = contentBase.ContentType;
+			content.References = contentBase.References;
+
+			foreach (var refId in content.References)
+			{
+				var referenceBase = await ReceiveCommitWithData(client, stream, refId);
+				await SpeckleOps.ConvertToScene(content.transform, referenceBase, _converterUnity, client.token);
+			}
+
+			// gather objects for content to keep track
+			content.objects = GetKids(content.transform).Cast<object>().ToList();
+			UniTask.Yield();
+		}
+
+		static List<GameObject> GetKids(Transform parent)
+		{
+			var currentList = new List<GameObject>();
+
+			foreach (Transform child in parent)
+			{
+				currentList.Add(child.gameObject);
+				if (child.childCount > 0)
+					currentList.AddRange(GetKids(child));
+			}
+
+			return currentList;
 		}
 
 		async UniTask AutoStartViewStudy()
@@ -175,14 +342,14 @@ namespace ViewTo.Connector.Unity
 			var node = new GameObject().AddComponent<SpeckleObjectBehaviour>();
 			_converterUnity.SetConverterSettings(new ScriptableConverterSettings { style = ConverterStyle.Queue });
 
-			await node.DataToScene(@base, _converterUnity, this.GetCancellationTokenOnDestroy());
+			await node.ConvertToScene(@base, _converterUnity, this.GetCancellationTokenOnDestroy());
 
 			WhatIsThis(node);
 		}
 
-		const string STREAM = BPY_Stream;
-		const string BRANCH = BPY_Branch_1;
-		const string COMMIT = BPY_Commit_1;
+		const string STREAM = Inglewood_Stream;
+		const string BRANCH = Inglewood_Branch;
+		const string COMMIT = Inglewood_Commit;
 
 		const string BPY_Stream = "96855cab4a";
 		const string BPY_Branch_1 = "viewstudy/largewaterfront";
@@ -197,7 +364,7 @@ namespace ViewTo.Connector.Unity
 		const string BCHP_Branch = "viewstudy/all-targets";
 
 		const string Inglewood_Stream = "4777dea055";
-		const string Inglewood_Commit = "c3258e3979";
+		const string Inglewood_Commit = "e86f9ecc1f";
 		const string Inglewood_Branch = "viewstudy/massing-from-road";
 
 		const string TEST_Stream = "1da7b18b31";
@@ -208,25 +375,31 @@ namespace ViewTo.Connector.Unity
 		{
 			Debug.Log("Auto Send");
 
-			var layer = new GameObject("Result Layer").AddComponent<SpeckleLayer>();
-			layer.Add(mono.gameObject);
-			var node = new GameObject("Node").AddComponent<SpeckleNode>();
-			node.AddLayer(layer);
+			// var layer = new GameObject("Result Layer").AddComponent<SpeckleLayer>();
+			// layer.Add(mono.gameObject);
+			// var node = new GameObject("Node").AddComponent<SpeckleNode>();
+			// node.AddLayer(layer);
+
+			var data = mono.data
+				.Select(x => new ResultPixelBase_v2(x.values, x.content, (ResultStage)Enum.Parse(typeof(ResultStage), x.stage), x.layout))
+				.Cast<IResultCloudData>()
+				.ToList();
+
+			var resultCloud = new ResultCloudBase_v2() { Data = data, Points = ToSpeckle(mono.points) };
+			_studyBase.Objects.Add(resultCloud);
 
 			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
+
 			try
 			{
 				UniTask.Create(async () =>
 				{
-					ViewConsole.Log($"Before: Has view cloud ? {mono.GetComponent<ViewCloudMono>() != null}");
-
 					await UniTask.Yield(PlayerLoopTiming.LastUpdate);
 
-					ViewConsole.Log($"After: Has view cloud ? {mono.GetComponent<ViewCloudMono>() != null}");
+					// // TODO: fix this so no converter is needed
+					// var @base = node.SceneToData(_converterUnity, this.GetCancellationTokenOnDestroy());
 
-					var @base = node.SceneToData(_converterUnity, this.GetCancellationTokenOnDestroy());
-
-					var res = await SpeckleOps.Send(client, @base, STREAM);
+					var res = await SpeckleOps.Send(client, new Base { ["Data"] = data }, STREAM);
 
 					await client.CommitCreate(new CommitCreateInput()
 					{

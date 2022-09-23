@@ -11,11 +11,10 @@ namespace ViewObjects.Speckle
 	{
 
 		/// <inheritdoc />
-
 		public string ViewId { get; set; }
 
 		/// <summary>
-		/// List of Commit <see cref="Commit.id"/> to reference in a <see cref="IViewStudy_v2"/>
+		/// List of Commit <see cref="Commit.id"/> to reference in a <see cref="IViewStudy_v2{TObject}"/>
 		/// </summary>
 		public List<string> References { get; set; }
 
