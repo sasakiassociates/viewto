@@ -14,6 +14,8 @@ namespace ViewTo.RhinoGh.Setup
 	public class CreateResultCloudComponent : ViewToComponentBase
 	{
 
+		(int Points, int Id, int Target, int Values) _input;
+
 		public CreateResultCloudComponent() : base(
 			"Create Result Cloud",
 			"CRC",
@@ -21,7 +23,10 @@ namespace ViewTo.RhinoGh.Setup
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 
-		(int Points, int Id, int Target, int Values) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("BEC145EE-4CD5-4582-95C6-A6214A3786DA");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -73,7 +78,7 @@ namespace ViewTo.RhinoGh.Setup
 			const int INDEX_CONTENT = 0;
 			const int INDEX_STAGE = 1;
 
-			for (int bIndex = 0; bIndex < treeNames.Branches.Count; bIndex++)
+			for (var bIndex = 0; bIndex < treeNames.Branches.Count; bIndex++)
 			{
 				var branchValue = treeValues.Branches[bIndex];
 
@@ -100,7 +105,5 @@ namespace ViewTo.RhinoGh.Setup
 
 			DA.SetData(0, resulCloud);
 		}
-
-		public override Guid ComponentGuid => new Guid("BEC145EE-4CD5-4582-95C6-A6214A3786DA");
 	}
 }

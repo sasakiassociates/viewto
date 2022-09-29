@@ -18,8 +18,11 @@ namespace ViewObjects
 	public interface IContentResults
 	{
 		string content { get; }
+
 		string stage { get; }
+
 		string meta { get; }
+
 		int color { get; }
 	}
 }

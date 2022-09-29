@@ -20,10 +20,10 @@ namespace ViewTests.Objects
 			Assert.IsTrue(kit.Name.Equals(nameof(ViewToKit)));
 
 			var types = kit.Types.ToList();
+
 			Assert.IsNotEmpty(types);
 			foreach (var t in types)
 				Console.WriteLine(t.Name);
 		}
-
 	}
 }

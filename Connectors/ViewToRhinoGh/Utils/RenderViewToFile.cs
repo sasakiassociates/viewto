@@ -8,6 +8,9 @@ namespace ViewTo.RhinoGh.Results
 {
 	public class RenderViewToFile : ViewToComponentBase
 	{
+
+		( int run, int path, int prefix, int views ) _input;
+
 		public RenderViewToFile() : base(
 			"Render View",
 			"RV",
@@ -15,7 +18,10 @@ namespace ViewTo.RhinoGh.Results
 			ConnectorInfo.Nodes.UTIL)
 		{ }
 
-		( int run, int path, int prefix, int views ) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("604853A2-05CF-4C70-8ABE-479221B53BA0");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -79,7 +85,5 @@ namespace ViewTo.RhinoGh.Results
 
 			DA.SetDataList(0, files);
 		}
-
-		public override Guid ComponentGuid => new Guid("604853A2-05CF-4C70-8ABE-479221B53BA0");
 	}
 }

@@ -49,7 +49,6 @@ namespace ViewTo
 			var targetNames = new HashSet<string>();
 
 			if (obj != default)
-			{
 				foreach (var data in obj.data)
 				{
 					if (data == null)
@@ -60,15 +59,12 @@ namespace ViewTo
 					else
 						Console.WriteLine($"MISSING TARGET FOR {data}");
 				}
-			}
 
 			return targetNames.ToList();
 		}
 
-		public static bool Check(this IId obj, IId input)
-		{
-			return obj != default && obj.ViewId.Valid() && input != default && input.ViewId.Valid() && obj.ViewId.Equals(input.ViewId);
-		}
+		public static bool Check(this IId obj, IId input) =>
+			obj != default && obj.ViewId.Valid() && input != default && input.ViewId.Valid() && obj.ViewId.Equals(input.ViewId);
 
 		public static ResultCloud GetResults(string path)
 		{

@@ -11,15 +11,21 @@ namespace ViewTo.RhinoGh.Setup
 	public class CreateContentBundle : ViewToComponentBase
 	{
 
+		int _iTargets, _iBlockers, _iDesigns;
+
 		public CreateContentBundle() : base(
 			"Create Content Bundle", "CVB", "Bundle up all the view content for a View Study", ConnectorInfo.Nodes.CONTENT)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("19AA924E-E52C-455F-9D6F-3CFBDEA0C9CE");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("19AA924E-E52C-455F-9D6F-3CFBDEA0C9CE");
+		}
 
-		protected override Bitmap Icon => new Bitmap(Icons.CreateContentBundle);
-
-		private int _iTargets, _iBlockers, _iDesigns;
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.CreateContentBundle);
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -57,6 +63,5 @@ namespace ViewTo.RhinoGh.Setup
 
 			DA.SetData(0, bundle);
 		}
-
 	}
 }

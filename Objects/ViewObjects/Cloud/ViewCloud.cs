@@ -7,38 +7,35 @@ namespace ViewObjects.Cloud
 	public class ViewCloud_v2 : IViewCloud_v2, IViewObj
 	{
 
+		/// <summary>
+		/// </summary>
+		public ViewCloud_v2() => ViewId = ObjUtils.InitGuid;
+
 		/// <inheritdoc />
 		public string ViewId { get; set; }
 
 		/// <inheritdoc />
 		public CloudPoint[] Points { get; set; }
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public ViewCloud_v2()
-		{
-			ViewId = ObjUtils.InitGuid;
-		}
 	}
 
 	public class ViewCloudReference : IViewObj, IViewCloudRef_v2
 	{
-		public string ViewId { get; set; }
-
-		public List<string> References { get; set; }
 
 		public ViewCloudReference()
 		{
-			this.ViewId = ObjUtils.InitGuid;
-			this.References = new List<string>();
+			ViewId = ObjUtils.InitGuid;
+			References = new List<string>();
 		}
 
 		public ViewCloudReference(List<string> references, string viewId = null)
 		{
-			this.References = references;
-			this.ViewId = ObjUtils.CheckIfValidId(viewId);
+			References = references;
+			ViewId = ObjUtils.CheckIfValidId(viewId);
 		}
+
+		public string ViewId { get; set; }
+
+		public List<string> References { get; set; }
 	}
 
 	public class ViewCloud : IViewCloud, IValidate

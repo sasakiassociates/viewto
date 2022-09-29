@@ -1,8 +1,8 @@
 ﻿namespace ViewTo.Commands
 {
 
-  internal interface ICommand
-  {
-    public void Run();
-  }
+	internal interface ICommand
+	{
+		public void Run();
+	}
 }

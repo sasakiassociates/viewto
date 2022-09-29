@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using Grasshopper.Kernel;
 using ViewObjects;
-using ViewObjects.Explorer;
 
 namespace ViewTo.RhinoGh.Setup
 {
 	public class CreateContentOption : ViewToComponentBase
 	{
 
+		(int Targets, int Stages) _input;
+
 		public CreateContentOption() : base("Create View Content Option", "CCO", "Simple node for creating a view content option for exploring results",
 		                                    ConnectorInfo.Nodes.RESULTS)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("B9AE10FF-B47C-4F71-9A46-7288A5B16624");
-
-		(int Targets, int Stages) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("B9AE10FF-B47C-4F71-9A46-7288A5B16624");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -42,17 +44,14 @@ namespace ViewTo.RhinoGh.Setup
 			var options = new List<ContentOption>();
 
 			if (stages.Valid() && targets.Valid() && targets.Count == stages.Count)
-				for (int i = 0; i < stages.Count; i++)
+				for (var i = 0; i < stages.Count; i++)
 					options.Add(new ContentOption
 					{
-						target = targets[i],
-						stage = (ResultStage)Enum.Parse(typeof(ResultStage), stages[i])
+						Name = targets[i],
+						Stage = (ResultStage)Enum.Parse(typeof(ResultStage), stages[i])
 					});
 
-			if (!options.Valid())
-			{
-				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The content options are not valid");
-			}
+			if (!options.Valid()) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The content options are not valid");
 
 			DA.SetDataList(0, options);
 		}

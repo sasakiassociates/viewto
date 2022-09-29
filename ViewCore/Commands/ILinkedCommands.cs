@@ -2,8 +2,8 @@
 
 namespace ViewTo.Commands
 {
-  internal interface ILinkedCommands<TCommand> : ICommand
-  {
-    public IList<TCommand> sequence { get; }
-  }
+	internal interface ILinkedCommands<TCommand> : ICommand
+	{
+		public IList<TCommand> sequence { get; }
+	}
 }

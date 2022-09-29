@@ -5,7 +5,9 @@ using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Rhino;
+using Rhino.DocObjects;
 using Rhino.Geometry;
+using Rhino.Geometry.Intersect;
 using ViewTo.RhinoGh.Properties;
 
 namespace ViewTo.RhinoGh.Points
@@ -21,9 +23,15 @@ namespace ViewTo.RhinoGh.Points
 				ConnectorInfo.Nodes.CLOUD)
 		{ }
 
-		protected override Bitmap Icon => new Bitmap(Icons.GeneratePointFacade);
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.GeneratePointFacade);
+		}
 
-		public override Guid ComponentGuid => new Guid("88e7a8a0-3fa1-4ed3-8e66-a0a9237a567a");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("88e7a8a0-3fa1-4ed3-8e66-a0a9237a567a");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -46,7 +54,7 @@ namespace ViewTo.RhinoGh.Points
 		{
 			#region get input data
 
-			List<GeometryBase> buildings = new List<GeometryBase>();
+			var buildings = new List<GeometryBase>();
 
 			var stepSizeX = new double();
 			var stepSizeZ = new double();
@@ -74,7 +82,7 @@ namespace ViewTo.RhinoGh.Points
 			}
 
 			// make sure that default (meter) dimensions are scaled correctly
-			double scaleFactor =
+			var scaleFactor =
 				RhinoMath.UnitScale(UnitSystem.Meters, RhinoDoc.ActiveDoc.ModelUnitSystem); // value for converting meters into active doc units
 			stepSizeX *= scaleFactor;
 			stepSizeZ *= scaleFactor;
@@ -84,8 +92,8 @@ namespace ViewTo.RhinoGh.Points
 			#region initialize
 
 			// output data
-			List<GH_Point> viewPoints = new List<GH_Point>();
-			List<GH_Vector> viewNormals = new List<GH_Vector>();
+			var viewPoints = new List<GH_Point>();
+			var viewNormals = new List<GH_Vector>();
 
 			// internal data
 			renderedCloud = new PointCloud();
@@ -94,23 +102,23 @@ namespace ViewTo.RhinoGh.Points
 			#endregion
 
 			//---------------------------------BUILDING CONTOURS---------------------------------//
-			foreach (GeometryBase building in buildings)
+			foreach (var building in buildings)
 			{
 				if (building == null) continue;
 
 				// get starting point (at top of building)
-				BoundingBox box = building.GetBoundingBox(false);
+				var box = building.GetBoundingBox(false);
 				var z = box.Max.Z - stepSizeZ / 2;
 				// "top of building" is defined as half a z step size (half a floor) below the top of the geometry
-				Point3d buildingPt = new Point3d(box.Center.X, box.Center.Y, z);
+				var buildingPt = new Point3d(box.Center.X, box.Center.Y, z);
 
 				// iterate down level by level from top, until bottom of geometry is reached
 				var count = 0;
 				while (z > box.Min.Z)
 				{
 					// create intersection plane at that level
-					Point3d levelPoint = new Point3d(buildingPt.X, buildingPt.Y, z);
-					Plane levelPlane = new Plane(levelPoint, Vector3d.ZAxis);
+					var levelPoint = new Point3d(buildingPt.X, buildingPt.Y, z);
+					var levelPlane = new Plane(levelPoint, Vector3d.ZAxis);
 
 					// intersect plane with geometry to get level curves 
 					Curve[] intersectionCurves;
@@ -118,16 +126,16 @@ namespace ViewTo.RhinoGh.Points
 
 					switch (building.ObjectType)
 					{
-						case Rhino.DocObjects.ObjectType.Brep:
-						case Rhino.DocObjects.ObjectType.Extrusion:
-							Rhino.Geometry.Intersect.Intersection.BrepPlane((Brep)building,
-							                                                levelPlane,
-							                                                intersectionTolerance,
-							                                                out intersectionCurves,
-							                                                out intersectionPoints);
+						case ObjectType.Brep:
+						case ObjectType.Extrusion:
+							Intersection.BrepPlane((Brep)building,
+							                       levelPlane,
+							                       intersectionTolerance,
+							                       out intersectionCurves,
+							                       out intersectionPoints);
 							break;
-						case Rhino.DocObjects.ObjectType.Mesh:
-							intersectionCurves = Rhino.Geometry.Intersect.Intersection.MeshPlane((Mesh)building, levelPlane).Select(x => x.ToNurbsCurve())
+						case ObjectType.Mesh:
+							intersectionCurves = Intersection.MeshPlane((Mesh)building, levelPlane).Select(x => x.ToNurbsCurve())
 								.ToArray();
 							break;
 						default:
@@ -135,32 +143,32 @@ namespace ViewTo.RhinoGh.Points
 					}
 
 					// get points from each level curve
-					foreach (Curve curve in intersectionCurves)
+					foreach (var curve in intersectionCurves)
 					{
 						// get number of steps based on length of curve and step size
-						double length = curve.GetLength(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance);
+						var length = curve.GetLength(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance);
 						var steps = (int)(length / stepSizeX);
 
 						// iterate along curve to get points
 						for (var x = 0; x <= steps; x++)
 						{
-							Point3d curvePoint = curve.PointAtLength(x * stepSizeX);
+							var curvePoint = curve.PointAtLength(x * stepSizeX);
 
 							// get normal vector of surface at that point - used to make sure point is sufficiently outside of building
 							Point3d surfacePoint;
 							ComponentIndex ci;
 							double t, s;
-							Vector3d surfaceNormal = new Vector3d();
+							var surfaceNormal = new Vector3d();
 
-							if (building.ObjectType == Rhino.DocObjects.ObjectType.Brep || building.ObjectType == Rhino.DocObjects.ObjectType.Extrusion)
+							if (building.ObjectType == ObjectType.Brep || building.ObjectType == ObjectType.Extrusion)
 							{
-								Brep _building = (Brep)building;
-								bool normal = _building.ClosestPoint(curvePoint, out surfacePoint, out ci, out s, out t, 1, out surfaceNormal);
+								var _building = (Brep)building;
+								var normal = _building.ClosestPoint(curvePoint, out surfacePoint, out ci, out s, out t, 1, out surfaceNormal);
 							}
-							else if (building.ObjectType == Rhino.DocObjects.ObjectType.Mesh)
+							else if (building.ObjectType == ObjectType.Mesh)
 							{
-								Mesh _building = (Mesh)building;
-								MeshPoint meshPoint = _building.ClosestMeshPoint(curvePoint, 1);
+								var _building = (Mesh)building;
+								var meshPoint = _building.ClosestMeshPoint(curvePoint, 1);
 								surfaceNormal = _building.NormalAt(meshPoint);
 							}
 
@@ -195,6 +203,5 @@ namespace ViewTo.RhinoGh.Points
 
 			#endregion
 		}
-
 	}
 }

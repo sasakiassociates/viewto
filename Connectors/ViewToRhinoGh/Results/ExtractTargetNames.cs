@@ -11,9 +11,11 @@ namespace ViewTo.RhinoGh.Results
 {
 	public class ExtractTargetNames : ViewToComponentBase
 	{
+		GH_ValueList _activeList;
+
+		(int Object, int Values ) _input;
 
 		bool _refresh;
-		GH_ValueList _activeList;
 		List<string> _storedValues;
 
 		public ExtractTargetNames() : base(
@@ -23,7 +25,10 @@ namespace ViewTo.RhinoGh.Results
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 
-		(int Object, int Values ) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("601505A6-A108-4DB4-AEFA-E15722C008A6");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -143,20 +148,16 @@ namespace ViewTo.RhinoGh.Results
 					else
 					{
 						for (var i = 0; i < inputTargets.Count; i++)
-						{
 							if (!inputTargets[i].Equals(tempValues[i]))
 							{
 								_storedValues = tempValues;
 								_refresh = true;
 							}
-						}
 					}
 				}
 			}
 
 			DA.SetDataList(0, _storedValues);
 		}
-
-		public override Guid ComponentGuid => new Guid("601505A6-A108-4DB4-AEFA-E15722C008A6");
 	}
 }

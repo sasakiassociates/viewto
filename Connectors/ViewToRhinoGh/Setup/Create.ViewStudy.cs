@@ -16,6 +16,9 @@ namespace ViewTo.RhinoGh.Setup
 
 	public class CreateStudy : ViewToComponentBase
 	{
+
+		(int Name, int Cloud, int Content, int Params) _input;
+
 		public CreateStudy() : base(
 			"Create View Study",
 			"CS",
@@ -23,11 +26,15 @@ namespace ViewTo.RhinoGh.Setup
 			ConnectorInfo.Nodes.STUDY)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("328e44a9-91ba-450d-a40c-9da3bb7e0afc");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("328e44a9-91ba-450d-a40c-9da3bb7e0afc");
+		}
 
-		protected override Bitmap Icon => new Bitmap(Icons.CreateViewStudy);
-
-		(int Name, int Cloud, int Content, int Params) _input;
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.CreateViewStudy);
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -104,6 +111,5 @@ namespace ViewTo.RhinoGh.Setup
 		//
 		// 	DA.SetData(0, viewObj);
 		// }
-
 	}
 }

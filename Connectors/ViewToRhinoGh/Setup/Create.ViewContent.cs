@@ -14,10 +14,11 @@ namespace ViewTo.RhinoGh.Setup
 {
 	public abstract class CreateViewContent : ViewToComponentBase
 	{
-		public CreateViewContent(string name, string nickname, string description) : base(name, nickname, description, ConnectorInfo.Nodes.CONTENT)
-		{ }
 
 		(int Name, int References) _input;
+
+		public CreateViewContent(string name, string nickname, string description) : base(name, nickname, description, ConnectorInfo.Nodes.CONTENT)
+		{ }
 
 		protected abstract ContentType ContentType { get; }
 
@@ -47,7 +48,6 @@ namespace ViewTo.RhinoGh.Setup
 
 			DA.SetData(0, new ViewContent_v2(items.Where(x => x != null).Select(x => x.Value).ToList(), ContentType));
 		}
-
 	}
 
 	public class CreateViewContentTarget : CreateViewContent
@@ -59,12 +59,20 @@ namespace ViewTo.RhinoGh.Setup
 			"Setup target content that will be analyzed in a view study")
 		{ }
 
-		protected override ContentType ContentType => ContentType.Target;
+		protected override ContentType ContentType
+		{
+			get => ContentType.Target;
+		}
 
-		protected override Bitmap Icon => new Bitmap(Icons.CreateContentTarget);
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.CreateContentTarget);
+		}
 
-		public override Guid ComponentGuid => new Guid("b686629d-ccbb-4534-96f0-ca33550bbff7");
-
+		public override Guid ComponentGuid
+		{
+			get => new Guid("b686629d-ccbb-4534-96f0-ca33550bbff7");
+		}
 	}
 
 	public class CreateViewContentProposed : CreateViewContent
@@ -76,11 +84,20 @@ namespace ViewTo.RhinoGh.Setup
 			"Create Proposed Desgin Content for a View Study")
 		{ }
 
-		public override Guid ComponentGuid => new Guid("b6cd7e15-8867-4269-9869-6245f32b62ea");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("b6cd7e15-8867-4269-9869-6245f32b62ea");
+		}
 
-		protected override Bitmap Icon => new Bitmap(Icons.CreateContentProposed);
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.CreateContentProposed);
+		}
 
-		protected override ContentType ContentType => ContentType.Proposed;
+		protected override ContentType ContentType
+		{
+			get => ContentType.Proposed;
+		}
 	}
 
 	public class CreateViewContentExisting : CreateViewContent
@@ -92,10 +109,19 @@ namespace ViewTo.RhinoGh.Setup
 			"Setup Exisiting content for a view study")
 		{ }
 
-		protected override Bitmap Icon => new Bitmap(Icons.CreateContentExisting);
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.CreateContentExisting);
+		}
 
-		public override Guid ComponentGuid => new Guid("ca8eb77a-521e-4361-93c5-c44ff074e18f");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("ca8eb77a-521e-4361-93c5-c44ff074e18f");
+		}
 
-		protected override ContentType ContentType => ContentType.Existing;
+		protected override ContentType ContentType
+		{
+			get => ContentType.Existing;
+		}
 	}
 }

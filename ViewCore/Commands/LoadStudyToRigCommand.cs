@@ -7,7 +7,7 @@ namespace ViewTo.Commands
 {
 	internal class LoadStudyToRigCommand : ILinkedCommands<IStudyCommand>
 	{
-		private readonly string studyName;
+		readonly string studyName;
 
 		public LoadStudyToRigCommand(IViewStudy study, ref IRig rig)
 		{

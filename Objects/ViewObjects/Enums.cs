@@ -4,7 +4,7 @@
 	{
 		Target = 0,
 		Existing = 1,
-		Proposed = 2,
+		Proposed = 2
 	}
 
 	public enum ResultStage

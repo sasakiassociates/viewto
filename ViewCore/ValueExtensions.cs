@@ -6,6 +6,10 @@ namespace ViewTo
 {
 	public static class ValueExtensions
 	{
+
+		//https://floating-point-gui.de/errors/comparison/
+		internal const double DBL_EPSILON = 2.22044604925031E-16;
+
 		/// <summary>
 		///   Simple command for normalizing view result data.
 		/// </summary>
@@ -165,9 +169,6 @@ namespace ViewTo
 
 		public static double Pow(this double value, double num = 1000) => Math.Pow(value, 1 / num);
 
-		//https://floating-point-gui.de/errors/comparison/
-		internal const double DBL_EPSILON = 2.22044604925031E-16;
-
 		//https://stackoverflow.com/questions/3874627/floating-point-comparison-functions-for-c-sharp
 		public static bool NearlyEqual(this double value1, double value2, double unimportantDifference = 0.0001)
 		{
@@ -199,13 +200,9 @@ namespace ViewTo
 			var logCustomBase = Math.Pow(maxValue, 1 / desiredScore);
 			var outputValues = new double[values.Count];
 
-			for (var i = 0; i < values.Count; i++)
-			{
-				outputValues[i] = Math.Log(values[i], logCustomBase);
-			}
+			for (var i = 0; i < values.Count; i++) outputValues[i] = Math.Log(values[i], logCustomBase);
 
 			return outputValues;
 		}
-
 	}
 }

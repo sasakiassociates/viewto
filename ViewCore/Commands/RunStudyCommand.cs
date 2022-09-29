@@ -11,7 +11,7 @@ namespace ViewTo.Commands
 	internal class RunStudyCommand : ILinkedCommands<IStudyCommand>, IBuildCommand
 	{
 
-		private readonly string studyName;
+		readonly string studyName;
 
 		public RunStudyCommand(IViewStudy study)
 		{

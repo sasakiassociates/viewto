@@ -26,7 +26,7 @@ namespace ViewTo
 			public static class Object
 			{
 
-				private static TObj CreateByType_WithName<TObj>(string name) where TObj : INameable
+				static TObj CreateByType_WithName<TObj>(string name) where TObj : INameable
 				{
 					var obj = Instance<TObj>();
 					obj.ViewName = name;
@@ -42,13 +42,10 @@ namespace ViewTo
 					return c;
 				}
 
-				public static ViewCloud ViewCloud()
+				public static ViewCloud ViewCloud() => new ViewCloud
 				{
-					return new ViewCloud
-					{
-						points = Data.CloudPoints(100)
-					};
-				}
+					points = Data.CloudPoints(100)
+				};
 
 				public static ContentBundle ContentCase()
 				{
@@ -74,31 +71,25 @@ namespace ViewTo
 					return c;
 				}
 
-				public static RigParameters RigParams()
+				public static RigParameters RigParams() => new RigParameters
 				{
-					return new RigParameters
+					bundles = new List<IViewerBundle>
 					{
-						bundles = new List<IViewerBundle>
-						{
-							ViewerParam()
-						}
-					};
-				}
+						ViewerParam()
+					}
+				};
 
-				public static ViewerBundle ViewerParam()
+				public static ViewerBundle ViewerParam() => new ViewerBundle
 				{
-					return new ViewerBundle
+					layouts = new List<IViewerLayout>
 					{
-						layouts = new List<IViewerLayout>
-						{
-							Bundle<ViewerLayoutHorizontal>(),
-							Bundle<ViewerLayoutCube>(),
-							Bundle<ViewerLayoutNormal>(),
-							Bundle<ViewerLayoutOrtho>(),
-							Bundle<ViewerLayoutFocus>()
-						}
-					};
-				}
+						Bundle<ViewerLayoutHorizontal>(),
+						Bundle<ViewerLayoutCube>(),
+						Bundle<ViewerLayoutNormal>(),
+						Bundle<ViewerLayoutOrtho>(),
+						Bundle<ViewerLayoutFocus>()
+					}
+				};
 
 				public static ViewerLayout Bundle<TBundle>() where TBundle : ViewerLayout, new()
 				{

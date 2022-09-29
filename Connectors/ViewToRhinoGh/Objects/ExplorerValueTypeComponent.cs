@@ -8,15 +8,19 @@ namespace ViewTo.RhinoGh.Objects
 {
 	public class ExplorerValueTypeComponent : ViewToComponentBase
 	{
+
+		ExplorerValueType _type = ExplorerValueType.ExistingOverPotential;
+
 		public ExplorerValueTypeComponent() : base("Explorer Value Type",
 		                                           "EV",
 		                                           "A set of options for comparing explorer values",
 		                                           ConnectorInfo.Nodes.RESULTS)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("3388A5A6-6969-4ED0-8155-22D94334DE30");
-
-		private ExplorerValueType _type = ExplorerValueType.ExistingOverPotential;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("3388A5A6-6969-4ED0-8155-22D94334DE30");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{ }

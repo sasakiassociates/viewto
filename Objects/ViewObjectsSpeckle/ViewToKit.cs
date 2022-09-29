@@ -12,42 +12,83 @@ namespace ViewObjects.Speckle
 	public class ViewToKit : ISpeckleKit
 	{
 
+		const string CONVERTER_BASE_NAME = "ViewObjects.Converter";
+
+		List<string> _converters;
+
+		Dictionary<string, Type> _loadedConverters = new Dictionary<string, Type>();
+
 		/// <summary>
-		/// Quick property for getting the full assembly name
+		///   Quick property for getting the full assembly name
 		/// </summary>
-		public static string AssemblyFullName => AssemblyName.FullName;
+		public static string AssemblyFullName
+		{
+			get => AssemblyName.FullName;
+		}
 
 		/// <summary>
-		/// Gets the assembly name from <see cref="ViewObjectBase_v1"/>
+		///   Gets the assembly name from <see cref="ViewObjectBase" />
 		/// </summary>
-		public static AssemblyName AssemblyName => typeof(ViewObjectBase_v1).GetTypeInfo().Assembly.GetName();
+		public static AssemblyName AssemblyName
+		{
+			get => typeof(ViewObjectBase).GetTypeInfo().Assembly.GetName();
+		}
 
 		/// <inheritdoc />
-		public string Description => "View To kit for converting";
+		public string Description
+		{
+			get => "View To kit for converting";
+		}
 
 		/// <inheritdoc />
-		public string Name => nameof(ViewToKit);
+		public string Name
+		{
+			get => nameof(ViewToKit);
+		}
 
 		/// <inheritdoc />
-		public string Author => "David Morgan";
+		public string Author
+		{
+			get => "David Morgan";
+		}
 
 		/// <inheritdoc />
-		public string WebsiteOrEmail => "https://sasaki.com";
+		public string WebsiteOrEmail
+		{
+			get => "https://sasaki.com";
+		}
 
 		/// <summary>
-		/// Returns a list of supported kit types.
-		/// Currently this contains <see cref="ViewObjectBase_v2"/>, <see cref="ViewObjectBase_v1"/>, <see cref="Container"/>
+		///   Returns a list of supported kit types.
+		///   Currently this contains <see cref="ViewObjectBase" />, <see cref="Container" />
 		/// </summary>
 		public IEnumerable<Type> Types
 		{
-			get =>
-				Assembly.GetExecutingAssembly().GetTypes().Where
-				(t =>
-					 t.IsSubclassOf(typeof(ViewObjectBase_v2))
-					 || t.IsSubclassOf(typeof(ViewObjectBase_v1))
-					 || t.IsSubclassOf(typeof(Container))
-					 && !t.IsAbstract
-				);
+			get
+			{
+				var types = new List<Type>();
+				types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where
+				               (t =>
+					                t.IsSubclassOf(typeof(ViewObjectBase))
+					                || !t.IsAbstract
+				               ));
+
+				var asm = Assembly.Load(typeof(IViewObj).GetTypeInfo().Assembly.GetName());
+
+				var exported = asm.GetExportedTypes();
+				foreach (var t in exported)
+				{
+					if (t.IsAbstract) continue;
+
+					if (t.IsInterface) continue;
+
+					if (t.IsSubclassOf(typeof(Container)))
+						types.Add(t);
+					else if (typeof(IViewObj).IsAssignableFrom(t)) types.Add(t);
+				}
+
+				return types;
+			}
 		}
 
 		/// <inheritdoc />
@@ -62,7 +103,6 @@ namespace ViewObjects.Speckle
 			{
 				var path = Path.Combine(KitLocations.Desktop, CONVERTER_BASE_NAME + "." + $"{app}.dll");
 				if (File.Exists(path))
-				{
 					foreach (var t in Assembly.LoadFrom(path).GetTypes())
 					foreach (var i in t.GetInterfaces())
 						if (i.Name == nameof(ISpeckleConverter)
@@ -72,7 +112,6 @@ namespace ViewObjects.Speckle
 							_loadedConverters[app] = t;
 							return c;
 						}
-				}
 			}
 			catch (Exception e)
 			{
@@ -83,37 +122,30 @@ namespace ViewObjects.Speckle
 			return null;
 		}
 
-		Dictionary<string, Type> _loadedConverters = new Dictionary<string, Type>();
-
-		List<string> _converters;
-
-		const string CONVERTER_BASE_NAME = "ViewObjects.Converter";
-
 		/// <inheritdoc />
 		public IEnumerable<string> Converters
 		{
 			get => _converters ??= GetAvailableConverters();
 		}
 
-		/// <summary>
-		/// Location for Kits 
-		/// </summary>
-		public static class KitLocations
-		{
-			/// <summary>
-			/// Located in the typical <see cref="Environment.SpecialFolder.ApplicationData"/>
-			/// </summary>
-			public static string Desktop = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Speckle\\Kits\\ViewTo");
-
-			/// <summary>
-			/// Not yet specified in the kit
-			/// </summary>
-			[Obsolete] public static string VirtualDesktop = "Not yet established";
-		}
-
 		List<string> GetAvailableConverters() => Directory.EnumerateFiles(KitLocations.Desktop, CONVERTER_BASE_NAME + ".*").ToList()
 			.Select(dllPath => dllPath.Split('.').Reverse().ToList()[1])
 			.ToList();
 
+		/// <summary>
+		///   Location for Kits
+		/// </summary>
+		public static class KitLocations
+		{
+			/// <summary>
+			///   Located in the typical <see cref="Environment.SpecialFolder.ApplicationData" />
+			/// </summary>
+			public static string Desktop = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Speckle\\Kits\\ViewTo");
+
+			/// <summary>
+			///   Not yet specified in the kit
+			/// </summary>
+			[Obsolete] public static string VirtualDesktop = "Not yet established";
+		}
 	}
 }

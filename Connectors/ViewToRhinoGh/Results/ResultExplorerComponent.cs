@@ -18,17 +18,31 @@ namespace ViewTo.RhinoGh.Results
 	public class ResultExplorerComponent : ViewToCloudComponentBase
 	{
 
-		public ResultExplorerComponent() : base("Result Explorer", "EX", "Explore a set of view study results", ConnectorInfo.Nodes.EXPLORER)
-		{
-			_explorer = new ResultExplorer();
-		}
+		const int MAX_ALPHA = 255;
+
+		const int MIN_ALPHA = 100;
 
 		ResultExplorer _explorer;
-		ExplorerSettings _settings;
-		int _minInt = 0, _maxInt = 1;
-		double _min = 1.0, _max = 0.0;
 
 		(int Obj, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
+		double _min = 1.0, _max;
+		int _minInt, _maxInt = 1;
+
+		(int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
+		ExplorerSettings _settings;
+
+		public ResultExplorerComponent() : base("Result Explorer", "EX", "Explore a set of view study results", ConnectorInfo.Nodes.EXPLORER) =>
+			_explorer = new ResultExplorer();
+
+		public override Guid ComponentGuid
+		{
+			get => new Guid("01ffe845-0a7b-4bf8-9d35-48f234fc8cfc");
+		}
+
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.ExploreResults);
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -56,8 +70,6 @@ namespace ViewTo.RhinoGh.Results
 			pManager[_input.Mask].Optional = true;
 			pManager[_input.Size].Optional = true;
 		}
-
-		(int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
 		{
@@ -121,10 +133,6 @@ namespace ViewTo.RhinoGh.Results
 			if (value > _maxInt) _maxInt = value;
 		}
 
-		const int MAX_ALPHA = 255;
-
-		const int MIN_ALPHA = 100;
-
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
 			DA.GetData(_input.Size, ref pointSize);
@@ -177,7 +185,7 @@ namespace ViewTo.RhinoGh.Results
 
 			if (_settings.options.Count == 1)
 			{
-				if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out IEnumerable<double> data))
+				if (_explorer.TryGet(_settings.valueType, _settings.options[0].Name, out IEnumerable<double> data))
 				{
 					// need to store the current max and min of the values passed out
 					explorerValues = data.ToArray();
@@ -199,8 +207,7 @@ namespace ViewTo.RhinoGh.Results
 			var values = new GH_Structure<GH_Number>();
 
 			if (maskTree != null && !maskTree.IsEmpty)
-			{
-				for (int i = 0; i < explorerValues.Length; i++)
+				for (var i = 0; i < explorerValues.Length; i++)
 				{
 					var point = _explorer.source.points[i].ToGrass();
 
@@ -210,24 +217,19 @@ namespace ViewTo.RhinoGh.Results
 						var path = maskTree.Paths[treeIndex];
 
 						foreach (var t in branch)
-						{
 							if (!maskOnly || t.Value.IsPointInside(point.Value, double.MinValue, false))
 							{
 								points.Append(point, path);
 								values.Append(new GH_Number(explorerValues[i]), path);
 							}
-						}
 					}
 				}
-			}
 			else
-			{
-				for (int i = 0; i < explorerValues.Length; i++)
+				for (var i = 0; i < explorerValues.Length; i++)
 				{
 					points.Append(_explorer.source.points[i].ToGrass());
 					values.Append(new GH_Number(explorerValues[i]));
 				}
-			}
 
 			if (normalizeMask)
 			{
@@ -242,7 +244,7 @@ namespace ViewTo.RhinoGh.Results
 			var fPoints = new GH_Structure<GH_Point>();
 			var fValues = new GH_Structure<GH_Number>();
 
-			for (int treeIndex = 0; treeIndex < values.Branches.Count; treeIndex++)
+			for (var treeIndex = 0; treeIndex < values.Branches.Count; treeIndex++)
 			{
 				var path = values.Paths[treeIndex];
 				var pointB = points.Branches[treeIndex];
@@ -307,10 +309,5 @@ namespace ViewTo.RhinoGh.Results
 			DA.SetData(_output.ActiveValue, explorerValues[_settings.point]);
 			DA.SetData(_output.ActiveColor, _settings.GetColor(explorerValues[_settings.point]));
 		}
-
-		public override Guid ComponentGuid => new Guid("01ffe845-0a7b-4bf8-9d35-48f234fc8cfc");
-
-		protected override Bitmap Icon => new Bitmap(Icons.ExploreResults);
-
 	}
 }

@@ -15,16 +15,16 @@ namespace ViewTests.Objects
 	public class SpeckleStreamTests
 	{
 
-		Client _client;
-		ServerTransport _transport;
-		(string id, string branch, string commit) _stream;
-
 		[TearDown]
 		public void BreakDown()
 		{
 			_transport?.Dispose();
 			_client?.Dispose();
 		}
+
+		Client _client;
+		ServerTransport _transport;
+		(string id, string branch, string commit) _stream;
 
 		[Test]
 		public async Task ReceiveResultCloudFromCommit()
@@ -51,16 +51,15 @@ namespace ViewTests.Objects
 			var obj = converter.ConvertToNative(@base);
 
 			Assert.IsNotNull(obj);
-			if (obj is ResultCloudBase_v2 viewObj)
+			if (obj is ResultCloudBase viewObj)
 			{
 				Assert.IsNotEmpty(viewObj.Points);
 				Assert.IsNotEmpty(viewObj.Data);
 			}
 			else
 			{
-				Assert.Fail($"{obj.GetType()} received was not converted to {typeof(ResultCloudBase_v2)}");
+				Assert.Fail($"{obj.GetType()} received was not converted to {typeof(ResultCloudBase)}");
 			}
 		}
-
 	}
 }

@@ -19,7 +19,10 @@ namespace ViewTo.RhinoGh.Setup
 			ConnectorInfo.Nodes.VIEWER)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("1A51EF3A-A5CB-4F58-B509-B98203003861");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("1A51EF3A-A5CB-4F58-B509-B98203003861");
+		}
 
 		// protected override Bitmap Icon => new Bitmap(Icons.CreateViewerLayout);
 
@@ -40,7 +43,7 @@ namespace ViewTo.RhinoGh.Setup
 			DA.GetDataList(0, wrappers);
 			var clouds = wrappers.Unwrap<ViewCloudReference>();
 
-			var layout = new ViewerLayout_v2(new List<ViewerDirection>()
+			var layout = new ViewerLayout_v2(new List<ViewerDirection>
 			{
 				ViewerDirection.Front,
 				ViewerDirection.Right,
@@ -50,9 +53,9 @@ namespace ViewTo.RhinoGh.Setup
 				ViewerDirection.Down
 			});
 
-			var viewerSystem = new ViewerSystem_v2(new List<IViewerLayout_v2>() { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
+			var viewerSystem = new ViewerSystem_v2(new List<IViewerLayout_v2>
+				                                       { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
 			DA.SetData(0, viewerSystem);
 		}
-
 	}
 }

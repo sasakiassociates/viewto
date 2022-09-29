@@ -7,12 +7,10 @@ namespace ViewObjects.Viewer
 
 	public class ViewerLayout_v2 : IViewerLayout_v2, IViewObj
 	{
-		public List<ViewerDirection> Viewers { get; set; }
 
-		public ViewerLayout_v2(List<ViewerDirection> viewers)
-		{
-			this.Viewers = viewers;
-		}
+		public ViewerLayout_v2(List<ViewerDirection> viewers) => Viewers = viewers;
+
+		public List<ViewerDirection> Viewers { get; set; }
 	}
 
 	public class ViewerLayout : IViewerLayout
@@ -23,7 +21,7 @@ namespace ViewObjects.Viewer
 		public virtual List<IViewer> viewers
 		{
 			get =>
-				new List<IViewer>
+				new()
 				{
 					new Viewer(ViewerDirection.Front)
 				};
@@ -79,7 +77,7 @@ namespace ViewObjects.Viewer
 		public override List<IViewer> viewers
 		{
 			get =>
-				new List<IViewer>
+				new()
 				{
 					new Viewer(ViewerDirection.Front),
 					new Viewer(ViewerDirection.Right),
@@ -99,7 +97,7 @@ namespace ViewObjects.Viewer
 		public override List<IViewer> viewers
 		{
 			get =>
-				new List<IViewer>
+				new()
 				{
 					new Viewer(ViewerDirection.Front), new Viewer(ViewerDirection.Right), new Viewer(ViewerDirection.Back), new Viewer(ViewerDirection.Left)
 				};

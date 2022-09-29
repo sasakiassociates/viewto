@@ -27,10 +27,7 @@ namespace ViewTo
 			return path;
 		}
 
-		public static CloudShell Build(this IViewCloud obj)
-		{
-			return new CloudShell(obj, obj.ViewId, obj.points.Valid() ? obj.points.Length : 0);
-		}
+		public static CloudShell Build(this IViewCloud obj) => new CloudShell(obj, obj.ViewId, obj.points.Valid() ? obj.points.Length : 0);
 
 		internal static IEnumerable<string> GetIds(this IEnumerable<IViewCloud> objs)
 		{

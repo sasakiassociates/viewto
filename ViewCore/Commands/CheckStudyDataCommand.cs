@@ -18,9 +18,12 @@ namespace ViewTo.Commands
 			processArgs = new List<StudyProcessArgs>();
 		}
 
-		private IViewStudy obj { get; }
+		IViewStudy obj { get; }
 
-		public Study.LoadError errorFlag => Study.LoadError.MissingObjects;
+		public Study.LoadError errorFlag
+		{
+			get => Study.LoadError.MissingObjects;
+		}
 
 		public List<StudyProcessArgs> processArgs { get; }
 

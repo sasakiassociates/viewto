@@ -5,10 +5,7 @@ namespace ViewObjects.Converter.Rhino
 {
 	public class ViewObjRhinoConverter : ViewObjectsConverter
 	{
-		public ViewObjRhinoConverter()
-		{
-			Schema = new ViewObjectFactory();
-		}
+		public ViewObjRhinoConverter() => Schema = new ViewObjectFactory();
 
 		#if RHINO6 && GRASSHOPPER
 		public static string RhinoAppName = VersionedHostApplications.Grasshopper6;
@@ -20,9 +17,15 @@ namespace ViewObjects.Converter.Rhino
 		public static string RhinoAppName = VersionedHostApplications.Rhino7;
 		#endif
 
-		public override string Name => nameof(ViewObjRhinoConverter);
+		public override string Name
+		{
+			get => nameof(ViewObjRhinoConverter);
+		}
 
-		public override string Description => "Converter for rhino/gh objects into base view objects";
+		public override string Description
+		{
+			get => "Converter for rhino/gh objects into base view objects";
+		}
 
 		// public override IEnumerable<string> GetServicedApplications()
 		// {

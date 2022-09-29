@@ -7,6 +7,9 @@ namespace ViewTo.RhinoGh.Results
 {
 	public class MoveToView : ViewToComponentBase
 	{
+
+		(int camera, int target, int horizontal, int vertical) _input;
+
 		public MoveToView(	) :
 			base("Move To View",
 			     "MV",
@@ -14,7 +17,10 @@ namespace ViewTo.RhinoGh.Results
 			     ConnectorInfo.Nodes.UTIL)
 		{ }
 
-		(int camera, int target, int horizontal, int vertical) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("119E066B-FBE2-41CD-BFAD-7868F9A10C80");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -61,7 +67,5 @@ namespace ViewTo.RhinoGh.Results
 			view.ActiveViewport.Rotate(horizontalAngle, Vector3d.ZAxis, cameraPoint);
 			view.ActiveViewport.Rotate(verticalAngle, Vector3d.XAxis, cameraPoint);
 		}
-
-		public override Guid ComponentGuid => new Guid("119E066B-FBE2-41CD-BFAD-7868F9A10C80");
 	}
 }

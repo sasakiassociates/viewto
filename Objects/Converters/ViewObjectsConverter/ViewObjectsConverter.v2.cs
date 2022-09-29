@@ -12,7 +12,7 @@ namespace ViewObjects.Converter
 	/// <inheritdoc />
 	public partial class ViewObjectsConverter
 	{
-		IViewObj StudyToNative(ViewStudyBase_v2 obj) => new ViewStudy_v2
+		IViewObj StudyToNative(ViewStudyBase obj) => new ViewStudy_v2
 		(
 			obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToNativeViewObject).ToList()
 				: new List<IViewObj>(),
@@ -26,24 +26,24 @@ namespace ViewObjects.Converter
 
 		IViewObj ViewerLayoutToNative(IViewerLayout_v2 obj) => new ViewerLayout_v2(obj.Viewers);
 
-		IViewObj ViewerSystemToNative(IViewerSystem_v2<ViewerLayoutBase_v2> o) =>
+		IViewObj ViewerSystemToNative(IViewerSystem_v2<ViewerLayoutBase> o) =>
 			new ViewerSystem_v2(o.Layouts.Where(x => x != null).Select(ViewerLayoutToNative).Cast<IViewerLayout_v2>().ToList(), o.Clouds);
 
-		ViewObjectBase_v2 StudyToSpeckle(IViewStudy_v2<IViewObj> obj) => new ViewStudyBase_v2()
+		ViewObjectBase StudyToSpeckle(IViewStudy_v2<IViewObj> obj) => new ViewStudyBase
 		{
-			Objects = obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToSpeckleViewObject).ToList() : new List<ViewObjectBase_v2>(),
+			Objects = obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToSpeckleViewObject).ToList() : new List<ViewObjectBase>(),
 			ViewName = obj.ViewName,
 			ViewId = obj.ViewId
 		};
 
-		ViewObjectBase_v2 ViewContentToSpeckle(IContent obj) => new ContentBase_v2(obj.ContentType, obj.References, obj.ViewId, obj.ViewName);
+		ViewObjectBase ViewContentToSpeckle(IContent obj) => new ContentBase(obj.ContentType, obj.References, obj.ViewId, obj.ViewName);
 
-		ViewObjectBase_v2 ViewCloudToSpeckle(IViewCloudRef_v2 obj) => new ViewCloudShellBaseV2(obj.References, obj.ViewId);
+		ViewObjectBase ViewCloudToSpeckle(IViewCloudRef_v2 obj) => new ViewCloudRefBase(obj.References, obj.ViewId);
 
-		ViewObjectBase_v2 ViewerLayoutToSpeckle(IViewerLayout_v2 obj) => new ViewerLayoutBase_v2(obj.Viewers);
+		ViewObjectBase ViewerLayoutToSpeckle(IViewerLayout_v2 obj) => new ViewerLayoutBase(obj.Viewers);
 
-		ViewObjectBase_v2 ViewerSystemToSpeckle(IViewerSystem_v2<IViewerLayout_v2> o) => new ViewerSystemBase_v2(
-			o.Layouts.Where(x => x != null).Select(ViewerLayoutToSpeckle).Cast<ViewerLayoutBase_v2>().ToList(), o.Clouds);
+		ViewObjectBase ViewerSystemToSpeckle(IViewerSystem_v2<IViewerLayout_v2> o) => new ViewerSystemBase(
+			o.Layouts.Where(x => x != null).Select(ViewerLayoutToSpeckle).Cast<ViewerLayoutBase>().ToList(), o.Clouds);
 
 		//TODO: Support getting list of objects from search
 		IViewObj HandleDefault(Base @base)
@@ -52,16 +52,12 @@ namespace ViewObjects.Converter
 
 			if (@base.IsWrapper())
 			{
-				var obj = @base.SearchForType<ViewObjectBase_v2>(true);
+				var obj = @base.SearchForType<ViewObjectBase>(true);
 
-				if (obj != null)
-				{
-					o = obj;
-				}
+				if (obj != null) o = obj;
 			}
 
 			return o;
 		}
-
 	}
 }

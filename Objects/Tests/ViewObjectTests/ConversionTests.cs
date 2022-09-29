@@ -11,11 +11,10 @@ using Cat = ViewTests.ViewTestCategories;
 
 namespace ViewTests.Objects
 {
-	[TestFixture, Category(Cat.UNITS)]
+	[TestFixture]
+	[Category(Cat.UNITS)]
 	public class ConversionTests
 	{
-
-		ViewObjectsConverter _converter;
 
 		[OneTimeSetUp]
 		public void Setup()
@@ -27,13 +26,16 @@ namespace ViewTests.Objects
 		public void BreakDown()
 		{ }
 
+		ViewObjectsConverter _converter;
+
 		[Test]
 		public void Convert_Study()
 		{
-			var objs = new List<IViewObj>()
+			var objs = new List<IViewObj>
 			{
 				new ViewContent_v2(ContentType.Proposed),
-				new ViewCloudReference(new List<string>() { "256ff84cf7" }),
+				new ViewCloudReference(new List<string>
+					                       { "256ff84cf7" }),
 				new ViewerSystem_v2()
 			};
 
@@ -43,13 +45,12 @@ namespace ViewTests.Objects
 			var res = converter.ConvertToSpeckle(obj);
 
 			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ViewStudyBase_v2);
+			Assert.IsTrue(res is ViewStudyBase);
 
-			ViewStudyBase_v2 studyBase = res as ViewStudyBase_v2;
+			var studyBase = res as ViewStudyBase;
 			Assert.IsTrue(obj.ViewId.Equals(studyBase.ViewId));
 			Assert.IsTrue(obj.ViewName.Equals(studyBase.ViewName));
 			Assert.IsTrue(obj.Objects.Count.Equals(studyBase.Objects.Count));
 		}
-
 	}
 }

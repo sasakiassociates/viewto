@@ -18,7 +18,10 @@ namespace ViewTo.RhinoGh.Setup
 
 		// protected override Bitmap Icon => new Bitmap(Icons.GeneratePointsCloud);
 
-		public override Guid ComponentGuid => new Guid("E4E4F6ED-2071-4F2E-9F9B-F687180143BF");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("E4E4F6ED-2071-4F2E-9F9B-F687180143BF");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -32,9 +35,10 @@ namespace ViewTo.RhinoGh.Setup
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			string reference = string.Empty;
+			var reference = string.Empty;
 			DA.GetData(0, ref reference);
-			DA.SetData(0, new ViewCloudReference(new List<string>() { reference }));
+			DA.SetData(0, new ViewCloudReference(new List<string>
+				                                     { reference }));
 		}
 	}
 }

@@ -18,33 +18,42 @@ namespace ViewTo
 				public const string OPT_A = "DesignA";
 				public const string OPT_B = "DesignB";
 
-				public static List<TargetContent> GroupContentTargets =>
-					new List<TargetContent>
-					{
-						new TargetContent
+				public static List<TargetContent> GroupContentTargets
+				{
+					get =>
+						new List<TargetContent>
 						{
-							ViewName = TAR_A
-						},
-						new TargetContent
-						{
-							ViewName = TAR_B
-						}
-					};
+							new TargetContent
+							{
+								ViewName = TAR_A
+							},
+							new TargetContent
+							{
+								ViewName = TAR_B
+							}
+						};
+				}
 
-				public static List<BlockerContent> GroupContentBlockers =>
-					new List<BlockerContent>
-					{
-						new BlockerContent(), new BlockerContent(), new BlockerContent()
-					};
-
-				public static List<DesignContent> GroupContentDesigns =>
-					new List<DesignContent>
-					{
-						new DesignContent
+				public static List<BlockerContent> GroupContentBlockers
+				{
+					get =>
+						new List<BlockerContent>
 						{
-							ViewName = "DesignA"
-						}
-					};
+							new BlockerContent(), new BlockerContent(), new BlockerContent()
+						};
+				}
+
+				public static List<DesignContent> GroupContentDesigns
+				{
+					get =>
+						new List<DesignContent>
+						{
+							new DesignContent
+							{
+								ViewName = "DesignA"
+							}
+						};
+				}
 
 				// public static ResultPixelBundle ResultPixels(int valueCount)
 				// {
@@ -53,28 +62,23 @@ namespace ViewTo
 				//     Group = PixelCollection(valueCount)
 				//   };
 				// }
-				public static List<IResultData> PixelCollection(int valueCount)
+				public static List<IResultData> PixelCollection(int valueCount) => new List<IResultData>
 				{
-					return new List<IResultData>
-					{
-						// Potential 
-						PixelData(valueCount, TAR_A, "Target"),
-						PixelData(valueCount, TAR_B, "Target"),
-						// Existing 
-						PixelData(valueCount, TAR_A, "Blocker"),
-						PixelData(valueCount, TAR_B, "Blocker"),
-						// Options 
-						PixelData(valueCount, TAR_A, "Design", OPT_A),
-						PixelData(valueCount, TAR_B, "Design", OPT_A),
-						PixelData(valueCount, TAR_A, "Design", OPT_B),
-						PixelData(valueCount, TAR_B, "Design", OPT_B)
-					};
-				}
+					// Potential 
+					PixelData(valueCount, TAR_A, "Target"),
+					PixelData(valueCount, TAR_B, "Target"),
+					// Existing 
+					PixelData(valueCount, TAR_A, "Blocker"),
+					PixelData(valueCount, TAR_B, "Blocker"),
+					// Options 
+					PixelData(valueCount, TAR_A, "Design", OPT_A),
+					PixelData(valueCount, TAR_B, "Design", OPT_A),
+					PixelData(valueCount, TAR_A, "Design", OPT_B),
+					PixelData(valueCount, TAR_B, "Design", OPT_B)
+				};
 
-				public static ContentResultData PixelData(int value, string contentName, string stage, string meta = null)
-				{
-					return new ContentResultData(ValuesInt(value).ToList(), stage, contentName, Color.Aqua.ToArgb(), meta);
-				}
+				public static ContentResultData PixelData(int value, string contentName, string stage, string meta = null) =>
+					new ContentResultData(ValuesInt(value).ToList(), stage, contentName, Color.Aqua.ToArgb(), meta);
 
 				public static List<double> ValuesDouble(int valueCount, Random rnd = null)
 				{

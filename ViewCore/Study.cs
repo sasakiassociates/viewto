@@ -63,10 +63,7 @@ namespace ViewTo
 		}
 
 		public static List<TObjType> GetAll<TObjType>(this IViewStudy study)
-			where TObjType : IViewObj
-		{
-			return study.objs.OfType<TObjType>().ToList();
-		}
+			where TObjType : IViewObj => study.objs.OfType<TObjType>().ToList();
 
 		public static TObjType Get<TObjType>(this IViewStudy study, string name = "")
 			where TObjType : IViewObj
@@ -90,15 +87,9 @@ namespace ViewTo
 			return result;
 		}
 
-		public static bool CanRun(this IViewStudy study)
-		{
-			return study.Has<IViewCloud>() && study.Has<IViewContentBundle>() && study.Has<IViewerBundle>();
-		}
+		public static bool CanRun(this IViewStudy study) => study.Has<IViewCloud>() && study.Has<IViewContentBundle>() && study.Has<IViewerBundle>();
 
-		public static bool CanVisualize(this IViewStudy study)
-		{
-			return study.Has<IResultCloud>();
-		}
+		public static bool CanVisualize(this IViewStudy study) => study.Has<IResultCloud>();
 
 		/// <summary>
 		///   Command for checking all clouds in a study and counting the points

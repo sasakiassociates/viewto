@@ -18,19 +18,8 @@ namespace ViewObjects.Cloud
 
 	public class ResultCloud_v2 : IResultCloud_v2, IViewObj
 	{
-		/// <inheritdoc />
-		public string ViewId { get; }
 
-		/// <inheritdoc />
-		public CloudPoint[] Points { get; set; } = Array.Empty<CloudPoint>();
-
-		/// <inheritdoc />
-		public List<IResultCloudData> Data { get; set; } = new List<IResultCloudData>();
-
-		public ResultCloud_v2()
-		{
-			ViewId = ObjUtils.InitGuid;
-		}
+		public ResultCloud_v2() => ViewId = ObjUtils.InitGuid;
 
 		public ResultCloud_v2(CloudPoint[] points, List<IResultCloudData> data, string viewId = null)
 		{
@@ -38,5 +27,14 @@ namespace ViewObjects.Cloud
 			Data = data;
 			ViewId = ObjUtils.CheckIfValidId(viewId);
 		}
+
+		/// <inheritdoc />
+		public string ViewId { get; }
+
+		/// <inheritdoc />
+		public CloudPoint[] Points { get; set; } = Array.Empty<CloudPoint>();
+
+		/// <inheritdoc />
+		public List<IResultCloudData> Data { get; set; } = new();
 	}
 }

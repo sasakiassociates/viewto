@@ -3,7 +3,7 @@
 namespace ViewObjects.Speckle
 {
 	/// <summary>
-	/// Static values for view objects in speckle
+	///   Static values for view objects in speckle
 	/// </summary>
 	public static class ViewObjectSpeckle
 	{
@@ -14,8 +14,6 @@ namespace ViewObjects.Speckle
 		{
 
 			internal const string Category = "ViewObjects";
-
 		}
-
 	}
 }

@@ -12,13 +12,25 @@ namespace ViewObjects.Converter
 
 		public IViewObjectFactory Schema { get; set; } = new ViewObjectFactory();
 
-		public virtual string Name => nameof(ViewObjectsConverter);
+		public virtual string Name
+		{
+			get => nameof(ViewObjectsConverter);
+		}
 
-		public virtual string Description => "Converter for basic view objects";
+		public virtual string Description
+		{
+			get => "Converter for basic view objects";
+		}
 
-		public virtual string Author => "David Morgan";
+		public virtual string Author
+		{
+			get => "David Morgan";
+		}
 
-		public virtual string WebsiteOrEmail => "https://sasaki.com";
+		public virtual string WebsiteOrEmail
+		{
+			get => "https://sasaki.com";
+		}
 
 		public virtual ProgressReport Report { get; }
 
@@ -51,49 +63,9 @@ namespace ViewObjects.Converter
 
 		public Base ConvertToSpeckle(object @object) => ConvertToSpeckleViewObject(@object);
 
-		public ViewObjectBase_v2 ConvertToSpeckleViewObject(object @object)
-		{
-			switch (@object)
-			{
-				case IViewStudy_v2<IViewObj> o:
-					return StudyToSpeckle(o);
-				case IViewCloudRef_v2 o:
-					return ViewCloudToSpeckle(o);
-				case IContent o:
-					return ViewContentToSpeckle(o);
-				case IViewerLayout_v2 o:
-					return ViewerLayoutToSpeckle(o);
-				case IViewerSystem_v2<IViewerLayout_v2> o:
-					return ViewerSystemToSpeckle(o);
-				default:
-					throw new ArgumentOutOfRangeException(nameof(@object), @object, null);
-			}
-		}
-
 		public List<object> ConvertToNative(List<Base> objects) => objects.Select(ConvertToNative).ToList();
 
 		public object ConvertToNative(Base @object) => ConvertToNativeViewObject(@object);
-
-		public IViewObj ConvertToNativeViewObject(Base @object)
-		{
-			switch (@object)
-			{
-				case ViewStudyBase_v2 o:
-					return StudyToNative(o);
-				case ViewCloudShellBaseV2 o:
-					return ViewCloudToNative(o);
-				case ContentBase_v2 o:
-					return ViewContentToNative(o);
-				case ViewerLayoutBase_v2 o:
-					return ViewerLayoutToNative(o);
-				case ViewerSystemBase_v2 o:
-					return ViewerSystemToNative(o);
-				case Base o:
-					return HandleDefault(o);
-				default:
-					throw new ArgumentOutOfRangeException(nameof(@object), @object, null);
-			}
-		}
 
 		public bool CanConvertToSpeckle(object @object)
 		{
@@ -133,33 +105,60 @@ namespace ViewObjects.Converter
 		{
 			switch (@base)
 			{
-				case ViewStudyBaseV1 _:
-					return true;
-				case ResultCloudBaseV1 _:
-					return true;
-				case ViewCloudBaseV1 _:
-					return true;
-				case ContentBundleBaseV1 _:
-					return true;
-				case ViewerBundleBaseV1 _:
-					return true;
-				case ViewerLayoutBaseV1 _:
-					return true;
 				// V2 objects
-				case ViewStudyBase_v2 _:
+				case ViewStudyBase _:
 					return true;
-				case ViewCloudShellBaseV2 _:
+				case ViewCloudRefBase _:
 					return true;
-				case ContentBase_v2 _:
+				case ContentBase _:
 					return true;
-				case ViewerLayoutBase_v2 _:
+				case ViewerLayoutBase _:
 					return true;
-				case ViewerSystemBase_v2 _:
+				case ViewerSystemBase _:
 					return true;
 				default:
 					return false;
 			}
 		}
 
+		public ViewObjectBase ConvertToSpeckleViewObject(object @object)
+		{
+			switch (@object)
+			{
+				case IViewStudy_v2<IViewObj> o:
+					return StudyToSpeckle(o);
+				case IViewCloudRef_v2 o:
+					return ViewCloudToSpeckle(o);
+				case IContent o:
+					return ViewContentToSpeckle(o);
+				case IViewerLayout_v2 o:
+					return ViewerLayoutToSpeckle(o);
+				case IViewerSystem_v2<IViewerLayout_v2> o:
+					return ViewerSystemToSpeckle(o);
+				default:
+					throw new ArgumentOutOfRangeException(nameof(@object), @object, null);
+			}
+		}
+
+		public IViewObj ConvertToNativeViewObject(Base @object)
+		{
+			switch (@object)
+			{
+				case ViewStudyBase o:
+					return StudyToNative(o);
+				case ViewCloudRefBase o:
+					return ViewCloudToNative(o);
+				case ContentBase o:
+					return ViewContentToNative(o);
+				case ViewerLayoutBase o:
+					return ViewerLayoutToNative(o);
+				case ViewerSystemBase o:
+					return ViewerSystemToNative(o);
+				case Base o:
+					return HandleDefault(o);
+				default:
+					throw new ArgumentOutOfRangeException(nameof(@object), @object, null);
+			}
+		}
 	}
 }

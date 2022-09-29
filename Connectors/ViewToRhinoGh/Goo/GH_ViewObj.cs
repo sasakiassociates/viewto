@@ -6,26 +6,26 @@ namespace ViewTo.RhinoGh.Goo
 
 	public class GH_ViewObj : GH_Goo<IViewObj>
 	{
-		public GH_ViewObj()
+		public GH_ViewObj() => Value = default;
+
+		public GH_ViewObj(IViewObj data) => Value = data;
+
+		public GH_ViewObj(GH_Goo<IViewObj> other) => Value = other.Value;
+
+		public override bool IsValid
 		{
-			Value = default;
+			get => Value != default;
 		}
 
-		public GH_ViewObj(IViewObj data)
+		public override string TypeName
 		{
-			Value = data;
+			get => IsValid && !string.IsNullOrEmpty(Value.TypeName()) ? Value.TypeName() : "ViewObj";
 		}
 
-		public GH_ViewObj(GH_Goo<IViewObj> other)
+		public override string TypeDescription
 		{
-			Value = other.Value;
+			get => "A ViewTo Object";
 		}
-
-		public override bool IsValid => Value != default;
-
-		public override string TypeName => IsValid && !string.IsNullOrEmpty(Value.TypeName()) ? Value.TypeName() : "ViewObj";
-
-		public override string TypeDescription => "A ViewTo Object";
 
 		public override string ToString() => IsValid && !string.IsNullOrEmpty(Value.TypeName()) ? Value.TypeName() : "ViewObj";
 
@@ -60,7 +60,7 @@ namespace ViewTo.RhinoGh.Goo
 
 			if (obj != null)
 				Value = obj;
-			
+
 			return true;
 		}
 
@@ -86,6 +86,5 @@ namespace ViewTo.RhinoGh.Goo
 		//       return null;
 		//   }
 		// }
-
 	}
 }

@@ -21,7 +21,9 @@ namespace ViewObjects.Cloud
 		}
 
 		public Type objType { get; }
+
 		public string objId { get; }
+
 		public int count { get; }
 	}
 
