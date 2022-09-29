@@ -16,7 +16,7 @@ namespace ViewObjects.Speckle
 
 		[DetachProperty] public List<Base> objects { get; set; }
 
-		[JsonIgnore] public virtual bool isValid => objects != null;
+		[JsonIgnore] public virtual bool IsValid => objects != null;
 
 		public string ViewName { get; set; }
 

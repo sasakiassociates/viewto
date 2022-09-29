@@ -6,7 +6,6 @@ using ViewObjects;
 using ViewObjects.Cloud;
 using ViewObjects.Explorer;
 using ViewTo.RhinoGh.Goo;
-using ViewTo.RhinoGh.Points;
 
 namespace ViewTo.RhinoGh.Results
 {

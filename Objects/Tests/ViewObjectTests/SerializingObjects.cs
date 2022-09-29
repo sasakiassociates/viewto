@@ -1,142 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using Speckle.Core.Api;
-using Speckle.Core.Kits;
-using ViewObjects;
-using ViewObjects.Cloud;
-using ViewObjects.Content;
-using ViewObjects.Converter.Script;
+using Speckle.Core.Models;
 using ViewObjects.Speckle;
-using ViewObjects.Study;
-using ViewObjects.Viewer;
+using Cat = ViewTests.ViewTestCategories;
 
 namespace ViewTests.Objects
 {
-	[TestFixture]
+	[TestFixture, Category(Cat.UNITS)]
 	public class SerializingObjects
 	{
 		[Test]
-		public void Convert_Study()
+		public void Serialize_ViewObjectType()
 		{
-			var objs = new List<IViewObj>()
+			foreach (var vtype in GetSubclassTypes(typeof(ViewObjectBase_v2)))
 			{
-				new ViewContent_v2(ContentType.Proposed),
-				new ViewCloudReference(new List<string>() { "256ff84cf7" }),
-				new ViewerSystem_v2()
-			};
+				var vo = Activator.CreateInstance(vtype) as ViewObjectBase_v2;
 
-			var obj = new ViewStudy_v2(objs, "Test View Study");
+				Assert.IsNotNull(vo);
+				Assert.IsTrue(vo.speckle_type.Contains(vo.GetType().ToString()));
 
-			var converter = new ViewObjectsConverterScript();
-			var res = converter.ConvertToSpeckle(obj);
-
-			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ViewStudyBase_v2);
-
-			ViewStudyBase_v2 studyBase = res as ViewStudyBase_v2;
-			Assert.IsTrue(obj.ViewId.Equals(studyBase.ViewId));
-			Assert.IsTrue(obj.ViewName.Equals(studyBase.ViewName));
-			Assert.IsTrue(obj.Objects.Count.Equals(studyBase.Objects.Count));
+				Console.WriteLine(vo.speckle_type);
+			}
 		}
 
 		[Test]
 		public void Serialize_Content()
 		{
-			var obj_v1 = new TargetContentBaseV1();
-
-			var json = Operations.Serialize(obj_v1);
-			var res = Operations.Deserialize(json);
-
-			Assert.IsNotNull(res);
-			Assert.IsTrue(res is TargetContentBaseV1);
-
-			var obj_v2 = new ContentBase_v2();
-
-			json = Operations.Serialize(obj_v2);
-			res = Operations.Deserialize(json);
-
-			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ContentBase_v2);
+			var obj_v1 = Serialize_Process(new TargetContentBaseV1());
+			var obj_v2 = Serialize_Process(new ContentBase_v2());
 		}
-
-		[Test]
-		public void Kit_Types()
-		{
-			var kit = KitManager.GetKit(ViewToKit.AssemblyFullName);
-			Assert.IsNotNull(kit);
-			Assert.IsTrue(kit.Name.Equals(nameof(ViewToKit)));
-
-			var types = kit.Types.ToList();
-			Assert.IsNotEmpty(types);
-			foreach (var t in types)
-				Console.WriteLine(t.Name);
-		}
-
-		// [Test, Ignore("Data Container types are only available in View Objects")]
-		// public void Serialize_Containers()
-		// {
-		// 	var obj_v1 = new ResultCloudBase_v2()
-		// 	{
-		// 		Data = new List<IResultData>()
-		// 		{
-		// 			new ContentResultData()
-		// 			{
-		// 				ContentId = "123",
-		// 				Layout = "Horizontal",
-		// 				Stage = ResultStage.Potential,
-		// 				Values = Array.Empty<int>()
-		// 			}
-		// 		}
-		// 	};
-		//
-		// 	var json = Operations.Serialize(obj_v1);
-		// 	var res = Operations.Deserialize(json);
-		//
-		// 	Assert.IsNotNull(res);
-		// 	Assert.IsTrue(res is ResultCloudBase_v2);
-		// 	var obj_v2 = res as ResultCloudBase_v2;
-		//
-		// 	Assert.IsNotNull(obj_v2);
-		// 	Assert.IsTrue(obj_v2.Data.Count == obj_v1.Data.Count);
-		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().Stage.Equals(obj_v1.Data.FirstOrDefault().Stage));
-		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().Layout.Equals(obj_v1.Data.FirstOrDefault().Layout));
-		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().ContentId.Equals(obj_v1.Data.FirstOrDefault().ContentId));
-		// 	Assert.IsTrue(obj_v2.Data.FirstOrDefault().Values.Length.Equals(obj_v1.Data.FirstOrDefault().Values.Length));
-		// }
 
 		[Test]
 		public void Serialize_Study()
 		{
-			var obj_v1 = new ViewStudyBaseV1();
+			var obj_v1 = Serialize_Process(new ViewStudyBaseV1());
+			var obj_v2 = Serialize_Process(new ViewStudyBase_v2());
+		}
 
-			var json = Operations.Serialize(obj_v1);
+		[Test]
+		public void Serialize_ResultCloud()
+		{
+			var obj_v1 = Serialize_Process(new ResultCloudBaseV1());
+			var obj_v2 = Serialize_Process(new ResultCloudBase_v2());
+		}
+
+		static TObj Serialize_Process<TObj>(TObj obj) where TObj : Base
+		{
+			var json = Operations.Serialize(obj);
 			var res = Operations.Deserialize(json);
 
 			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ViewStudyBaseV1);
+			Assert.IsTrue(res is TObj);
 
-			var obj_v2 = new ViewStudyBase_v2();
+			Console.WriteLine(res.speckle_type);
 
-			json = Operations.Serialize(obj_v2);
-			res = Operations.Deserialize(json);
-
-			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ViewStudyBase_v2);
-
-			// var objs = new List<ViewObjectBase>()
-			// {
-			// 	new ContentBase_v2(ContentType.Proposed, new List<string>() { "256ff84cf7" }),
-			// 	new ViewCloudBase_v2(new List<string>() { "256ff84cf7" }),
-			// 	new ViewerSystemBase_v2()
-			// };
-
-			// ViewStudyBase_v2 studyBase = res as ViewStudyBase_v2;
-			// Assert.IsTrue(obj.ViewId.Equals(studyBase.ViewId));
-			// Assert.IsTrue(obj.ViewName.Equals(studyBase.ViewName));
-			// Assert.IsTrue(obj.Objects.Count.Equals(studyBase.Objects.Count));
+			return res as TObj;
 		}
+
+		static List<Type> GetSubclassTypes(Type parentType) =>
+			Assembly.GetAssembly(parentType).GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(parentType)).ToList();
 
 	}
 }

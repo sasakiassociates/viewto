@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Speckle.Core.Models;
 using ViewObjects.Cloud;
 using ViewObjects.Content;
 using ViewObjects.Speckle;
@@ -8,7 +9,8 @@ using ViewObjects.Viewer;
 
 namespace ViewObjects.Converter
 {
-	public abstract partial class ViewObjectsConverter
+	/// <inheritdoc />
+	public partial class ViewObjectsConverter
 	{
 		IViewObj StudyToNative(ViewStudyBase_v2 obj) => new ViewStudy_v2
 		(
@@ -20,7 +22,7 @@ namespace ViewObjects.Converter
 
 		IViewObj ViewContentToNative(IContent obj) => new ViewContent_v2(obj.References, obj.ContentType, obj.ViewId, obj.ViewName);
 
-		IViewObj ViewCloudToNative(IViewCloud_v2 obj) => new ViewCloudReference(obj.References, obj.ViewId);
+		IViewObj ViewCloudToNative(IViewCloudRef_v2 obj) => new ViewCloudReference(obj.References, obj.ViewId);
 
 		IViewObj ViewerLayoutToNative(IViewerLayout_v2 obj) => new ViewerLayout_v2(obj.Viewers);
 
@@ -36,11 +38,30 @@ namespace ViewObjects.Converter
 
 		ViewObjectBase_v2 ViewContentToSpeckle(IContent obj) => new ContentBase_v2(obj.ContentType, obj.References, obj.ViewId, obj.ViewName);
 
-		ViewObjectBase_v2 ViewCloudToSpeckle(IViewCloud_v2 obj) => new ViewCloudBase_v2(obj.References, obj.ViewId);
+		ViewObjectBase_v2 ViewCloudToSpeckle(IViewCloudRef_v2 obj) => new ViewCloudShellBaseV2(obj.References, obj.ViewId);
 
 		ViewObjectBase_v2 ViewerLayoutToSpeckle(IViewerLayout_v2 obj) => new ViewerLayoutBase_v2(obj.Viewers);
 
 		ViewObjectBase_v2 ViewerSystemToSpeckle(IViewerSystem_v2<IViewerLayout_v2> o) => new ViewerSystemBase_v2(
 			o.Layouts.Where(x => x != null).Select(ViewerLayoutToSpeckle).Cast<ViewerLayoutBase_v2>().ToList(), o.Clouds);
+
+		//TODO: Support getting list of objects from search
+		IViewObj HandleDefault(Base @base)
+		{
+			IViewObj o = default;
+
+			if (@base.IsWrapper())
+			{
+				var obj = @base.SearchForType<ViewObjectBase_v2>(true);
+
+				if (obj != null)
+				{
+					o = obj;
+				}
+			}
+
+			return o;
+		}
+
 	}
 }

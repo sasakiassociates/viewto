@@ -6,7 +6,7 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// Object for grouping of view content
 	/// </summary>
-	public class ContentsBase : ViewObjectBase_v2, IContents<ContentBase_v2>
+	public class ContentsBase_v2 : ViewObjectBase_v2, IContents<ContentBase_v2>
 	{
 		/// <summary>
 		/// List of view content objects

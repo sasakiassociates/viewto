@@ -19,7 +19,7 @@ namespace ViewTo.Connector.Unity.Commands
 		public readonly List<DesignContentMono> designs;
 		public readonly List<ViewColor> globalColors;
 		public readonly List<RigParamData> rigParams;
-		public readonly List<ViewerBundleSystem> viewers;
+		public readonly List<ViewerSystemMono> viewers;
 
 		public GetRigSystemArgs(PrimedRigArgs args, List<DesignContentMono> designs) => this.designs = designs;
 

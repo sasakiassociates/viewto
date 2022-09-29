@@ -8,6 +8,6 @@ namespace ViewObjects.Speckle
 		public DesignContentBaseV1()
 		{ }
 
-		[JsonIgnore] public override bool isValid => base.isValid && ViewName.Valid();
+		[JsonIgnore] public override bool IsValid => base.IsValid && ViewName.Valid();
 	}
 }

@@ -10,7 +10,7 @@ namespace ViewObjects.Speckle
 		public ResultCloudBaseV1()
 		{ }
 
-		[JsonIgnore] public override bool isValid => base.isValid && data.Valid();
+		[JsonIgnore] public override bool IsValid => base.IsValid && data.Valid();
 
 		public List<IResultData> data { get; set; }
 	}

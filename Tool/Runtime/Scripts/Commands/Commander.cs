@@ -37,7 +37,7 @@ namespace ViewTo.Connector.Unity.Commands
 			// NOTE: Viewer Bundles are a bit hacky still, so for now a cube camera is pushed into the study 
 			var bun = mono.Get<IViewerBundle>();
 
-			if (bun != null)
+			if (bun?.layouts != null && !bun.layouts.Any())
 				bun.layouts = new List<IViewerLayout>
 				{
 					new ViewerLayoutCube()

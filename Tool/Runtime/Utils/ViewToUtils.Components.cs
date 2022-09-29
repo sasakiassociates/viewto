@@ -52,15 +52,6 @@ namespace ViewTo.Connector.Unity
 			};
 		}
 
-		public static int GetCullingMask(this RigStage value)
-		{
-			return value switch
-			{
-				RigStage.Target => 1 << TargetLayer,
-				RigStage.Blocker => (1 << TargetLayer) | (1 << BlockerLayer),
-				RigStage.Design => (1 << TargetLayer) | (1 << BlockerLayer) | (1 << DesignLayer),
-				_ => -1
-			};
-		}
+	
 	}
 }

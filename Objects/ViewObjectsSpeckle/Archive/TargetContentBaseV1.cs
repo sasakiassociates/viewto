@@ -17,6 +17,6 @@ namespace ViewObjects.Speckle
 
 		[DetachProperty] public List<ViewerBundleBaseV1> bundles { get; set; }
 
-		[JsonIgnore] public override bool isValid => base.isValid && ViewName.Valid();
+		[JsonIgnore] public override bool IsValid => base.IsValid && ViewName.Valid();
 	}
 }

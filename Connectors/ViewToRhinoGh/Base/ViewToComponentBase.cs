@@ -1,5 +1,4 @@
-﻿using System;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 
 namespace ViewTo.RhinoGh
 {

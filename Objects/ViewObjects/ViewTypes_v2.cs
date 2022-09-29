@@ -11,6 +11,9 @@ namespace ViewObjects
 		public List<string> References { get; set; }
 	}
 
+	public interface IViewStudy_v2 : IViewStudy_v2<IViewObj>
+	{ }
+
 	public interface IViewStudy_v2<TObject> : INameable, IId
 	{
 		/// <summary>
@@ -46,21 +49,24 @@ namespace ViewObjects
 
 	#region View Cloud Objects
 
-	public interface IViewCloudData_v2 : IViewCloud_v2
+	public interface IViewCloudRef_v2 : IId, IStreamReference
+	{ }
+
+	public interface IViewCloud_v2 : IId
 	{
 		/// <summary>
 		/// The cloud of points to use
 		/// </summary>
-		public CloudPoint[] points { get; set; }
+		public CloudPoint[] Points { get; }
+	}
 
+	public interface IResultCloud_v2 : IViewCloud_v2
+	{
 		/// <summary>
 		/// The view analysis data gathered
 		/// </summary>
-		public List<IResultCloudData> data { get; set; }
+		public List<IResultCloudData> Data { get; }
 	}
-
-	public interface IViewCloud_v2 : IId, IStreamReference
-	{ }
 
 	public interface IResultCloudData
 	{

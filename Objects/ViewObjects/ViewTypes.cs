@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using ViewObjects.Cloud;
-using ViewObjects.Viewer;
 
 namespace ViewObjects
 {

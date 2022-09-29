@@ -9,7 +9,7 @@ namespace ViewObjects
 
 	public interface IValidate
 	{
-		bool isValid { get; }
+		bool IsValid { get; }
 	}
 
 	public interface IId
@@ -17,7 +17,7 @@ namespace ViewObjects
 		/// <summary>
 		/// View id in the format of <see cref="System.Guid"/>
 		/// </summary>
-		string ViewId { get; set; }
+		string ViewId { get; }
 	}
 
 	public interface INameable

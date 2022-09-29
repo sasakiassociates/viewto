@@ -4,7 +4,25 @@ using System.Linq;
 
 namespace ViewObjects.Cloud
 {
-	public class ViewCloudReference : IViewObj, IViewCloud_v2
+	public class ViewCloud_v2 : IViewCloud_v2, IViewObj
+	{
+
+		/// <inheritdoc />
+		public string ViewId { get; set; }
+
+		/// <inheritdoc />
+		public CloudPoint[] Points { get; set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public ViewCloud_v2()
+		{
+			ViewId = ObjUtils.InitGuid;
+		}
+	}
+
+	public class ViewCloudReference : IViewObj, IViewCloudRef_v2
 	{
 		public string ViewId { get; set; }
 
@@ -28,7 +46,7 @@ namespace ViewObjects.Cloud
 
 		public ViewCloud() => ViewId = Guid.NewGuid().ToString();
 
-		public virtual bool isValid
+		public virtual bool IsValid
 		{
 			get => points != null && points.Any();
 		}

@@ -23,15 +23,13 @@ namespace ViewObjects.Speckle
 		/// <summary>
 		/// 
 		/// </summary>
-		public List<ViewObjectBase_v2> Objects { get; set; }
+		public List<ViewObjectBase_v2> Objects { get; set; } = new List<ViewObjectBase_v2>();
 
 		/// <summary>
 		/// Default constructor for converting
 		/// </summary>
 		public ViewStudyBase_v2()
-		{
-			Objects = new List<ViewObjectBase_v2>();
-		}
+		{ }
 
 		/// <summary>
 		/// Schema constructor for creating a view study

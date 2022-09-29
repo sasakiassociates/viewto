@@ -5,12 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Mono.Collections.Generic;
 using Objects.Geometry;
-using Objects.Structural.Analysis;
 using Speckle.ConnectorUnity;
 using Speckle.ConnectorUnity.Converter;
-using Speckle.ConnectorUnity.Models;
 using Speckle.ConnectorUnity.Ops;
 using Speckle.Core.Api;
 using Speckle.Core.Credentials;
@@ -39,6 +36,7 @@ namespace ViewTo.Connector.Unity
 		[SerializeField] bool _loadResults = true;
 		[SerializeField] bool _createCommit = true;
 		[SerializeField] bool _runOnLoad = true;
+		[SerializeField] bool _autoRun = false;
 
 		[SerializeField] bool _runRepeatCommand;
 
@@ -47,8 +45,6 @@ namespace ViewTo.Connector.Unity
 		[SerializeField] [HideInInspector] RigSystem _rig;
 
 		// [SerializeField] [HideInInspector] ResultExplorerMono _explorer;
-
-		[SerializeField, HideInInspector] StreamAdapter _stream;
 
 		[SerializeField] ScriptableSpeckleConverter _converterUnity;
 		RepeatResultTester _tester;
@@ -100,14 +96,15 @@ namespace ViewTo.Connector.Unity
 			_rig.OnStudyLoaded += OnStudyLoaded;
 			_rig.OnStageChange += OnRigStageChanged;
 			_rig.OnContentLoaded += OnViewContentLoaded;
+			_rig.OnActiveViewerSystem += OnActiveViewerSystem;
 
 			_rig.Build(_study);
 
 			if (_runOnLoad)
-				Run();
+				StartRigSystemRun();
 		}
 
-		public void Run()
+		public void StartRigSystemRun(int pointToStart = 0)
 		{
 			if (!canRun)
 			{
@@ -122,7 +119,7 @@ namespace ViewTo.Connector.Unity
 			_timer ??= new Stopwatch();
 			_timer.Start();
 
-			_rig.Run();
+			_rig.Run(pointToStart, _autoRun);
 		}
 
 		void Init()
@@ -136,9 +133,24 @@ namespace ViewTo.Connector.Unity
 				_renderedMat = new Material(Shader.Find(@"Standard"));
 		}
 
+		async UniTask GetBrepTest()
+		{
+			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
+
+			client.token = this.GetCancellationTokenOnDestroy();
+
+			var commit = await client.CommitGet(STREAM, "96e1ed10be");
+
+			var @base = await SpeckleOps.Receive(client, STREAM, commit.referencedObject);
+
+			await SpeckleOps.ConvertToScene(new GameObject("Brep Test").transform, @base, _converterUnity, client.token);
+		}
+
 		async UniTask AutoStart()
 		{
-			Debug.Log("Starting");
+			Debug.Log("Starting Hacking Version of View To");
+			Debug.Log($"Stream {STREAM}\nCommit {COMMIT}\nBranch {BRANCH}");
+
 			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
 
 			client.token = this.GetCancellationTokenOnDestroy();
@@ -230,7 +242,8 @@ namespace ViewTo.Connector.Unity
 					case ViewerSystemBase_v2 o:
 						// TODO: Bypassing linked clouds and different layout types but should be fixed in the near future
 						var bundle = go.AddComponent<ViewerBundleMono>();
-						bundle.layouts = new List<IViewerLayout>() { new ViewerLayoutCube() };
+						bundle.layouts = new List<IViewerLayout>
+							{ new ViewerLayoutHorizontal() };
 						objectsToConvert.Add(bundle);
 						break;
 					default:
@@ -259,8 +272,8 @@ namespace ViewTo.Connector.Unity
 
 			var points = new CloudPoint[arr.Count / 3];
 			var asArray = arr.ToArray();
-			
-			for (int i = 2, k = 0; i < arr.Count; i += 3)			
+
+			for (int i = 2, k = 0; i < arr.Count; i += 3)
 				points[k++] = CloudByCoordinates(asArray[i - 2], asArray[i - 1], asArray[i], units);
 
 			return points;
@@ -307,7 +320,9 @@ namespace ViewTo.Connector.Unity
 			foreach (var refId in content.References)
 			{
 				var referenceBase = await ReceiveCommitWithData(client, stream, refId);
-				await SpeckleOps.ConvertToScene(content.transform, referenceBase, _converterUnity, client.token);
+				await UniTask.Yield();
+				var hierarchy = await SpeckleOps.ConvertToScene(content.transform, referenceBase, _converterUnity, client.token);
+				hierarchy.ParentAllObjects();
 			}
 
 			// gather objects for content to keep track
@@ -367,6 +382,10 @@ namespace ViewTo.Connector.Unity
 		const string Inglewood_Commit = "e86f9ecc1f";
 		const string Inglewood_Branch = "viewstudy/massing-from-road";
 
+		const string UPH_Stream = "a823053e07";
+		const string UPH_Commit = "3b5406b590";
+		const string UPH_Branch = "viewstudies/road-way";
+
 		const string TEST_Stream = "1da7b18b31";
 		const string TEST_Commit = "1518e1cc4c";
 		const string TEST_Branch = "viewstudy/sphere";
@@ -385,35 +404,37 @@ namespace ViewTo.Connector.Unity
 				.Cast<IResultCloudData>()
 				.ToList();
 
-			var resultCloud = new ResultCloudBase_v2() { Data = data, Points = ToSpeckle(mono.points) };
+			var resultCloud = new ResultCloudBase_v2 { Data = data, Points = ToSpeckle(mono.points) };
 			_studyBase.Objects.Add(resultCloud);
 
-			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
-
-			try
+			if (_createCommit)
 			{
-				UniTask.Create(async () =>
+				var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
+				try
 				{
-					await UniTask.Yield(PlayerLoopTiming.LastUpdate);
-
-					// // TODO: fix this so no converter is needed
-					// var @base = node.SceneToData(_converterUnity, this.GetCancellationTokenOnDestroy());
-
-					var res = await SpeckleOps.Send(client, new Base { ["Data"] = data }, STREAM);
-
-					await client.CommitCreate(new CommitCreateInput()
+					UniTask.Create(async () =>
 					{
-						objectId = res,
-						message = $"{_study.ViewName} is complete! {mono.count}",
-						branchName = BRANCH,
-						sourceApplication = SpeckleUnity.APP,
-						streamId = STREAM
+						await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+
+						// // TODO: fix this so no converter is needed
+						// var @base = node.SceneToData(_converterUnity, this.GetCancellationTokenOnDestroy());
+
+						var res = await SpeckleOps.Send(client, new Base { ["Data"] = resultCloud }, STREAM);
+
+						await client.CommitCreate(new CommitCreateInput()
+						{
+							objectId = res,
+							message = $"{_study.ViewName} is complete! {mono.count}",
+							branchName = BRANCH,
+							sourceApplication = SpeckleUnity.APP,
+							streamId = STREAM
+						});
 					});
-				});
-			}
-			catch (Exception e)
-			{
-				Debug.Log(e.Message);
+				}
+				catch (Exception e)
+				{
+					Debug.Log(e.Message);
+				}
 			}
 		}
 
@@ -538,6 +559,7 @@ namespace ViewTo.Connector.Unity
 		void Start()
 		{
 			// AutoStartViewStudy().Forget();
+
 			AutoStart().Forget();
 		}
 
@@ -570,9 +592,11 @@ namespace ViewTo.Connector.Unity
 
 		public event UnityAction<IRigSystem> OnRigBuilt;
 
+		public event UnityAction<ViewerSystemMono> OnActiveViewerSystem;
+
 		public event UnityAction<ViewStudyMono> OnStudyComplete;
 
-		public event UnityAction<RigStage> OnRigStageChanged;
+		public event UnityAction<ResultStage> OnRigStageChanged;
 
 		public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 

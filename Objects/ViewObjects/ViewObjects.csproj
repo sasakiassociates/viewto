@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
         <Authors>Sasaki</Authors>
         <RootNamespace>ViewObjects</RootNamespace>
         <AssemblyName>ViewObjects</AssemblyName>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>latestmajor</LangVersion>
+        <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup>

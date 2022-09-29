@@ -16,6 +16,6 @@ namespace ViewObjects.Speckle
 
 		[DetachProperty] public List<DesignContentBaseV1> designs { get; set; }
 
-		public bool isValid => targets.Valid() && blockers.Valid();
+		public bool IsValid => targets.Valid() && blockers.Valid();
 	}
 }

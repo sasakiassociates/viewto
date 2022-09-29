@@ -7,10 +7,10 @@ using ViewObjects.Speckle;
 
 namespace ViewObjects.Converter
 {
-	public abstract partial class ViewObjectsConverter : ISpeckleConverter
+	public partial class ViewObjectsConverter : ISpeckleConverter
 	{
 
-		public IViewObjSchema Schema { get; set; } = new ViewObjectSchema();
+		public IViewObjectFactory Schema { get; set; } = new ViewObjectFactory();
 
 		public virtual string Name => nameof(ViewObjectsConverter);
 
@@ -20,19 +20,32 @@ namespace ViewObjects.Converter
 
 		public virtual string WebsiteOrEmail => "https://sasaki.com";
 
-		public abstract ProgressReport Report { get; }
+		public virtual ProgressReport Report { get; }
 
-		public abstract ReceiveMode ReceiveMode { get; set; }
+		public virtual ReceiveMode ReceiveMode { get; set; }
 
-		public abstract IEnumerable<string> GetServicedApplications();
+		public virtual IEnumerable<string> GetServicedApplications()
+		{
+			return new[]
+			{
+				VersionedHostApplications.Grasshopper6,
+				VersionedHostApplications.Grasshopper7,
+				VersionedHostApplications.Rhino6,
+				VersionedHostApplications.Rhino7
+			};
+		}
 
-		public abstract void SetContextDocument(object doc);
+		public virtual void SetContextDocument(object doc)
+		{ }
 
-		public abstract void SetContextObjects(List<ApplicationObject> objects);
+		public virtual void SetContextObjects(List<ApplicationObject> objects)
+		{ }
 
-		public abstract void SetPreviousContextObjects(List<ApplicationObject> objects);
+		public virtual void SetPreviousContextObjects(List<ApplicationObject> objects)
+		{ }
 
-		public abstract void SetConverterSettings(object settings);
+		public virtual void SetConverterSettings(object settings)
+		{ }
 
 		public List<Base> ConvertToSpeckle(List<object> objects) => objects.Select(ConvertToSpeckle).ToList();
 
@@ -44,7 +57,7 @@ namespace ViewObjects.Converter
 			{
 				case IViewStudy_v2<IViewObj> o:
 					return StudyToSpeckle(o);
-				case IViewCloud_v2 o:
+				case IViewCloudRef_v2 o:
 					return ViewCloudToSpeckle(o);
 				case IContent o:
 					return ViewContentToSpeckle(o);
@@ -67,7 +80,7 @@ namespace ViewObjects.Converter
 			{
 				case ViewStudyBase_v2 o:
 					return StudyToNative(o);
-				case ViewCloudBase_v2 o:
+				case ViewCloudShellBaseV2 o:
 					return ViewCloudToNative(o);
 				case ContentBase_v2 o:
 					return ViewContentToNative(o);
@@ -103,7 +116,7 @@ namespace ViewObjects.Converter
 				// V2 objects
 				case IViewStudy_v2<IViewObj> _:
 					return true;
-				case IViewCloud_v2 _:
+				case IViewCloudRef_v2 _:
 					return true;
 				case IContent _:
 					return true;
@@ -135,7 +148,7 @@ namespace ViewObjects.Converter
 				// V2 objects
 				case ViewStudyBase_v2 _:
 					return true;
-				case ViewCloudBase_v2 _:
+				case ViewCloudShellBaseV2 _:
 					return true;
 				case ContentBase_v2 _:
 					return true;

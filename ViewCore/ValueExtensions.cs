@@ -155,7 +155,7 @@ namespace ViewTo
 
 		public static uint NormalizeBy(this uint value, uint max, uint min = 0) => (value - min) / (max - min);
 
-		public static int NormalizeBy(this int value, int max, int min = 0) => (value - min) / (max - min);
+		public static double NormalizeBy(this int value, double max, double min = 0.0) => (value - min) / (max - min);
 
 		public static float NormalizeBy(this float value, float max, float min = 0.0f) => (value - min) / (max - min);
 
@@ -194,25 +194,14 @@ namespace ViewTo
 			return outputValues;
 		}
 
-		public static double[] Log(this int[] values, int maxValue, int minValue = 0)
+		public static double[] Log(this IReadOnlyList<int> values, int maxValue, double desiredScore = 1)
 		{
-			// var maxCount = maxValue * multiplier;
-			// var logCustomBase = Math.Pow(maxValue, 1 / maxScore);
+			var logCustomBase = Math.Pow(maxValue, 1 / desiredScore);
+			var outputValues = new double[values.Count];
 
-			var outputValues = new double[values.Length];
-
-			for (var i = 0; i < values.Length; i++)
+			for (var i = 0; i < values.Count; i++)
 			{
-				var pxValue = values[i];
-
-				if (pxValue > minValue)
-					outputValues[i] = minValue;
-				else if (pxValue < maxValue)
-					outputValues[i] = maxValue;
-				else
-					outputValues[i] = Math.Log10(pxValue);
-
-				// outputValues[i] = values[i] > minValue ? Math.Log(pxValue,logCustomBase) : values[i];
+				outputValues[i] = Math.Log(values[i], logCustomBase);
 			}
 
 			return outputValues;

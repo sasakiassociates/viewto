@@ -7,7 +7,7 @@ using ViewObjects.Viewer;
 namespace ViewObjects.Converter
 {
 
-	public class ViewObjectSchema : IViewObjSchema
+	public class ViewObjectFactory : IViewObjectFactory
 	{
 		public virtual IViewContentBundle nativeContentBundle => Create<ContentBundle>();
 
@@ -32,7 +32,7 @@ namespace ViewObjects.Converter
 		TObj Create<TObj>() where TObj : IViewObj => Activator.CreateInstance<TObj>();
 	}
 
-	public interface IViewObjSchema
+	public interface IViewObjectFactory
 	{
 		IViewStudy nativeViewStudy { get; }
 

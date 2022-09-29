@@ -49,7 +49,7 @@ namespace ViewObjects.Speckle
 			}
 		}
 
-		[JsonIgnore] public virtual bool isValid => cloud != null;
+		[JsonIgnore] public virtual bool IsValid => cloud != null;
 
 		public string ViewId { get; set; }
 	}

@@ -8,11 +8,35 @@ namespace ViewObjects.Cloud
 	{
 		public ResultCloud() => ViewId = Guid.NewGuid().ToString();
 
-		public override bool isValid
+		public override bool IsValid
 		{
-			get => base.isValid && data != null && data.Any();
+			get => base.IsValid && data != null && data.Any();
 		}
 
 		public List<IResultData> data { get; set; }
+	}
+
+	public class ResultCloud_v2 : IResultCloud_v2, IViewObj
+	{
+		/// <inheritdoc />
+		public string ViewId { get; }
+
+		/// <inheritdoc />
+		public CloudPoint[] Points { get; set; } = Array.Empty<CloudPoint>();
+
+		/// <inheritdoc />
+		public List<IResultCloudData> Data { get; set; } = new List<IResultCloudData>();
+
+		public ResultCloud_v2()
+		{
+			ViewId = ObjUtils.InitGuid;
+		}
+
+		public ResultCloud_v2(CloudPoint[] points, List<IResultCloudData> data, string viewId = null)
+		{
+			Points = points;
+			Data = data;
+			ViewId = ObjUtils.CheckIfValidId(viewId);
+		}
 	}
 }

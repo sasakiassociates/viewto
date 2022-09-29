@@ -9,7 +9,7 @@ namespace ViewObjects.Study
 
 		public string ViewName { get; set; }
 
-		public bool isValid
+		public bool IsValid
 		{
 			get => ViewName.Valid() && objs.Valid();
 		}
@@ -17,7 +17,7 @@ namespace ViewObjects.Study
 		public List<IViewObj> objs { get; set; }
 	}
 
-	public class ViewStudy_v2 : IViewStudy_v2<IViewObj>, IViewObj
+	public class ViewStudy_v2 : IViewStudy_v2, IViewObj
 	{
 		/// <summary>
 		/// Name of the view study

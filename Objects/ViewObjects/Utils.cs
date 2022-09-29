@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using ViewObjects.Content;
+using ViewObjects.Explorer;
 
 namespace ViewObjects
 {
@@ -57,5 +60,64 @@ namespace ViewObjects
 			!string.IsNullOrEmpty(valueId) && Guid.TryParse(valueId, out _) ? valueId : Guid.NewGuid().ToString();
 
 		public static string InitGuid => Guid.NewGuid().ToString();
+
+		public static TObj FindObject<TObj>(this IViewStudy_v2 obj) where TObj : IViewObj
+		{
+			TObj viewObj = default;
+			if (!obj.Objects.Any())
+			{
+				return viewObj;
+			}
+
+			foreach (var o in obj.Objects)
+			{
+				if (o is TObj casted)
+				{
+					viewObj = casted;
+					break;
+				}
+			}
+
+			return viewObj;
+		}
+
+		public static List<TObj> FindObjects<TObj>(this IViewStudy_v2 obj) where TObj : IViewObj
+		{
+			List<TObj> viewObjs = new();
+
+			if (obj.Objects.Any())
+			{
+				foreach (var o in obj.Objects)
+				{
+					if (o is TObj casted)
+					{
+						viewObjs.Add(casted);
+					}
+				}
+			}
+
+			return viewObjs;
+		}
+
+		public static List<ContentOption> GetContentOptions(this IViewStudy_v2 obj)
+		{
+			List<ContentOption> viewObjs = new();
+
+			var contents = obj.FindObjects<ViewContent_v2>();
+			if (contents.Any())
+			{
+				foreach (var o in contents)
+				{
+					// viewObjs.Add(new ContentOption(){stage = });
+					// if (o is TObj casted)
+					// {
+					// 	viewObjs.Add(casted);
+					// }
+				}
+			}
+
+			return viewObjs;
+		}
+
 	}
 }

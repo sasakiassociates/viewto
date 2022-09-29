@@ -18,7 +18,7 @@
 	{
 		ExistingOverPotential = 0,
 		ProposedOverExisting = 1,
-		ProposedOverPotential = 2,
+		ProposedOverPotential = 2
 
 	}
 

@@ -9,9 +9,10 @@ namespace ViewObjects.Rig
 		public List<IRigParam> globalParams { get; set; }
 
 		public List<ViewColor> globalColors { get; set; }
+
 		public Dictionary<string, CloudPoint[]> clouds { get; set; }
 
-		public bool isValid
+		public bool IsValid
 		{
 			get => globalParams.Valid() && globalColors.Valid() && clouds != null && clouds.Any();
 		}

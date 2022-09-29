@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Speckle.Core.Api;
 using Speckle.Core.Kits;
 using Speckle.Core.Models;
 
@@ -19,10 +18,8 @@ namespace ViewObjects.Speckle
 		/// <inheritdoc />
 		public ContentType ContentType { get; set; }
 
-		/// <summary>
-		/// List of Commit <see cref="Commit.id"/> to reference in a <see cref="IViewStudy_v2"/>
-		/// </summary>
-		public List<string> References { get; set; }
+		/// <inheritdoc />
+		public List<string> References { get; set; } = new List<string>();
 
 		/// <summary>
 		/// 

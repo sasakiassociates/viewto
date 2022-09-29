@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace ViewObjects.Explorer
 {
@@ -33,64 +34,75 @@ namespace ViewObjects.Explorer
 
 	}
 
-	public struct ExplorerSettings : IExploreContent, IExploreRange, IExploreView, IValidate
+	public class ExplorerSettings : IExploreContent, IExploreRange, IExploreView, IValidate
 	{
 		/// <summary>
 		/// Min value from <see cref="IExplorer"/> active values
 		/// </summary>
-		public double min { get; set; }
+		public double min { get; set; } = 0.0;
 
 		/// <summary>
 		/// Max value from <see cref="IExplorer"/> active values
 		/// </summary>
-		public double max { get; set; }
+		public double max { get; set; } = 1.0;
 
 		/// <summary>
 		/// When set to true will normalize the active values
 		/// </summary>
-		public bool normalize { get; set; }
+		public bool normalize { get; set; } = false;
 
 		/// <summary>
 		/// When set to true will output all points and values for <see cref="options"/>
 		/// </summary>
-		public bool showAll { get; set; }
+		public bool showAll { get; set; } = true;
 
 		/// <summary>
 		/// Active index of a point being explored
 		/// </summary>
-		public int point { get; set; }
+		public int point { get; set; } = 0;
 
 		/// <summary>
 		/// Gradient ramp for visualizing the value of point 
 		/// </summary>
-		public System.Drawing.Color[] colorRamp { get; set; }
+		public System.Drawing.Color[] colorRamp { get; set; } = ViewColor.Ramp();
 
 		/// <summary>
 		/// Color for any point with no value in cloud
 		/// </summary>
-		public System.Drawing.Color invalidColor { get; set; }
+		public System.Drawing.Color invalidColor { get; set; } = Color.Black;
 
 		/// <summary>
 		/// List of options to use for fetching values from <see cref="IExplorer"/>. Multiple options will combine the values
 		/// </summary>
-		public List<ContentOption> options { get; set; }
+		public List<ContentOption> options { get; set; } = new List<ContentOption>();
 
 		/// <summary>
 		/// Comparable value type to use when exploring values
 		/// </summary>
-		public ExplorerValueType valueType { get; set; }
+		public ExplorerValueType valueType { get; set; } = ExplorerValueType.ExistingOverPotential;
 
 		/// <summary>
 		/// Returns true if <see cref="options"/> is valid
 		/// </summary>
-		public bool isValid => options.Valid();
+		public bool IsValid
+		{
+			get => options.Valid();
+		}
+
+		public List<string> targets { get; set; } = new List<string>();
+
+		public ExplorerSettings()
+		{ }
 
 		/// <summary>
 		/// Get a color along the gradient ramp
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public System.Drawing.Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * Clamp(t, 0.0, 1.0), 0)];
+		public System.Drawing.Color GetColor(double t)
+		{
+			return colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * Clamp(t, 0.0, 1.0), 0)];
+		}
 
 		static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
 		{
@@ -99,7 +111,6 @@ namespace ViewObjects.Explorer
 			return val.CompareTo(max) > 0 ? max : val;
 		}
 
-		public List<string> targets { get; set; }
 	}
 
 }

@@ -82,12 +82,6 @@ namespace ViewTo.RhinoGh.Results
 			_output.ActiveColor = index;
 		}
 
-		public override void DrawViewportWires(IGH_PreviewArgs args)
-		{
-			if (renderedCloud != null)
-				args.Display.DrawPointCloud(renderedCloud, pointSize);
-		}
-
 		void SetMinMax(double[] value)
 		{
 			_min = 1.0;
@@ -162,9 +156,7 @@ namespace ViewTo.RhinoGh.Results
 			// load cloud point
 			if (wrapper?.Value is ResultCloud resultCloud)
 			{
-				_explorer ??= new ResultExplorer();
-
-				// NOTE: check if this is the same cloud as before
+				// // NOTE: check if this is the same cloud as before
 				if (!_explorer.source.Check(resultCloud))
 					_explorer.Load(resultCloud);
 			}
@@ -177,7 +169,7 @@ namespace ViewTo.RhinoGh.Results
 
 			double[] explorerValues = null;
 
-			if (!_settings.isValid)
+			if (!_settings.IsValid)
 			{
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Settings are not valid!");
 				return;
@@ -185,18 +177,16 @@ namespace ViewTo.RhinoGh.Results
 
 			if (_settings.options.Count == 1)
 			{
-				if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out ICollection<int> data))
+				if (_explorer.TryGet(_settings.valueType, _settings.options[0].target, out IEnumerable<double> data))
 				{
 					// need to store the current max and min of the values passed out
-					SetMinMax(data);
-					explorerValues = data.ToArray().Log(_maxInt, _minInt);
+					explorerValues = data.ToArray();
+					SetMinMax(explorerValues);
 				}
 			}
 			else
 			{
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Composite based targets are not supported at the moment");
-				// if (_explorer.TryGet(_settings.valueType, _settings.options.Select(x => x.target).ToList(), out IEnumerable<int> data))
-				// 	explorerValues = data.ToArray();
 			}
 
 			if (!explorerValues.Valid())
@@ -204,13 +194,6 @@ namespace ViewTo.RhinoGh.Results
 				AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Explorer did not load result cloud properly!");
 				return;
 			}
-
-			// if (_settings.normalize)
-			// {
-			// 	// HACK: this is needed to remap the values with power and log. 
-			// 	// TODO: this should be replaced once the values are no longer stored as doubles
-			// 	explorerValues = explorerValues.PowLog(maxScore: _max, maxValue: _max, multiplier: 10000000.0, minValue: _min);
-			// }
 
 			var points = new GH_Structure<GH_Point>();
 			var values = new GH_Structure<GH_Number>();
