@@ -20,24 +20,6 @@ namespace ViewObjects
 		public ResultStage Stage { get; set; }
 	}
 
-	public interface IContentOption
-	{
-		/// <summary>
-		///   Id linked to <see cref="IContent" />
-		/// </summary>
-		public string Id { get; set; }
-
-		/// <summary>
-		///   Name of the Target Content
-		/// </summary>
-		public string Name { get; set; }
-
-		/// <summary>
-		///   the stage to use for
-		/// </summary>
-		public ResultStage Stage { get; set; }
-	}
-
 	[Serializable]
 	public class ResultCloudData : Container, IResultCloudData
 	{

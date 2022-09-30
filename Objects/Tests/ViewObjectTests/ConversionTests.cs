@@ -32,7 +32,7 @@ namespace ViewTests.Objects
 			{
 				new ViewObjects.Content(ContentType.Proposed),
 				new CloudReference(new List<string> { "256ff84cf7" }),
-				new ViewObjects.Viewer.ViewerSystem()
+				new ViewObjects.Viewer.Viewer()
 			};
 
 			var obj = new ViewObjects.Study.ViewStudy(objs, "Test View Study");

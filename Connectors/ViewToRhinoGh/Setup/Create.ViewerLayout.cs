@@ -53,8 +53,8 @@ namespace ViewTo.RhinoGh.Setup
 				ViewerDirection.Down
 			});
 
-			var viewerSystem = new ViewerSystem(new List<IViewerLayout>
-				                                    { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
+			var viewerSystem = new Viewer(new List<IViewerLayout>
+				                              { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
 			DA.SetData(0, viewerSystem);
 		}
 	}
