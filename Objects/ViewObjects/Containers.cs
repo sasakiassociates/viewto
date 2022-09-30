@@ -47,6 +47,13 @@ namespace ViewObjects
 		public ResultCloudData()
 		{ }
 
+		public ResultCloudData(List<int> values, IContentOption option, string layout)
+		{
+			this.Values = values;
+			this.Option = option;
+			this.Layout = layout;
+		}
+
 		/// <inheritdoc />
 		public IContentOption Option { get; set; }
 
@@ -55,6 +62,7 @@ namespace ViewObjects
 
 		/// <inheritdoc />
 		public List<int> Values { get; set; }
+
 	}
 
 }

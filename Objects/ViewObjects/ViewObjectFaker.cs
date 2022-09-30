@@ -75,8 +75,8 @@ namespace ViewObjects
 			var rnd = new Random();
 			var points = new CloudPoint[count];
 			for (var i = 0; i < points.Length; i++)
-				points[i] = new CloudPoint(rnd.Next(), rnd.Next(), rnd.Next(),
-				                           rnd.Next(), rnd.Next(), rnd.Next(), "1234-567-890");
+				points[i] = new CloudPoint(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(),
+				                           rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(), "1234-567-890");
 			return points;
 		}
 
@@ -89,7 +89,7 @@ namespace ViewObjects
 			{
 				var bytes = new byte[4];
 				rnd.NextBytes(bytes);
-				values.Add(BitConverter.ToInt32(bytes, 0));
+				values.Add((int)BitConverter.ToUInt32(bytes, 0));
 			}
 
 			return values;

@@ -59,7 +59,7 @@ namespace ViewObjects.Speckle
 				var points = new CloudPoint[Positions.Count / 3];
 
 				for (int i = 2, c = 0; i < Positions.Count; i += 3, c++)
-					points[i] = new CloudPoint(Positions[i - 2], Positions[i - 1], Positions[i], 0, 0, 0, MetaData[c] ?? "empty");
+					points[c] = new CloudPoint(Positions[i - 2], Positions[i - 1], Positions[i], 0, 0, 0, MetaData[c] ?? "empty");
 
 				return points;
 			}

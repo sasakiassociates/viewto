@@ -107,6 +107,10 @@ namespace ViewObjects.Converter
 					return true;
 				case VS.ViewerSystem _:
 					return true;
+				case VS.ResultCloud _:
+					return true;
+				case VS.ResultCloudData _:
+					return true;
 				default:
 					return false;
 			}
@@ -122,6 +126,10 @@ namespace ViewObjects.Converter
 					return ViewerLayoutToSpeckle(o);
 				case IViewerSystem<IViewerLayout> o:
 					return ViewerSystemToSpeckle(o);
+				case IResultCloud o:
+					return ResultCloudToSpeckle(o);
+				case IResultCloudData o:
+					return ResultCloudDataToSpeckle(o);
 				case CloudReference o:
 					return ViewCloudToSpeckle(o);
 				case ContentReference o:
@@ -147,6 +155,8 @@ namespace ViewObjects.Converter
 					return ViewerLayoutToNative(o);
 				case VS.ViewerSystem o:
 					return ViewerSystemToNative(o);
+				case VS.ResultCloud o:
+					return ResultCloudToNative(o);
 				case Base o:
 					return HandleDefault(o);
 				default:

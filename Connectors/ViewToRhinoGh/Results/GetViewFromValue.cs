@@ -87,9 +87,9 @@ namespace ViewTo.RhinoGh.Results
 
 			_explorer ??= new ResultExplorer();
 
-			// NOTE: check if this is the same cloud as before
-			if (!_explorer.source.Check(cloud))
-				_explorer.Load(cloud);
+			// // NOTE: check if this is the same cloud as before
+			// if (!_explorer.source.Check(cloud))
+			// 	_explorer.Load(cloud);
 
 			// if there is only one option we only need to check once
 			if ((settings.options.Valid(1) && !_explorer.CheckActiveTarget(settings.options[0].Name)) || _explorer.activeStage != settings.options[0].Stage)

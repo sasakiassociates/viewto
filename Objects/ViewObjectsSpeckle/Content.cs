@@ -10,8 +10,7 @@ namespace ViewObjects.Speckle
 	public class Content : ViewObjectReferenceBase<ViewObjects.Content>, IContent
 	{
 
-		/// <summary>
-		/// </summary>
+		/// <inheritdoc />
 		public Content()
 		{ }
 
@@ -21,8 +20,7 @@ namespace ViewObjects.Speckle
 		/// <param name="type">The type of view content to use</param>
 		/// <param name="references">List commit ids to reference to use when building the content group</param>
 		/// <param name="viewName">Optional name for the content</param>
-		/// <param name="viewId">
-		///   Id of the view study as a <see cref="System.Guid" />. If no valid value is passed in one will be
+		/// <param name="viewId">  Id of the view study as a <see cref="System.Guid" />. If no valid value is passed in one will be
 		///   generated
 		/// </param>
 		[SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObjectSpeckle.Schema.Category, "Objects")]

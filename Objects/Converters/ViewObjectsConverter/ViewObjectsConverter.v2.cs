@@ -27,24 +27,39 @@ namespace ViewObjects.Converter
 		IViewObject ViewerSystemToNative(IViewerSystem<VS.ViewerLayout> o) =>
 			new Viewer.ViewerSystem(o.Layouts.Where(x => x != null).Select(ViewerLayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
 
-		VS.ViewObjectBase StudyToSpeckle(IViewStudy<IViewObject> obj) => new VS.ViewStudy
+		VO.ResultCloud ResultCloudToNative(VS.ResultCloud obj) =>
+			new VO.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);
+
+		IResultCloudData ResultCloudDataToNative(IResultCloudData obj) => new VO.ResultCloudData(obj.Values, obj.Option, obj.Layout);
+
+		VS.ViewStudy StudyToSpeckle(IViewStudy<IViewObject> obj) => new VS.ViewStudy
 		{
 			Objects = obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToSpeckleViewObject).ToList() : new List<VS.ViewObjectBase>(),
 			ViewName = obj.ViewName,
 			ViewId = obj.ViewId
 		};
 
-		VS.ViewObjectBase ViewContentToSpeckle(ContentReference obj) => new VS.Content(obj.ContentType, obj.References, obj.ViewId, obj.ViewName);
+		VS.Content ViewContentToSpeckle(ContentReference obj) => new VS.Content(obj.ContentType, obj.References, obj.ViewId, obj.ViewName);
 
-		VS.ViewObjectBase ViewCloudToSpeckle(IReferenceObject obj) => new VS.ViewCloud(obj.References, obj.ViewId);
+		VS.ViewCloud ViewCloudToSpeckle(IReferenceObject obj) => new VS.ViewCloud(obj.References, obj.ViewId);
 
-		VS.ViewObjectBase ViewObjectReferenceToSpeckle(IReferenceObject obj) =>
+		VS.ViewObjectReferenceBase ViewObjectReferenceToSpeckle(IReferenceObject obj) =>
 			new VS.ViewObjectReferenceBase(obj.References, obj.Type, obj.ViewId, obj.ViewName);
 
-		VS.ViewObjectBase ViewerLayoutToSpeckle(IViewerLayout obj) => new VS.ViewerLayout(obj.Viewers);
+		VS.ViewerLayout ViewerLayoutToSpeckle(IViewerLayout obj) => new VS.ViewerLayout(obj.Viewers);
 
-		VS.ViewObjectBase ViewerSystemToSpeckle(IViewerSystem<IViewerLayout> o) => new VS.ViewerSystem(
+		VS.ViewerSystem ViewerSystemToSpeckle(IViewerSystem<IViewerLayout> o) => new VS.ViewerSystem(
 			o.Layouts.Where(x => x != null).Select(ViewerLayoutToSpeckle).Cast<VS.ViewerLayout>().ToList(), o.Clouds);
+
+		VS.ResultCloud ResultCloudToSpeckle(IResultCloud obj)
+		{
+			return new VS.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToSpeckle).ToList(), obj.ViewId);
+		}
+
+		VS.ResultCloudData ResultCloudDataToSpeckle(IResultCloudData obj)
+		{
+			return new VS.ResultCloudData(obj.Values, obj.Option, obj.Layout);
+		}
 
 		//TODO: Support getting list of objects from search
 		IViewObject HandleDefault(Base @base)
@@ -61,5 +76,6 @@ namespace ViewObjects.Converter
 
 			return o;
 		}
+
 	}
 }

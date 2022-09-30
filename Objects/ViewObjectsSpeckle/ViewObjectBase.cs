@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using Speckle.Core.Models;
-using ViewObjects.References;
 
 namespace ViewObjects.Speckle
 {
@@ -18,7 +16,7 @@ namespace ViewObjects.Speckle
 		{ }
 
 		/// <summary>
-		///   Returns the assembly type
+		///   Returns <see cref="ViewObjectBase"/>
 		/// </summary>
 		public override string speckle_type
 		{
@@ -52,15 +50,6 @@ namespace ViewObjects.Speckle
 			this.ViewId = ObjUtils.CheckIfValidId(viewId);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[JsonIgnore] public IReferenceObject Reference
-		{
-			get => GetRef();
-			set => SetRef(value);
-		}
-
 		/// <inheritdoc />
 		public List<string> References { get; set; }
 
@@ -72,30 +61,6 @@ namespace ViewObjects.Speckle
 
 		/// <inheritdoc />
 		public Type Type { get; set; }
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		protected virtual IReferenceObject GetRef()
-		{
-			return new ViewObjectReference(References, Type, ViewName, ViewId);
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="obj"></param>
-		protected virtual void SetRef(IReferenceObject obj)
-		{
-			if (obj == null)
-				return;
-
-			Type = obj.Type;
-			ViewId = obj.ViewId;
-			ViewName = obj.ViewName;
-			References = obj.References;
-		}
 
 	}
 

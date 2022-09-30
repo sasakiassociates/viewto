@@ -5,7 +5,7 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 using ViewObjects;
-using ViewObjects.Cloud;
+using ViewObjects.Viewer;
 using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Setup
@@ -40,7 +40,7 @@ namespace ViewTo.RhinoGh.Setup
 			pManager.AddIntegerParameter("Values", "V", "Values to use", GH_ParamAccess.tree);
 			_input.Values = index++;
 
-			pManager.AddTextParameter("Names", "T", "Target content to use", GH_ParamAccess.tree);
+			pManager.AddGenericParameter("Content", "C", "Content to use", GH_ParamAccess.tree);
 			_input.Target = index;
 
 			pManager[_input.Id].Optional = true;
@@ -58,13 +58,9 @@ namespace ViewTo.RhinoGh.Setup
 
 			DA.GetDataTree(_input.Values, out GH_Structure<GH_Integer> treeValues);
 
-			DA.GetDataTree(_input.Target, out GH_Structure<GH_String> treeNames);
+			DA.GetDataTree(_input.Target, out GH_Structure<GH_ObjectWrapper> treeOptions);
 
-			var cloudPoints = (
-				from t in points select new CloudPoint
-				{
-					x = t.Value.X, y = t.Value.Y, z = t.Value.Z
-				}).ToArray();
+			var cloudPoints = (from t in points select new CloudPoint { x = t.Value.X, y = t.Value.Y, z = t.Value.Z }).ToArray();
 
 			var id = string.Empty;
 
@@ -73,36 +69,23 @@ namespace ViewTo.RhinoGh.Setup
 			else
 				id = Guid.NewGuid().ToString();
 
-			var dataContainer = new List<IResultData>();
+			var dataContainer = new List<IResultCloudData>();
 
-			const int INDEX_CONTENT = 0;
-			const int INDEX_STAGE = 1;
-
-			for (var bIndex = 0; bIndex < treeNames.Branches.Count; bIndex++)
+			for (var bIndex = 0; bIndex < treeOptions.Branches.Count; bIndex++)
 			{
 				var branchValue = treeValues.Branches[bIndex];
-
 				var values = new List<int>();
+
 				foreach (var v in branchValue)
 					values.Add(v.Value);
 
-				var branchName = treeNames.Branches[bIndex];
-				dataContainer.Add(
-					new ContentResultData(
-						values,
-						branchName.Count >= INDEX_CONTENT ? branchName[INDEX_CONTENT].Value : "Invalid Content",
-						branchName.Count >= INDEX_STAGE ? branchName[INDEX_STAGE].Value : "Invalid Stage",
-						0)
-				);
+				if (treeOptions.Branches[bIndex].FirstOrDefault().Value is ContentOption co)
+				{
+					dataContainer.Add(new ResultCloudData() { Values = values, Option = co, Layout = nameof(ViewerLayout) });
+				}
 			}
 
-			var resulCloud = new ResultCloudV1V1
-			{
-				ViewId = id,
-				points = cloudPoints,
-				data = dataContainer
-			};
-
+			var resulCloud = new ResultCloud(cloudPoints, dataContainer, id);
 			DA.SetData(0, resulCloud);
 		}
 	}

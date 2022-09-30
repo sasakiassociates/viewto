@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
-using ViewObjects.Cloud;
 using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Results
@@ -121,41 +120,38 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			var graphMapper = new GH_GraphMapper();
-			var graphMapperAttributes = new GH_GraphMapperAttributes(graphMapper);
-
 			GH_ViewObj wrapper = null;
 			DA.GetData(_input.Object, ref wrapper);
 
 			var inputTargets = new List<string>();
 			DA.GetDataList(_input.Values, inputTargets);
 
-			if (wrapper?.Value is ResultCloudV1V1 cloud)
-			{
-				if (!inputTargets.Any())
-				{
-					_storedValues = cloud.GetTargets();
-					_refresh = true;
-				}
-				else
-				{
-					var tempValues = cloud.GetTargets();
-					if (tempValues != null && tempValues.Count != inputTargets.Count)
-					{
-						_storedValues = tempValues;
-						_refresh = true;
-					}
-					else
-					{
-						for (var i = 0; i < inputTargets.Count; i++)
-							if (!inputTargets[i].Equals(tempValues[i]))
-							{
-								_storedValues = tempValues;
-								_refresh = true;
-							}
-					}
-				}
-			}
+			// if (wrapper?.Value is ResultCloudV1V1 cloud)
+			// {
+			// 	if (!inputTargets.Any())
+			// 	{
+			// 		_storedValues = cloud.GetTargets();
+			// 		_refresh = true;
+			// 	}
+			// 	else
+			// 	{
+			// 		var tempValues = cloud.GetTargets();
+			// 		if (tempValues != null && tempValues.Count != inputTargets.Count)
+			// 		{
+			// 			_storedValues = tempValues;
+			// 			_refresh = true;
+			// 		}
+			// 		else
+			// 		{
+			// 			for (var i = 0; i < inputTargets.Count; i++)
+			// 				if (!inputTargets[i].Equals(tempValues[i]))
+			// 				{
+			// 					_storedValues = tempValues;
+			// 					_refresh = true;
+			// 				}
+			// 		}
+			// 	}
+			// }
 
 			DA.SetDataList(0, _storedValues);
 		}
