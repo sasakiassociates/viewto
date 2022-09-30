@@ -4,7 +4,7 @@ namespace ViewObjects.Cloud
 {
 
 	[Serializable]
-	public readonly struct CloudShell : IMetaShell
+	public readonly struct CloudShell
 	{
 		public CloudShell(Type objType, string objId, int count)
 		{

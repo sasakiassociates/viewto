@@ -12,7 +12,7 @@ namespace ViewTo
 
 		public List<string> targets { get; private set; }
 
-		public List<IResultData> storedData { get; private set; }
+		public List<IResultData_v1> storedData { get; private set; }
 
 		public ResultStage activeStage { get; set; } = ResultStage.Existing;
 
@@ -29,7 +29,7 @@ namespace ViewTo
 
 			source = obj;
 			storedData = source.data;
-			targets = source.GetTargets();
+			// targets = source.GetTargets();
 			activeTarget = targets.FirstOrDefault();
 
 			activePoint = 0;

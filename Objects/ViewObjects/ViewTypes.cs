@@ -13,7 +13,7 @@ namespace ViewObjects
 
 	public interface IResultCloudV1 : IViewCloud_v1
 	{
-		List<IResultData> data { get; set; }
+		List<IResultData_v1> data { get; set; }
 	}
 
 	public interface IViewer_v1

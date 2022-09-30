@@ -2,7 +2,7 @@
 
 namespace ViewObjects
 {
-	public interface IResultData : IPixelResults, IContentResults, ILayoutResults
+	public interface IResultData_v1 : IPixelResults, IContentResults, ILayoutResults
 	{ }
 
 	public interface IPixelResults

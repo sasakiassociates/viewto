@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ViewObjects
+﻿namespace ViewObjects
 {
 	public interface ICloud
 	{
@@ -28,10 +26,4 @@ namespace ViewObjects
 		string ViewName { get; set; }
 	}
 
-	public interface IMetaShell
-	{
-		string objId { get; }
-
-		Type objType { get; }
-	}
 }

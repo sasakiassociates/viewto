@@ -13,7 +13,7 @@ namespace ViewObjects.Cloud
 			get => base.IsValid && data != null && data.Any();
 		}
 
-		public List<IResultData> data { get; set; }
+		public List<IResultData_v1> data { get; set; }
 	}
 
 }

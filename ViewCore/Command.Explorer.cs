@@ -36,6 +36,37 @@ namespace ViewTo
 	public static partial class Commander
 	{
 
+		public static bool CheckAgainstString(this ResultStage stage, string type)
+		{
+			if (!type.Valid())
+				return false;
+
+			// previous version of organizing data types
+			var nameToCompare = stage switch
+			{
+				ResultStage.Potential => "Target",
+				ResultStage.Existing => "Blocker",
+				ResultStage.Proposed => "Design",
+				_ => throw new ArgumentOutOfRangeException(nameof(stage), stage, null)
+			};
+
+			var res = type.ToUpper().Equals(nameToCompare.ToUpper());
+
+			if (res)
+				return true;
+
+			// try other version
+			nameToCompare = stage switch
+			{
+				ResultStage.Potential => "Potential",
+				ResultStage.Existing => "Existing",
+				ResultStage.Proposed => "Proposed",
+				_ => throw new ArgumentOutOfRangeException(nameof(stage), stage, null)
+			};
+
+			return type.ToUpper().Equals(nameToCompare.ToUpper());
+		}
+
 		public static bool TryGet(this IResultExplorer explorer, ExplorerValueType valueType, List<string> targets, out IEnumerable<double> results)
 		{
 			results = new List<double>();

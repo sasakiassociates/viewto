@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace ViewObjects
 {
 	[Serializable]
-	public struct ContentResultData : IResultData
+	public struct ContentResultDataV1 : IResultData_v1
 	{
-		public ContentResultData(List<int> values, string stage, string content, int color, string meta = null, string layout = null)
+		public ContentResultDataV1(List<int> values, string stage, string content, int color, string meta = null, string layout = null)
 		{
 			this.values = values;
 			this.stage = stage;

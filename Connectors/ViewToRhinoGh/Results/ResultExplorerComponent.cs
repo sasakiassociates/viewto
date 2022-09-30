@@ -170,9 +170,9 @@ namespace ViewTo.RhinoGh.Results
 			// load cloud point
 			if (wrapper?.Value is ResultCloudV1V1 resultCloud)
 			{
-				// // NOTE: check if this is the same cloud as before
-				if (!_explorer.source.Check(resultCloud))
-					_explorer.Load(resultCloud);
+				// 	// // NOTE: check if this is the same cloud as before
+				// 	if (!_explorer.source.Check(resultCloud))
+				// 		_explorer.Load(resultCloud);
 			}
 			else
 			{
