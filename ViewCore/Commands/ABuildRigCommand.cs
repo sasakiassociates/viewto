@@ -7,64 +7,71 @@ using ViewTo.Events.Prime;
 
 namespace ViewTo.Commands
 {
-  internal abstract class ABuildRigCommand : IStudyCommand
-  {
-    protected PrimeStudyArgs primedStudy;
+	internal abstract class ABuildRigCommand : IStudyCommand
+	{
+		protected PrimeStudyArgs primedStudy;
 
-    public ABuildRigCommand()
-    {
-      processArgs = new List<StudyProcessArgs>();
-    }
+		public ABuildRigCommand() => processArgs = new List<StudyProcessArgs>();
 
-    protected bool ValidData => primedStudy != null;
-    public Study.LoadError errorFlag => Study.LoadError.BuildingRig;
+		protected bool ValidData
+		{
+			get => primedStudy != null;
+		}
 
-    public List<StudyProcessArgs> processArgs { get; protected set; }
-    public bool greatSuccess { get; protected set; }
+		public Study.LoadError errorFlag
+		{
+			get => Study.LoadError.BuildingRig;
+		}
 
-    public abstract void Run();
+		public List<StudyProcessArgs> processArgs { get; protected set; }
 
-    public virtual void ReceivePrimedData(PrimeProcessArgs primeArgs)
-    {
-      if (primeArgs is PrimeStudyArgs studyArgs) primedStudy = studyArgs;
-    }
+		public bool greatSuccess { get; protected set; }
 
-    protected List<ViewColor> GetGlobalColors()
-    {
-      var globalColors = new List<ViewColor>();
+		public abstract void Run();
 
-      foreach (var arg in primedStudy.contentArgs)
-        globalColors.AddRange(arg.targets.Select(t => t.viewColor).ToList());
+		public virtual void ReceivePrimedData(PrimeProcessArgs primeArgs)
+		{
+			if (primeArgs is PrimeStudyArgs studyArgs)
+				primedStudy = studyArgs;
+		}
 
-      return globalColors;
-    }
+		protected List<ViewColor> GetGlobalColors()
+		{
+			var globalColors = new List<ViewColor>();
 
-    protected List<IRigParam> GetBundles()
-    {
-      var globe = new List<IRigParam>();
+			foreach (var arg in primedStudy.contentArgs)
+				globalColors.AddRange(arg.targets.Select(t => t.viewColor).ToList());
 
-      foreach (var arg in primedStudy.bundleArgs)
-      {
-        IRigParam param = default;
+			return globalColors;
+		}
 
-        if (arg is PrimeViewerBundleIsolatedArgs isolatedArgs)
-          param = new RigParametersIsolated
-          {
-            bundles = isolatedArgs.bundles.ToList(),
-            colors = new List<ViewColor>
-            {
-              isolatedArgs.viewColor
-            }
-          };
-        else
-          param = new RigParameters
-          {
-            bundles = arg.bundles.ToList()
-          };
+		protected List<IRigParam_v1> GetBundles()
+		{
+			var globe = new List<IRigParam_v1>();
 
-        globe.Add(param);
-      }
-      return globe;
-    }
-  }
+			foreach (var arg in primedStudy.bundleArgs)
+			{
+				IRigParam_v1 paramV1 = default;
+
+				if (arg is PrimeViewerBundleIsolatedArgs isolatedArgs)
+					paramV1 = new RigParametersIsolated
+					{
+						bundles = isolatedArgs.bundles.ToList(),
+						colors = new List<ViewColor>
+						{
+							isolatedArgs.viewColor
+						}
+					};
+				else
+					paramV1 = new RigParameters
+					{
+						bundles = arg.bundles.ToList()
+					};
+
+				globe.Add(paramV1);
+			}
+
+			return globe;
+		}
+	}
 }

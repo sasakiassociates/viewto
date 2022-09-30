@@ -12,7 +12,7 @@ namespace ViewTo
 		// Start is called before the first frame update
 		void Start()
 		{
-			var pf = new GameObject().AddComponent<PixelFinderCube>();
+			var pf = new GameObject().AddComponent<PixelLayoutCube>();
 			pf.Init(1, Color.white);
 		}
 

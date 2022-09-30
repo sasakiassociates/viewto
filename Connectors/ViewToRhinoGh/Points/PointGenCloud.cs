@@ -10,19 +10,26 @@ namespace ViewTo.RhinoGh.Points
 {
 	public class PointGenCloud : ViewToCloudComponentBase
 	{
+
+		(int SpacingX, int SpacingY, int SpacingZ, int Bounds, int Mask) _input;
+
+		(int Masked, int UnMasked) _output;
+
 		public PointGenCloud() : base(
 			"Cloud Point Generator", "CPG",
 			"Generate A Cloud of Points",
 			ConnectorInfo.Nodes.CLOUD)
 		{ }
 
-		protected override Bitmap Icon => new Bitmap(Icons.GeneratePointsCloud);
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.GeneratePointsCloud);
+		}
 
-		public override Guid ComponentGuid => new Guid("12e9f6ab-4e35-4076-b17f-74fc42e2c3f2");
-
-		(int SpacingX, int SpacingY, int SpacingZ, int Bounds, int Mask) _input;
-
-		(int Masked, int UnMasked) _output;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("12e9f6ab-4e35-4076-b17f-74fc42e2c3f2");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -110,6 +117,5 @@ namespace ViewTo.RhinoGh.Points
 				DA.SetDataList(_output.UnMasked, cloud);
 			}
 		}
-
 	}
 }

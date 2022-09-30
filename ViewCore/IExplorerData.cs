@@ -7,7 +7,7 @@ namespace ViewTo
 	{
 		public ResultStage activeStage { get; set; }
 
-		public List<IResultData> storedData { get; }
+		public List<IResultData_v1> storedData { get; }
 
 		public List<string> targets { get; }
 	}

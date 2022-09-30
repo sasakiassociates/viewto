@@ -9,83 +9,87 @@ using ViewTo.Events.Report;
 namespace ViewTo.Commands
 {
 
-  internal class CheckStudyDataCommand : IStudyCommand
-  {
+	internal class CheckStudyDataCommand : IStudyCommand
+	{
 
-    public CheckStudyDataCommand(IViewStudy study)
-    {
-      obj = study;
-      processArgs = new List<StudyProcessArgs>();
-    }
-    private IViewStudy obj { get; }
+		public CheckStudyDataCommand(IViewStudy_v1 study)
+		{
+			obj = study;
+			processArgs = new List<StudyProcessArgs>();
+		}
 
-    public Study.LoadError errorFlag => Study.LoadError.MissingObjects;
-    public List<StudyProcessArgs> processArgs { get; }
-    public bool greatSuccess { get; set; }
+		IViewStudy_v1 obj { get; }
 
-    public void Run()
-    {
+		public Study.LoadError errorFlag
+		{
+			get => Study.LoadError.MissingObjects;
+		}
 
-      try
-      {
-        if (!obj.CanRun())
-        {
-          greatSuccess = false;
-        }
-        else
-        {
+		public List<StudyProcessArgs> processArgs { get; }
 
-          var content = obj.Get<IViewContentBundle>();
-          var blockersCount = content.GetContentCount<IBlockerContent>();
-          var designsCount = content.GetContentCount<IDesignContent>();
-          var targetCount = content.GetContentCount<ITargetContent>();
+		public bool greatSuccess { get; set; }
 
-          var clouds = obj.GetAll<IViewCloud>().ToDictionary(cld => cld?.viewID, cld => cld != null && cld.points.Valid() ? cld.points.Length : 0);
+		public void Run()
+		{
+			try
+			{
+				if (!obj.CanRun())
+				{
+					greatSuccess = false;
+				}
+				else
+				{
+					var content = obj.Get<IViewContentBundle_v1>();
+					var blockersCount = content.GetContentCount<IBlockerContentV1>();
+					var designsCount = content.GetContentCount<IDesignContentV1>();
+					var targetCount = content.GetContentCount<ITargetContentV1>();
 
-          var bundles = obj.GetAll<IViewerBundle>().ToList();
-          var globalBundleCount = 0;
-          foreach (var bundle in bundles)
-          {
+					var clouds = obj.GetAll<IViewCloud_v1>().ToDictionary(cld => cld?.ViewId, cld => cld != null && cld.points.Valid() ? cld.points.Length : 0);
 
-            var layouts = bundle.layouts;
-            if (layouts.Valid())
-              globalBundleCount += layouts.Count;
-          }
-          var isoTargetCount = 0;
-          var isoBundleCount = 0;
-          foreach (var target in content.GetContents<ITargetContent>())
-          {
-            var cl = target.SearchForClouds();
-            if (cl.Valid())
-              foreach (var c in cl.Where(c => !clouds.ContainsKey(c.objId)))
-                clouds.Add(c.objId, c.count);
+					var bundles = obj.GetAll<IViewerBundle_v1>().ToList();
+					var globalBundleCount = 0;
+					foreach (var bundle in bundles)
+					{
+						var layouts = bundle.layouts;
+						if (layouts.Valid())
+							globalBundleCount += layouts.Count;
+					}
 
-            if (target.isolate)
-            {
-              isoTargetCount++;
-              isoBundleCount += target.bundles.Valid() ? target.bundles.Count : 0;
-            }
-          }
-          report?.Invoke(new StudyReportArgs(
-                           obj.viewName, obj.CanRun(), obj.CanVisualize(),
-                           blockersCount, designsCount, targetCount,
-                           isoTargetCount, globalBundleCount, isoBundleCount, clouds.Count,
-                           clouds.Values.Sum()));
-          // basic inputs needed for a project to run 
-          greatSuccess = clouds.Any() && targetCount > 0 && globalBundleCount > 0;
-        }
-      }
-      catch (Exception e)
-      {
-        Console.WriteLine(e);
-        throw;
-      }
+					var isoTargetCount = 0;
+					var isoBundleCount = 0;
+					foreach (var target in content.GetContents<ITargetContentV1>())
+					{
+						var cl = target.SearchForClouds();
+						if (cl.Valid())
+							foreach (var c in cl.Where(c => !clouds.ContainsKey(c.objId)))
+								clouds.Add(c.objId, c.count);
 
+						if (target.isolate)
+						{
+							isoTargetCount++;
+							isoBundleCount += target.bundles.Valid() ? target.bundles.Count : 0;
+						}
+					}
 
-      if (!greatSuccess)
-        processArgs.Add(new ValidStudyArg(false, obj.viewName, errorFlag.Message()));
-    }
+					report?.Invoke(new StudyReportArgs(
+						               obj.ViewName, obj.CanRun(), obj.CanVisualize(),
+						               blockersCount, designsCount, targetCount,
+						               isoTargetCount, globalBundleCount, isoBundleCount, clouds.Count,
+						               clouds.Values.Sum()));
+					// basic inputs needed for a project to run 
+					greatSuccess = clouds.Any() && targetCount > 0 && globalBundleCount > 0;
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
 
-    public event Action<StudyReportArgs> report;
-  }
+			if (!greatSuccess)
+				processArgs.Add(new ValidStudyArg(false, obj.ViewName, errorFlag.Message()));
+		}
+
+		public event Action<StudyReportArgs> report;
+	}
 }

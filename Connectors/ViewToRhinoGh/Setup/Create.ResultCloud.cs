@@ -5,14 +5,15 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 using ViewObjects;
-using ViewObjects.Cloud;
-using ViewObjects.Content;
+using ViewObjects.Viewer;
 using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Setup
 {
 	public class CreateResultCloudComponent : ViewToComponentBase
 	{
+
+		(int Points, int Id, int Target, int Values) _input;
 
 		public CreateResultCloudComponent() : base(
 			"Create Result Cloud",
@@ -21,7 +22,10 @@ namespace ViewTo.RhinoGh.Setup
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 
-		(int Points, int Id, int Target, int Values) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("BEC145EE-4CD5-4582-95C6-A6214A3786DA");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -33,10 +37,10 @@ namespace ViewTo.RhinoGh.Setup
 			pManager.AddTextParameter("ID", "I", "Id for the View Cloud", GH_ParamAccess.item);
 			_input.Id = index++;
 
-			pManager.AddNumberParameter("Values", "V", "Values to use", GH_ParamAccess.tree);
+			pManager.AddIntegerParameter("Values", "V", "Values to use", GH_ParamAccess.tree);
 			_input.Values = index++;
 
-			pManager.AddTextParameter("Names", "T", "Target content to use", GH_ParamAccess.tree);
+			pManager.AddGenericParameter("Content", "C", "Content to use", GH_ParamAccess.tree);
 			_input.Target = index;
 
 			pManager[_input.Id].Optional = true;
@@ -52,14 +56,11 @@ namespace ViewTo.RhinoGh.Setup
 			var points = new List<GH_Point>();
 			DA.GetDataList(_input.Points, points);
 
-			DA.GetDataTree(_input.Values, out GH_Structure<GH_Number> treeValues);
+			DA.GetDataTree(_input.Values, out GH_Structure<GH_Integer> treeValues);
 
-			DA.GetDataTree(_input.Target, out GH_Structure<GH_String> treeNames);
+			DA.GetDataTree(_input.Target, out GH_Structure<GH_ObjectWrapper> treeOptions);
 
-			var cloudPoints = (from t in points select new CloudPoint
-			{
-				x = t.Value.X, y = t.Value.Y, z = t.Value.Z
-			}).ToArray();
+			var cloudPoints = (from t in points select new CloudPoint { x = t.Value.X, y = t.Value.Y, z = t.Value.Z }).ToArray();
 
 			var id = string.Empty;
 
@@ -68,39 +69,24 @@ namespace ViewTo.RhinoGh.Setup
 			else
 				id = Guid.NewGuid().ToString();
 
-			var dataContainer = new List<IResultData>();
+			var dataContainer = new List<IResultCloudData>();
 
-			for (int bIndex = 0; bIndex < treeNames.Branches.Count; bIndex++)
+			for (var bIndex = 0; bIndex < treeOptions.Branches.Count; bIndex++)
 			{
 				var branchValue = treeValues.Branches[bIndex];
+				var values = new List<int>();
 
-				var values = new List<double>();
 				foreach (var v in branchValue)
 					values.Add(v.Value);
 
-				const int INDEX_CONTENT = 0;
-				const int INDEX_STAGE = 1;
-
-				var branchName = treeNames.Branches[bIndex];
-				// dataContainer.Add(
-				// 	new ContentResultData(
-				// 		values,
-				// 		branchName.Count >= INDEX_CONTENT ? branchName[INDEX_CONTENT].Value : "Invalid Content",
-				// 		branchName.Count >= INDEX_STAGE ? branchName[INDEX_STAGE].Value : "Invalid Stage",
-				// 		0)
-				// );
+				if (treeOptions.Branches[bIndex].FirstOrDefault().Value is ContentOption co)
+				{
+					dataContainer.Add(new ResultCloudData() { Values = values, Option = co, Layout = nameof(ViewerLayout) });
+				}
 			}
 
-			var resulCloud = new ResultCloud
-			{
-				viewID = id,
-				points = cloudPoints,
-				data = dataContainer
-			};
-
+			var resulCloud = new ResultCloud(cloudPoints, dataContainer, id);
 			DA.SetData(0, resulCloud);
 		}
-
-		public override Guid ComponentGuid => new Guid("BEC145EE-4CD5-4582-95C6-A6214A3786DA");
 	}
 }

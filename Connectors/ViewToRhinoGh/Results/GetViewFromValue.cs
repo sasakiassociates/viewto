@@ -6,7 +6,6 @@ using ViewObjects;
 using ViewObjects.Cloud;
 using ViewObjects.Explorer;
 using ViewTo.RhinoGh.Goo;
-using ViewTo.RhinoGh.Points;
 
 namespace ViewTo.RhinoGh.Results
 {
@@ -15,12 +14,17 @@ namespace ViewTo.RhinoGh.Results
 
 		ResultExplorer _explorer;
 
-		public GetViewFromValue() : base("Get View From Value", "GVF", "Get a point within a value range", ConnectorInfo.Nodes.EXPLORER)
-		{
-			_explorer = new ResultExplorer();
-		}
-
 		(int Cloud, int Settings, int Values) _input;
+
+		(int Points, int Values, int Colors, int Indexes) _output;
+
+		public GetViewFromValue() : base("Get View From Value", "GVF", "Get a point within a value range", ConnectorInfo.Nodes.EXPLORER) =>
+			_explorer = new ResultExplorer();
+
+		public override Guid ComponentGuid
+		{
+			get => new Guid("B3DC5CEC-D4A4-4769-864B-D6E7D00357AA");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -35,8 +39,6 @@ namespace ViewTo.RhinoGh.Results
 			pManager.AddGenericParameter("Explorer Settings", "S", "Explorer settings to use for filtering", GH_ParamAccess.item);
 			_input.Settings = index;
 		}
-
-		(int Points, int Values, int Colors, int Indexes) _output;
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
 		{
@@ -60,15 +62,11 @@ namespace ViewTo.RhinoGh.Results
 			var obj = new GH_ViewObj();
 			DA.GetData(_input.Cloud, ref obj);
 
-			ResultCloud cloud = null;
-			if (obj?.Value is ResultCloud rc)
-			{
+			ResultCloudV1V1 cloud = null;
+			if (obj?.Value is ResultCloudV1V1 rc)
 				cloud = rc;
-			}
 			else
-			{
 				return;
-			}
 
 			GH_ObjectWrapper ghWrapper = default;
 			DA.GetData(_input.Settings, ref ghWrapper);
@@ -89,13 +87,13 @@ namespace ViewTo.RhinoGh.Results
 
 			_explorer ??= new ResultExplorer();
 
-			// NOTE: check if this is the same cloud as before
-			if (!_explorer.source.Check(cloud))
-				_explorer.Load(cloud);
+			// // NOTE: check if this is the same cloud as before
+			// if (!_explorer.source.Check(cloud))
+			// 	_explorer.Load(cloud);
 
 			// if there is only one option we only need to check once
-			if (settings.options.Valid(1) && !_explorer.CheckActiveTarget(settings.options[0].target) || _explorer.activeStage != settings.options[0].stage)
-				_explorer.SetActiveValues(settings.options[0].stage, settings.options[0].target);
+			if ((settings.options.Valid(1) && !_explorer.CheckActiveTarget(settings.options[0].Name)) || _explorer.activeStage != settings.options[0].Stage)
+				_explorer.SetActiveValues(settings.options[0].Stage, settings.options[0].Name);
 
 			var o_indexTree = new GH_Structure<GH_Integer>();
 			var o_valueTree = new GH_Structure<GH_Number>();
@@ -123,7 +121,5 @@ namespace ViewTo.RhinoGh.Results
 			// DA.SetDataTree(_output.Points, o_pointTree);
 			// DA.SetDataTree(_output.Colors, o_colorTree);
 		}
-
-		public override Guid ComponentGuid => new Guid("B3DC5CEC-D4A4-4769-864B-D6E7D00357AA");
 	}
 }

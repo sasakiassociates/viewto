@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Grasshopper.Kernel;
 using ViewObjects;
-using ViewObjects.Cloud;
+using ViewObjects.References;
 using ViewObjects.Viewer;
 using ViewTo.RhinoGh.Goo;
 
@@ -19,7 +19,10 @@ namespace ViewTo.RhinoGh.Setup
 			ConnectorInfo.Nodes.VIEWER)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("1A51EF3A-A5CB-4F58-B509-B98203003861");
+		public override Guid ComponentGuid
+		{
+			get => new Guid("1A51EF3A-A5CB-4F58-B509-B98203003861");
+		}
 
 		// protected override Bitmap Icon => new Bitmap(Icons.CreateViewerLayout);
 
@@ -38,29 +41,21 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var wrappers = new List<GH_ViewObj>();
 			DA.GetDataList(0, wrappers);
-			var clouds = wrappers.Unwrap<ViewCloud>();
+			var clouds = wrappers.Unwrap<CloudReference>();
 
-			IViewerBundle vb;
-			if (clouds != null && clouds.Any())
-				vb = new ViewerBundleLinked
-				{
-					linkedClouds = clouds.Where(x => x != null).Select(x => x.Build()).ToList(),
-					layouts = new List<IViewerLayout>
-					{
-						new ViewerLayoutHorizontal()
-					}
-				};
-			else
-				vb = new ViewerBundle
-				{
-					layouts = new List<IViewerLayout>
-					{
-						new ViewerLayoutHorizontal()
-					}
-				};
+			var layout = new ViewerLayout(new List<ViewerDirection>
+			{
+				ViewerDirection.Front,
+				ViewerDirection.Right,
+				ViewerDirection.Back,
+				ViewerDirection.Left,
+				ViewerDirection.Up,
+				ViewerDirection.Down
+			});
 
-			DA.SetData(0, vb);
+			var viewerSystem = new Viewer(new List<IViewerLayout>
+				                              { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
+			DA.SetData(0, viewerSystem);
 		}
-
 	}
 }

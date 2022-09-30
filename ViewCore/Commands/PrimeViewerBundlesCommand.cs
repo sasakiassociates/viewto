@@ -6,22 +6,22 @@ using ViewTo.Events.Prime;
 
 namespace ViewTo.Commands
 {
-  internal class PrimeViewerBundlesCommand : PrimeObjectCommand<List<IViewerBundle>>, IBuildCommand
-  {
+	internal class PrimeViewerBundlesCommand : PrimeObjectCommand<List<IViewerBundle_v1>>, IBuildCommand
+	{
 
-    public PrimeViewerBundlesCommand(List<IViewerBundle> obj) : base(obj)
-    { }
+		public PrimeViewerBundlesCommand(List<IViewerBundle_v1> obj) : base(obj)
+		{ }
 
-    public void ReceivePrimedData(PrimeProcessArgs primeArgs)
-    {
-      if (primeArgs is PrimeViewerBundleArgs primed)
-        args.Add(primed);
-    }
+		public void ReceivePrimedData(PrimeProcessArgs primeArgs)
+		{
+			if (primeArgs is PrimeViewerBundleArgs primed)
+				args.Add(primed);
+		}
 
-    public override void Run()
-    {
-      args.Add(new PrimeViewerBundleArgs(Obj));
-      greatSuccess = args.Any();
-    }
-  }
+		public override void Run()
+		{
+			args.Add(new PrimeViewerBundleArgs(Obj));
+			greatSuccess = args.Any();
+		}
+	}
 }

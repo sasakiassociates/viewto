@@ -3,6 +3,6 @@
 namespace ViewTo.Events.Args
 {
 
-  public abstract class AEventArgs : EventArgs
-  { }
+	public abstract class AEventArgs : EventArgs
+	{ }
 }

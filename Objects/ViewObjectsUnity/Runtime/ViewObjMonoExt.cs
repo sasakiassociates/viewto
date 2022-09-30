@@ -18,8 +18,8 @@ namespace ViewObjects.Unity
 					try
 					{
 						if (monoToCheck is IId valueToCheck
-						    && valueToCheck.viewID.Valid()
-						    && valueToCheck.viewID.Equals(idToFind))
+						    && valueToCheck.ViewId.Valid()
+						    && valueToCheck.ViewId.Equals(idToFind))
 							return monoToCheck;
 					}
 					catch (Exception e)
@@ -31,13 +31,13 @@ namespace ViewObjects.Unity
 			return null;
 		}
 
-		public static AMono TryFetchInScene<AMono>(this IId idToFind) where AMono : ViewObjMono => TryFetchInScene<AMono>(idToFind.viewID);
+		public static AMono TryFetchInScene<AMono>(this IId idToFind) where AMono : ViewObjMono => TryFetchInScene<AMono>(idToFind.ViewId);
 
 		public static ViewCloudMono TryFetchInScene(this CloudShell shell)
 		{
-			return Object.FindObjectsOfType<ViewCloudMono>().FirstOrDefault(o => o.viewID != null
+			return Object.FindObjectsOfType<ViewCloudMono>().FirstOrDefault(o => o.ViewId != null
 			                                                                     && shell.objId != null
-			                                                                     && o.viewID.Equals(shell.objId));
+			                                                                     && o.ViewId.Equals(shell.objId));
 		}
 
 		public static void ApplyAll(this GameObject obj, Material mat)

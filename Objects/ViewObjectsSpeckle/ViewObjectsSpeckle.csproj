@@ -10,9 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\Speckle\speckle-sharp\Core\Core\Core.csproj" />
-      <ProjectReference Include="..\..\..\..\Speckle\speckle-sharp\Objects\Objects\Objects.csproj" />
-      <ProjectReference Include="..\ViewObjects\ViewObjects.csproj" />
+        <ProjectReference Include="..\..\..\..\Speckle\speckle-sharp\Core\Core\Core.csproj"/>
+        <ProjectReference Include="..\ViewObjects\ViewObjects.csproj"/>
     </ItemGroup>
 
     <PropertyGroup>

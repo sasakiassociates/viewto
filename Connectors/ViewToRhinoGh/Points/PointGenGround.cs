@@ -13,6 +13,11 @@ namespace ViewTo.RhinoGh.Points
 
 	public class PointGenGround : ViewToCloudComponentBase
 	{
+
+		readonly double scaleFactor = RhinoMath.UnitScale(UnitSystem.Meters, RhinoDoc.ActiveDoc.ModelUnitSystem);
+
+		(int Meshes, int Region, int Height, int Spacing, int CountZ) _input;
+
 		public PointGenGround() : base(
 			"Ground Point Generator",
 			"GPG",
@@ -20,13 +25,15 @@ namespace ViewTo.RhinoGh.Points
 			ConnectorInfo.Nodes.CLOUD)
 		{ }
 
-		protected override Bitmap Icon => new Bitmap(Icons.GeneratePointGround);
+		protected override Bitmap Icon
+		{
+			get => new Bitmap(Icons.GeneratePointGround);
+		}
 
-		public override Guid ComponentGuid => new Guid("c1c4f971-2b19-43b5-b753-606e85aa323e");
-
-		readonly double scaleFactor = RhinoMath.UnitScale(UnitSystem.Meters, RhinoDoc.ActiveDoc.ModelUnitSystem);
-
-		(int Meshes, int Region, int Height, int Spacing, int CountZ) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("c1c4f971-2b19-43b5-b753-606e85aa323e");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -65,10 +72,10 @@ namespace ViewTo.RhinoGh.Points
 				if (grounds[i] == null)
 				{
 					grounds.RemoveAt(i);
-					this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Ignoring null ground geometry.");
+					AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Ignoring null ground geometry.");
 					if (grounds.Count == 0)
 					{
-						this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "No valid ground geometry supplied.");
+						AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "No valid ground geometry supplied.");
 						return;
 					}
 				}
@@ -85,7 +92,7 @@ namespace ViewTo.RhinoGh.Points
 			Curve region = null;
 			if (!DA.GetData(_input.Region, ref region))
 			{
-				Line[] edges = mergedMesh.GetBoundingBox(false).GetEdges();
+				var edges = mergedMesh.GetBoundingBox(false).GetEdges();
 				region = Curve.JoinCurves(edges.Select(x => x.ToNurbsCurve())).FirstOrDefault();
 			}
 
@@ -103,16 +110,16 @@ namespace ViewTo.RhinoGh.Points
 				distanceBetweenPoints = 0.3;
 			}
 
-			double area = grounds.Select(x => AreaMassProperties.Compute(x, true, false, false, false).Area).Sum();
+			var area = grounds.Select(x => AreaMassProperties.Compute(x, true, false, false, false).Area).Sum();
 
 			if (area / (distanceBetweenPoints * distanceBetweenPoints) > 1000000)
 				if (MessageBox.Show(
 					    string.Concat("Lots and lots of points to generate! Could take a while...Continue?"),
-					    string.Concat(this.Name, " Warning"),
+					    string.Concat(Name, " Warning"),
 					    MessageBoxButtons.YesNo)
 				    != DialogResult.Yes)
 				{
-					this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Operation canceled. Try a smaller ground region or larger point spacing.");
+					AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Operation canceled. Try a smaller ground region or larger point spacing.");
 					return;
 				}
 
@@ -149,6 +156,5 @@ namespace ViewTo.RhinoGh.Points
 				DA.SetDataList(0, points);
 			}
 		}
-
 	}
 }

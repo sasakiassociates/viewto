@@ -13,6 +13,9 @@ namespace ViewTo.RhinoGh.Results
 
 	public class ExplorerSettingsComponent : ViewToComponentBase
 	{
+
+		(int Options, int ValueType, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
+
 		public ExplorerSettingsComponent()
 			: base("Explorer Settings",
 			       "ES",
@@ -20,9 +23,10 @@ namespace ViewTo.RhinoGh.Results
 			       ConnectorInfo.Nodes.EXPLORER)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("4817C001-C72E-4992-AF53-5CDB16D55765");
-
-		(int Options, int ValueType, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("4817C001-C72E-4992-AF53-5CDB16D55765");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
@@ -77,15 +81,11 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			var options = new List<ContentOption>();
+			var options = new List<IContentOption>();
 
 			foreach (var g in wrapper)
-			{
 				if (g.Value is ContentOption co)
-				{
 					options.Add(co);
-				}
-			}
 
 			if (!options.Valid())
 			{
@@ -130,6 +130,5 @@ namespace ViewTo.RhinoGh.Results
 
 			DA.SetData(0, settings);
 		}
-
 	}
 }

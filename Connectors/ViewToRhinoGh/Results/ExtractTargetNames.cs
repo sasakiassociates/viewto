@@ -4,16 +4,17 @@ using System.Drawing;
 using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
-using ViewObjects.Cloud;
 using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Results
 {
 	public class ExtractTargetNames : ViewToComponentBase
 	{
+		GH_ValueList _activeList;
+
+		(int Object, int Values ) _input;
 
 		bool _refresh;
-		GH_ValueList _activeList;
 		List<string> _storedValues;
 
 		public ExtractTargetNames() : base(
@@ -23,11 +24,20 @@ namespace ViewTo.RhinoGh.Results
 			ConnectorInfo.Nodes.RESULTS)
 		{ }
 
+		public override Guid ComponentGuid
+		{
+			get => new Guid("601505A6-A108-4DB4-AEFA-E15722C008A6");
+		}
+
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
+			var index = 0;
 			pManager.AddGenericParameter("Result Cloud", "RC", "Result cloud to get target names from", GH_ParamAccess.item);
+			_input.Object = index++;
 			pManager.AddTextParameter("Results", "R", "Results of data", GH_ParamAccess.list);
-			pManager[1].Optional = true;
+			_input.Values = index;
+
+			pManager[_input.Values].Optional = true;
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -94,7 +104,7 @@ namespace ViewTo.RhinoGh.Results
 
 				var doc = OnPingDocument();
 				doc?.AddObject(_activeList, true);
-				Params.Input[3].AddSource(_activeList);
+				Params.Input[_input.Values].AddSource(_activeList);
 			}
 			else
 			{
@@ -110,48 +120,40 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			
-			var graphMapper = new GH_GraphMapper();
-			var graphMapperAttributes = new GH_GraphMapperAttributes(graphMapper);
-			
 			GH_ViewObj wrapper = null;
-			DA.GetData(0, ref wrapper);
+			DA.GetData(_input.Object, ref wrapper);
 
 			var inputTargets = new List<string>();
-			DA.GetDataList(1, inputTargets);
+			DA.GetDataList(_input.Values, inputTargets);
 
-			if (wrapper?.Value is ResultCloud cloud)
-			{
-				if (!inputTargets.Any())
-				{
-					_storedValues = cloud.GetTargets();
-					_refresh = true;
-				}
-				else
-				{
-					var tempValues = cloud.GetTargets();
-					if (tempValues != null && tempValues.Count != inputTargets.Count)
-					{
-						_storedValues = tempValues;
-						_refresh = true;
-					}
-					else
-					{
-						for (var i = 0; i < inputTargets.Count; i++)
-						{
-							if (!inputTargets[i].Equals(tempValues[i]))
-							{
-								_storedValues = tempValues;
-								_refresh = true;
-							}
-						}
-					}
-				}
-			}
+			// if (wrapper?.Value is ResultCloudV1V1 cloud)
+			// {
+			// 	if (!inputTargets.Any())
+			// 	{
+			// 		_storedValues = cloud.GetTargets();
+			// 		_refresh = true;
+			// 	}
+			// 	else
+			// 	{
+			// 		var tempValues = cloud.GetTargets();
+			// 		if (tempValues != null && tempValues.Count != inputTargets.Count)
+			// 		{
+			// 			_storedValues = tempValues;
+			// 			_refresh = true;
+			// 		}
+			// 		else
+			// 		{
+			// 			for (var i = 0; i < inputTargets.Count; i++)
+			// 				if (!inputTargets[i].Equals(tempValues[i]))
+			// 				{
+			// 					_storedValues = tempValues;
+			// 					_refresh = true;
+			// 				}
+			// 		}
+			// 	}
+			// }
 
 			DA.SetDataList(0, _storedValues);
 		}
-
-		public override Guid ComponentGuid => new Guid("601505A6-A108-4DB4-AEFA-E15722C008A6");
 	}
 }

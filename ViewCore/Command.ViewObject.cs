@@ -1,24 +1,23 @@
-﻿
-using ViewObjects;
+﻿using ViewObjects;
 
 namespace ViewTo
 {
-  public static partial class Commander
-  {
-    public static string GetName(this IViewObj obj)
-    {
-      if (obj is INameable objName)
-        return objName.viewName;
+	public static partial class Commander
+	{
+		public static string GetName(this IViewObject obj)
+		{
+			if (obj is INameable objName)
+				return objName.ViewName;
 
-      return"";
-    }
+			return"";
+		}
 
-    public static bool HasValidName(this IViewObj obj)
-    {
-      if (obj is INameable objName)
-        return objName.viewName.Valid();
+		public static bool HasValidName(this IViewObject obj)
+		{
+			if (obj is INameable objName)
+				return objName.ViewName.Valid();
 
-      return false;
-    }
-  }
+			return false;
+		}
+	}
 }

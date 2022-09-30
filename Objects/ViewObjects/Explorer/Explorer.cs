@@ -1,63 +1,87 @@
-﻿namespace ViewObjects.Explorer
+﻿using System;
+using System.Linq;
+using ViewObjects.Cloud;
+
+namespace ViewObjects.Explorer
 {
+	public class Explorer : IExplorer
+	{
+
+		/// <summary>
+		/// </summary>
+		public Explorer()
+		{ }
+
+		/// <inheritdoc />
+		public IViewStudy Study { get; private set; }
+
+		/// <inheritdoc />
+		public IResultCloud Source { get; private set; }
+
+		/// <inheritdoc />
+		public ExplorerSettings Settings { get; set; } = new();
+
+		/// <inheritdoc />
+		public ExplorerData Data { get; private set; }
+
+		/// <inheritdoc />
+		public void Load(IViewStudy viewObj)
+		{
+			if (viewObj == default)
+				return;
+
+			Source = viewObj.FindObject<ResultCloud>();
+
+			if (Source == null)
+				return;
+
+			Settings ??= new ExplorerSettings();
+			Settings.options = Source.Data.Where(x => x != null).Select(x => x.Option).ToList();
+			// Data.ActiveValues = this.Fetch();
+		}
+
+		/// <inheritdoc />
+		public ResultPoint GetResultPoint() => throw new NotImplementedException();
+	}
+
 	public interface IExplorer
 	{
 		/// <summary>
-		/// The active view study being used with the source cloud. 
+		///   The active view study being used with the source cloud.
 		/// </summary>
-		public IViewStudy study { get; }
+		public IViewStudy Study { get; }
 
 		/// <summary>
-		/// The heart and soul of the data being explored 
+		///   The heart and soul of the data being explored
 		/// </summary>
-		public IResultCloud source { get; }
+		public IResultCloud Source { get; }
 
 		/// <summary>
-		/// Set of data settings for the explorer to use 
+		///   Set of data settings for the explorer to use
 		/// </summary>
-		public ExplorerSettings settings { get; }
+		public ExplorerSettings Settings { get; set; }
 
 		/// <summary>
-		/// Container for result values being explored
+		///   Container for result values being explored
 		/// </summary>
-		public ExplorerData data { get; }
+		public ExplorerData Data { get; }
 
 		/// <summary>
-		/// Load in a new cloud for the explorer to explore!
-		/// </summary>
-		/// <param name="viewObj"></param>
-		public void Load(IResultCloud viewObj);
-
-		/// <summary>
-		/// Load in a new view study for the explorer to explore!
+		///   Load in a new view study for the explorer to explore!
 		/// </summary>
 		/// <param name="viewObj">The view study to load in</param>
-		/// <param name="loadFirstResultCloud">Optional toggle to set if any result clouds are found in the study</param>
-		public void Load(IViewStudy viewObj, bool loadFirstResultCloud = true);
+		public void Load(IViewStudy viewObj);
 
 		/// <summary>
-		/// Pass in a new set of explorer settings for the explorer to use
-		/// </summary>
-		/// <param name="settings"></param>
-		public void Set(ExplorerSettings settings);
-
-		/// <summary>
-		/// Set the active point index of the cloud being explored
-		/// </summary>
-		/// <param name="index"></param>
-		public void Set(int index);
-
-		/// <summary>
-		/// Retrieves the active point result data
+		///   Retrieves the active point result data
 		/// </summary>
 		/// <returns></returns>
 		public ResultPoint GetResultPoint();
-
 	}
 
 	public struct ExplorerData
 	{
-		public double[] normalizedValues { get; set; }
+		public double[] ActiveValues { get; set; }
 
 	}
 

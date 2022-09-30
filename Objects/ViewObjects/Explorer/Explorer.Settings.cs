@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace ViewObjects.Explorer
 {
@@ -15,7 +16,7 @@ namespace ViewObjects.Explorer
 
 		public List<string> targets { get; }
 
-		public List<ContentOption> options { get; }
+		public List<IContentOption> options { get; }
 	}
 
 	public interface IExploreRange
@@ -27,70 +28,78 @@ namespace ViewObjects.Explorer
 
 		public bool normalize { get; }
 
-		public System.Drawing.Color[] colorRamp { get; }
+		public Color[] colorRamp { get; }
 
-		public System.Drawing.Color invalidColor { get; }
-
+		public Color invalidColor { get; }
 	}
 
-	public struct ExplorerSettings : IExploreContent, IExploreRange, IExploreView, IValidate
+	public class ExplorerSettings : IExploreContent, IExploreRange, IExploreView, IValidate
 	{
-		/// <summary>
-		/// Min value from <see cref="IExplorer"/> active values
-		/// </summary>
-		public double min { get; set; }
+
+		public ExplorerSettings()
+		{ }
 
 		/// <summary>
-		/// Max value from <see cref="IExplorer"/> active values
+		///   When set to true will output all points and values for <see cref="options" />
 		/// </summary>
-		public double max { get; set; }
+		public bool showAll { get; set; } = true;
 
 		/// <summary>
-		/// When set to true will normalize the active values
+		///   List of options to use for fetching values from <see cref="IExplorer" />. Multiple options will combine the values
 		/// </summary>
-		public bool normalize { get; set; }
+		public List<IContentOption> options { get; set; } = new();
 
 		/// <summary>
-		/// When set to true will output all points and values for <see cref="options"/>
+		///   Comparable value type to use when exploring values
 		/// </summary>
-		public bool showAll { get; set; }
+		public ExplorerValueType valueType { get; set; } = ExplorerValueType.ExistingOverPotential;
+
+		public List<string> targets { get; set; } = new();
 
 		/// <summary>
-		/// Active index of a point being explored
+		///   Min value from <see cref="IExplorer" /> active values
 		/// </summary>
-		public int point { get; set; }
+		public double min { get; set; } = 0.0;
 
 		/// <summary>
-		/// Gradient ramp for visualizing the value of point 
+		///   Max value from <see cref="IExplorer" /> active values
 		/// </summary>
-		public System.Drawing.Color[] colorRamp { get; set; }
+		public double max { get; set; } = 1.0;
 
 		/// <summary>
-		/// Color for any point with no value in cloud
+		///   When set to true will normalize the active values
 		/// </summary>
-		public System.Drawing.Color invalidColor { get; set; }
+		public bool normalize { get; set; } = false;
 
 		/// <summary>
-		/// List of options to use for fetching values from <see cref="IExplorer"/>. Multiple options will combine the values
+		///   Gradient ramp for visualizing the value of point
 		/// </summary>
-		public List<ContentOption> options { get; set; }
+		public Color[] colorRamp { get; set; } = ViewColor.Ramp();
 
 		/// <summary>
-		/// Comparable value type to use when exploring values
+		///   Color for any point with no value in cloud
 		/// </summary>
-		public ExplorerValueType valueType { get; set; }
+		public Color invalidColor { get; set; } = Color.Black;
 
 		/// <summary>
-		/// Returns true if <see cref="options"/> is valid
+		///   Active index of a point being explored
 		/// </summary>
-		public bool isValid => options.Valid();
+		public int point { get; set; } = 0;
 
 		/// <summary>
-		/// Get a color along the gradient ramp
+		///   Returns true if <see cref="options" /> is valid
+		/// </summary>
+		public bool IsValid
+		{
+			get => options.Valid();
+		}
+
+		/// <summary>
+		///   Get a color along the gradient ramp
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public System.Drawing.Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * Clamp(t, 0.0, 1.0), 0)];
+		public Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * Clamp(t, 0.0, 1.0), 0)];
 
 		static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
 		{
@@ -98,8 +107,6 @@ namespace ViewObjects.Explorer
 
 			return val.CompareTo(max) > 0 ? max : val;
 		}
-
-		public List<string> targets { get; set; }
 	}
 
 }

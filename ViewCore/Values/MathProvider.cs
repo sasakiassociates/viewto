@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using ViewObjects;
 
@@ -35,10 +34,7 @@ namespace ViewTo.Values
 
 			var values = new T[inputValues.Count];
 
-			for (var i = 0; i < values.Length; i++)
-			{
-				values[i] = Normalize(inputValues[i], maxValues[i], min);
-			}
+			for (var i = 0; i < values.Length; i++) values[i] = Normalize(inputValues[i], maxValues[i], min);
 
 			return values;
 		}
@@ -60,12 +56,11 @@ namespace ViewTo.Values
 
 			return values;
 		}
-
 	}
 
 	public class DoubleMath : MathProvider<double>
 	{
-		public override double Divide(double a, double b) => a / b;
+		public override double Divide(double a, double b) => !double.IsNaN(b) ? a / b : double.NaN;
 
 		public override double Multiply(double a, double b) => a * b;
 
@@ -76,7 +71,7 @@ namespace ViewTo.Values
 
 	public class UintMath : MathProvider<uint>
 	{
-		public override uint Divide(uint a, uint b) => a / b;
+		public override uint Divide(uint a, uint b) => b != 0 ? a / b : 0;
 
 		public override uint Multiply(uint a, uint b) => a * b;
 
@@ -87,7 +82,7 @@ namespace ViewTo.Values
 
 	public class IntMath : MathProvider<int>
 	{
-		public override int Divide(int a, int b) => a / b;
+		public override int Divide(int a, int b) => b != 0 ? a / b : 0;
 
 		public override int Multiply(int a, int b) => a * b;
 
@@ -112,12 +107,8 @@ namespace ViewTo.Values
 
 			if (_math == null)
 				throw new InvalidOperationException(
-					"Type " + typeof(T).ToString() + " is not supported by Fraction.");
+					"Type " + typeof(T) + " is not supported by Fraction.");
 		}
-
-		public T Numerator { get; private set; }
-
-		public T Denominator { get; private set; }
 
 		public Fraction(T numerator, T denominator)
 		{
@@ -125,30 +116,25 @@ namespace ViewTo.Values
 			Denominator = denominator;
 		}
 
-		public static Fraction<T> operator +(Fraction<T> a, Fraction<T> b)
-		{
-			return new Fraction<T>(
-				_math.Add(
-					_math.Multiply(a.Numerator, b.Denominator),
-					_math.Multiply(b.Numerator, a.Denominator)),
-				_math.Multiply(a.Denominator, b.Denominator));
-		}
+		public T Numerator { get; }
 
-		public static Fraction<T> operator -(Fraction<T> a, Fraction<T> b)
-		{
-			return new Fraction<T>(
-				_math.Subtract(
-					_math.Multiply(a.Numerator, b.Denominator),
-					_math.Multiply(b.Numerator, a.Denominator)),
-				_math.Multiply(a.Denominator, b.Denominator));
-		}
+		public T Denominator { get; }
 
-		public static Fraction<T> operator /(Fraction<T> a, Fraction<T> b)
-		{
-			return new Fraction<T>(
+		public static Fraction<T> operator +(Fraction<T> a, Fraction<T> b) => new Fraction<T>(
+			_math.Add(
 				_math.Multiply(a.Numerator, b.Denominator),
-				_math.Multiply(a.Denominator, b.Numerator));
-		}
+				_math.Multiply(b.Numerator, a.Denominator)),
+			_math.Multiply(a.Denominator, b.Denominator));
+
+		public static Fraction<T> operator -(Fraction<T> a, Fraction<T> b) => new Fraction<T>(
+			_math.Subtract(
+				_math.Multiply(a.Numerator, b.Denominator),
+				_math.Multiply(b.Numerator, a.Denominator)),
+			_math.Multiply(a.Denominator, b.Denominator));
+
+		public static Fraction<T> operator /(Fraction<T> a, Fraction<T> b) => new Fraction<T>(
+			_math.Multiply(a.Numerator, b.Denominator),
+			_math.Multiply(a.Denominator, b.Numerator));
 
 		// ... other operators would follow.
 	}

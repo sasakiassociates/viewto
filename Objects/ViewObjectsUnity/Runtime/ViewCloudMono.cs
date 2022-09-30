@@ -16,7 +16,7 @@ namespace ViewObjects.Unity
 			id ??= Guid.NewGuid().ToString();
 		}
 
-		public string viewID
+		public string ViewId
 		{
 			get => id;
 			set => id = value;

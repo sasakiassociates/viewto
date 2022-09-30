@@ -7,7 +7,7 @@ using ViewObjects.Unity;
 namespace ViewObjects.Converter.Unity
 {
 	[CreateAssetMenu(menuName = ViewObjectUnity.ASSET_MENU + "Create " + nameof(BlockerContentConverter), fileName = nameof(BlockerContentConverter), order = 0)]
-	public class BlockerContentConverter : ComponentConverter<BlockerContentBase, BlockerContentMono>
+	public class BlockerContentConverter : ComponentConverter<BlockerContentBaseV1, BlockerContentMono>
 	{
 		protected override Base ConvertComponent(BlockerContentMono component)
 		{
@@ -15,9 +15,9 @@ namespace ViewObjects.Converter.Unity
 			throw new System.NotImplementedException();
 		}
 
-		protected override void ConvertBase(BlockerContentBase @base, ref BlockerContentMono instance)
+		protected override void ConvertBase(BlockerContentBaseV1 @base, ref BlockerContentMono instance)
 		{
-			instance.viewName = @base.viewName;
+			instance.ViewName = @base.ViewName;
 
 			throw new System.NotImplementedException();
 		}

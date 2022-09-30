@@ -1,83 +1,79 @@
 ﻿using System.Collections.Generic;
 using ViewObjects.Cloud;
-using ViewObjects.Viewer;
 
 namespace ViewObjects
 {
 
-	public interface IViewObj
-	{ }
-
-	public interface IViewCloud : IViewObj, IId
+	public interface IViewCloud_v1 : IViewObject, IId
 	{
 		CloudPoint[] points { get; set; }
 
 		int count { get; }
 	}
 
-	public interface IResultCloud : IViewCloud
+	public interface IResultCloudV1 : IViewCloud_v1
 	{
-		List<IResultData> data { get; set; }
+		List<IResultData_v1> data { get; set; }
 	}
 
-	public interface IViewer
+	public interface IViewer_v1
 	{
 		ViewerDirection Direction { get; }
 	}
 
-	public interface IViewerLayout : IViewObj
+	public interface IViewerLayout_v1 : IViewObject
 	{
-		List<IViewer> viewers { get; }
+		List<IViewer_v1> viewers { get; }
 	}
 
-	public interface IViewerBundle : IViewObj
+	public interface IViewerBundle_v1 : IViewObject
 	{
-		List<IViewerLayout> layouts { get; set; }
+		List<IViewerLayout_v1> layouts { get; set; }
 	}
 
-	public interface IViewerBundleLinked : IViewerBundle
+	public interface IViewerBundleLinked_v1 : IViewerBundle_v1
 	{
 		List<CloudShell> linkedClouds { get; set; }
 	}
 
-	public interface IViewStudy : IViewObj, INameable, IValidate
+	public interface IViewStudy_v1 : IViewObject, INameable, IValidate
 	{
-		List<IViewObj> objs { get; set; }
+		List<IViewObject> objs { get; set; }
 	}
 
-	public interface IViewContentBundle : IViewObj
+	public interface IViewContentBundle_v1 : IViewObject
 	{
-		List<IViewContent> contents { get; set; }
+		List<IViewContent_v1> contents { get; set; }
 	}
 
-	public interface IViewContent : IViewObj, INameable
+	public interface IViewContent_v1 : IViewObject, INameable
 	{
 		ViewColor viewColor { get; set; }
 
 		List<object> objects { get; set; }
 	}
 
-	public interface IBlockerContent : IViewContent
+	public interface IBlockerContentV1 : IViewContent_v1
 	{ }
 
-	public interface IDesignContent : IViewContent
+	public interface IDesignContentV1 : IViewContent_v1
 	{ }
 
-	public interface ITargetContent : IViewContent
+	public interface ITargetContentV1 : IViewContent_v1
 	{
 		bool isolate { get; set; }
 
-		List<IViewerBundle> bundles { get; set; }
+		List<IViewerBundle_v1> bundles { get; set; }
 	}
 
-	public interface IRigParam
+	public interface IRigParam_v1
 	{
-		List<IViewerBundle> bundles { get; set; }
+		List<IViewerBundle_v1> bundles { get; set; }
 	}
 
-	public interface IRig : IViewObj
+	public interface IRig_v1 : IViewObject
 	{
-		List<IRigParam> globalParams { get; set; }
+		List<IRigParam_v1> globalParams { get; set; }
 
 		List<ViewColor> globalColors { get; set; }
 

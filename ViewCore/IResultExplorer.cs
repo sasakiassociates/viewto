@@ -1,5 +1,5 @@
 ﻿namespace ViewTo
 {
-  public interface IResultExplorer : IExploreCloud, IExplorerData
-  { }
+	public interface IResultExplorer : IExploreCloud, IExplorerData
+	{ }
 }

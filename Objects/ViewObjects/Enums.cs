@@ -3,8 +3,8 @@
 	public enum ContentType
 	{
 		Target = 0,
-		Blocker = 1,
-		Option = 2,
+		Existing = 1,
+		Proposed = 2
 	}
 
 	public enum ResultStage
@@ -16,10 +16,31 @@
 
 	public enum ExplorerValueType
 	{
-		ExistingOverPotential,
-		ProposedOverExisting,
-		ProposedOverPotential,
+		ExistingOverPotential = 0,
+		ProposedOverExisting = 1,
+		ProposedOverPotential = 2
 
+	}
+
+	public static class ViewerDir
+	{
+		public const string UP = "Up";
+		public const string DOWN = "Down";
+		public const string LEFT = "Left";
+		public const string RIGHT = "Right";
+		public const string FRONT = "Front";
+		public const string BACK = "Back";
+	}
+
+	public enum ViewerDirection
+	{
+
+		Up,
+		Down,
+		Left,
+		Right,
+		Front,
+		Back
 	}
 
 }

@@ -47,7 +47,7 @@ namespace ViewObjects.Unity
 							_ => null
 						};
 
-					mono.contentLayerMask = v.GetLayerMask();
+					mono.ContentLayerMask = v.GetLayerMask();
 					mono.transform.SetParent(transform);
 					viewContents.Add(mono);
 				}

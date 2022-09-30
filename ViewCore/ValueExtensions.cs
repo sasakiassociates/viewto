@@ -6,6 +6,10 @@ namespace ViewTo
 {
 	public static class ValueExtensions
 	{
+
+		//https://floating-point-gui.de/errors/comparison/
+		internal const double DBL_EPSILON = 2.22044604925031E-16;
+
 		/// <summary>
 		///   Simple command for normalizing view result data.
 		/// </summary>
@@ -81,7 +85,6 @@ namespace ViewTo
 			return values;
 		}
 
-		
 		public static void GetMaxMin(this List<int> inputValues, out int max, out int min)
 		{
 			min = 0;
@@ -100,7 +103,6 @@ namespace ViewTo
 			}
 		}
 
-		
 		public static void GetMaxMin(this List<uint> inputValues, out uint max, out uint min)
 		{
 			min = 0;
@@ -156,8 +158,8 @@ namespace ViewTo
 		}
 
 		public static uint NormalizeBy(this uint value, uint max, uint min = 0) => (value - min) / (max - min);
-		
-		public static int NormalizeBy(this int value, int max, int min = 0) => (value - min) / (max - min);
+
+		public static double NormalizeBy(this int value, double max, double min = 0.0) => (value - min) / (max - min);
 
 		public static float NormalizeBy(this float value, float max, float min = 0.0f) => (value - min) / (max - min);
 
@@ -166,9 +168,6 @@ namespace ViewTo
 		public static float Pow(this float value, double num = 1000) => (float)Math.Pow(value, 1 / num);
 
 		public static double Pow(this double value, double num = 1000) => Math.Pow(value, 1 / num);
-
-		//https://floating-point-gui.de/errors/comparison/
-		internal const double DBL_EPSILON = 2.22044604925031E-16;
 
 		//https://stackoverflow.com/questions/3874627/floating-point-comparison-functions-for-c-sharp
 		public static bool NearlyEqual(this double value1, double value2, double unimportantDifference = 0.0001)
@@ -196,5 +195,14 @@ namespace ViewTo
 			return outputValues;
 		}
 
+		public static double[] Log(this IReadOnlyList<int> values, int maxValue, double desiredScore = 1)
+		{
+			var logCustomBase = Math.Pow(maxValue, 1 / desiredScore);
+			var outputValues = new double[values.Count];
+
+			for (var i = 0; i < values.Count; i++) outputValues[i] = Math.Log(values[i], logCustomBase);
+
+			return outputValues;
+		}
 	}
 }

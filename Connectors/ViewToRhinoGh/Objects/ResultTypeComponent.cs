@@ -9,15 +9,19 @@ namespace ViewTo.RhinoGh.Objects
 
 	public class ResultTypeComponent : ViewToComponentBase
 	{
+
+		ResultStage _resultStage = ResultStage.Proposed;
+
 		public ResultTypeComponent() : base("Result Type",
 		                                    "RT",
 		                                    "A quick way of selecting a result type",
 		                                    ConnectorInfo.Nodes.RESULTS)
 		{ }
 
-		public override Guid ComponentGuid => new Guid("4308AD20-1745-41CF-B567-395D15B1E62E");
-
-		private ResultStage _resultStage = ResultStage.Proposed;
+		public override Guid ComponentGuid
+		{
+			get => new Guid("4308AD20-1745-41CF-B567-395D15B1E62E");
+		}
 
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{ }

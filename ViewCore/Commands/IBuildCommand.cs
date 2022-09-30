@@ -2,8 +2,8 @@
 
 namespace ViewTo.Commands
 {
-  internal interface IBuildCommand
-  {
-    public void ReceivePrimedData(PrimeProcessArgs primeArgs);
-  }
+	internal interface IBuildCommand
+	{
+		public void ReceivePrimedData(PrimeProcessArgs primeArgs);
+	}
 }

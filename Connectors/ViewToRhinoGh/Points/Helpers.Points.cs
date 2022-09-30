@@ -4,8 +4,8 @@ using System.Linq;
 using Grasshopper.Kernel.Types;
 using Rhino;
 using Rhino.Geometry;
+using Rhino.Geometry.Intersect;
 using ViewObjects;
-using Plane = Rhino.Geometry.Plane;
 
 namespace ViewTo.RhinoGh.Points
 {
@@ -30,8 +30,8 @@ namespace ViewTo.RhinoGh.Points
 			// var dir = CreateBoundDir( regionBox );
 
 			// get anchor point of region
-			double regionWidthStart = regionBox.X.Min;
-			double regionDepthStart = regionBox.Y.Min;
+			var regionWidthStart = regionBox.X.Min;
+			var regionDepthStart = regionBox.Y.Min;
 
 			// redundant or unused
 			// double regionWidthEnd = regionBox.X.Max;
@@ -48,7 +48,7 @@ namespace ViewTo.RhinoGh.Points
 				// set up base grid XY coordinates
 				var x = regionWidthStart + i * stepSizeX;
 				var y = regionDepthStart + j * stepSizeY;
-				Point3d xyPt = new Point3d(x, y, 0);
+				var xyPt = new Point3d(x, y, 0);
 
 				// test for region inclusion
 
@@ -104,10 +104,10 @@ namespace ViewTo.RhinoGh.Points
 			return cloud;
 		}
 
-		private static Vector3d CreateBoundDir(BoundingBox bounds)
+		static Vector3d CreateBoundDir(BoundingBox bounds)
 		{
-			Line lineDirection = new Line(bounds.Corner(true, true, false), bounds.Corner(true, true, true));
-			Vector3d dir = lineDirection.Direction;
+			var lineDirection = new Line(bounds.Corner(true, true, false), bounds.Corner(true, true, true));
+			var dir = lineDirection.Direction;
 			dir.Unitize();
 			return dir;
 		}
@@ -130,7 +130,7 @@ namespace ViewTo.RhinoGh.Points
 					//var hits = Rhino.Geometry.Intersect.Intersection.MeshLine(ground, line, out var faces);
 					// NOTE this grabs the first point in x-z...but seems to be buggy  
 					// Point3d projPt = projectedPtn.OrderByDescending( x => x.Z ).First( );
-					Point3d[] hits = Rhino.Geometry.Intersect.Intersection.ProjectPointsToMeshes(new List<Mesh>
+					var hits = Intersection.ProjectPointsToMeshes(new List<Mesh>
 					{
 						ground
 					}, new List<Point3d>
@@ -139,7 +139,7 @@ namespace ViewTo.RhinoGh.Points
 					}, Vector3d.ZAxis, 0.0001);
 					if (hits != null && hits.Length > 0)
 					{
-						Point3d projPt = hits.LastOrDefault();
+						var projPt = hits.LastOrDefault();
 						projectedPoints.Add(projPt);
 					}
 				}

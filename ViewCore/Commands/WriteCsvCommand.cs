@@ -2,25 +2,25 @@
 
 namespace ViewTo.Commands
 {
-  internal class WriteCsvCommand : ICommand
-  {
+	internal class WriteCsvCommand : ICommand
+	{
 
-    private readonly string blob;
-    private readonly string path;
+		readonly string blob;
+		readonly string path;
 
-    public WriteCsvCommand(string blob, string path)
-    {
-      this.blob = blob;
-      this.path = path;
-    }
+		public WriteCsvCommand(string blob, string path)
+		{
+			this.blob = blob;
+			this.path = path;
+		}
 
-    public void Run()
-    {
-      using var writer = new StreamWriter(path);
+		public void Run()
+		{
+			using var writer = new StreamWriter(path);
 
-      writer.Write(blob);
-      writer.Flush();
-      writer.Close();
-    }
-  }
+			writer.Write(blob);
+			writer.Flush();
+			writer.Close();
+		}
+	}
 }

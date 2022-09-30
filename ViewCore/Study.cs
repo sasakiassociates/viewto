@@ -10,163 +10,163 @@ using ViewTo.Events.Report;
 
 namespace ViewTo
 {
-  public static partial class Study
-  {
+	public static partial class Study
+	{
 
-    /// <summary>
-    ///   Method for setting a new object to the study
-    /// </summary>
-    /// <param name="study"></param>
-    /// <param name="obj"> Object to set into the study</param>
-    /// <returns></returns>
-    public static void Set<TObjType>(this IViewStudy study, TObjType obj) where TObjType : IViewObj
-    {
-      if (study.objs == null)
-      {
-        study.objs = new List<IViewObj>
-        {
-          obj
-        };
-        return;
-      }
-      // NOTE this probably isn't worth getting caught up on just yet, will just add for now 
-      study.objs = study.objs.Append(obj).ToList();
-      // return;
+		/// <summary>
+		///   Method for setting a new object to the study
+		/// </summary>
+		/// <param name="study"></param>
+		/// <param name="obj"> Object to set into the study</param>
+		/// <returns></returns>
+		public static void Set<TObjType>(this IViewStudy_v1 study, TObjType obj) where TObjType : IViewObject
+		{
+			if (study.objs == null)
+			{
+				study.objs = new List<IViewObject>
+				{
+					obj
+				};
+				return;
+			}
 
-      // check if an object with the same name has been added
-      // if (obj.Name.Valid() && study.Has<TObjType>(obj.Name))
-      // {
-      //   // TODO throw error for sending an object with the exact name 
-      //   // currently blocking if object has similar name 
-      //   study.objs = study.objs.Append(obj);
-      //
-      // }
-    }
+			// NOTE this probably isn't worth getting caught up on just yet, will just add for now 
+			study.objs = study.objs.Append(obj).ToList();
+			// return;
 
-    public static bool Has<TObjType>(this IViewStudy study, string name = "")
-      where TObjType : IViewObj
-    {
-      if (study == null || study.objs == null || !study.objs.Any()) return false;
+			// check if an object with the same name has been added
+			// if (obj.Name.Valid() && study.Has<TObjType>(obj.Name))
+			// {
+			//   // TODO throw error for sending an object with the exact name 
+			//   // currently blocking if object has similar name 
+			//   study.objs = study.objs.Append(obj);
+			//
+			// }
+		}
 
-      foreach (var obj in study.objs.OfType<TObjType>())
-      {
-        // found at least one but no name was passed in 
-        if (!name.Valid()) return true;
+		public static bool Has<TObjType>(this IViewStudy_v1 study, string name = "")
+			where TObjType : IViewObject
+		{
+			if (study == null || study.objs == null || !study.objs.Any())
+				return false;
 
-        // check if names match up
-        if (obj.HasValidName() && obj.GetName().ToUpper().Equals(name.ToUpper()))
-          return true;
-      }
-      return false;
-    }
+			foreach (var obj in study.objs.OfType<TObjType>())
+			{
+				// found at least one but no name was passed in 
+				if (!name.Valid())
+					return true;
 
-    public static List<TObjType> GetAll<TObjType>(this IViewStudy study)
-      where TObjType : IViewObj
-    {
-      return study.objs.OfType<TObjType>().ToList();
-    }
+				// check if names match up
+				if (obj.HasValidName() && obj.GetName().ToUpper().Equals(name.ToUpper()))
+					return true;
+			}
 
-    public static TObjType Get<TObjType>(this IViewStudy study, string name = "")
-      where TObjType : IViewObj
-    {
-      TObjType result = default;
-      try
-      {
-        foreach (var obj in study.objs.OfType<TObjType>())
-        {
-          result = obj;
-          break;
-        }
-      }
-      catch (Exception e)
-      {
-        //TODO: Write out error
-        Console.WriteLine(e);
-        throw;
-      }
-      return result;
-    }
+			return false;
+		}
 
-    public static bool CanRun(this IViewStudy study)
-    {
-      return study.Has<IViewCloud>() && study.Has<IViewContentBundle>() && study.Has<IViewerBundle>();
-    }
+		public static List<TObjType> GetAll<TObjType>(this IViewStudy_v1 study)
+			where TObjType : IViewObject => study.objs.OfType<TObjType>().ToList();
 
-    public static bool CanVisualize(this IViewStudy study)
-    {
-      return study.Has<IResultCloud>();
-    }
+		public static TObjType Get<TObjType>(this IViewStudy_v1 study, string name = "")
+			where TObjType : IViewObject
+		{
+			TObjType result = default;
+			try
+			{
+				foreach (var obj in study.objs.OfType<TObjType>())
+				{
+					result = obj;
+					break;
+				}
+			}
+			catch (Exception e)
+			{
+				//TODO: Write out error
+				Console.WriteLine(e);
+				throw;
+			}
 
-    /// <summary>
-    ///   Command for checking all clouds in a study and counting the points
-    /// </summary>
-    /// <param name="study"></param>
-    /// <returns></returns>
-    public static int GetPointCount(this IViewStudy study)
-    {
-      var res = 0;
-      var clouds = study.GetAll<IViewCloud>();
-      foreach (var cloud in clouds)
-      {
-        if (cloud == null || !cloud.points.Valid())
-          continue;
+			return result;
+		}
 
-        res += cloud.points.Length;
-      }
+		public static bool CanRun(this IViewStudy_v1 study) =>
+			study.Has<IViewCloud_v1>() && study.Has<IViewContentBundle_v1>() && study.Has<IViewerBundle_v1>();
 
-      return res;
-    }
+		public static bool CanVisualize(this IViewStudy_v1 study) => study.Has<IResultCloudV1>();
 
-    public static void Clear(this IViewStudy study)
-    {
-      study.objs = new List<IViewObj>();
-    }
+		/// <summary>
+		///   Command for checking all clouds in a study and counting the points
+		/// </summary>
+		/// <param name="study"></param>
+		/// <returns></returns>
+		public static int GetPointCount(this IViewStudy_v1 study)
+		{
+			var res = 0;
+			var clouds = study.GetAll<IViewCloud_v1>();
+			foreach (var cloud in clouds)
+			{
+				if (cloud == null || !cloud.points.Valid())
+					continue;
 
-    public static void CheckData(this IViewStudy study, Action<StudyReportArgs> action)
-    {
+				res += cloud.points.Length;
+			}
 
-      if (!study.isValid) return;
+			return res;
+		}
 
-      var cmd = new CheckStudyDataCommand(study);
-      cmd.report += action;
-      cmd.Run();
-    }
+		public static void Clear(this IViewStudy_v1 study)
+		{
+			study.objs = new List<IViewObject>();
+		}
 
-    public static PrimedRigArgs LoadStudyForRig(this IViewStudy study)
-    {
+		public static void CheckData(this IViewStudy_v1 study, Action<StudyReportArgs> action)
+		{
+			if (!study.IsValid)
+				return;
 
-      IRig rig = new Rig();
-      if (study.isValid)
-      {
-        var cmd = new LoadStudyToRigCommand(study, ref rig);
-        cmd.Run();
-      }
+			var cmd = new CheckStudyDataCommand(study);
+			cmd.report += action;
+			cmd.Run();
+		}
 
-      return new PrimedRigArgs(rig);
-    }
+		public static PrimedRigArgs LoadStudyForRig(this IViewStudy_v1 study)
+		{
+			IRig_v1 rigV1 = new RigV1();
+			if (study.IsValid)
+			{
+				var cmd = new LoadStudyToRigCommand(study, ref rigV1);
+				cmd.Run();
+			}
 
-    public static void LoadStudyToRig(this IViewStudy study, ref IRig rigToBuild)
-    {
-      if (!study.isValid) return;
+			return new PrimedRigArgs(rigV1);
+		}
 
-      var cmd = new LoadStudyToRigCommand(study, ref rigToBuild);
-      cmd.Run();
-    }
+		public static void LoadStudyToRig(this IViewStudy_v1 study, ref IRig_v1 rigV1ToBuild)
+		{
+			if (!study.IsValid)
+				return;
 
-    public static void LoadStudyToRig(this IViewStudy study, out IRig rigToBuild, out List<StudyProcessArgs> argsList, out CancelStudyArgs cancelArgs)
-    {
-      cancelArgs = null;
-      rigToBuild = default;
-      argsList = new List<StudyProcessArgs>();
+			var cmd = new LoadStudyToRigCommand(study, ref rigV1ToBuild);
+			cmd.Run();
+		}
 
-      if (!study.isValid) return;
+		public static void LoadStudyToRig(
+			this IViewStudy_v1 study, out IRig_v1 rigV1ToBuild, out List<StudyProcessArgs> argsList, out CancelStudyArgs cancelArgs
+		)
+		{
+			cancelArgs = null;
+			rigV1ToBuild = default;
+			argsList = new List<StudyProcessArgs>();
 
-      var cmd = new RunStudyCommand(study);
-      cmd.Run();
+			if (!study.IsValid)
+				return;
 
-      argsList = cmd.processArgs;
-      cancelArgs = cmd.cancelStudyArgs;
-      rigToBuild = cmd.Rig;
-    }
-  }
+			var cmd = new RunStudyCommand(study);
+			cmd.Run();
+
+			argsList = cmd.processArgs;
+			cancelArgs = cmd.cancelStudyArgs;
+			rigV1ToBuild = cmd.RigV1;
+		}
+	}
 }

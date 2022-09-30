@@ -1,8 +1,11 @@
 ﻿namespace ViewTests
 {
 
-	public static class ViewCat
+	public static class ViewTestCategories
 	{
+
+		public const string UNITS = "Unit Test";
+		public const string INT = "Integration Test";
 
 		public const string CMD = "Commands";
 		public const string OBJ = "ViewObjects";

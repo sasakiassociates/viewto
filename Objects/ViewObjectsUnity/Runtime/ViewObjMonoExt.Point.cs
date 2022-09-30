@@ -6,7 +6,7 @@ namespace ViewObjects.Unity
 {
 	public static partial class ViewObjMonoExt
 	{
-		public static CloudShell GetShell(this IViewCloud obj) => new(obj, obj.viewID, obj.count);
+		public static CloudShell GetShell(this IViewCloud obj) => new(obj, obj.ViewId, obj.count);
 
 		public static Vector3[] GetPointsAsVectors(this IViewCloud obj) => obj.points.Valid() ? obj.points.ToUnity() : null;
 

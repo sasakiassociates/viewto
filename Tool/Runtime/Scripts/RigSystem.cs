@@ -21,9 +21,9 @@ namespace ViewTo.Connector.Unity
 
 	public interface IRigSystem : IRig
 	{
-		public List<ViewerBundleSystem> viewers { get; }
+		public List<ViewerSystemMono> viewers { get; }
 
-		public ViewerBundleSystem activeViewer { get; }
+		public ViewerSystemMono activeViewer { get; }
 
 		public bool isReady { get; }
 	}
@@ -31,28 +31,30 @@ namespace ViewTo.Connector.Unity
 	public class RigSystem : MonoBehaviour, IRigSystem
 	{
 
-		[SerializeField] RigStage _stage;
+		[SerializeField] ResultStage _stage;
 
 		[SerializeField] ViewStudyMono _study;
 
 		[SerializeField] [HideInInspector] RigData _data;
 
+		List<IResultData> _bundleDataForCloud;
+
 		int _activeViewerIndex;
 
 		Stopwatch _timer;
 
-		public RigStage stage
+		public ResultStage stage
 		{
 			get => _stage;
 			private set => _stage = value;
 		}
 
-		public ViewerBundleSystem activeViewer
+		public ViewerSystemMono activeViewer
 		{
 			get => viewers.Valid(_activeViewerIndex) ? viewers[_activeViewerIndex] : null;
 		}
 
-		public List<ViewerBundleSystem> viewers
+		public List<ViewerSystemMono> viewers
 		{
 			get => _data.viewers;
 			private set => _data.viewers = value;
@@ -62,9 +64,8 @@ namespace ViewTo.Connector.Unity
 		{
 			get => Application.isPlaying && viewers.Valid() && activeViewer != null;
 		}
-		
 
-		public void Run(int startPoint = 0)
+		public void Run(int startPoint = 0, bool autoRun = true)
 		{
 			if (!isReady)
 			{
@@ -72,15 +73,17 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
-			activeViewer.autoRun = true;
-
 			activeViewer.OnStageChange += SetStageChange;
-			activeViewer.OnComplete += CompileViewerData;
+			activeViewer.OnComplete += CompileViewerSystem;
+			// activeViewer.OnDataGathered += CompileViewerData;
 
 			_timer ??= new Stopwatch();
 			_timer.Start();
 
-			StartCoroutine(RunSafe());
+			if (autoRun)
+				activeViewer.Run();
+			else
+				activeViewer.Capture(startPoint);
 		}
 
 		public IEnumerator RunSafe()
@@ -106,7 +109,7 @@ namespace ViewTo.Connector.Unity
 			// store study
 			_study = obj;
 
-			name = $"Rig-{_study.viewName}";
+			name = $"Rig-{_study.ViewName}";
 
 			// store all colors from scene
 			_data.activeColorsInScene = _study.GetViewColors();
@@ -133,30 +136,33 @@ namespace ViewTo.Connector.Unity
 
 		public void TrySetPoint(int index)
 		{
-			if (activeViewer != null)
-				activeViewer.SetToPoint(index);
+			if (activeViewer != null) activeViewer.Capture(index);
 		}
+		
 
-		public void TrySetStage(ResultStage activeMask)
-		{
-			ViewConsole.Log($"Setting Stage to {activeMask}");
-
-			foreach (var v in viewers)
-				v.stage = activeMask.Convert();
-		}
-
-		void CompileViewerData(IFinderSystemData arg)
+		void CompileViewerSystem()
 		{
 			_timer.Stop();
-			ViewConsole.Log($"Total Time for {activeViewer.name}- {_timer.Elapsed}");
+			ViewConsole.Log($"Total Time for {activeViewer.name}-{_timer.Elapsed}");
 
 			activeViewer.OnStageChange -= SetStageChange;
-			CheckNextViewer();
-
-			ViewConsole.Log($"Compiling data {arg.name}");
+			activeViewer.OnComplete -= CompileViewerSystem; 
+		
+			_activeViewerIndex++;
+			if (viewers.Valid(_activeViewerIndex))
+			{
+				ViewConsole.Log($"Next Viewer[{_activeViewerIndex}] being used: {activeViewer.name}");
+				OnActiveViewerSystem?.Invoke(activeViewer);
+				Run();
+			}
+			else
+			{
+				ViewConsole.Log("Rig Complete");
+				OnComplete?.Invoke();
+			}
 		}
 
-		void SetStageChange(RigStage arg)
+		void SetStageChange(ResultStage arg)
 		{
 			stage = arg;
 			OnStageChange?.Invoke(stage);
@@ -212,6 +218,7 @@ namespace ViewTo.Connector.Unity
 
 			// there should always be a global viewer, but just in case we will set it to the first viewer to use
 			_activeViewerIndex = activeViewerIndex >= 0 ? activeViewerIndex : 0;
+			OnActiveViewerSystem?.Invoke(activeViewer);
 		}
 
 		void ResultDataCompleted(ResultsForCloud data)
@@ -222,25 +229,11 @@ namespace ViewTo.Connector.Unity
 			// let any other subscriptions know of the data being completed 
 			OnDataReadyForCloud?.Invoke(data);
 		}
-
-		void CheckNextViewer()
-		{
-			_activeViewerIndex++;
-			if (viewers.Valid(_activeViewerIndex))
-			{
-				ViewConsole.Log($"Next Viewer[{_activeViewerIndex}] being used: {activeViewer.name}");
-				Run();
-			}
-			else
-			{
-				ViewConsole.Log("Rig Complete");
-				OnComplete?.Invoke();
-			}
-		}
+		
 
 		void CreateGlobalRunner()
 		{
-			var global = ViewerBundleSystem.CreateGlobal(
+			var global = ViewerSystemMono.CreateGlobal(
 				GetGlobalLayouts(globalParams),
 				GetCloudsByKey(clouds?.Keys.ToList()),
 				globalColors.ConnectWithContent().ToList(),
@@ -253,7 +246,7 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
-			viewers ??= new List<ViewerBundleSystem>();
+			viewers ??= new List<ViewerSystemMono>();
 			viewers.Add(global);
 		}
 
@@ -311,7 +304,7 @@ namespace ViewTo.Connector.Unity
 			public List<ViewColorWithName> activeColorsInScene;
 			public List<ViewColor> globalColors;
 			public List<RigParamData> rigParams;
-			public List<ViewerBundleSystem> viewers;
+			public List<ViewerSystemMono> viewers;
 			public string[] cloudIds;
 		}
 
@@ -405,11 +398,13 @@ namespace ViewTo.Connector.Unity
 
 		public event UnityAction<ViewContentLoadedArgs> OnContentLoaded;
 
-		public event UnityAction<RigStage> OnStageChange;
+		public event UnityAction<ResultStage> OnStageChange;
 
 		public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 
 		public event UnityAction<ResultsForCloud> OnDataReadyForCloud;
+
+		public event UnityAction<ViewerSystemMono> OnActiveViewerSystem;
 
 		#endregion
 

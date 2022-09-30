@@ -19,7 +19,7 @@ namespace ViewTo.Connector.Unity.Commands
 		)
 		{
 			var args = new StudyReportArgs(
-				obj.viewName, obj.CanRun(), obj.CanVisualize(),
+				obj.ViewName, obj.CanRun(), obj.CanVisualize(),
 				blockersCount, designsCount, targetCount,
 				isoTargetCount, globalBundleCount, isoBundleCount, cloudCount, pointCount);
 

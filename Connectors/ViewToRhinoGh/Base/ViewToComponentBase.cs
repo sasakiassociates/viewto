@@ -1,5 +1,4 @@
-﻿using System;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 
 namespace ViewTo.RhinoGh
 {
@@ -9,7 +8,6 @@ namespace ViewTo.RhinoGh
 		public ViewToComponentBase(string name, string nickname, string description, string sub) : base(
 			name, nickname, description, ConnectorInfo.CATEGORY, sub)
 		{ }
-
 	}
 
 }

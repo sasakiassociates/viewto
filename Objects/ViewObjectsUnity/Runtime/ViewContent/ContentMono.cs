@@ -6,26 +6,62 @@ using Object = UnityEngine.Object;
 
 namespace ViewObjects.Unity
 {
-	public abstract class ContentMono : ViewObjMono
+	public class ContentMono : ViewObjMono, IContent
 	{
-		[SerializeField] string contentName;
-
-		[SerializeField] [HideInInspector] int mask;
 
 		[SerializeField] List<ContentObj> contentObjs;
 
-		[SerializeField] int colorId;
-
 		[SerializeField] Color32 color;
-
-		[SerializeField] ClassTypeReference objType;
 
 		[SerializeField] bool _combine = true;
 
-		static int DiffuseColor
+		[SerializeField] string _viewId;
+
+		public string ViewId
 		{
-			get => Shader.PropertyToID("_diffuseColor");
+			get => _viewId;
+			set => _viewId = value;
 		}
+
+		[SerializeField] List<string> _references;
+
+		public List<string> References
+		{
+			get => _references;
+			set => _references = value;
+		}
+
+		[SerializeField] ContentType _contentType;
+
+		public ContentType ContentType
+		{
+			get => _contentType;
+			set => _contentType = value;
+		}
+
+		[SerializeField] [HideInInspector] int _layerMask;
+
+		public int ContentLayerMask
+		{
+			get => _layerMask;
+			set => _layerMask = value;
+		}
+
+		[SerializeField] string viewName;
+
+		public string ViewName
+		{
+			get => viewName;
+			set
+			{
+				viewName = value;
+				gameObject.name = FullName;
+			}
+		}
+
+		public string FullName => $"Content {ContentType.ToString().Split('.').LastOrDefault()} - {ViewName}";
+
+		static int DiffuseColor => Shader.PropertyToID("_diffuseColor");
 
 		public bool show
 		{
@@ -76,12 +112,6 @@ namespace ViewObjects.Unity
 			}
 		}
 
-		public int contentLayerMask
-		{
-			get => mask;
-			set => mask = value;
-		}
-
 		public ViewColor viewColor
 		{
 			get => new(color.r, color.g, color.b, color.a);
@@ -90,27 +120,12 @@ namespace ViewObjects.Unity
 				if (value == null)
 					return;
 
-				Debug.Log($"new assigned to {contentName}:" + value.ToUnity());
+				Debug.Log($"new assigned to {viewName}:" + value.ToUnity());
 
 				color = value.ToUnity();
 
 				ApplyColor();
 			}
-		}
-
-		public string viewName
-		{
-			get => contentName;
-			set
-			{
-				contentName = value;
-				gameObject.name = FullName;
-			}
-		}
-
-		public string FullName
-		{
-			get => this.TypeName() + "-" + viewName;
 		}
 
 		void ApplyColor()
@@ -151,7 +166,7 @@ namespace ViewObjects.Unity
 			}
 
 			gameObject.ApplyAll(material);
-			gameObject.SetLayerRecursively(contentLayerMask);
+			gameObject.SetLayerRecursively(ContentLayerMask);
 
 			// this little loop is taking care of all the filtering of what speckle might send back. ideally it will be just components
 			foreach (var obj in contentObjs)
@@ -159,7 +174,8 @@ namespace ViewObjects.Unity
 				onAfterPrime?.Invoke(obj);
 			}
 
-			Debug.Log($"{viewName} is primed!\nview color {viewColor.ToUnity()}");
+			Debug.Log($"{ViewName} is primed!\nview color {viewColor.ToUnity()}");
 		}
+
 	}
 }

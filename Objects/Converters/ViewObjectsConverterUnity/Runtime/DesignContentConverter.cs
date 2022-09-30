@@ -7,11 +7,11 @@ using ViewObjects.Unity;
 namespace ViewObjects.Converter.Unity
 {
 	[CreateAssetMenu(menuName = ViewObjectUnity.ASSET_MENU + "Create " + nameof(DesignContentConverter), fileName = nameof(DesignContentConverter), order = 0)]
-	public class DesignContentConverter : ComponentConverter<DesignContentBase, DesignContentMono>
+	public class DesignContentConverter : ComponentConverter<DesignContentBaseV1, DesignContentMono>
 	{
 		protected override Base ConvertComponent(DesignContentMono component) => throw new System.NotImplementedException();
 
-		protected override void ConvertBase(DesignContentBase @base, ref DesignContentMono instance)
+		protected override void ConvertBase(DesignContentBaseV1 @base, ref DesignContentMono instance)
 		{
 			throw new System.NotImplementedException();
 		}

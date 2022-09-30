@@ -42,7 +42,7 @@ namespace ViewTo.Connector.Unity
 			{
 				new()
 				{
-					viewName = tc + "-A",
+					ViewName = tc + "-A",
 					objects = new List<object>
 					{
 						CreatePrim(PrimitiveType.Cube, new Vector3(Random.Range(0f, 50f), Random.Range(0f, 50f))),
@@ -52,7 +52,7 @@ namespace ViewTo.Connector.Unity
 
 				new()
 				{
-					viewName = tc + "-B",
+					ViewName = tc + "-B",
 					objects = new List<object>
 					{
 						CreatePrim(PrimitiveType.Sphere, new Vector3(Random.Range(0f, 50f), Random.Range(0f, 50f))),
@@ -65,7 +65,7 @@ namespace ViewTo.Connector.Unity
 		public static ViewStudy Create(string studyName)
 		{
 			var study = new ViewStudy
-				{ viewName = studyName };
+				{ ViewName = studyName };
 
 			var contentBundle = new ContentBundle();
 			contentBundle.contents.AddRange(BasicContent<TargetContent>());

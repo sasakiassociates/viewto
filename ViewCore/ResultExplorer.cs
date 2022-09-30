@@ -8,11 +8,11 @@ namespace ViewTo
 	public class ResultExplorer : IResultExplorer
 	{
 
-		public IResultCloud source { get; private set; }
+		public IResultCloudV1 source { get; private set; }
 
 		public List<string> targets { get; private set; }
 
-		public List<IResultData> storedData { get; private set; }
+		public List<IResultData_v1> storedData { get; private set; }
 
 		public ResultStage activeStage { get; set; } = ResultStage.Existing;
 
@@ -22,14 +22,14 @@ namespace ViewTo
 
 		public int activePoint { get; set; }
 
-		public void Load(IResultCloud obj)
+		public void Load(IResultCloudV1 obj)
 		{
 			if (obj == default)
 				return;
 
 			source = obj;
 			storedData = source.data;
-			targets = source.GetTargets();
+			// targets = source.GetTargets();
 			activeTarget = targets.FirstOrDefault();
 
 			activePoint = 0;

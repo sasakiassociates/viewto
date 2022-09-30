@@ -12,18 +12,18 @@
         <AssemblyName>ViewObjects.Converter.Rhino7</AssemblyName>
         <PackageVersion>1.0.0</PackageVersion>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="Grasshopper" Version="7.4.21078.1001" />
-  
-        <PackageReference Include="RhinoCommon" Version="7.4.21078.1001" IncludeAssets="compile;build" />
+        <PackageReference Include="Grasshopper" Version="7.4.21078.1001"/>
+
+        <PackageReference Include="RhinoCommon" Version="7.4.21078.1001" IncludeAssets="compile;build"/>
     </ItemGroup>
 
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj" />
-      <ProjectReference Include="..\..\..\ViewObjects\ViewObjects.csproj" />
-      <ProjectReference Include="..\..\ViewObjectsConverter\ViewObjectsConverter.csproj" />
+        <ProjectReference Include="..\..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj"/>
+        <ProjectReference Include="..\..\..\ViewObjects\ViewObjects.csproj"/>
+        <ProjectReference Include="..\..\ViewObjectsConverter\ViewObjectsConverter.csproj"/>
     </ItemGroup>
 
     <PropertyGroup Condition="$(Configuration) == 'Debug' AND $([MSBuild]::IsOSPlatform(Windows))">
@@ -47,8 +47,8 @@
         <IsDesktopBuild Condition="'$(IsDesktopBuild)' == ''">true</IsDesktopBuild>
     </PropertyGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(IsDesktopBuild)' == true">
-        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;" />
+        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;"/>
     </Target>
-    <Import Project="..\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems" Label="Shared" />
+    <Import Project="..\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems" Label="Shared"/>
 
 </Project>

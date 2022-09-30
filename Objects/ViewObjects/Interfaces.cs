@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ViewObjects
+﻿namespace ViewObjects
 {
 	public interface ICloud
 	{
@@ -9,22 +7,23 @@ namespace ViewObjects
 
 	public interface IValidate
 	{
-		bool isValid { get; }
+		bool IsValid { get; }
 	}
 
 	public interface IId
 	{
-		string viewID { get; set; }
+		/// <summary>
+		///   View id in the format of <see cref="System.Guid" />
+		/// </summary>
+		string ViewId { get; }
 	}
 
 	public interface INameable
 	{
-		string viewName { get; set; }
+		/// <summary>
+		///   Simple name for view objects
+		/// </summary>
+		string ViewName { get; set; }
 	}
 
-	public interface IMetaShell
-	{
-		string objId { get; }
-		Type objType { get; }
-	}
 }

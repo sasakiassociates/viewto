@@ -11,6 +11,5 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BaseMil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Categories.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ObjMil.cs" />
   </ItemGroup>
 </Project>

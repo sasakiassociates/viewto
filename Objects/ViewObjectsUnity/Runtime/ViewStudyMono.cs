@@ -38,7 +38,7 @@ namespace ViewObjects.Unity
 
 			for (var i = 0; i < loadedObjs.Count; i++)
 			{
-				if (loadedObjs[i] is not ViewCloudMono cloud || !cloud.viewID.Equals(results.id))
+				if (loadedObjs[i] is not ViewCloudMono cloud || !cloud.ViewId.Equals(results.id))
 					continue;
 
 				// reference game object with view cloud attached
@@ -46,7 +46,7 @@ namespace ViewObjects.Unity
 
 				var resultCloud = go.AddComponent<ResultCloudMono>();
 				resultCloud.name = "Result Cloud";
-				resultCloud.viewID = cloud.viewID;
+				resultCloud.ViewId = cloud.ViewId;
 				resultCloud.points = cloud.points;
 				resultCloud.data = results.data;
 
@@ -64,7 +64,7 @@ namespace ViewObjects.Unity
 			return false;
 		}
 
-		public string viewName
+		public string ViewName
 		{
 			get => gameObject.name;
 			set => name = value;
@@ -72,7 +72,7 @@ namespace ViewObjects.Unity
 
 		public bool isValid
 		{
-			get => objs.Valid() && viewName.Valid();
+			get => objs.Valid() && ViewName.Valid();
 		}
 
 		public List<IViewObj> objs
