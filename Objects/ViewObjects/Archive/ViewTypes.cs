@@ -4,6 +4,11 @@ using ViewObjects.Cloud;
 namespace ViewObjects
 {
 
+	public interface ICloud
+	{
+		CloudPoint[] points { get; set; }
+	}
+
 	public interface IViewCloud_v1 : IViewObject, IId
 	{
 		CloudPoint[] points { get; set; }

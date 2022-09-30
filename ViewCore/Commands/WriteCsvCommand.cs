@@ -2,7 +2,7 @@
 
 namespace ViewTo.Commands
 {
-	internal class WriteCsvCommand : ICommand
+	internal class WriteCsvCommand : ICmd
 	{
 
 		readonly string blob;
