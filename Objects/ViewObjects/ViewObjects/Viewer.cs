@@ -2,7 +2,7 @@
 
 namespace ViewObjects.Viewer
 {
-	public class Viewer : IViewerSystem<IViewerLayout>, IViewObject
+	public class Viewer : IViewerSystem, IViewObject
 	{
 
 		public Viewer()

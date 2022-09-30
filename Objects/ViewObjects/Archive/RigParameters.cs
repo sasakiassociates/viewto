@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ViewObjects.Rig
+namespace ViewObjects
 {
-	public class RigParameters : IRigParam_v1
+	public class RigParameters_V1 : IRigParam_v1
 	{
 		/// <summary>
 		///   List of bundles for different viewer objects
@@ -10,7 +10,7 @@ namespace ViewObjects.Rig
 		public List<IViewerBundle_v1> bundles { get; set; }
 	}
 
-	public class RigParametersIsolated : RigParameters
+	public class RigParametersIsolated : RigParameters_V1
 	{
 		public List<ViewColor> colors { set; get; }
 	}

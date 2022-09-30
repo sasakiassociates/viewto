@@ -1,9 +1,5 @@
 ﻿namespace ViewObjects
 {
-	public interface ICloud
-	{
-		CloudPoint[] points { get; set; }
-	}
 
 	public interface IValidate
 	{

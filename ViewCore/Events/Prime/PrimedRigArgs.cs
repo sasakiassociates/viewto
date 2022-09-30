@@ -1,5 +1,4 @@
-﻿using ViewObjects.Rig;
-using ViewTo.Events.Args;
+﻿using ViewTo.Events.Args;
 
 namespace ViewTo.Events.Prime
 {

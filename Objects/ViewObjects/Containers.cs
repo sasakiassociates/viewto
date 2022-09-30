@@ -47,4 +47,23 @@ namespace ViewObjects
 
 	}
 
+	public class RigParameters : Container
+	{
+		public RigParameters(List<string> clouds, List<ViewColor> colors)
+		{
+			this.clouds = clouds;
+			this.colors = colors;
+		}
+
+		/// <summary>
+		/// The lists of <see cref="IViewCloud"/> by <see cref="IViewCloud.ViewId"/> associated with the args
+		/// </summary>
+		public readonly List<string> clouds;
+
+		/// <summary>
+		/// List of colors to use for run time analysis
+		/// </summary>
+		public readonly List<ViewColor> colors;
+	}
+
 }

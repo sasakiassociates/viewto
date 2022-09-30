@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using ViewObjects.Rig;
 using ViewTo.Events.Args;
 using ViewTo.Events.Prime;
 using ViewTo.Events.Process;

@@ -7,14 +7,8 @@ using ViewTo.Events.Report;
 
 namespace ViewTo
 {
-	public static partial class Commander
+	public static partial class ViewCoreExtensions
 	{
-		public static bool CanRun(this IRig_v1 obj) => obj.clouds != null
-		                                               && obj.clouds.Any()
-		                                               && obj.globalParams != null
-		                                               && obj.globalParams.Any()
-		                                               && obj.globalColors != null
-		                                               && obj.globalColors.Any();
 
 		public static void Load(this IRig_v1 obj, string cloudID, CloudPoint[] points)
 		{

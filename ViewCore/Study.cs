@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
-using ViewObjects.Rig;
 using ViewTo.Commands;
 using ViewTo.Events.Args;
 using ViewTo.Events.Process;
@@ -56,9 +55,9 @@ namespace ViewTo
 				if (!name.Valid())
 					return true;
 
-				// check if names match up
-				if (obj.HasValidName() && obj.GetName().ToUpper().Equals(name.ToUpper()))
-					return true;
+				// // check if names match up
+				// if (obj.HasValidName() && obj.GetName().ToUpper().Equals(name.ToUpper()))
+				// 	return true;
 			}
 
 			return false;

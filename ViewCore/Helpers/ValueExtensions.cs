@@ -98,8 +98,10 @@ namespace ViewTo
 				if (value <= 0)
 					continue;
 
-				if (min > value) min = value;
-				if (max < value) max = value;
+				if (min > value)
+					min = value;
+				if (max < value)
+					max = value;
 			}
 		}
 
@@ -116,8 +118,10 @@ namespace ViewTo
 				if (value <= 0)
 					continue;
 
-				if (min > value) min = value;
-				if (max < value) max = value;
+				if (min > value)
+					min = value;
+				if (max < value)
+					max = value;
 			}
 		}
 
@@ -134,8 +138,10 @@ namespace ViewTo
 				if (value <= 0)
 					continue;
 
-				if (min > value) min = value;
-				if (max < value) max = value;
+				if (min > value)
+					min = value;
+				if (max < value)
+					max = value;
 			}
 		}
 
@@ -152,8 +158,10 @@ namespace ViewTo
 				if (value <= 0)
 					continue;
 
-				if (min > value) min = value;
-				if (max < value) max = value;
+				if (min > value)
+					min = value;
+				if (max < value)
+					max = value;
 			}
 		}
 
@@ -200,7 +208,8 @@ namespace ViewTo
 			var logCustomBase = Math.Pow(maxValue, 1 / desiredScore);
 			var outputValues = new double[values.Count];
 
-			for (var i = 0; i < values.Count; i++) outputValues[i] = Math.Log(values[i], logCustomBase);
+			for (var i = 0; i < values.Count; i++)
+				outputValues[i] = Math.Log(values[i], logCustomBase);
 
 			return outputValues;
 		}

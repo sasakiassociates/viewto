@@ -34,9 +34,14 @@ namespace ViewObjects
 
 	#endregion
 
-	#region Viewer Objects
+	public interface IRig
+	{
+		public List<IViewerSystem> Viewers { get; set; }
 
-	#region Studies
+		public List<RigParameters> Parameters { get; set; }
+	}
+
+	#region View Objects
 
 	public interface IViewStudy : IViewStudy<IViewObject>
 	{ }
@@ -53,14 +58,20 @@ namespace ViewObjects
 		public List<TObject> Objects { get; set; }
 	}
 
-	#endregion
-
 	public interface IViewerLayout
 	{
 		/// <summary>
 		///   Setup of viewers to use with each layout type
 		/// </summary>
 		public List<ViewerDirection> Viewers { get; }
+	}
+
+	public interface IViewerSystem : IViewerSystem<IViewerLayout>
+	{
+		/// <summary>
+		///   A list of cloud ids that can be used with this bundle
+		/// </summary>
+		public List<string> Clouds { get; set; }
 	}
 
 	/// <summary>

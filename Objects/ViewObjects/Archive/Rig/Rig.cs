@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ViewObjects.Rig
+namespace ViewObjects
 {
 
 	public class RigV1 : IRig_v1, IValidate

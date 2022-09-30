@@ -2,7 +2,7 @@
 
 namespace ViewTo.Commands
 {
-	internal interface ILinkedCommands<TCommand> : ICommand
+	internal interface ILinkedCommands<TCommand> : ICmd
 	{
 		public IList<TCommand> sequence { get; }
 	}

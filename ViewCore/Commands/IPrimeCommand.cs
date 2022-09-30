@@ -4,12 +4,12 @@ using ViewTo.Events.Args;
 namespace ViewTo.Commands
 {
 
-	internal interface ICommandWithResult<TResult> : ICommand where TResult : CommandDataArgs
+	internal interface ICommandWithResult<TResult> : ICmd where TResult : CommandDataArgs
 	{
 		public TResult args { get; }
 	}
 
-	internal interface IPrimeCommand : ICommand
+	internal interface IPrimeCommand : ICmd
 	{
 		public List<PrimeProcessArgs> args { get; }
 

@@ -4,7 +4,7 @@ using ViewTo.Events.Args;
 namespace ViewTo.Commands
 {
 
-	internal interface IStudyCommand : ICommand
+	internal interface IStudyCommand : ICmd
 	{
 		public List<StudyProcessArgs> processArgs { get; }
 

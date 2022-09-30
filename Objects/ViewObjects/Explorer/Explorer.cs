@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using ViewObjects.Cloud;
 
 namespace ViewObjects.Explorer
 {
