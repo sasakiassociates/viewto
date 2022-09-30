@@ -9,7 +9,7 @@ namespace ViewObjects.Speckle
 {
 
 	/// <inheritdoc />
-	public class ViewToKit : ISpeckleKit
+	public class ViewObjectKit : ISpeckleKit
 	{
 
 		const string CONVERTER_BASE_NAME = "ViewObjects.Converter";
@@ -43,7 +43,7 @@ namespace ViewObjects.Speckle
 		/// <inheritdoc />
 		public string Name
 		{
-			get => nameof(ViewToKit);
+			get => nameof(ViewObjectKit);
 		}
 
 		/// <inheritdoc />
@@ -73,18 +73,21 @@ namespace ViewObjects.Speckle
 					                || !t.IsAbstract
 				               ));
 
-				var asm = Assembly.Load(typeof(IViewObj).GetTypeInfo().Assembly.GetName());
+				var asm = Assembly.Load(typeof(IViewObject).GetTypeInfo().Assembly.GetName());
 
 				var exported = asm.GetExportedTypes();
 				foreach (var t in exported)
 				{
-					if (t.IsAbstract) continue;
+					if (t.IsAbstract)
+						continue;
 
-					if (t.IsInterface) continue;
+					if (t.IsInterface)
+						continue;
 
 					if (t.IsSubclassOf(typeof(Container)))
 						types.Add(t);
-					else if (typeof(IViewObj).IsAssignableFrom(t)) types.Add(t);
+					else if (typeof(IViewObject).IsAssignableFrom(t))
+						types.Add(t);
 				}
 
 				return types;

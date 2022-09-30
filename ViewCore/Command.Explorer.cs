@@ -15,7 +15,7 @@ namespace ViewTo
 		/// </summary>
 		/// <param name="explorer"></param>
 		/// <param name="viewObj"></param>
-		public static void Load(this IExplorer explorer, IResultCloud_v2 viewObj)
+		public static void Load(this IExplorer explorer, IResultCloud viewObj)
 		{ }
 
 		/// <summary>
@@ -23,7 +23,7 @@ namespace ViewTo
 		/// </summary>
 		/// <param name="explorer"></param>
 		/// <param name="viewObj">The view study to load in</param>
-		public static void Load(this IExplorer explorer, IViewStudy_v2 viewObj)
+		public static void Load(this IExplorer explorer, IViewStudy viewObj)
 		{ }
 
 		/// <summary>
@@ -272,7 +272,8 @@ namespace ViewTo
 
 			var values = new List<int>();
 
-			if (!explorer.TryGetValues(explorer.activeStage, ref values)) return;
+			if (!explorer.TryGetValues(explorer.activeStage, ref values))
+				return;
 
 			explorer.activeValues = values.ToArray();
 		}
@@ -301,7 +302,8 @@ namespace ViewTo
 
 			explorer.activeValues = new int[values.Count];
 
-			for (var i = 0; i < values.Count; i++) explorer.activeValues[i] = math.Normalize(values[i], max, min);
+			for (var i = 0; i < values.Count; i++)
+				explorer.activeValues[i] = math.Normalize(values[i], max, min);
 		}
 
 		public static ICollection<int> GetComparedValuesRaw(this IResultExplorer explorer, ResultStage dividendStage, ResultStage divisorStage)
@@ -323,10 +325,13 @@ namespace ViewTo
 
 			foreach (var value in values)
 			{
-				if (value < minCap) continue;
+				if (value < minCap)
+					continue;
 
-				if (value < min) min = value;
-				if (value > max) max = value;
+				if (value < min)
+					min = value;
+				if (value > max)
+					max = value;
 			}
 		}
 
@@ -337,10 +342,13 @@ namespace ViewTo
 
 			foreach (var value in values)
 			{
-				if (value < minCap) continue;
+				if (value < minCap)
+					continue;
 
-				if (value < min) min = value;
-				if (value > max) max = value;
+				if (value < min)
+					min = value;
+				if (value > max)
+					max = value;
 			}
 		}
 
@@ -377,7 +385,8 @@ namespace ViewTo
 		public static IEnumerable<T> GetValuesCompared<T>(IReadOnlyList<T> values, IReadOnlyList<T> baseValues, MathProvider<T> math)
 		{
 			var result = new List<T>();
-			for (var i = 0; i < values.Count; i++) result.Add(math.Subtract(baseValues[i], values[i]));
+			for (var i = 0; i < values.Count; i++)
+				result.Add(math.Subtract(baseValues[i], values[i]));
 
 			return result;
 		}

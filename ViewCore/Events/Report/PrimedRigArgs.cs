@@ -8,22 +8,22 @@ namespace ViewTo.Events.Report
 	{
 		public readonly Dictionary<string, CloudPoint[]> clouds;
 		public readonly List<ViewColor> globalColors;
-		public readonly List<IRigParam> globalParams;
+		public readonly List<IRigParam_v1> globalParams;
 
-		public PrimedRigArgs(List<IRigParam> globalParams, List<ViewColor> globalColors, Dictionary<string, CloudPoint[]> clouds)
+		public PrimedRigArgs(List<IRigParam_v1> globalParams, List<ViewColor> globalColors, Dictionary<string, CloudPoint[]> clouds)
 		{
 			this.globalParams = globalParams;
 			this.globalColors = globalColors;
 			this.clouds = clouds;
 		}
 
-		public PrimedRigArgs(IRig rig)
+		public PrimedRigArgs(IRig_v1 rigV1)
 		{
-			if (rig != null)
+			if (rigV1 != null)
 			{
-				clouds = rig.clouds;
-				globalParams = rig.globalParams;
-				globalColors = rig.globalColors;
+				clouds = rigV1.clouds;
+				globalParams = rigV1.globalParams;
+				globalColors = rigV1.globalColors;
 			}
 		}
 	}

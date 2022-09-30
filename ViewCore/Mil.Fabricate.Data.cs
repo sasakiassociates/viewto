@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ViewObjects;
-using ViewObjects.Content;
 
 namespace ViewTo
 {
@@ -18,37 +17,37 @@ namespace ViewTo
 				public const string OPT_A = "DesignA";
 				public const string OPT_B = "DesignB";
 
-				public static List<TargetContent> GroupContentTargets
+				public static List<TargetContentV1> GroupContentTargets
 				{
 					get =>
-						new List<TargetContent>
+						new List<TargetContentV1>
 						{
-							new TargetContent
+							new TargetContentV1
 							{
 								ViewName = TAR_A
 							},
-							new TargetContent
+							new TargetContentV1
 							{
 								ViewName = TAR_B
 							}
 						};
 				}
 
-				public static List<BlockerContent> GroupContentBlockers
+				public static List<BlockerContentV1> GroupContentBlockers
 				{
 					get =>
-						new List<BlockerContent>
+						new List<BlockerContentV1>
 						{
-							new BlockerContent(), new BlockerContent(), new BlockerContent()
+							new BlockerContentV1(), new BlockerContentV1(), new BlockerContentV1()
 						};
 				}
 
-				public static List<DesignContent> GroupContentDesigns
+				public static List<DesignContentV1> GroupContentDesigns
 				{
 					get =>
-						new List<DesignContent>
+						new List<DesignContentV1>
 						{
-							new DesignContent
+							new DesignContentV1
 							{
 								ViewName = "DesignA"
 							}
@@ -124,7 +123,8 @@ namespace ViewTo
 				{
 					var rnd = new Random();
 					var testValues = new int[valueCount][];
-					for (uint i = 0; i < testValues.Length; i++) testValues[i] = ValuesInt(contentCount, rnd);
+					for (uint i = 0; i < testValues.Length; i++)
+						testValues[i] = ValuesInt(contentCount, rnd);
 					return testValues;
 				}
 
@@ -132,7 +132,8 @@ namespace ViewTo
 				{
 					var rnd = new Random();
 					var testValues = new uint[valueCount][];
-					for (uint i = 0; i < testValues.Length; i++) testValues[i] = ValuesUint(contentCount, rnd);
+					for (uint i = 0; i < testValues.Length; i++)
+						testValues[i] = ValuesUint(contentCount, rnd);
 					return testValues;
 				}
 

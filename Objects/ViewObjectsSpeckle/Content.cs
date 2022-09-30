@@ -7,7 +7,7 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	///   View Content Object adapted to <see cref="Base" />
 	/// </summary>
-	public class Content : ViewObjectBase, IContent
+	public class Content : ViewObjectReferenceBase<ViewObjects.Content>, IContent
 	{
 
 		/// <summary>
@@ -35,15 +35,7 @@ namespace ViewObjects.Speckle
 		}
 
 		/// <inheritdoc />
-		public string ViewName { get; set; }
-
-		/// <inheritdoc />
-		public string ViewId { get; set; }
-
-		/// <inheritdoc />
 		public ContentType ContentType { get; set; }
 
-		/// <inheritdoc />
-		public List<string> References { get; set; } = new List<string>();
 	}
 }

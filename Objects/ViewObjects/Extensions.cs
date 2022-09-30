@@ -5,12 +5,13 @@ namespace ViewObjects
 {
 	public static class Extensions
 	{
-		public static List<IContentOption> FindObject(this IResultCloud_v2<IResultCloudData> obj) => new List<IContentOption>();
+		public static List<IContentOption> FindObject(this IResultCloud<IResultCloudData> obj) => new List<IContentOption>();
 
-		public static TObj FindObject<TObj>(this IViewStudy_v2 obj) where TObj : IViewObj
+		public static TObj FindObject<TObj>(this IViewStudy obj) where TObj : IViewObject
 		{
 			TObj viewObj = default;
-			if (!obj.Objects.Any()) return viewObj;
+			if (!obj.Objects.Any())
+				return viewObj;
 
 			foreach (var o in obj.Objects)
 				if (o is TObj casted)
@@ -22,7 +23,7 @@ namespace ViewObjects
 			return viewObj;
 		}
 
-		public static List<TObj> FindObjects<TObj>(this IViewStudy_v2 obj) where TObj : IViewObj
+		public static List<TObj> FindObjects<TObj>(this IViewStudy obj) where TObj : IViewObject
 		{
 			List<TObj> viewObjs = new();
 
@@ -34,4 +35,5 @@ namespace ViewObjects
 			return viewObjs;
 		}
 	}
+
 }

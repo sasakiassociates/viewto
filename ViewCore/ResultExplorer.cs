@@ -8,7 +8,7 @@ namespace ViewTo
 	public class ResultExplorer : IResultExplorer
 	{
 
-		public IResultCloud source { get; private set; }
+		public IResultCloudV1 source { get; private set; }
 
 		public List<string> targets { get; private set; }
 
@@ -22,7 +22,7 @@ namespace ViewTo
 
 		public int activePoint { get; set; }
 
-		public void Load(IResultCloud obj)
+		public void Load(IResultCloudV1 obj)
 		{
 			if (obj == default)
 				return;

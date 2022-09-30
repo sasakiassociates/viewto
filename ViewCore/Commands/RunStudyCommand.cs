@@ -13,7 +13,7 @@ namespace ViewTo.Commands
 
 		readonly string studyName;
 
-		public RunStudyCommand(IViewStudy study)
+		public RunStudyCommand(IViewStudy_v1 study)
 		{
 			studyName = study.ViewName;
 			processArgs = new List<StudyProcessArgs>();
@@ -36,12 +36,12 @@ namespace ViewTo.Commands
 
 		public List<StudyProcessArgs> processArgs { get; }
 
-		public Rig Rig { get; private set; }
+		public RigV1 RigV1 { get; private set; }
 
 		public void ReceivePrimedData(PrimeProcessArgs primeArgs)
 		{
 			if (primeArgs is PrimedRigArgs primedRig)
-				Rig = primedRig.Rig;
+				RigV1 = primedRig.RigV1;
 		}
 
 		public IList<IStudyCommand> sequence { get; }
@@ -58,7 +58,7 @@ namespace ViewTo.Commands
 				if (!cmd.greatSuccess)
 				{
 					cancelStudyArgs = new CancelStudyArgs(studyName, cmd.errorFlag);
-					Rig = null;
+					RigV1 = null;
 					break;
 				}
 			}

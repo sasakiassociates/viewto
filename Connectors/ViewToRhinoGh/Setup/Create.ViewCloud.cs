@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Grasshopper.Kernel;
-using ViewObjects.Cloud;
+using ViewObjects.References;
 using ViewTo.RhinoGh.Goo;
-using Pipe = ViewTo.RhinoGh.ConnectorPipe;
 
 namespace ViewTo.RhinoGh.Setup
 {
@@ -37,8 +36,7 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var reference = string.Empty;
 			DA.GetData(0, ref reference);
-			DA.SetData(0, new ViewCloudReference(new List<string>
-				                                     { reference }));
+			DA.SetData(0, new CloudReference(new List<string> { reference }));
 		}
 	}
 }

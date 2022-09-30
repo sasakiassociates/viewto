@@ -19,7 +19,7 @@ namespace ViewTo.Commands
 				return;
 			}
 
-			var rig = new Rig();
+			var rig = new RigV1();
 			foreach (var arg in primedStudy.cloudArgs)
 				rig.Load(arg.id, arg.points);
 

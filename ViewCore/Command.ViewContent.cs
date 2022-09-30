@@ -8,7 +8,7 @@ namespace ViewTo
 {
 	public static partial class Commander
 	{
-		public static List<TContent> GetContents<TContent>(this IViewContentBundle obj) where TContent : IViewContent
+		public static List<TContent> GetContents<TContent>(this IViewContentBundle_v1 obj) where TContent : IViewContent_v1
 		{
 			var res = new List<TContent>();
 
@@ -19,7 +19,7 @@ namespace ViewTo
 			return res;
 		}
 
-		public static int GetContentCount<TContent>(this IViewContentBundle obj) where TContent : IViewContent
+		public static int GetContentCount<TContent>(this IViewContentBundle_v1 obj) where TContent : IViewContent_v1
 		{
 			var res = 0;
 
@@ -30,12 +30,13 @@ namespace ViewTo
 			return res;
 		}
 
-		public static void AssignColors(this IViewContentBundle obj)
+		public static void AssignColors(this IViewContentBundle_v1 obj)
 		{
 			var colors = obj.contents.CreateBundledColors();
 
 			var colorIndex = 0;
-			foreach (var c in obj.contents) c.viewColor = colors[colorIndex++];
+			foreach (var c in obj.contents)
+				c.viewColor = colors[colorIndex++];
 		}
 
 		public static List<ViewColor> CreateBundledColors(this ICollection content)

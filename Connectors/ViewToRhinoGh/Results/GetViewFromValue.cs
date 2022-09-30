@@ -62,8 +62,8 @@ namespace ViewTo.RhinoGh.Results
 			var obj = new GH_ViewObj();
 			DA.GetData(_input.Cloud, ref obj);
 
-			ResultCloud cloud = null;
-			if (obj?.Value is ResultCloud rc)
+			ResultCloudV1V1 cloud = null;
+			if (obj?.Value is ResultCloudV1V1 rc)
 				cloud = rc;
 			else
 				return;

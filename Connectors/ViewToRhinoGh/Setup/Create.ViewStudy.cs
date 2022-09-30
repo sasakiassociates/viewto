@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using ViewObjects;
-using ViewObjects.Cloud;
-using ViewObjects.Content;
+using ViewObjects.References;
 using ViewObjects.Study;
-using ViewObjects.Viewer;
 using ViewTo.RhinoGh.Goo;
 using ViewTo.RhinoGh.Properties;
 
@@ -58,58 +55,29 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var wrappers = new List<GH_ViewObj>();
 			DA.GetDataList(_input.Cloud, wrappers);
-			var clouds = wrappers.Unwrap<ViewCloudReference>();
+			var clouds = wrappers.Unwrap<ViewObjectReference>();
 
 			wrappers.Clear();
 			DA.GetDataList(_input.Content, wrappers);
-			var contents = wrappers.Unwrap<ViewContent_v2>();
+			var contents = wrappers.Unwrap<ViewObjectReference>();
 
 			wrappers.Clear();
 			DA.GetDataList(_input.Params, wrappers);
-			var systems = wrappers.Unwrap<ViewerSystem_v2>();
+			var systems = wrappers.Unwrap<ViewObjectReference>();
 
 			var ghName = new GH_String();
 			DA.GetData(_input.Name, ref ghName);
 
-			var objs = new List<IViewObj>();
+			var objs = new List<ViewObjectReference>();
 
 			objs.AddRange(contents);
 			objs.AddRange(clouds);
 			objs.AddRange(systems);
 
-			var viewObj = new ViewStudy_v2(objs, ghName.Value);
+			var viewObj = new ViewStudyReference(objs, ghName.Value);
 
 			DA.SetData(0, viewObj);
 		}
 
-		// protected override void SolveInstance(IGH_DataAccess DA)
-		// {
-		// 	var wrappers = new List<GH_ViewObj>();
-		// 	DA.GetDataList(_input.Cloud, wrappers);
-		// 	var clouds = wrappers.Unwrap<ViewCloud>();
-		//
-		// 	wrappers.Clear();
-		// 	DA.GetDataList(_input.Content, wrappers);
-		// 	var contentBundle = wrappers.Unwrap<ContentBundle>();
-		//
-		// 	wrappers.Clear();
-		// 	DA.GetDataList(_input.Params, wrappers);
-		// 	var viewerBundles = wrappers.Unwrap<ViewerBundle>();
-		//
-		// 	var res = new GH_String();
-		//
-		// 	DA.GetData(_input.Name, ref res);
-		// 	var viewObj = new ViewStudy
-		// 	{
-		// 		ViewName = res.Value,
-		// 		objs = new List<IViewObj>()
-		// 	};
-		//
-		// 	viewObj.objs.AddRange(contentBundle);
-		// 	viewObj.objs.AddRange(clouds);
-		// 	viewObj.objs.AddRange(viewerBundles);
-		//
-		// 	DA.SetData(0, viewObj);
-		// }
 	}
 }

@@ -12,13 +12,13 @@ namespace ViewTo.Commands
 	internal class CheckStudyDataCommand : IStudyCommand
 	{
 
-		public CheckStudyDataCommand(IViewStudy study)
+		public CheckStudyDataCommand(IViewStudy_v1 study)
 		{
 			obj = study;
 			processArgs = new List<StudyProcessArgs>();
 		}
 
-		IViewStudy obj { get; }
+		IViewStudy_v1 obj { get; }
 
 		public Study.LoadError errorFlag
 		{
@@ -39,14 +39,14 @@ namespace ViewTo.Commands
 				}
 				else
 				{
-					var content = obj.Get<IViewContentBundle>();
-					var blockersCount = content.GetContentCount<IBlockerContent>();
-					var designsCount = content.GetContentCount<IDesignContent>();
-					var targetCount = content.GetContentCount<ITargetContent>();
+					var content = obj.Get<IViewContentBundle_v1>();
+					var blockersCount = content.GetContentCount<IBlockerContentV1>();
+					var designsCount = content.GetContentCount<IDesignContentV1>();
+					var targetCount = content.GetContentCount<ITargetContentV1>();
 
-					var clouds = obj.GetAll<IViewCloud>().ToDictionary(cld => cld?.ViewId, cld => cld != null && cld.points.Valid() ? cld.points.Length : 0);
+					var clouds = obj.GetAll<IViewCloud_v1>().ToDictionary(cld => cld?.ViewId, cld => cld != null && cld.points.Valid() ? cld.points.Length : 0);
 
-					var bundles = obj.GetAll<IViewerBundle>().ToList();
+					var bundles = obj.GetAll<IViewerBundle_v1>().ToList();
 					var globalBundleCount = 0;
 					foreach (var bundle in bundles)
 					{
@@ -57,7 +57,7 @@ namespace ViewTo.Commands
 
 					var isoTargetCount = 0;
 					var isoBundleCount = 0;
-					foreach (var target in content.GetContents<ITargetContent>())
+					foreach (var target in content.GetContents<ITargetContentV1>())
 					{
 						var cl = target.SearchForClouds();
 						if (cl.Valid())

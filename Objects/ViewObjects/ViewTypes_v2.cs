@@ -1,20 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ViewObjects
 {
+
+	#region Base Types
+
+	public interface IViewObject
+	{ }
+
+	public interface IViewObjectReference : IViewObject
+	{
+		public IReferenceObject Reference { get; set; }
+	}
+
+	#endregion
+
+	#region References
 
 	public interface IStreamReference
 	{
 		/// <summary>
 		///   A list of reference ids to use for connection speckle data into view to
 		/// </summary>
-		public List<string> References { get; set; }
+		public List<string> References { get; }
 	}
 
-	public interface IViewStudy_v2 : IViewStudy_v2<IViewObj>
+	public interface IReferenceObject : IId, INameable, IStreamReference
+	{
+		public Type Type { get; }
+
+	}
+
+	#endregion
+
+	#region Viewer Objects
+
+	#region Studies
+
+	public interface IViewStudy : IViewStudy<IViewObject>
 	{ }
 
-	public interface IViewStudy_v2<TObject> : INameable, IId
+	/// <summary>
+	/// An interface for organizing <typeparamref name="TObject"/> types processing view studies
+	/// </summary>
+	/// <typeparam name="TObject"></typeparam>
+	public interface IViewStudy<TObject> : INameable, IId where TObject : IViewObject
 	{
 		/// <summary>
 		///   A list of <typeparamref name="TObject" /> objects to group in a study
@@ -22,9 +53,9 @@ namespace ViewObjects
 		public List<TObject> Objects { get; set; }
 	}
 
-	#region Viewer Objects
+	#endregion
 
-	public interface IViewerLayout_v2
+	public interface IViewerLayout
 	{
 		/// <summary>
 		///   Setup of viewers to use with each layout type
@@ -32,7 +63,11 @@ namespace ViewObjects
 		public List<ViewerDirection> Viewers { get; }
 	}
 
-	public interface IViewerSystem_v2<TLayout> where TLayout : IViewerLayout_v2
+	/// <summary>
+	/// An interface for organizing <typeparamref name="TLayout"/> types for <see cref="IViewStudy"/> 
+	/// </summary>
+	/// <typeparam name="TLayout"></typeparam>
+	public interface IViewerSystem<TLayout> where TLayout : IViewerLayout
 	{
 		/// <summary>
 		///   The group of <typeparamref name="TLayout" /> targeted to be used during the analysis
@@ -47,51 +82,58 @@ namespace ViewObjects
 
 	#endregion
 
-	#region View Cloud Objects
+	#region Cloud Objects
 
-	public interface IViewCloudRef_v2 : IId, IStreamReference
-	{ }
-
-	public interface IViewCloud_v2 : IId
+	public interface IViewCloud : IId
 	{
 		/// <summary>
 		///   The cloud of points to use
 		/// </summary>
-		public CloudPoint[] Points { get; }
+		public CloudPoint[] Points { get; set; }
 	}
 
-	public interface IResultCloud_v2 : IResultCloud_v2<IResultCloudData>
+	public interface IResultCloud : IResultCloud<IResultCloudData>
 	{ }
 
-	public interface IResultCloud_v2<TData> : IViewCloud_v2 where TData : IResultCloudData
+	public interface IResultCloud<TData> : IViewCloud where TData : IResultCloudData
 	{
 		/// <summary>
 		///   The view analysis data gathered
 		/// </summary>
-		public List<TData> Data { get; }
+		public List<TData> Data { get; set; }
 	}
 
+	#region Cloud Result Data
+
+	/// <summary>
+	/// The main structure for organizing result data
+	/// </summary>
 	public interface IResultCloudData : IResultCloudMetaData
 	{
 
 		/// <summary>
-		///   the raw values gathered
+		///  the raw values gathered
 		/// </summary>
-		List<int> Values { get; }
+		List<int> Values { get; set; }
 	}
 
+	/// <summary>
+	/// The meta data associated with the result values
+	/// </summary>
 	public interface IResultCloudMetaData
 	{
 		/// <summary>
 		///   The <see cref="IContent" /> associated with these results. Includes the name, id, and stage
 		/// </summary>
-		public IContentOption Option { get; }
+		public IContentOption Option { get; set; }
 
 		/// <summary>
-		///   The <see cref="IViewerLayout_v2" /> used to gather the data
+		///   The <see cref="IViewerLayout" /> used to gather the data
 		/// </summary>
-		string Layout { get; }
+		string Layout { get; set; }
 	}
+
+	#endregion
 
 	#endregion
 
@@ -111,14 +153,17 @@ namespace ViewObjects
 	public interface IContent : INameable, IId
 	{
 		/// <summary>
-		///   A list of references to be used for this view content
-		/// </summary>
-		public List<string> References { get; }
-
-		/// <summary>
 		///   The style of view content
 		/// </summary>
 		public ContentType ContentType { get; }
+	}
+
+	public interface IContentObjects<TObj>
+	{
+		/// <summary>
+		/// Group of <typeparamref name="TObj"/> objects 
+		/// </summary>
+		public List<TObj> Objects { get; }
 	}
 
 	#endregion

@@ -4,13 +4,13 @@ using ViewObjects;
 namespace ViewTo.RhinoGh.Goo
 {
 
-	public class GH_ViewObj : GH_Goo<IViewObj>
+	public class GH_ViewObj : GH_Goo<IViewObject>
 	{
 		public GH_ViewObj() => Value = default;
 
-		public GH_ViewObj(IViewObj data) => Value = data;
+		public GH_ViewObj(IViewObject data) => Value = data;
 
-		public GH_ViewObj(GH_Goo<IViewObj> other) => Value = other.Value;
+		public GH_ViewObj(GH_Goo<IViewObject> other) => Value = other.Value;
 
 		public override bool IsValid
 		{
@@ -52,9 +52,9 @@ namespace ViewTo.RhinoGh.Goo
 		{
 			var obj = source switch
 			{
-				IViewObj viewObj => viewObj,
+				IViewObject viewObj => viewObj,
 				GH_ViewObj viewObjGH => viewObjGH.Value,
-				GH_Goo<IViewObj> goo => goo.Value,
+				GH_Goo<IViewObject> goo => goo.Value,
 				_ => default
 			};
 

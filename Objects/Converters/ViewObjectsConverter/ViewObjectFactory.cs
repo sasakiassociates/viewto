@@ -1,6 +1,5 @@
 ﻿using System;
 using ViewObjects.Cloud;
-using ViewObjects.Content;
 using ViewObjects.Study;
 using ViewObjects.Viewer;
 
@@ -10,78 +9,78 @@ namespace ViewObjects.Converter
 	public class ViewObjectFactory : IViewObjectFactory
 	{
 
-		public virtual IViewerLayout nativeViewerLayout
+		public virtual IViewerLayout_v1 NativeViewerLayoutV1
 		{
-			get => Create<ViewerLayout>();
+			get => Create<ViewerLayoutV1>();
 		}
 
-		public virtual IViewContentBundle nativeContentBundle
+		public virtual IViewContentBundle_v1 NativeContentBundleV1
 		{
-			get => Create<ContentBundle>();
+			get => Create<ContentBundleV1>();
 		}
 
-		public virtual ITargetContent nativeTargetContent
+		public virtual ITargetContentV1 NativeTargetContentV1
 		{
-			get => Create<TargetContent>();
+			get => Create<TargetContentV1>();
 		}
 
-		public virtual IBlockerContent nativeBlockerContent
+		public virtual IBlockerContentV1 NativeBlockerContentV1
 		{
-			get => Create<BlockerContent>();
+			get => Create<BlockerContentV1>();
 		}
 
-		public virtual IDesignContent nativeDesignContent
+		public virtual IDesignContentV1 NativeDesignContentV1
 		{
-			get => Create<DesignContent>();
+			get => Create<DesignContentV1>();
 		}
 
-		public virtual IViewerBundle nativeViewerBundle
+		public virtual IViewerBundle_v1 NativeViewerBundleV1
 		{
-			get => Create<ViewerBundle>();
+			get => Create<ViewerBundleV1>();
 		}
 
-		public virtual IViewerBundleLinked nativeViewerBundleLinked
+		public virtual IViewerBundleLinked_v1 NativeViewerBundleLinkedV1
 		{
-			get => Create<ViewerBundleLinked>();
+			get => Create<ViewerBundleLinkedV1>();
 		}
 
-		public virtual IViewStudy nativeViewStudy
+		public virtual IViewStudy_v1 nativeViewStudy
 		{
-			get => Create<ViewStudy>();
+			get => Create<ViewStudy_v1>();
 		}
 
-		public virtual IViewCloud nativeViewCloud
+		public virtual IViewCloud_v1 NativeViewCloudV1
 		{
-			get => Create<ViewCloud>();
+			get => Create<ViewCloudV1V1>();
 		}
 
-		public virtual IResultCloud nativeResultCloud
+		public virtual IResultCloudV1 NativeResultCloudV1
 		{
-			get => Create<ResultCloud>();
+			get => Create<ResultCloudV1V1>();
 		}
 
-		TObj Create<TObj>() where TObj : IViewObj => Activator.CreateInstance<TObj>();
+		TObj Create<TObj>() where TObj : IViewObject => Activator.CreateInstance<TObj>();
 	}
 
 	public interface IViewObjectFactory
 	{
-		IViewStudy nativeViewStudy { get; }
+		IViewStudy_v1 nativeViewStudy { get; }
 
-		IViewCloud nativeViewCloud { get; }
+		IViewCloud_v1 NativeViewCloudV1 { get; }
 
-		IResultCloud nativeResultCloud { get; }
+		IResultCloudV1 NativeResultCloudV1 { get; }
 
-		IViewerBundle nativeViewerBundle { get; }
+		IViewerBundle_v1 NativeViewerBundleV1 { get; }
 
-		IViewerBundleLinked nativeViewerBundleLinked { get; }
+		IViewerBundleLinked_v1 NativeViewerBundleLinkedV1 { get; }
 
-		IViewContentBundle nativeContentBundle { get; }
+		IViewContentBundle_v1 NativeContentBundleV1 { get; }
 
-		ITargetContent nativeTargetContent { get; }
+		ITargetContentV1 NativeTargetContentV1 { get; }
 
-		IBlockerContent nativeBlockerContent { get; }
+		IBlockerContentV1 NativeBlockerContentV1 { get; }
 
-		IDesignContent nativeDesignContent { get; }
+		IDesignContentV1 NativeDesignContentV1 { get; }
 	}
 
 }

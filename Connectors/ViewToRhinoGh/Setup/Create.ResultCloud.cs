@@ -6,7 +6,6 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 using ViewObjects;
 using ViewObjects.Cloud;
-using ViewObjects.Content;
 using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Setup
@@ -61,10 +60,11 @@ namespace ViewTo.RhinoGh.Setup
 
 			DA.GetDataTree(_input.Target, out GH_Structure<GH_String> treeNames);
 
-			var cloudPoints = (from t in points select new CloudPoint
-			{
-				x = t.Value.X, y = t.Value.Y, z = t.Value.Z
-			}).ToArray();
+			var cloudPoints = (
+				from t in points select new CloudPoint
+				{
+					x = t.Value.X, y = t.Value.Y, z = t.Value.Z
+				}).ToArray();
 
 			var id = string.Empty;
 
@@ -96,7 +96,7 @@ namespace ViewTo.RhinoGh.Setup
 				);
 			}
 
-			var resulCloud = new ResultCloud
+			var resulCloud = new ResultCloudV1V1
 			{
 				ViewId = id,
 				points = cloudPoints,

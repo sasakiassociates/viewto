@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Speckle.Core.Kits;
 using Speckle.Core.Models;
-using ViewObjects.Speckle;
+using ViewObjects.References;
+using VS = ViewObjects.Speckle;
+using VO = ViewObjects;
 
 namespace ViewObjects.Converter
 {
@@ -32,7 +34,7 @@ namespace ViewObjects.Converter
 			get => "https://sasaki.com";
 		}
 
-		public virtual ProgressReport Report { get; }
+		public virtual ProgressReport Report { get; set; }
 
 		public virtual ReceiveMode ReceiveMode { get; set; }
 
@@ -71,30 +73,19 @@ namespace ViewObjects.Converter
 		{
 			switch (@object)
 			{
-				case IViewStudy _:
+				case IReferenceObject _:
+					return true;
+				case IViewStudy<IViewObject> _:
 					return true;
 				case IResultCloud _:
 					return true;
-				case IViewCloud _:
-					return true;
-				case IViewContent _:
-					return true;
-				case IViewContentBundle _:
-					return true;
-				case IViewerBundle _:
-					return true;
-				case IViewerLayout _:
-					return true;
-				// V2 objects
-				case IViewStudy_v2<IViewObj> _:
-					return true;
-				case IViewCloudRef_v2 _:
+				case ICloud _:
 					return true;
 				case IContent _:
 					return true;
-				case IViewerLayout_v2 _:
+				case IViewerLayout _:
 					return true;
-				case IViewerSystem_v2<IViewerLayout_v2> _:
+				case IViewerSystem<IViewerLayout> _:
 					return true;
 				default:
 					return false;
@@ -106,53 +97,55 @@ namespace ViewObjects.Converter
 			switch (@base)
 			{
 				// V2 objects
-				case ViewStudy _:
+				case VS.ViewStudy _:
 					return true;
-				case ViewCloudRef _:
+				case VS.ViewCloud _:
 					return true;
-				case Speckle.Content _:
+				case VS.Content _:
 					return true;
-				case ViewerLayout _:
+				case VS.ViewerLayout _:
 					return true;
-				case ViewerSystem _:
+				case VS.ViewerSystem _:
 					return true;
 				default:
 					return false;
 			}
 		}
 
-		public ViewObjectBase ConvertToSpeckleViewObject(object @object)
+		public VS.ViewObjectBase ConvertToSpeckleViewObject(object @object)
 		{
 			switch (@object)
 			{
-				case IViewStudy_v2<IViewObj> o:
+				case IViewStudy<IViewObject> o:
 					return StudyToSpeckle(o);
-				case IViewCloudRef_v2 o:
-					return ViewCloudToSpeckle(o);
-				case IContent o:
-					return ViewContentToSpeckle(o);
-				case IViewerLayout_v2 o:
+				case IViewerLayout o:
 					return ViewerLayoutToSpeckle(o);
-				case IViewerSystem_v2<IViewerLayout_v2> o:
+				case IViewerSystem<IViewerLayout> o:
 					return ViewerSystemToSpeckle(o);
+				case CloudReference o:
+					return ViewCloudToSpeckle(o);
+				case ContentReference o:
+					return ViewContentToSpeckle(o);
+				case ViewObjectReference o:
+					return ViewObjectReferenceToSpeckle(o);
 				default:
 					throw new ArgumentOutOfRangeException(nameof(@object), @object, null);
 			}
 		}
 
-		public IViewObj ConvertToNativeViewObject(Base @object)
+		public IViewObject ConvertToNativeViewObject(Base @object)
 		{
 			switch (@object)
 			{
-				case ViewStudy o:
+				case VS.ViewStudy o:
 					return StudyToNative(o);
-				case ViewCloudRef o:
+				case VS.ViewCloud o:
 					return ViewCloudToNative(o);
-				case Speckle.Content o:
+				case VS.Content o:
 					return ViewContentToNative(o);
-				case ViewerLayout o:
+				case VS.ViewerLayout o:
 					return ViewerLayoutToNative(o);
-				case ViewerSystem o:
+				case VS.ViewerSystem o:
 					return ViewerSystemToNative(o);
 				case Base o:
 					return HandleDefault(o);

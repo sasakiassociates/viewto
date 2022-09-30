@@ -4,12 +4,12 @@ using ViewTo.Events.Process;
 namespace ViewTo.Commands
 {
 
-	internal class PopulateRigCommand : ABuildRigCommand, ILoadCommand<IRig>
+	internal class PopulateRigCommand : ABuildRigCommand, ILoadCommand<IRig_v1>
 	{
 
-		public PopulateRigCommand(IRig obj) => Obj = obj;
+		public PopulateRigCommand(IRig_v1 obj) => Obj = obj;
 
-		public IRig Obj { get; }
+		public IRig_v1 Obj { get; }
 
 		public override void Run()
 		{

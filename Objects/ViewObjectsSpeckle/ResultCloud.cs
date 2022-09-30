@@ -8,7 +8,7 @@ namespace ViewObjects.Speckle
 {
 	/// <summary>
 	/// </summary>
-	public class ResultCloud : ViewObjectBase, IResultCloud_v2
+	public class ResultCloud : ViewObjectBase, IResultCloud<ResultCloudData>
 	{
 
 		/// <summary>
@@ -23,7 +23,7 @@ namespace ViewObjects.Speckle
 		/// <param name="data"></param>
 		/// <param name="viewId"></param>
 		[SchemaInfo("Result Cloud", "A view analysis cloud with result data attached", ViewObjectSpeckle.Schema.Category, "Objects")]
-		public ResultCloud(CloudPoint[] points, List<IResultCloudData> data, string viewId = null)
+		public ResultCloud(CloudPoint[] points, List<ResultCloudData> data, string viewId = null)
 		{
 			Data = data;
 			Points = points;
@@ -46,7 +46,7 @@ namespace ViewObjects.Speckle
 		public string ViewId { get; set; }
 
 		/// <inheritdoc />
-		public List<IResultCloudData> Data { get; set; } = new List<IResultCloudData>();
+		public List<ResultCloudData> Data { get; set; } = new List<ResultCloudData>();
 
 		/// <inheritdoc />
 		[JsonIgnore] public CloudPoint[] Points

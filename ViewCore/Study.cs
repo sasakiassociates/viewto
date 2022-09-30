@@ -19,11 +19,11 @@ namespace ViewTo
 		/// <param name="study"></param>
 		/// <param name="obj"> Object to set into the study</param>
 		/// <returns></returns>
-		public static void Set<TObjType>(this IViewStudy study, TObjType obj) where TObjType : IViewObj
+		public static void Set<TObjType>(this IViewStudy_v1 study, TObjType obj) where TObjType : IViewObject
 		{
 			if (study.objs == null)
 			{
-				study.objs = new List<IViewObj>
+				study.objs = new List<IViewObject>
 				{
 					obj
 				};
@@ -44,15 +44,17 @@ namespace ViewTo
 			// }
 		}
 
-		public static bool Has<TObjType>(this IViewStudy study, string name = "")
-			where TObjType : IViewObj
+		public static bool Has<TObjType>(this IViewStudy_v1 study, string name = "")
+			where TObjType : IViewObject
 		{
-			if (study == null || study.objs == null || !study.objs.Any()) return false;
+			if (study == null || study.objs == null || !study.objs.Any())
+				return false;
 
 			foreach (var obj in study.objs.OfType<TObjType>())
 			{
 				// found at least one but no name was passed in 
-				if (!name.Valid()) return true;
+				if (!name.Valid())
+					return true;
 
 				// check if names match up
 				if (obj.HasValidName() && obj.GetName().ToUpper().Equals(name.ToUpper()))
@@ -62,11 +64,11 @@ namespace ViewTo
 			return false;
 		}
 
-		public static List<TObjType> GetAll<TObjType>(this IViewStudy study)
-			where TObjType : IViewObj => study.objs.OfType<TObjType>().ToList();
+		public static List<TObjType> GetAll<TObjType>(this IViewStudy_v1 study)
+			where TObjType : IViewObject => study.objs.OfType<TObjType>().ToList();
 
-		public static TObjType Get<TObjType>(this IViewStudy study, string name = "")
-			where TObjType : IViewObj
+		public static TObjType Get<TObjType>(this IViewStudy_v1 study, string name = "")
+			where TObjType : IViewObject
 		{
 			TObjType result = default;
 			try
@@ -87,19 +89,20 @@ namespace ViewTo
 			return result;
 		}
 
-		public static bool CanRun(this IViewStudy study) => study.Has<IViewCloud>() && study.Has<IViewContentBundle>() && study.Has<IViewerBundle>();
+		public static bool CanRun(this IViewStudy_v1 study) =>
+			study.Has<IViewCloud_v1>() && study.Has<IViewContentBundle_v1>() && study.Has<IViewerBundle_v1>();
 
-		public static bool CanVisualize(this IViewStudy study) => study.Has<IResultCloud>();
+		public static bool CanVisualize(this IViewStudy_v1 study) => study.Has<IResultCloudV1>();
 
 		/// <summary>
 		///   Command for checking all clouds in a study and counting the points
 		/// </summary>
 		/// <param name="study"></param>
 		/// <returns></returns>
-		public static int GetPointCount(this IViewStudy study)
+		public static int GetPointCount(this IViewStudy_v1 study)
 		{
 			var res = 0;
-			var clouds = study.GetAll<IViewCloud>();
+			var clouds = study.GetAll<IViewCloud_v1>();
 			foreach (var cloud in clouds)
 			{
 				if (cloud == null || !cloud.points.Valid())
@@ -111,54 +114,59 @@ namespace ViewTo
 			return res;
 		}
 
-		public static void Clear(this IViewStudy study)
+		public static void Clear(this IViewStudy_v1 study)
 		{
-			study.objs = new List<IViewObj>();
+			study.objs = new List<IViewObject>();
 		}
 
-		public static void CheckData(this IViewStudy study, Action<StudyReportArgs> action)
+		public static void CheckData(this IViewStudy_v1 study, Action<StudyReportArgs> action)
 		{
-			if (!study.IsValid) return;
+			if (!study.IsValid)
+				return;
 
 			var cmd = new CheckStudyDataCommand(study);
 			cmd.report += action;
 			cmd.Run();
 		}
 
-		public static PrimedRigArgs LoadStudyForRig(this IViewStudy study)
+		public static PrimedRigArgs LoadStudyForRig(this IViewStudy_v1 study)
 		{
-			IRig rig = new Rig();
+			IRig_v1 rigV1 = new RigV1();
 			if (study.IsValid)
 			{
-				var cmd = new LoadStudyToRigCommand(study, ref rig);
+				var cmd = new LoadStudyToRigCommand(study, ref rigV1);
 				cmd.Run();
 			}
 
-			return new PrimedRigArgs(rig);
+			return new PrimedRigArgs(rigV1);
 		}
 
-		public static void LoadStudyToRig(this IViewStudy study, ref IRig rigToBuild)
+		public static void LoadStudyToRig(this IViewStudy_v1 study, ref IRig_v1 rigV1ToBuild)
 		{
-			if (!study.IsValid) return;
+			if (!study.IsValid)
+				return;
 
-			var cmd = new LoadStudyToRigCommand(study, ref rigToBuild);
+			var cmd = new LoadStudyToRigCommand(study, ref rigV1ToBuild);
 			cmd.Run();
 		}
 
-		public static void LoadStudyToRig(this IViewStudy study, out IRig rigToBuild, out List<StudyProcessArgs> argsList, out CancelStudyArgs cancelArgs)
+		public static void LoadStudyToRig(
+			this IViewStudy_v1 study, out IRig_v1 rigV1ToBuild, out List<StudyProcessArgs> argsList, out CancelStudyArgs cancelArgs
+		)
 		{
 			cancelArgs = null;
-			rigToBuild = default;
+			rigV1ToBuild = default;
 			argsList = new List<StudyProcessArgs>();
 
-			if (!study.IsValid) return;
+			if (!study.IsValid)
+				return;
 
 			var cmd = new RunStudyCommand(study);
 			cmd.Run();
 
 			argsList = cmd.processArgs;
 			cancelArgs = cmd.cancelStudyArgs;
-			rigToBuild = cmd.Rig;
+			rigV1ToBuild = cmd.RigV1;
 		}
 	}
 }

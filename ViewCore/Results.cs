@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Cloud;
-using ViewObjects.Content;
 
 namespace ViewTo
 {
@@ -43,7 +42,7 @@ namespace ViewTo
 			return type.ToUpper().Equals(nameToCompare.ToUpper());
 		}
 
-		public static List<string> GetTargets(this IResultCloud obj)
+		public static List<string> GetTargets(this IResultCloudV1 obj)
 		{
 			// using a hash should not allow for duplicated target names
 			var targetNames = new HashSet<string>();
@@ -66,12 +65,12 @@ namespace ViewTo
 		public static bool Check(this IId obj, IId input) =>
 			obj != default && obj.ViewId.Valid() && input != default && input.ViewId.Valid() && obj.ViewId.Equals(input.ViewId);
 
-		public static ResultCloud GetResults(string path)
+		public static ResultCloudV1V1 GetResults(string path)
 		{
 			if (!File.Exists(path))
 				return null;
 
-			var rc = new ResultCloud
+			var rc = new ResultCloudV1V1
 			{
 				data = new List<IResultData>()
 			};

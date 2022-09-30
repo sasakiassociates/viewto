@@ -7,6 +7,6 @@ namespace ViewTo.Events.Prime
 	{
 		public readonly ViewColor viewColor;
 
-		public PrimeViewerBundleIsolatedArgs(List<IViewerBundle> bundles, ViewColor color) : base(bundles) => viewColor = color;
+		public PrimeViewerBundleIsolatedArgs(List<IViewerBundle_v1> bundles, ViewColor color) : base(bundles) => viewColor = color;
 	}
 }

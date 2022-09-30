@@ -7,7 +7,7 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	///   A simple view study as a speckle object
 	/// </summary>
-	public class ViewStudy : ViewObjectBase, IViewStudy_v2<ViewObjectBase>
+	public class ViewStudy : ViewObjectBase, IViewStudy<ViewObjectBase>
 	{
 
 		/// <summary>

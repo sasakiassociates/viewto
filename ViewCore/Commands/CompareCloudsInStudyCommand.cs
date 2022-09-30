@@ -12,13 +12,13 @@ namespace ViewTo.Commands
 	internal class CompareCloudsInStudyCommand : IStudyCommand
 	{
 
-		public CompareCloudsInStudyCommand(IViewStudy study)
+		public CompareCloudsInStudyCommand(IViewStudy_v1 study)
 		{
 			obj = study;
 			processArgs = new List<StudyProcessArgs>();
 		}
 
-		IViewStudy obj { get; }
+		IViewStudy_v1 obj { get; }
 
 		public List<StudyProcessArgs> processArgs { get; }
 
@@ -31,8 +31,8 @@ namespace ViewTo.Commands
 
 		public void Run()
 		{
-			var clouds = obj.GetAll<IViewCloud>();
-			var targets = obj.Get<IViewContentBundle>().GetContents<ITargetContent>();
+			var clouds = obj.GetAll<IViewCloud_v1>();
+			var targets = obj.Get<IViewContentBundle_v1>().GetContents<ITargetContentV1>();
 
 			// use all clouds from study as the base for what should be valid 
 			var currentClouds = clouds.GetIds().ToList();

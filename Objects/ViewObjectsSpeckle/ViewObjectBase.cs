@@ -1,10 +1,15 @@
-﻿using Speckle.Core.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using Speckle.Core.Models;
+using ViewObjects.References;
 
 namespace ViewObjects.Speckle
 {
+
 	/// <summary>
 	/// </summary>
-	public abstract class ViewObjectBase : Base, IViewObj
+	public abstract class ViewObjectBase : Base, IViewObject
 	{
 
 		/// <summary>
@@ -19,6 +24,127 @@ namespace ViewObjects.Speckle
 		{
 			get => GetType().ToString();
 		}
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public class ViewObjectReferenceBase : ViewObjectBase, IReferenceObject
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public ViewObjectReferenceBase()
+		{ }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="references"></param>
+		/// <param name="type"></param>
+		/// <param name="viewId"></param>
+		/// <param name="viewName"></param>
+		public ViewObjectReferenceBase(List<string> references, Type type, string viewId = null, string viewName = null)
+		{
+			this.Type = type;
+			this.ViewName = viewName;
+			this.References = references;
+			this.ViewId = ObjUtils.CheckIfValidId(viewId);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[JsonIgnore] public IReferenceObject Reference
+		{
+			get => GetRef();
+			set => SetRef(value);
+		}
+
+		/// <inheritdoc />
+		public List<string> References { get; set; }
+
+		/// <inheritdoc />
+		public string ViewName { set; get; }
+
+		/// <inheritdoc />
+		public string ViewId { get; set; }
+
+		/// <inheritdoc />
+		public Type Type { get; set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		protected virtual IReferenceObject GetRef()
+		{
+			return new ViewObjectReference(References, Type, ViewName, ViewId);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="obj"></param>
+		protected virtual void SetRef(IReferenceObject obj)
+		{
+			if (obj == null)
+				return;
+
+			Type = obj.Type;
+			ViewId = obj.ViewId;
+			ViewName = obj.ViewName;
+			References = obj.References;
+		}
+
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <typeparam name="TObj"></typeparam>
+	public abstract class ViewObjectReferenceBase<TObj> : ViewObjectReferenceBase where TObj : IViewObject
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public ViewObjectReferenceBase()
+		{ }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="references"></param>
+		public ViewObjectReferenceBase(TObj obj, List<string> references)
+		{
+			this.References = references;
+
+			if (obj == null)
+				return;
+
+			this.Type = obj.GetType();
+
+			if (typeof(IId).IsAssignableFrom(Type) && obj is IId i)
+				this.ViewId = i.ViewId;
+			if (typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
+				this.ViewId = n.ViewName;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="references"></param>
+		/// <param name="viewId"></param>
+		/// <param name="viewName"></param>
+		public ViewObjectReferenceBase(List<string> references, string viewId = null, string viewName = null)
+		{
+			this.Type = typeof(TObj);
+			this.ViewName = viewName;
+			this.References = references;
+			this.ViewId = ObjUtils.CheckIfValidId(viewId);
+		}
+
 	}
 
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using ViewObjects;
 using ViewObjects.Cloud;
-using ViewObjects.Content;
 using ViewObjects.Rig;
 using ViewObjects.Study;
 using ViewObjects.Viewer;
@@ -33,32 +32,32 @@ namespace ViewTo
 					return obj;
 				}
 
-				public static ResultCloud ResultCloud()
+				public static ResultCloudV1V1 ResultCloud()
 				{
-					var c = new ResultCloud
+					var c = new ResultCloudV1V1
 					{
 						points = Data.CloudPoints(100), data = Data.PixelCollection(100)
 					};
 					return c;
 				}
 
-				public static ViewCloud ViewCloud() => new ViewCloud
+				public static ViewCloudV1V1 ViewCloud() => new ViewCloudV1V1
 				{
 					points = Data.CloudPoints(100)
 				};
 
-				public static ContentBundle ContentCase()
+				public static ContentBundleV1 ContentCase()
 				{
-					var cb = new ContentBundle();
+					var cb = new ContentBundleV1();
 					cb.contents.AddRange(Data.GroupContentTargets);
 					cb.contents.AddRange(Data.GroupContentBlockers);
 					cb.contents.AddRange(Data.GroupContentDesigns);
 					return cb;
 				}
 
-				public static ViewStudy ViewStudy(string name, bool withComponents = false, bool withResults = false)
+				public static ViewStudy_v1 ViewStudy(string name, bool withComponents = false, bool withResults = false)
 				{
-					var c = CreateByType_WithName<ViewStudy>(name);
+					var c = CreateByType_WithName<ViewStudy_v1>(name);
 					if (withComponents || withResults)
 					{
 						c.Set(ContentCase());
@@ -73,25 +72,25 @@ namespace ViewTo
 
 				public static RigParameters RigParams() => new RigParameters
 				{
-					bundles = new List<IViewerBundle>
+					bundles = new List<IViewerBundle_v1>
 					{
 						ViewerParam()
 					}
 				};
 
-				public static ViewerBundle ViewerParam() => new ViewerBundle
+				public static ViewerBundleV1 ViewerParam() => new ViewerBundleV1
 				{
-					layouts = new List<IViewerLayout>
+					layouts = new List<IViewerLayout_v1>
 					{
-						Bundle<ViewerLayoutHorizontal>(),
-						Bundle<ViewerLayoutCube>(),
-						Bundle<ViewerLayoutNormal>(),
-						Bundle<ViewerLayoutOrtho>(),
-						Bundle<ViewerLayoutFocus>()
+						Bundle<ViewerLayoutV1Horizontal>(),
+						Bundle<ViewerLayoutV1Cube>(),
+						Bundle<ViewerLayoutV1Normal>(),
+						Bundle<ViewerLayoutV1Ortho>(),
+						Bundle<ViewerLayoutV1Focus>()
 					}
 				};
 
-				public static ViewerLayout Bundle<TBundle>() where TBundle : ViewerLayout, new()
+				public static ViewerLayoutV1 Bundle<TBundle>() where TBundle : ViewerLayoutV1, new()
 				{
 					var b = Instance<TBundle>();
 					// b.cloudInfo = Data.CloudShellInfo();

@@ -9,7 +9,7 @@ namespace ViewTo.Commands
 	{
 		readonly string studyName;
 
-		public LoadStudyToRigCommand(IViewStudy study, ref IRig rig)
+		public LoadStudyToRigCommand(IViewStudy_v1 study, ref IRig_v1 rigV1)
 		{
 			studyName = study.ViewName;
 			processArgs = new List<StudyProcessArgs>();
@@ -20,7 +20,7 @@ namespace ViewTo.Commands
 			};
 
 			var setupStudy = new SetupStudyObjectsCommand(study);
-			var rigBuild = new PopulateRigCommand(rig);
+			var rigBuild = new PopulateRigCommand(rigV1);
 
 			setupStudy.onPrimedEvent += data => rigBuild.ReceivePrimedData(data);
 

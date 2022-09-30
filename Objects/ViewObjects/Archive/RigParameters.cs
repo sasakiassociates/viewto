@@ -2,12 +2,12 @@
 
 namespace ViewObjects.Rig
 {
-	public class RigParameters : IRigParam
+	public class RigParameters : IRigParam_v1
 	{
 		/// <summary>
 		///   List of bundles for different viewer objects
 		/// </summary>
-		public List<IViewerBundle> bundles { get; set; }
+		public List<IViewerBundle_v1> bundles { get; set; }
 	}
 
 	public class RigParametersIsolated : RigParameters

@@ -7,9 +7,9 @@ using ViewTo.Events.Prime;
 namespace ViewTo.Commands
 {
 
-	internal class PrimeViewContentCommand : PrimeObjectCommand<IViewContentBundle>, ISetupCommand
+	internal class PrimeViewContentCommand : PrimeObjectCommand<IViewContentBundle_v1>, ISetupCommand
 	{
-		public PrimeViewContentCommand(IViewContentBundle obj) : base(obj)
+		public PrimeViewContentCommand(IViewContentBundle_v1 obj) : base(obj)
 		{ }
 
 		public event Action<PrimeProcessArgs> onPrimedEvent;
@@ -18,7 +18,7 @@ namespace ViewTo.Commands
 		{
 			// check if assigned colors worked
 			Obj.AssignColors();
-			var targets = Obj.GetContents<ITargetContent>();
+			var targets = Obj.GetContents<ITargetContentV1>();
 			if (targets.Valid())
 				foreach (var tc in targets.Where(tc => tc.bundles.Valid()))
 					onPrimedEvent?.Invoke(tc.isolate ?
@@ -34,7 +34,7 @@ namespace ViewTo.Commands
 			//                             new PrimeViewerBundleArgs(tc.bundles));
 			// }
 
-			args.Add(new PrimeContentCaseArgs(targets, Obj.GetContents<IBlockerContent>(), Obj.GetContents<IDesignContent>()));
+			args.Add(new PrimeContentCaseArgs(targets, Obj.GetContents<IBlockerContentV1>(), Obj.GetContents<IDesignContentV1>()));
 			greatSuccess = args.Any();
 		}
 	}

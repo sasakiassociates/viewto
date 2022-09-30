@@ -108,10 +108,13 @@ namespace ViewTo.RhinoGh.Results
 		void SetMinMax(double value)
 		{
 			// values that have no view are set to -1
-			if (value < 0) return;
+			if (value < 0)
+				return;
 
-			if (value < _min) _min = value;
-			if (value > _max) _max = value;
+			if (value < _min)
+				_min = value;
+			if (value > _max)
+				_max = value;
 		}
 
 		void SetMinMax(ICollection<int> value)
@@ -127,10 +130,13 @@ namespace ViewTo.RhinoGh.Results
 		void SetMinMax(int value)
 		{
 			// values that have no view are set to -1
-			if (value < 0) return;
+			if (value < 0)
+				return;
 
-			if (value < _minInt) _minInt = value;
-			if (value > _maxInt) _maxInt = value;
+			if (value < _minInt)
+				_minInt = value;
+			if (value > _maxInt)
+				_maxInt = value;
 		}
 
 		protected override void SolveInstance(IGH_DataAccess DA)
@@ -162,7 +168,7 @@ namespace ViewTo.RhinoGh.Results
 			DA.GetData(_input.Obj, ref wrapper);
 
 			// load cloud point
-			if (wrapper?.Value is ResultCloud resultCloud)
+			if (wrapper?.Value is ResultCloudV1V1 resultCloud)
 			{
 				// // NOTE: check if this is the same cloud as before
 				if (!_explorer.source.Check(resultCloud))
@@ -261,7 +267,8 @@ namespace ViewTo.RhinoGh.Results
 					// if the value is negative and we are not showing all points, we skip!
 					if (vIn <= 0)
 					{
-						if (!_settings.showAll) continue;
+						if (!_settings.showAll)
+							continue;
 
 						fPoints.Append(pIn, path);
 						fColors.Append(new GH_Colour(_settings.invalidColor), path);

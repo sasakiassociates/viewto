@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using ViewObjects;
-using ViewObjects.Cloud;
-using ViewObjects.Content;
 using ViewObjects.Converter;
-using ViewObjects.Study;
-using ViewObjects.Viewer;
+using ViewObjects.References;
+using ViewObjects.Speckle;
 using Cat = ViewTests.ViewTestCategories;
-using ViewStudy = ViewObjects.Speckle.ViewStudy;
 
 namespace ViewTests.Objects
 {
@@ -31,15 +28,14 @@ namespace ViewTests.Objects
 		[Test]
 		public void Convert_Study()
 		{
-			var objs = new List<IViewObj>
+			var objs = new List<IViewObject>
 			{
-				new ViewContent_v2(ContentType.Proposed),
-				new ViewCloudReference(new List<string>
-					                       { "256ff84cf7" }),
-				new ViewerSystem_v2()
+				new ViewObjects.Content(ContentType.Proposed),
+				new CloudReference(new List<string> { "256ff84cf7" }),
+				new ViewObjects.Viewer.ViewerSystem()
 			};
 
-			var obj = new ViewStudy_v2(objs, "Test View Study");
+			var obj = new ViewObjects.Study.ViewStudy(objs, "Test View Study");
 
 			var converter = new ViewObjectsConverter();
 			var res = converter.ConvertToSpeckle(obj);

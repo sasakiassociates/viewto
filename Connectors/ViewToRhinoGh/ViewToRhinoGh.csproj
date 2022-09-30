@@ -81,7 +81,6 @@
         <Compile Include="Base\ViewToCloudComponentBase.cs"/>
         <Compile Include="Base\ViewToComponentBase.cs"/>
         <Compile Include="ConnectorInfo.cs"/>
-        <Compile Include="ConnectorPipe.cs"/>
         <Compile Include="Goo\GH_ViewObj.cs"/>
         <Compile Include="Goo\ViewObjParam.cs"/>
         <Compile Include="Objects\ExplorerValueTypeComponent.cs"/>
@@ -95,14 +94,11 @@
         <Compile Include="Results\ExtractTargetNames.cs"/>
         <Compile Include="Results\GetViewFromValue.cs"/>
         <Compile Include="Results\ResultExplorerComponent.cs"/>
-        <Compile Include="Setup\Create.ContentBundle.cs"/>
         <Compile Include="Setup\Create.ResultCloud.cs"/>
         <Compile Include="Setup\Create.ViewCloud.cs"/>
         <Compile Include="Setup\Create.ViewerLayout.cs"/>
         <Compile Include="Setup\Create.ViewStudy.cs"/>
         <Compile Include="Setup\Create.ContentOption.cs"/>
-        <Compile Include="Setup\Create.ViewContentExisting.cs"/>
-        <Compile Include="Setup\Create.ViewContentProposed.cs"/>
         <Compile Include="Setup\Create.ViewContent.cs"/>
         <Compile Include="Utils\MoveToView.cs"/>
         <Compile Include="Utils\RenderViewToFile.cs"/>

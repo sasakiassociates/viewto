@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Grasshopper.Kernel;
 using ViewObjects;
-using ViewObjects.Cloud;
+using ViewObjects.References;
 using ViewObjects.Viewer;
 using ViewTo.RhinoGh.Goo;
 
@@ -41,9 +41,9 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var wrappers = new List<GH_ViewObj>();
 			DA.GetDataList(0, wrappers);
-			var clouds = wrappers.Unwrap<ViewCloudReference>();
+			var clouds = wrappers.Unwrap<CloudReference>();
 
-			var layout = new ViewerLayout_v2(new List<ViewerDirection>
+			var layout = new ViewerLayout(new List<ViewerDirection>
 			{
 				ViewerDirection.Front,
 				ViewerDirection.Right,
@@ -53,8 +53,8 @@ namespace ViewTo.RhinoGh.Setup
 				ViewerDirection.Down
 			});
 
-			var viewerSystem = new ViewerSystem_v2(new List<IViewerLayout_v2>
-				                                       { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
+			var viewerSystem = new ViewerSystem(new List<IViewerLayout>
+				                                    { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
 			DA.SetData(0, viewerSystem);
 		}
 	}

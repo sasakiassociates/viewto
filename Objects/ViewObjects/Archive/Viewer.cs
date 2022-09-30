@@ -3,13 +3,13 @@
 namespace ViewObjects.Viewer
 {
 	[Serializable]
-	public class Viewer : IViewer
+	public class ViewerV1 : IViewer_v1
 	{
 		// Empty constructor for serializing 
-		public Viewer()
+		public ViewerV1()
 		{ }
 
-		public Viewer(ViewerDirection direction) => Direction = direction;
+		public ViewerV1(ViewerDirection direction) => Direction = direction;
 
 		public ViewerDirection Direction { get; }
 	}

@@ -12,16 +12,16 @@ namespace ViewTo.Commands
 	internal class SetupStudyObjectsCommand : ISetupCommand, IStudyCommand, ILinkedCommands<IPrimeCommand>
 	{
 
-		public SetupStudyObjectsCommand(IViewStudy study)
+		public SetupStudyObjectsCommand(IViewStudy_v1 study)
 		{
 			processArgs = new List<StudyProcessArgs>();
 			sequence = new List<IPrimeCommand>
 			{
-				new PrimeViewCloudsCommand(study.GetAll<IViewCloud>())
+				new PrimeViewCloudsCommand(study.GetAll<IViewCloud_v1>())
 			};
 
-			var content = new PrimeViewContentCommand(study.Get<IViewContentBundle>());
-			var bundles = new PrimeViewerBundlesCommand(study.GetAll<IViewerBundle>().ToList());
+			var content = new PrimeViewContentCommand(study.Get<IViewContentBundle_v1>());
+			var bundles = new PrimeViewerBundlesCommand(study.GetAll<IViewerBundle_v1>().ToList());
 
 			// pass in any target data
 			content.onPrimedEvent += args => bundles.ReceivePrimedData(args);

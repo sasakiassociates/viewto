@@ -4,9 +4,9 @@ using System.Linq;
 namespace ViewObjects.Rig
 {
 
-	public class Rig : IRig, IValidate
+	public class RigV1 : IRig_v1, IValidate
 	{
-		public List<IRigParam> globalParams { get; set; }
+		public List<IRigParam_v1> globalParams { get; set; }
 
 		public List<ViewColor> globalColors { get; set; }
 

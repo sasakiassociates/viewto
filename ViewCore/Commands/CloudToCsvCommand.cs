@@ -9,9 +9,9 @@ namespace ViewTo.Commands
 	internal class CloudToCsvCommand : ICommandWithResult<CsvDataArgs>
 	{
 
-		protected IResultCloud cloud;
+		protected IResultCloudV1 CloudV1;
 
-		public CloudToCsvCommand(IResultCloud cloud) => this.cloud = cloud;
+		public CloudToCsvCommand(IResultCloudV1 cloudV1) => this.CloudV1 = cloudV1;
 
 		protected IEnumerable<string> VectorHeader
 		{
@@ -26,7 +26,7 @@ namespace ViewTo.Commands
 
 		public void Run()
 		{
-			if (cloud == null || !cloud.data.Valid() || !cloud.points.Valid())
+			if (CloudV1 == null || !CloudV1.data.Valid() || !CloudV1.points.Valid())
 			{
 				args = new CsvDataArgs(null);
 				return;
@@ -36,19 +36,19 @@ namespace ViewTo.Commands
 
 			// add content types to header
 			var headers = VectorHeader.ToList();
-			for (var i = 0; i < cloud.data.Count; i++)
-				headers.Add(cloud.data[i].stage + "-" + cloud.data[i].content + (i == cloud.data.Count - 1 ? "," : ""));
+			for (var i = 0; i < CloudV1.data.Count; i++)
+				headers.Add(CloudV1.data[i].stage + "-" + CloudV1.data[i].content + (i == CloudV1.data.Count - 1 ? "," : ""));
 
 			lines.Add(Join(headers));
 
-			for (var pointIndex = 0; pointIndex < cloud.points.Length; pointIndex++)
+			for (var pointIndex = 0; pointIndex < CloudV1.points.Length; pointIndex++)
 			{
 				var line = new List<string>
 				{
-					PointToLine(cloud.points[pointIndex])
+					PointToLine(CloudV1.points[pointIndex])
 				};
 
-				foreach (var data in cloud.data)
+				foreach (var data in CloudV1.data)
 					line.Add(data.values[pointIndex].ToString());
 
 				lines.Add(Join(line));

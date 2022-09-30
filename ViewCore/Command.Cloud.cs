@@ -10,7 +10,7 @@ namespace ViewTo
 {
 	public static partial class Commander
 	{
-		public static string WriteToCsv(this IResultCloud obj, string location)
+		public static string WriteToCsv(this IResultCloudV1 obj, string location)
 		{
 			var file = new CloudToCsvCommand(obj);
 			file.Run();
@@ -27,9 +27,9 @@ namespace ViewTo
 			return path;
 		}
 
-		public static CloudShell Build(this IViewCloud obj) => new CloudShell(obj, obj.ViewId, obj.points.Valid() ? obj.points.Length : 0);
+		public static CloudShell Build(this IViewCloud_v1 obj) => new CloudShell(obj, obj.ViewId, obj.points.Valid() ? obj.points.Length : 0);
 
-		internal static IEnumerable<string> GetIds(this IEnumerable<IViewCloud> objs)
+		internal static IEnumerable<string> GetIds(this IEnumerable<IViewCloud_v1> objs)
 		{
 			return objs.Select(o => o.ViewId).ToList();
 		}

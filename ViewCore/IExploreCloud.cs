@@ -4,7 +4,7 @@ namespace ViewTo
 {
 	public interface IExploreCloud
 	{
-		public IResultCloud source { get; }
+		public IResultCloudV1 source { get; }
 
 		public string activeTarget { get; set; }
 

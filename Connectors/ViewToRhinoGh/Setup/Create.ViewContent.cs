@@ -5,10 +5,9 @@ using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using ViewObjects;
-using ViewObjects.Content;
+using ViewObjects.References;
 using ViewTo.RhinoGh.Goo;
 using ViewTo.RhinoGh.Properties;
-using Pipe = ViewTo.RhinoGh.ConnectorPipe;
 
 namespace ViewTo.RhinoGh.Setup
 {
@@ -46,7 +45,7 @@ namespace ViewTo.RhinoGh.Setup
 			var items = new List<GH_String>();
 			DA.GetDataList(_input.References, items);
 
-			DA.SetData(0, new ViewContent_v2(items.Where(x => x != null).Select(x => x.Value).ToList(), ContentType));
+			DA.SetData(0, new ContentReference(items.Where(x => x != null).Select(x => x.Value).ToList(), ContentType));
 		}
 	}
 

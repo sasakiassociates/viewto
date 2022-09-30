@@ -5,8 +5,8 @@ namespace ViewTo.Events.Prime
 {
 	internal sealed class PrimedRigArgs : PrimeProcessArgs
 	{
-		public readonly Rig Rig;
+		public readonly RigV1 RigV1;
 
-		public PrimedRigArgs(Rig rig) => Rig = rig;
+		public PrimedRigArgs(RigV1 rigV1) => RigV1 = rigV1;
 	}
 }

@@ -130,7 +130,7 @@ namespace ViewTo.RhinoGh.Results
 			var inputTargets = new List<string>();
 			DA.GetDataList(_input.Values, inputTargets);
 
-			if (wrapper?.Value is ResultCloud cloud)
+			if (wrapper?.Value is ResultCloudV1V1 cloud)
 			{
 				if (!inputTargets.Any())
 				{

@@ -31,7 +31,8 @@ namespace ViewTo.Commands
 
 		public virtual void ReceivePrimedData(PrimeProcessArgs primeArgs)
 		{
-			if (primeArgs is PrimeStudyArgs studyArgs) primedStudy = studyArgs;
+			if (primeArgs is PrimeStudyArgs studyArgs)
+				primedStudy = studyArgs;
 		}
 
 		protected List<ViewColor> GetGlobalColors()
@@ -44,16 +45,16 @@ namespace ViewTo.Commands
 			return globalColors;
 		}
 
-		protected List<IRigParam> GetBundles()
+		protected List<IRigParam_v1> GetBundles()
 		{
-			var globe = new List<IRigParam>();
+			var globe = new List<IRigParam_v1>();
 
 			foreach (var arg in primedStudy.bundleArgs)
 			{
-				IRigParam param = default;
+				IRigParam_v1 paramV1 = default;
 
 				if (arg is PrimeViewerBundleIsolatedArgs isolatedArgs)
-					param = new RigParametersIsolated
+					paramV1 = new RigParametersIsolated
 					{
 						bundles = isolatedArgs.bundles.ToList(),
 						colors = new List<ViewColor>
@@ -62,12 +63,12 @@ namespace ViewTo.Commands
 						}
 					};
 				else
-					param = new RigParameters
+					paramV1 = new RigParameters
 					{
 						bundles = arg.bundles.ToList()
 					};
 
-				globe.Add(param);
+				globe.Add(paramV1);
 			}
 
 			return globe;

@@ -4,7 +4,7 @@ namespace ViewTo
 {
 	public static partial class Commander
 	{
-		public static string GetName(this IViewObj obj)
+		public static string GetName(this IViewObject obj)
 		{
 			if (obj is INameable objName)
 				return objName.ViewName;
@@ -12,7 +12,7 @@ namespace ViewTo
 			return"";
 		}
 
-		public static bool HasValidName(this IViewObj obj)
+		public static bool HasValidName(this IViewObject obj)
 		{
 			if (obj is INameable objName)
 				return objName.ViewName.Valid();

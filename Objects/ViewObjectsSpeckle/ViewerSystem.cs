@@ -4,7 +4,7 @@ namespace ViewObjects.Speckle
 {
 	/// <summary>
 	/// </summary>
-	public class ViewerSystem : ViewObjectBase, IViewerSystem_v2<ViewerLayout>
+	public class ViewerSystem : ViewObjectBase, IViewerSystem<ViewerLayout>
 	{
 
 		/// <summary>

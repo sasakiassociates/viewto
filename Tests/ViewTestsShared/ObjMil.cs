@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using ViewObjects;
 using ViewObjects.Cloud;
-using ViewObjects.Content;
 using ViewObjects.Study;
 using ViewObjects.Viewer;
 
@@ -9,9 +8,9 @@ namespace ViewTo.Tests.Integration
 {
 	internal static class ObjMil
 	{
-		public static IViewStudy InitStudy(bool validSetup = true)
+		public static IViewStudy_v1 InitStudy(bool validSetup = true)
 		{
-			var s = new ViewStudy
+			var s = new ViewStudy_v1
 			{
 				ViewName = "StudyCloudTest"
 			};
@@ -19,19 +18,19 @@ namespace ViewTo.Tests.Integration
 			var cloud1 = Mil.Fabricate.Object.ViewCloud();
 			var cloud2 = Mil.Fabricate.Object.ViewCloud();
 
-			var bundle1 = new ViewerBundle
+			var bundle1 = new ViewerBundleV1
 			{
-				layouts = new List<IViewerLayout>
+				layouts = new List<IViewerLayout_v1>
 				{
-					new ViewerLayout(), new ViewerLayoutCube()
+					new ViewerLayoutV1(), new ViewerLayoutV1Cube()
 				}
 			};
 
-			var bundle2 = new ViewerBundleLinked
+			var bundle2 = new ViewerBundleLinkedV1
 			{
-				layouts = new List<IViewerLayout>
+				layouts = new List<IViewerLayout_v1>
 				{
-					new ViewerLayoutCube(), new ViewerLayoutFocus()
+					new ViewerLayoutV1Cube(), new ViewerLayoutV1Focus()
 				},
 				linkedClouds = new List<CloudShell>
 				{
@@ -39,16 +38,16 @@ namespace ViewTo.Tests.Integration
 				}
 			};
 
-			var target1 = new TargetContent
+			var target1 = new TargetContentV1
 			{
 				ViewName = "GlobalFunSpot"
 			};
 
-			var target2 = new TargetContent
+			var target2 = new TargetContentV1
 			{
 				ViewName = "IsolatedTarget",
 				isolate = true,
-				bundles = new List<IViewerBundle>
+				bundles = new List<IViewerBundle_v1>
 				{
 					bundle2
 				}
@@ -56,37 +55,37 @@ namespace ViewTo.Tests.Integration
 
 			if (!validSetup)
 			{
-				bundle1.layouts = new List<IViewerLayout>();
+				bundle1.layouts = new List<IViewerLayout_v1>();
 				bundle2.linkedClouds.Add(Mil.Fabricate.Object.ViewCloud().Build());
-				target2.bundles = new List<IViewerBundle>
+				target2.bundles = new List<IViewerBundle_v1>
 				{
 					bundle2
 				};
 			}
 
-			var content = new ContentBundle
+			var content = new ContentBundleV1
 			{
-				contents = new List<IViewContent>
+				contents = new List<IViewContent_v1>
 				{
 					target1,
 					target2,
-					new BlockerContent
+					new BlockerContentV1
 					{
 						ViewName = "blocker1"
 					},
-					new BlockerContent
+					new BlockerContentV1
 					{
 						ViewName = "blocker2"
 					},
-					new DesignContent
+					new DesignContentV1
 					{
 						ViewName = "design1"
 					},
-					new DesignContent
+					new DesignContentV1
 					{
 						ViewName = "design2"
 					},
-					new DesignContent
+					new DesignContentV1
 					{
 						ViewName = "design3"
 					}

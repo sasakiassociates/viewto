@@ -13,10 +13,10 @@ namespace ViewObjects.Explorer
 		{ }
 
 		/// <inheritdoc />
-		public IViewStudy_v2 Study { get; private set; }
+		public IViewStudy Study { get; private set; }
 
 		/// <inheritdoc />
-		public IResultCloud_v2 Source { get; private set; }
+		public IResultCloud Source { get; private set; }
 
 		/// <inheritdoc />
 		public ExplorerSettings Settings { get; set; } = new();
@@ -25,14 +25,15 @@ namespace ViewObjects.Explorer
 		public ExplorerData Data { get; private set; }
 
 		/// <inheritdoc />
-		public void Load(IViewStudy_v2 viewObj)
+		public void Load(IViewStudy viewObj)
 		{
 			if (viewObj == default)
 				return;
 
-			Source = viewObj.FindObject<ResultCloud_v2>();
+			Source = viewObj.FindObject<ResultCloud>();
 
-			if (Source == null) return;
+			if (Source == null)
+				return;
 
 			Settings ??= new ExplorerSettings();
 			Settings.options = Source.Data.Where(x => x != null).Select(x => x.Option).ToList();
@@ -48,12 +49,12 @@ namespace ViewObjects.Explorer
 		/// <summary>
 		///   The active view study being used with the source cloud.
 		/// </summary>
-		public IViewStudy_v2 Study { get; }
+		public IViewStudy Study { get; }
 
 		/// <summary>
 		///   The heart and soul of the data being explored
 		/// </summary>
-		public IResultCloud_v2 Source { get; }
+		public IResultCloud Source { get; }
 
 		/// <summary>
 		///   Set of data settings for the explorer to use
@@ -69,7 +70,7 @@ namespace ViewObjects.Explorer
 		///   Load in a new view study for the explorer to explore!
 		/// </summary>
 		/// <param name="viewObj">The view study to load in</param>
-		public void Load(IViewStudy_v2 viewObj);
+		public void Load(IViewStudy viewObj);
 
 		/// <summary>
 		///   Retrieves the active point result data

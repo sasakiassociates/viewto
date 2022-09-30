@@ -9,13 +9,13 @@ namespace ViewTo.Events.Report
 	public class RigSetupReportArgs : AReportEventArgs
 	{
 
-		public readonly List<IViewerBundle> bundles;
+		public readonly List<IViewerBundle_v1> bundles;
 		public readonly List<CloudShell> clouds;
 		public readonly List<ViewColor> colors;
 
-		public RigSetupReportArgs(List<IViewerBundle> bundles, List<ViewColor> colors, List<CloudShell> clouds)
+		public RigSetupReportArgs(List<IViewerBundle_v1> bundles, List<ViewColor> colors, List<CloudShell> clouds)
 		{
-			this.bundles = bundles.Valid() ? bundles : new List<IViewerBundle>();
+			this.bundles = bundles.Valid() ? bundles : new List<IViewerBundle_v1>();
 			this.colors = colors.Valid() ? colors : new List<ViewColor>();
 			this.clouds = clouds.Valid() ? clouds : new List<CloudShell>();
 

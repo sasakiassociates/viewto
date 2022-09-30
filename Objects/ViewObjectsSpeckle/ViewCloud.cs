@@ -5,12 +5,12 @@ namespace ViewObjects.Speckle
 {
 	/// <summary>
 	/// </summary>
-	public class ViewCloudRef : ViewObjectBase, IViewCloudRef_v2
+	public class ViewCloud : ViewObjectReferenceBase<Cloud.ViewCloud>
 	{
 
 		/// <summary>
 		/// </summary>
-		public ViewCloudRef()
+		public ViewCloud()
 		{ }
 
 		/// <summary>
@@ -18,20 +18,15 @@ namespace ViewObjects.Speckle
 		/// </summary>
 		/// <param name="references">List commit ids to reference to use when building the content group</param>
 		/// <param name="viewId">
-		///   Id of the view study as a <see cref="System.Guid" />. If no valid value is passed in one will be
+		///  Id of the view study as a <see cref="System.Guid" />. If no valid value is passed in one will be
 		///   generated
 		/// </param>
 		[SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObjectSpeckle.Schema.Category, "Objects")]
-		public ViewCloudRef(List<string> references, string viewId = null)
+		public ViewCloud(List<string> references, string viewId = null)
 		{
 			References = references;
 			ViewId = ObjUtils.CheckIfValidId(viewId);
 		}
 
-		/// <inheritdoc />
-		public string ViewId { get; set; }
-
-		/// <inheritdoc />
-		public List<string> References { get; set; } = new List<string>();
 	}
 }

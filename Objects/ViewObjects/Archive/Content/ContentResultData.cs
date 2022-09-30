@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ViewObjects.Content
+namespace ViewObjects
 {
 	[Serializable]
 	public struct ContentResultData : IResultData

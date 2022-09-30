@@ -6,10 +6,10 @@ using ViewTo.Events.Prime;
 
 namespace ViewTo.Commands
 {
-	internal class PrimeViewerBundlesCommand : PrimeObjectCommand<List<IViewerBundle>>, IBuildCommand
+	internal class PrimeViewerBundlesCommand : PrimeObjectCommand<List<IViewerBundle_v1>>, IBuildCommand
 	{
 
-		public PrimeViewerBundlesCommand(List<IViewerBundle> obj) : base(obj)
+		public PrimeViewerBundlesCommand(List<IViewerBundle_v1> obj) : base(obj)
 		{ }
 
 		public void ReceivePrimedData(PrimeProcessArgs primeArgs)

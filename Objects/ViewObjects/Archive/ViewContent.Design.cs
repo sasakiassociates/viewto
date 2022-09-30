@@ -1,19 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace ViewObjects.Content
+namespace ViewObjects
 {
-
-	public class TargetContent : ITargetContent
+	public class DesignContentV1 : IDesignContentV1
 	{
 		public string ViewName { get; set; }
 
 		public ViewColor viewColor { get; set; }
 
 		public List<object> objects { get; set; }
-
-		public bool isolate { get; set; }
-
-		public List<IViewerBundle> bundles { get; set; }
 	}
-
 }

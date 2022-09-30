@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ViewObjects.Content
+namespace ViewObjects
 {
-	public class BlockerContent : IBlockerContent
+	public class BlockerContentV1 : IBlockerContentV1
 	{
 		public string ViewName { get; set; } = "Blocker";
 
