@@ -27,7 +27,7 @@ namespace ViewObjects.Converter
 		IViewObject ViewerSystemToNative(IViewerSystem<VS.ViewerLayout> o) =>
 			new Viewer.Viewer(o.Layouts.Where(x => x != null).Select(ViewerLayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
 
-		VO.ResultCloud ResultCloudToNative(VS.ResultCloud obj) =>
+		IViewObject ResultCloudToNative(VS.ResultCloud obj) =>
 			new VO.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);
 
 		IResultCloudData ResultCloudDataToNative(IResultCloudData obj) => new VO.ResultCloudData(obj.Values, obj.Option, obj.Layout);

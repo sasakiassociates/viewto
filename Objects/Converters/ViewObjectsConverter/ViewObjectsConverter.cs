@@ -75,17 +75,17 @@ namespace ViewObjects.Converter
 			{
 				case IReferenceObject _:
 					return true;
-				case IViewStudy<IViewObject> _:
+				case IViewStudy _:
 					return true;
 				case IResultCloud _:
 					return true;
-				case ICloud _:
+				case IViewCloud _:
 					return true;
 				case IContent _:
 					return true;
 				case IViewerLayout _:
 					return true;
-				case IViewerSystem<IViewerLayout> _:
+				case IViewerSystem _:
 					return true;
 				default:
 					return false;
@@ -120,11 +120,11 @@ namespace ViewObjects.Converter
 		{
 			switch (@object)
 			{
-				case IViewStudy<IViewObject> o:
+				case IViewStudy o:
 					return StudyToSpeckle(o);
 				case IViewerLayout o:
 					return ViewerLayoutToSpeckle(o);
-				case IViewerSystem<IViewerLayout> o:
+				case IViewerSystem o:
 					return ViewerSystemToSpeckle(o);
 				case IResultCloud o:
 					return ResultCloudToSpeckle(o);
