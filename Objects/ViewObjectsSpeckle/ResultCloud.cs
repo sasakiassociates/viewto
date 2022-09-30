@@ -8,12 +8,12 @@ namespace ViewObjects.Speckle
 {
 	/// <summary>
 	/// </summary>
-	public class ResultCloudBase : ViewObjectBase, IResultCloud_v2
+	public class ResultCloud : ViewObjectBase, IResultCloud_v2
 	{
 
 		/// <summary>
 		/// </summary>
-		public ResultCloudBase()
+		public ResultCloud()
 		{ }
 
 		/// <summary>
@@ -23,7 +23,7 @@ namespace ViewObjects.Speckle
 		/// <param name="data"></param>
 		/// <param name="viewId"></param>
 		[SchemaInfo("Result Cloud", "A view analysis cloud with result data attached", ViewObjectSpeckle.Schema.Category, "Objects")]
-		public ResultCloudBase(CloudPoint[] points, List<IResultCloudData> data, string viewId = null)
+		public ResultCloud(CloudPoint[] points, List<IResultCloudData> data, string viewId = null)
 		{
 			Data = data;
 			Points = points;
@@ -54,7 +54,7 @@ namespace ViewObjects.Speckle
 			get
 			{
 				if (Positions.Count % 3 != 0)
-					throw new SpeckleException($"{nameof(ResultCloudBase)}.{nameof(Positions)} list is malformed: expected length to be multiple of 3");
+					throw new SpeckleException($"{nameof(ResultCloud)}.{nameof(Positions)} list is malformed: expected length to be multiple of 3");
 
 				var points = new CloudPoint[Positions.Count / 3];
 

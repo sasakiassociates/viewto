@@ -51,14 +51,14 @@ namespace ViewTests.Objects
 			var obj = converter.ConvertToNative(@base);
 
 			Assert.IsNotNull(obj);
-			if (obj is ResultCloudBase viewObj)
+			if (obj is ResultCloud viewObj)
 			{
 				Assert.IsNotEmpty(viewObj.Points);
 				Assert.IsNotEmpty(viewObj.Data);
 			}
 			else
 			{
-				Assert.Fail($"{obj.GetType()} received was not converted to {typeof(ResultCloudBase)}");
+				Assert.Fail($"{obj.GetType()} received was not converted to {typeof(ResultCloud)}");
 			}
 		}
 	}

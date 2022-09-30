@@ -7,13 +7,13 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	///   A simple view study as a speckle object
 	/// </summary>
-	public class ViewStudyBase : ViewObjectBase, IViewStudy_v2<ViewObjectBase>
+	public class ViewStudy : ViewObjectBase, IViewStudy_v2<ViewObjectBase>
 	{
 
 		/// <summary>
 		///   Default constructor for converting
 		/// </summary>
-		public ViewStudyBase()
+		public ViewStudy()
 		{ }
 
 		/// <summary>
@@ -26,7 +26,7 @@ namespace ViewObjects.Speckle
 		///   generated
 		/// </param>
 		[SchemaInfo("View Study", "View Study Object for setting up a study in View To", ViewObjectSpeckle.Schema.Category, "Objects")]
-		public ViewStudyBase(List<ViewObjectBase> objects, string viewName, string viewId = null)
+		public ViewStudy(List<ViewObjectBase> objects, string viewName, string viewId = null)
 		{
 			Objects = objects;
 			ViewName = viewName;

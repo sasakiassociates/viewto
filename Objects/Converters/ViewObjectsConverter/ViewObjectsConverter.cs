@@ -106,15 +106,15 @@ namespace ViewObjects.Converter
 			switch (@base)
 			{
 				// V2 objects
-				case ViewStudyBase _:
+				case ViewStudy _:
 					return true;
-				case ViewCloudRefBase _:
+				case ViewCloudRef _:
 					return true;
-				case ContentBase _:
+				case Speckle.Content _:
 					return true;
-				case ViewerLayoutBase _:
+				case ViewerLayout _:
 					return true;
-				case ViewerSystemBase _:
+				case ViewerSystem _:
 					return true;
 				default:
 					return false;
@@ -144,15 +144,15 @@ namespace ViewObjects.Converter
 		{
 			switch (@object)
 			{
-				case ViewStudyBase o:
+				case ViewStudy o:
 					return StudyToNative(o);
-				case ViewCloudRefBase o:
+				case ViewCloudRef o:
 					return ViewCloudToNative(o);
-				case ContentBase o:
+				case Speckle.Content o:
 					return ViewContentToNative(o);
-				case ViewerLayoutBase o:
+				case ViewerLayout o:
 					return ViewerLayoutToNative(o);
-				case ViewerSystemBase o:
+				case ViewerSystem o:
 					return ViewerSystemToNative(o);
 				case Base o:
 					return HandleDefault(o);

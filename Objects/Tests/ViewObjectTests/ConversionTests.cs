@@ -4,10 +4,10 @@ using ViewObjects;
 using ViewObjects.Cloud;
 using ViewObjects.Content;
 using ViewObjects.Converter;
-using ViewObjects.Speckle;
 using ViewObjects.Study;
 using ViewObjects.Viewer;
 using Cat = ViewTests.ViewTestCategories;
+using ViewStudy = ViewObjects.Speckle.ViewStudy;
 
 namespace ViewTests.Objects
 {
@@ -45,9 +45,9 @@ namespace ViewTests.Objects
 			var res = converter.ConvertToSpeckle(obj);
 
 			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ViewStudyBase);
+			Assert.IsTrue(res is ViewStudy);
 
-			var studyBase = res as ViewStudyBase;
+			var studyBase = res as ViewStudy;
 			Assert.IsTrue(obj.ViewId.Equals(studyBase.ViewId));
 			Assert.IsTrue(obj.ViewName.Equals(studyBase.ViewName));
 			Assert.IsTrue(obj.Objects.Count.Equals(studyBase.Objects.Count));

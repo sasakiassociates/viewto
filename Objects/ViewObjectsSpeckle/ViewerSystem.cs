@@ -4,26 +4,26 @@ namespace ViewObjects.Speckle
 {
 	/// <summary>
 	/// </summary>
-	public class ViewerSystemBase : ViewObjectBase, IViewerSystem_v2<ViewerLayoutBase>
+	public class ViewerSystem : ViewObjectBase, IViewerSystem_v2<ViewerLayout>
 	{
 
 		/// <summary>
 		/// </summary>
-		public ViewerSystemBase()
+		public ViewerSystem()
 		{ }
 
 		/// <summary>
 		/// </summary>
 		/// <param name="layouts"></param>
 		/// <param name="clouds"></param>
-		public ViewerSystemBase(List<ViewerLayoutBase> layouts, List<string> clouds)
+		public ViewerSystem(List<ViewerLayout> layouts, List<string> clouds)
 		{
 			Layouts = layouts;
 			Clouds = clouds.Valid() ? clouds : new List<string>();
 		}
 
 		/// <inheritdoc />
-		public List<ViewerLayoutBase> Layouts { get; set; } = new List<ViewerLayoutBase>();
+		public List<ViewerLayout> Layouts { get; set; } = new List<ViewerLayout>();
 
 		/// <inheritdoc />
 		public List<string> Clouds { get; set; } = new List<string>();

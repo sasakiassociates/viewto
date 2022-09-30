@@ -8,6 +8,7 @@ using Speckle.Core.Models;
 using ViewObjects;
 using ViewObjects.Speckle;
 using Cat = ViewTests.ViewTestCategories;
+using ResultCloudData = ViewObjects.Speckle.ResultCloudData;
 
 namespace ViewTests.Objects
 {
@@ -32,23 +33,23 @@ namespace ViewTests.Objects
 		[Test]
 		public void Serialize_Content()
 		{
-			var obj_v2 = Serialize_Process(new ContentBase());
+			var obj_v2 = Serialize_Process(new Content());
 		}
 
 		[Test]
 		public void Serialize_Study()
 		{
-			var obj_v2 = Serialize_Process(new ViewStudyBase());
+			var obj_v2 = Serialize_Process(new ViewStudy());
 		}
 
 		[Test]
 		public void Serialize_ResultCloud()
 		{
-			var obj_v2 = Serialize_Process(new ResultCloudBase
+			var obj_v2 = Serialize_Process(new ResultCloud
 			{
 				Data = new List<IResultCloudData>
 				{
-					new ResultCloudDataBase
+					new ResultCloudData
 					{
 						Layout = "ViewerLayout",
 						Values = new List<int>
@@ -63,7 +64,7 @@ namespace ViewTests.Objects
 		[Test]
 		public void Serialize_ResultCloudData()
 		{
-			var obj = new ResultCloudDataBase
+			var obj = new ResultCloudData
 			{
 				Layout = "ViewerLayout",
 				Values = new List<int>

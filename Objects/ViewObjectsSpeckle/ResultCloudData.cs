@@ -8,7 +8,7 @@ namespace ViewObjects.Speckle
 {
 	/// <summary>
 	/// </summary>
-	public class ResultCloudDataBase : ViewObjectBase, IResultCloudData
+	public class ResultCloudData : ViewObjectBase, IResultCloudData
 	{
 
 		const string NAME = nameof(IContent);
@@ -17,7 +17,7 @@ namespace ViewObjects.Speckle
 
 		/// <summary>
 		/// </summary>
-		public ResultCloudDataBase()
+		public ResultCloudData()
 		{ }
 
 		/// <summary>
@@ -29,7 +29,7 @@ namespace ViewObjects.Speckle
 		/// <param name="name"></param>
 		/// <param name="layout">Viewer layout meta data</param>
 		[SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObjectSpeckle.Schema.Category, "Objects")]
-		public ResultCloudDataBase(List<int> values, string contentId, ResultStage stage, string name = null, string layout = null)
+		public ResultCloudData(List<int> values, string contentId, ResultStage stage, string name = null, string layout = null)
 		{
 			Values = values;
 			Layout = layout;
@@ -44,7 +44,7 @@ namespace ViewObjects.Speckle
 		/// <param name="option"></param>
 		/// <param name="layout">Viewer layout meta data</param>
 		[SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObjectSpeckle.Schema.Category, "Objects")]
-		public ResultCloudDataBase(List<int> values, IContentOption option, string layout = null)
+		public ResultCloudData(List<int> values, IContentOption option, string layout = null)
 		{
 			Values = values;
 			Layout = layout;
