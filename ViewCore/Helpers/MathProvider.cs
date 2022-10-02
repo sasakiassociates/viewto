@@ -17,7 +17,8 @@ namespace ViewTo.Values
 
 		public virtual IEnumerable<T> Normalize(List<T> inputValues, T max, T min)
 		{
-			if (!inputValues.Valid()) return Array.Empty<T>();
+			if (!inputValues.Valid())
+				return Array.Empty<T>();
 
 			var values = new T[inputValues.Count];
 
@@ -34,7 +35,8 @@ namespace ViewTo.Values
 
 			var values = new T[inputValues.Count];
 
-			for (var i = 0; i < values.Length; i++) values[i] = Normalize(inputValues[i], maxValues[i], min);
+			for (var i = 0; i < values.Length; i++)
+				values[i] = Normalize(inputValues[i], maxValues[i], min);
 
 			return values;
 		}

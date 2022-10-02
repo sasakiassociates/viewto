@@ -1,6 +1,6 @@
 ﻿using ViewTo.Events.Args;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 	internal interface IBuildCommand
 	{

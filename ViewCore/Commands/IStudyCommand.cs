@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ViewTo.Events.Args;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 
 	internal interface IStudyCommand : ICmd

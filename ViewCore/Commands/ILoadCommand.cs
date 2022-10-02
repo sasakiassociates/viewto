@@ -1,4 +1,4 @@
-﻿namespace ViewTo.Commands
+﻿namespace ViewTo.Cmd
 {
 
 	internal interface ILoadCommand<TObject>

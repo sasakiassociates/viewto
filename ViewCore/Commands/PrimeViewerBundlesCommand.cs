@@ -4,7 +4,7 @@ using ViewObjects;
 using ViewTo.Events.Args;
 using ViewTo.Events.Prime;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 	internal class PrimeViewerBundlesCommand : PrimeObjectCommand<List<IViewerBundle_v1>>, IBuildCommand
 	{

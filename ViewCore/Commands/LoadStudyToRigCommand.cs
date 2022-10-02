@@ -3,7 +3,7 @@ using ViewObjects;
 using ViewTo.Events.Args;
 using ViewTo.Events.Process;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 	internal class LoadStudyToRigCommand : ILinkedCommands<IStudyCommand>
 	{

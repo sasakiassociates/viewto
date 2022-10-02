@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ViewObjects.Explorer
@@ -21,7 +22,16 @@ namespace ViewObjects.Explorer
 		public ExplorerSettings Settings { get; set; } = new();
 
 		/// <inheritdoc />
-		public ExplorerData Data { get; private set; }
+		public ContentOption ActiveOption { get; private set; }
+
+		/// <inheritdoc />
+		public List<ContentOption> Options { get; private set; }
+
+		/// <inheritdoc />
+		public List<IResultCloudData> Data
+		{
+			get => Source?.Data ?? new List<IResultCloudData>();
+		}
 
 		/// <inheritdoc />
 		public void Load(IViewStudy viewObj)
@@ -34,8 +44,10 @@ namespace ViewObjects.Explorer
 			if (Source == null)
 				return;
 
+			this.Options = Source.Data.Where(x => x != null).Select(x => x.Option).Cast<ContentOption>().ToList();
+			this.ActiveOption = Options.FirstOrDefault();
+
 			Settings ??= new ExplorerSettings();
-			Settings.options = Source.Data.Where(x => x != null).Select(x => x.Option).ToList();
 			// Data.ActiveValues = this.Fetch();
 		}
 
@@ -63,7 +75,17 @@ namespace ViewObjects.Explorer
 		/// <summary>
 		///   Container for result values being explored
 		/// </summary>
-		public ExplorerData Data { get; }
+		public List<IResultCloudData> Data { get; }
+
+		/// <summary>
+		///   List of options to use for fetching values from <see cref="IExplorer" />. Multiple options will combine the values
+		/// </summary>
+		public List<ContentOption> Options { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public ContentOption ActiveOption { get; }
 
 		/// <summary>
 		///   Load in a new view study for the explorer to explore!
@@ -76,6 +98,7 @@ namespace ViewObjects.Explorer
 		/// </summary>
 		/// <returns></returns>
 		public ResultPoint GetResultPoint();
+
 	}
 
 	public struct ExplorerData

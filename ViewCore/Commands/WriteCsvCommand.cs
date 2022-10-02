@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 	internal class WriteCsvCommand : ICmd
 	{

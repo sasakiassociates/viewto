@@ -18,6 +18,11 @@ namespace ViewObjects
 
 		/// <inheritdoc />
 		public ResultStage Stage { get; set; }
+
+		public bool Equals(IContentOption obj)
+		{
+			return obj != default && Id.Valid() && Id.Equals(obj.Id) && Stage == obj.Stage;
+		}
 	}
 
 	[Serializable]

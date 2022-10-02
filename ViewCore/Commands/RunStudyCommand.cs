@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using ViewObjects;
 using ViewTo.Events.Args;
-using ViewTo.Events.Prime;
 using ViewTo.Events.Process;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 
 	internal class RunStudyCommand : ILinkedCommands<IStudyCommand>, IBuildCommand
@@ -39,8 +38,8 @@ namespace ViewTo.Commands
 
 		public void ReceivePrimedData(PrimeProcessArgs primeArgs)
 		{
-			if (primeArgs is PrimedRigArgs primedRig)
-				RigV1 = primedRig.RigV1;
+			// if (primeArgs is PrimedRigArgs primedRig)
+			// 	RigV1 = primedRig.RigV1;?
 		}
 
 		public IList<IStudyCommand> sequence { get; }

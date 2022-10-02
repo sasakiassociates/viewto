@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 	internal interface ILinkedCommands<TCommand> : ICmd
 	{

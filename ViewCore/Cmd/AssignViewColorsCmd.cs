@@ -1,7 +1,6 @@
-﻿using ViewTo.Commands;
-
-namespace ViewTo.Cmd
+﻿namespace ViewTo.Cmd
 {
+
 	public class AssignViewColorsCmd : ICmd
 	{
 

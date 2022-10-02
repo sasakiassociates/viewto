@@ -1,12 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ViewObjects.Cloud;
+using ViewObjects.Study;
 using ViewObjects.Viewer;
 
 namespace ViewObjects
 {
 	public static class ViewObjectFaker
 	{
+
+		public static IViewStudy Study(string name = "test", bool hasResults = true)
+		{
+			List<IViewObject> objects = new();
+			List<IContent> content = new();
+
+			foreach (ContentType type in Enum.GetValues(typeof(ContentType)))
+			{
+				content.Add(Content(type, $"test-{type}"));
+			}
+
+			var cloud = Cloud<ViewCloud>(100);
+
+			if (hasResults)
+			{
+				List<IResultCloudData> data = new();
+
+				foreach (var c in content)
+				{
+					if (c.ContentType == ContentType.Target)
+					{
+						foreach (ResultStage type in Enum.GetValues(typeof(ResultStage)))
+						{
+							data.Add(Result<ResultCloudData>(
+								         cloud.Points.Length,
+								         type,
+								         c.ViewId,
+								         nameof(ViewerLayout),
+								         c.ViewName
+							         )
+							);
+						}
+					}
+				}
+
+				ResultCloud rc = new() { Points = cloud.Points, Data = data };
+				objects.Add(rc);
+			}
+
+			objects.Add(cloud);
+			objects.AddRange(content.Select(x => (IViewObject)x).ToList());
+			objects.Add(new ViewerLayout(new List<ViewerDirection>()
+			{
+				ViewerDirection.Front
+			}));
+
+			return new ViewStudy(objects, name);
+		}
+
+		public static IContent Content(ContentType type, string name = "test")
+		{
+			return new Content(type, ObjUtils.InitGuid, name);
+		}
+
+		public static TCloud Cloud<TCloud>(int pointCount)
+			where TCloud : IViewCloud
+		{
+			var obj = Activator.CreateInstance<TCloud>();
+			obj.Points = CloudPoints(pointCount);
+			return obj;
+		}
+
 		public static TCloud ResultCloud<TCloud>(int pointCount, int colorCount)
 			where TCloud : IResultCloud
 		{

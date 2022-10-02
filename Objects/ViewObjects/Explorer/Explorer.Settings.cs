@@ -16,7 +16,6 @@ namespace ViewObjects.Explorer
 
 		public List<string> targets { get; }
 
-		public List<IContentOption> options { get; }
 	}
 
 	public interface IExploreRange
@@ -33,7 +32,7 @@ namespace ViewObjects.Explorer
 		public Color invalidColor { get; }
 	}
 
-	public class ExplorerSettings : IExploreContent, IExploreRange, IExploreView, IValidate
+	public class ExplorerSettings : IExploreContent, IExploreRange, IExploreView
 	{
 
 		public ExplorerSettings()
@@ -43,11 +42,6 @@ namespace ViewObjects.Explorer
 		///   When set to true will output all points and values for <see cref="options" />
 		/// </summary>
 		public bool showAll { get; set; } = true;
-
-		/// <summary>
-		///   List of options to use for fetching values from <see cref="IExplorer" />. Multiple options will combine the values
-		/// </summary>
-		public List<IContentOption> options { get; set; } = new();
 
 		/// <summary>
 		///   Comparable value type to use when exploring values
@@ -87,14 +81,6 @@ namespace ViewObjects.Explorer
 		public int point { get; set; } = 0;
 
 		/// <summary>
-		///   Returns true if <see cref="options" /> is valid
-		/// </summary>
-		public bool IsValid
-		{
-			get => options.Valid();
-		}
-
-		/// <summary>
 		///   Get a color along the gradient ramp
 		/// </summary>
 		/// <param name="t"></param>
@@ -103,7 +89,8 @@ namespace ViewObjects.Explorer
 
 		static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
 		{
-			if (val.CompareTo(min) < 0) return min;
+			if (val.CompareTo(min) < 0)
+				return min;
 
 			return val.CompareTo(max) > 0 ? max : val;
 		}

@@ -7,7 +7,7 @@ using ViewTo.Events.Prime;
 using ViewTo.Events.Process;
 using ViewTo.Primers;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 	internal class SetupStudyObjectsCommand : ISetupCommand, IStudyCommand, ILinkedCommands<IPrimeCommand>
 	{

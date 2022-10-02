@@ -1,7 +1,7 @@
 ﻿using ViewObjects;
 using ViewTo.Events.Process;
 
-namespace ViewTo.Commands
+namespace ViewTo.Cmd
 {
 
 	internal class PopulateRigCommand : ABuildRigCommand, ILoadCommand<IRig_v1>
