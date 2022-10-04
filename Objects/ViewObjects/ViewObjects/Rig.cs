@@ -9,7 +9,7 @@ namespace ViewObjects
 	{
 
 		/// <inheritdoc />
-		public void Build(List<IViewerSystem> viewers)
+		public void Build()
 		{ }
 
 		/// <inheritdoc />

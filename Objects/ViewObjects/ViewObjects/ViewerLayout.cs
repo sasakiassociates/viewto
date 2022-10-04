@@ -8,9 +8,9 @@ namespace ViewObjects.Viewer
 	public class ViewerLayout : IViewerLayout, IViewObject
 	{
 
-		public ViewerLayout(List<ViewerDirection> viewers) => Viewers = viewers;
+		public ViewerLayout(List<ViewDirection> viewers) => Viewers = viewers;
 
-		public List<ViewerDirection> Viewers { get; set; }
+		public List<ViewDirection> Viewers { get; set; }
 	}
 
 	public class ViewerLayoutV1 : IViewerLayout_v1
@@ -23,7 +23,7 @@ namespace ViewObjects.Viewer
 			get =>
 				new()
 				{
-					new ViewerV1(ViewerDirection.Front)
+					new ViewerV1(ViewDirection.Front)
 				};
 		}
 	}
@@ -79,12 +79,12 @@ namespace ViewObjects.Viewer
 			get =>
 				new()
 				{
-					new ViewerV1(ViewerDirection.Front),
-					new ViewerV1(ViewerDirection.Right),
-					new ViewerV1(ViewerDirection.Back),
-					new ViewerV1(ViewerDirection.Left),
-					new ViewerV1(ViewerDirection.Up),
-					new ViewerV1(ViewerDirection.Down)
+					new ViewerV1(ViewDirection.Front),
+					new ViewerV1(ViewDirection.Right),
+					new ViewerV1(ViewDirection.Back),
+					new ViewerV1(ViewDirection.Left),
+					new ViewerV1(ViewDirection.Up),
+					new ViewerV1(ViewDirection.Down)
 				};
 		}
 	}
@@ -99,8 +99,8 @@ namespace ViewObjects.Viewer
 			get =>
 				new()
 				{
-					new ViewerV1(ViewerDirection.Front), new ViewerV1(ViewerDirection.Right), new ViewerV1(ViewerDirection.Back),
-					new ViewerV1(ViewerDirection.Left)
+					new ViewerV1(ViewDirection.Front), new ViewerV1(ViewDirection.Right), new ViewerV1(ViewDirection.Back),
+					new ViewerV1(ViewDirection.Left)
 				};
 		}
 	}

@@ -25,23 +25,26 @@ namespace ViewTo.Receivers
 			return!string.IsNullOrEmpty(message);
 		}
 
-		public bool CompareClouds(IEnumerable<IViewerSystem> viewers, IReadOnlyList<IViewCloud> clouds, out string message)
+		public bool CompareClouds(IEnumerable<IViewer> viewers, IReadOnlyList<IViewCloud> clouds, out string message)
 		{
 			message = "";
 
 			foreach (var viewer in viewers)
 			{
-				if (viewer.Clouds == null || !viewer.Clouds.Any())
+				if (viewer is IViewerLinked sys)
 				{
-					continue;
-				}
-
-				foreach (var cloudId in viewer.Clouds)
-				{
-					if (!clouds.Any(x => x.ViewId.Equals(cloudId)))
+					if (sys.Clouds == null || !sys.Clouds.Any())
 					{
-						message = $"No Id for {nameof(IViewCloud)} found. Looking for id {cloudId}";
-						return false;
+						continue;
+					}
+
+					foreach (var cloudId in sys.Clouds)
+					{
+						if (!clouds.Any(x => x.ViewId.Equals(cloudId)))
+						{
+							message = $"No Id for {nameof(IViewCloud)} found. Looking for id {cloudId}";
+							return false;
+						}
 					}
 				}
 			}
@@ -49,12 +52,12 @@ namespace ViewTo.Receivers
 			return true;
 		}
 
-		public bool CheckData(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewerSystem> viewers, out string message)
+		public bool CheckData(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers, out string message)
 		{
 			var countTarget = contents.Count(x => x.ContentType == ContentType.Target);
 			var countExisting = contents.Count(x => x.ContentType == ContentType.Existing);
 			var countProposed = contents.Count(x => x.ContentType == ContentType.Proposed);
-			var countGlobalViewer = viewers.Count(x => x.IsGlobal);
+			var countViewerLinked = viewers.Count(x => x is IViewerLinked);
 
 			int countTotalPoints = 0;
 			foreach (var o in clouds)
@@ -81,13 +84,14 @@ namespace ViewTo.Receivers
 			          + $"{nameof(IViewCloud)}s: "
 			          + $"Total={clouds.Count}, "
 			          + $"Points={countTotalPoints}\n"
-			          + $"{nameof(IViewerSystem)}s: "
-			          + $"Global={countGlobalViewer}, "
-			          + $"Isolated={viewers.Count - countGlobalViewer}, "
+			          + $"{nameof(IViewer)}s: "
+			          + $"Global={viewers.Count - countViewerLinked}, "
+			          + $"Linked={countViewerLinked}, "
 			          + $"Layouts={countTotalLayouts}\n";
 
-			return countTarget > 0 && countExisting > 0 && countGlobalViewer > 0;
+			return countTarget > 0 && countExisting > 0 && countViewerLinked > 0;
 		}
 
 	}
+
 }

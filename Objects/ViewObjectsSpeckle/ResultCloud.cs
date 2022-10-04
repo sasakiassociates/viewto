@@ -22,7 +22,7 @@ namespace ViewObjects.Speckle
 		/// <param name="points"></param>
 		/// <param name="data"></param>
 		/// <param name="viewId"></param>
-		[SchemaInfo("Result Cloud", "A view analysis cloud with result data attached", ViewObjectSpeckle.Schema.Category, "Objects")]
+		[SchemaInfo("Result Cloud", "A view analysis cloud with result data attached", ViewObject.Schema.Category, "Objects")]
 		public ResultCloud(CloudPoint[] points, List<ResultCloudData> data, string viewId = null)
 		{
 			Data = data;

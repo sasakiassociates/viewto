@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
+using ViewTo.Receivers;
 
 namespace ViewTo.Cmd
 {
@@ -44,6 +45,7 @@ namespace ViewTo.Cmd
 		public void Execute()
 		{
 			var res = -1;
+			var receiver = new ValueReceiver();
 
 			// if the value being found is trash
 			if (double.IsNaN(valueToFind))
@@ -64,7 +66,7 @@ namespace ViewTo.Cmd
 			// compare data 
 			for (var i = 0; i < values.Count; i++)
 			{
-				if (values[i].NearlyEqual(valueToFind, unimportantDifference))
+				if (receiver.NearlyEqual(values[i], valueToFind, unimportantDifference))
 				{
 					sampleOfValues.Add(i);
 				}

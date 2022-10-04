@@ -9,7 +9,7 @@ namespace ViewTo.Receivers
 		internal const double DBL_EPSILON = 2.22044604925031E-16;
 
 		//https://stackoverflow.com/questions/3874627/floating-point-comparison-functions-for-c-sharp
-		public static bool NearlyEqual(double value1, double value2, double unimportantDifference = 0.0001)
+		public bool NearlyEqual(double value1, double value2, double unimportantDifference = 0.0001)
 		{
 			if (double.IsNaN(value1) || double.IsNaN(value2))
 				return false;
@@ -17,7 +17,7 @@ namespace ViewTo.Receivers
 			return Math.Abs(value1 - value2) < unimportantDifference;
 		}
 
-		public static double[] PowLog(double[] values, double maxValue, double multiplier, double maxScore, double minValue = 0.0000001)
+		public double[] PowLog(double[] values, double maxValue, double multiplier, double maxScore, double minValue = 0.0000001)
 		{
 			var maxCount = maxValue * multiplier;
 			var logCustomBase = Math.Pow(maxCount, 1 / maxScore);
@@ -34,7 +34,7 @@ namespace ViewTo.Receivers
 			return outputValues;
 		}
 
-		public static double[] Log(IReadOnlyList<int> values, int maxValue, double desiredScore = 1)
+		public double[] Log(IReadOnlyList<int> values, int maxValue, double desiredScore = 1)
 		{
 			var logCustomBase = Math.Pow(maxValue, 1 / desiredScore);
 			var outputValues = new double[values.Count];

@@ -32,7 +32,7 @@
 		public const string BACK = "Back";
 	}
 
-	public enum ViewerDirection
+	public enum ViewDirection
 	{
 
 		Up,

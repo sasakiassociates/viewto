@@ -23,7 +23,7 @@ namespace ViewObjects
 
 	public interface IViewer_v1
 	{
-		ViewerDirection Direction { get; }
+		ViewDirection Direction { get; }
 	}
 
 	public interface IViewerLayout_v1 : IViewObject

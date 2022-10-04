@@ -21,7 +21,7 @@ namespace ViewObjects.Speckle
 		///  Id of the view study as a <see cref="System.Guid" />. If no valid value is passed in one will be
 		///   generated
 		/// </param>
-		[SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObjectSpeckle.Schema.Category, "Objects")]
+		[SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObject.Schema.Category, "Objects")]
 		public ViewCloud(List<string> references, string viewId = null)
 		{
 			References = references;

@@ -5,7 +5,6 @@ namespace ViewObjects.Converter.Rhino
 {
 	public class ViewObjRhinoConverter : ViewObjectsConverter
 	{
-		public ViewObjRhinoConverter() => Schema = new ViewObjectFactory();
 
 		#if RHINO6 && GRASSHOPPER
 		public static string RhinoAppName = VersionedHostApplications.Grasshopper6;

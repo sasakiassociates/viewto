@@ -22,10 +22,13 @@ namespace ViewObjects.Converter
 
 		IViewObject ViewCloudToNative(IReferenceObject obj) => new CloudReference(obj.References, obj.ViewId);
 
-		IViewObject ViewerLayoutToNative(IViewerLayout obj) => new Viewer.ViewerLayout(obj.Viewers);
+		IViewObject LayoutToNative(IViewerLayout obj) => new Viewer.ViewerLayout(obj.Viewers);
 
-		IViewObject ViewerSystemToNative(IViewerSystem<VS.ViewerLayout> o) =>
-			new Viewer.Viewer(o.Layouts.Where(x => x != null).Select(ViewerLayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
+		IViewObject ViewerToNative(IViewer<VS.Layout> o) =>
+			new Viewer.Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList());
+
+		IViewObject ViewerToNative(IViewerLinked<VS.Layout> o) =>
+			new Viewer.ViewerLinked(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
 
 		IViewObject ResultCloudToNative(VS.ResultCloud obj) =>
 			new VO.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);
@@ -46,10 +49,13 @@ namespace ViewObjects.Converter
 		VS.ViewObjectReferenceBase ViewObjectReferenceToSpeckle(IReferenceObject obj) =>
 			new VS.ViewObjectReferenceBase(obj.References, obj.Type, obj.ViewId, obj.ViewName);
 
-		VS.ViewerLayout ViewerLayoutToSpeckle(IViewerLayout obj) => new VS.ViewerLayout(obj.Viewers);
+		VS.Layout LayoutToSpeckle(IViewerLayout obj) => new VS.Layout(obj.Viewers);
 
-		VS.ViewerSystem ViewerSystemToSpeckle(IViewerSystem<IViewerLayout> o) => new VS.ViewerSystem(
-			o.Layouts.Where(x => x != null).Select(ViewerLayoutToSpeckle).Cast<VS.ViewerLayout>().ToList(), o.Clouds);
+		VS.Viewer ViewerToSpeckle(IViewer<IViewerLayout> o) => new VS.Viewer(
+			o.Layouts.Where(x => x != null).Select(LayoutToSpeckle).ToList());
+
+		VS.ViewerLinked ViewerToSpeckle(IViewerLinked<IViewerLayout> o) => new VS.ViewerLinked(
+			o.Layouts.Where(x => x != null).Select(LayoutToSpeckle).ToList(), o.Clouds);
 
 		VS.ResultCloud ResultCloudToSpeckle(IResultCloud obj)
 		{

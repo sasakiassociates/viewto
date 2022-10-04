@@ -9,7 +9,7 @@ namespace ViewObjects.Speckle
 {
 
 	/// <inheritdoc />
-	public class ViewObjectKit : ISpeckleKit
+	public class ViewObject : ISpeckleKit
 	{
 
 		const string CONVERTER_BASE_NAME = "ViewObjects.Converter";
@@ -43,7 +43,7 @@ namespace ViewObjects.Speckle
 		/// <inheritdoc />
 		public string Name
 		{
-			get => nameof(ViewObjectKit);
+			get => nameof(ViewObject);
 		}
 
 		/// <inheritdoc />
@@ -68,10 +68,7 @@ namespace ViewObjects.Speckle
 			{
 				var types = new List<Type>();
 				types.AddRange(Assembly.GetExecutingAssembly().GetTypes().Where
-				               (t =>
-					                t.IsSubclassOf(typeof(ViewObjectBase))
-					                || !t.IsAbstract
-				               ));
+					               (t => t.IsSubclassOf(typeof(ViewObjectBase)) || !t.IsAbstract));
 
 				var asm = Assembly.Load(typeof(IViewObject).GetTypeInfo().Assembly.GetName());
 
@@ -149,6 +146,11 @@ namespace ViewObjects.Speckle
 			///   Not yet specified in the kit
 			/// </summary>
 			[Obsolete] public static string VirtualDesktop = "Not yet established";
+		}
+
+		internal static class Schema
+		{
+			internal const string Category = "ViewObjects";
 		}
 	}
 }

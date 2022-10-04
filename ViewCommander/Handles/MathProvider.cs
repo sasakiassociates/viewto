@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using ViewObjects;
 
 namespace ViewTo.Values
 {
@@ -10,54 +8,10 @@ namespace ViewTo.Values
 		public abstract T Multiply(T a, T b);
 		public abstract T Add(T a, T b);
 		public abstract T Negate(T a);
+		public T Subtract(T a, T b) => Add(a, Negate(b));
 
-		public virtual T Subtract(T a, T b) => Add(a, Negate(b));
+		// public virtual double Normalize(T value, T max, T min) => (double)Divide(Subtract(value, min), Subtract(max, min));
 
-		public virtual T Normalize(T value, T max, T min) => Divide(Subtract(value, min), Subtract(max, min));
-
-		public virtual IEnumerable<T> Normalize(List<T> inputValues, T max, T min)
-		{
-			if (!inputValues.Valid())
-				return Array.Empty<T>();
-
-			var values = new T[inputValues.Count];
-
-			for (var i = 0; i < values.Length; i++)
-				values[i] = Normalize(inputValues[i], max, min);
-
-			return values;
-		}
-
-		public virtual IEnumerable<T> Normalize(List<T> inputValues, List<T> maxValues, T min)
-		{
-			if (!inputValues.Valid() || !maxValues.Valid() || inputValues.Count != maxValues.Count)
-				return Array.Empty<T>();
-
-			var values = new T[inputValues.Count];
-
-			for (var i = 0; i < values.Length; i++)
-				values[i] = Normalize(inputValues[i], maxValues[i], min);
-
-			return values;
-		}
-
-		public virtual IEnumerable<T> Normalize(List<T> inputValues, List<T> maxValues, List<T> minValues)
-		{
-			if (!inputValues.Valid()
-			    || !maxValues.Valid()
-			    || !minValues.Valid()
-			    || inputValues.Count != maxValues.Count
-			    || inputValues.Count != minValues.Count
-			   )
-				return Array.Empty<T>();
-
-			var values = new T[inputValues.Count];
-
-			for (var i = 0; i < values.Length; i++)
-				values[i] = Normalize(inputValues[i], maxValues[i], minValues[i]);
-
-			return values;
-		}
 	}
 
 	public class DoubleMath : MathProvider<double>

@@ -6,24 +6,24 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	///   Simple Viewer object
 	/// </summary>
-	public class ViewerLayout : ViewObjectBase, IViewerLayout
+	public class Layout : ViewObjectBase, IViewerLayout
 	{
 
 		/// <summary>
 		/// </summary>
-		public ViewerLayout()
+		public Layout()
 		{ }
 
 		/// <summary>
 		/// </summary>
 		/// <param name="viewers"></param>
-		public ViewerLayout(List<ViewerDirection> viewers)
+		public Layout(List<ViewDirection> viewers)
 		{
 			Viewers = viewers;
 		}
 
 		/// <inheritdoc />
-		public List<ViewerDirection> Viewers { get; set; } = new List<ViewerDirection>();
+		public List<ViewDirection> Viewers { get; set; } = new List<ViewDirection>();
 
 	}
 }

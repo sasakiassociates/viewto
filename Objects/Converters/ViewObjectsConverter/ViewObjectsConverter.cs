@@ -12,8 +12,6 @@ namespace ViewObjects.Converter
 	public partial class ViewObjectsConverter : ISpeckleConverter
 	{
 
-		public IViewObjectFactory Schema { get; set; } = new ViewObjectFactory();
-
 		public virtual string Name
 		{
 			get => nameof(ViewObjectsConverter);
@@ -85,7 +83,7 @@ namespace ViewObjects.Converter
 					return true;
 				case IViewerLayout _:
 					return true;
-				case IViewerSystem _:
+				case IViewer _:
 					return true;
 				default:
 					return false;
@@ -103,9 +101,11 @@ namespace ViewObjects.Converter
 					return true;
 				case VS.Content _:
 					return true;
-				case VS.ViewerLayout _:
+				case VS.Layout _:
 					return true;
-				case VS.ViewerSystem _:
+				case VS.Viewer _:
+					return true;
+				case VS.ViewerLinked _:
 					return true;
 				case VS.ResultCloud _:
 					return true;
@@ -123,9 +123,11 @@ namespace ViewObjects.Converter
 				case IViewStudy o:
 					return StudyToSpeckle(o);
 				case IViewerLayout o:
-					return ViewerLayoutToSpeckle(o);
-				case IViewerSystem o:
-					return ViewerSystemToSpeckle(o);
+					return LayoutToSpeckle(o);
+				case IViewerLinked o:
+					return ViewerToSpeckle(o);
+				case IViewer o:
+					return ViewerToSpeckle(o);
 				case IResultCloud o:
 					return ResultCloudToSpeckle(o);
 				case IResultCloudData o:
@@ -151,10 +153,12 @@ namespace ViewObjects.Converter
 					return ViewCloudToNative(o);
 				case VS.Content o:
 					return ViewContentToNative(o);
-				case VS.ViewerLayout o:
-					return ViewerLayoutToNative(o);
-				case VS.ViewerSystem o:
-					return ViewerSystemToNative(o);
+				case VS.Layout o:
+					return LayoutToNative(o);
+				case VS.ViewerLinked o:
+					return ViewerToNative(o);
+				case VS.Viewer o:
+					return ViewerToNative(o);
 				case VS.ResultCloud o:
 					return ResultCloudToNative(o);
 				case Base o:

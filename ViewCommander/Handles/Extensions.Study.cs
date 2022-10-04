@@ -11,7 +11,7 @@ namespace ViewTo
 		{
 			var contents = study.GetAll<IContent>();
 			var clouds = study.GetAll<IViewCloud>();
-			var viewers = study.GetAll<IViewerSystem>();
+			var viewers = study.GetAll<IViewer>();
 
 			var reports = new List<string>();
 
@@ -19,7 +19,7 @@ namespace ViewTo
 			{
 				new CanStudyRun(contents, clouds, viewers),
 				new AssignViewColors(contents),
-				new InitializeRig(rig, contents, clouds, viewers),
+				new InitializeAndBuildRig(rig, contents, clouds, viewers),
 			};
 
 			foreach (var s in sequence)
@@ -37,7 +37,7 @@ namespace ViewTo
 
 		/// <summary>
 		/// <para>Checks if a view study has the correct data necessary to run a view study.
-		/// The correct data is at least one <see cref="IViewCloud"/>, one <see cref="IViewerSystem"/>,
+		/// The correct data is at least one <see cref="IViewCloud"/>, one <see cref="IViewer"/>,
 		/// one <see cref="Content"/> marked as <see cref="ContentType.Target"/> and one marked as <see cref="ContentType.Existing"/>
 		/// </para> 
 		/// </summary>
@@ -45,7 +45,7 @@ namespace ViewTo
 		/// <returns></returns>
 		public static bool CanRun(this IViewStudy study)
 		{
-			return study.Has<IViewCloud>() && study.Has<IViewerSystem>() && study.Has(ContentType.Target) && study.Has(ContentType.Existing);
+			return study.Has<IViewCloud>() && study.Has<IViewer>() && study.Has(ContentType.Target) && study.Has(ContentType.Existing);
 		}
 
 		/// <summary>

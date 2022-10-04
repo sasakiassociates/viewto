@@ -8,13 +8,13 @@ namespace ViewTo.Cmd
 	{
 		IReadOnlyList<IContent> _contents;
 		IReadOnlyList<IViewCloud> _clouds;
-		IReadOnlyList<IViewerSystem> _viewers;
+		IReadOnlyList<IViewer> _viewers;
 
 		StudyObjectValidator _receiver;
 
 		public SimpleResultArgs args { get; private set; }
 
-		public CanStudyRun(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewerSystem> viewers)
+		public CanStudyRun(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers)
 		{
 			_contents = contents;
 			_clouds = clouds;

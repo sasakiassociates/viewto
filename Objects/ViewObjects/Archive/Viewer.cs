@@ -9,8 +9,8 @@ namespace ViewObjects.Viewer
 		public ViewerV1()
 		{ }
 
-		public ViewerV1(ViewerDirection direction) => Direction = direction;
+		public ViewerV1(ViewDirection direction) => Direction = direction;
 
-		public ViewerDirection Direction { get; }
+		public ViewDirection Direction { get; }
 	}
 }

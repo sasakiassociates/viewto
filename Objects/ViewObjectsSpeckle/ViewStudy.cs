@@ -25,12 +25,12 @@ namespace ViewObjects.Speckle
 		///   Id of the view study as a <see cref="System.Guid" />. If no valid value is passed in one will be
 		///   generated
 		/// </param>
-		[SchemaInfo("View Study", "View Study Object for setting up a study in View To", ViewObjectSpeckle.Schema.Category, "Objects")]
+		[SchemaInfo("View Study", "View Study Object for setting up a study in View To", ViewObject.Schema.Category, "Objects")]
 		public ViewStudy(List<ViewObjectBase> objects, string viewName, string viewId = null)
 		{
 			Objects = objects;
 			ViewName = viewName;
-			ViewId = viewId.CheckIfValidId();
+			ViewId = ObjUtils.CheckIfValidId(viewId);
 		}
 
 		/// <inheritdoc />

@@ -40,8 +40,7 @@ namespace ViewObjects
 		/// <summary>
 		/// Handle building the different viewer types
 		/// </summary>
-		/// <param name="viewers"></param>
-		public void Build(List<IViewerSystem> viewers);
+		public void Build();
 
 		/// <summary>
 		/// Handle all the data the rig needs to run a view study
@@ -72,33 +71,39 @@ namespace ViewObjects
 		/// <summary>
 		///   Setup of viewers to use with each layout type
 		/// </summary>
-		public List<ViewerDirection> Viewers { get; }
+		public List<ViewDirection> Viewers { get; }
 	}
 
-	public interface IViewerSystem : IViewerSystem<IViewerLayout>
+	public interface IViewer : IViewer<IViewerLayout>
 	{ }
 
 	/// <summary>
 	/// An interface for organizing <typeparamref name="TLayout"/> types for <see cref="IViewStudy"/> 
 	/// </summary>
 	/// <typeparam name="TLayout"></typeparam>
-	public interface IViewerSystem<TLayout> where TLayout : IViewerLayout
+	public interface IViewer<TLayout> where TLayout : IViewerLayout
 	{
 		/// <summary>
 		///   The group of <typeparamref name="TLayout" /> targeted to be used during the analysis
 		/// </summary>
 		public List<TLayout> Layouts { get; set; }
 
+	}
+
+	public interface IViewerLinked<TLayout> : IViewer<TLayout> where TLayout : IViewerLayout
+	{
 		/// <summary>
 		///   A list of cloud ids that can be used with this bundle
 		/// </summary>
 		public List<string> Clouds { get; set; }
+	}
 
+	public interface IViewerLinked : IViewer
+	{
 		/// <summary>
-		/// Optional flag to provide if layout should be run with shared parameters
+		///   A list of cloud ids that can be used with this bundle
 		/// </summary>
-		public bool IsGlobal { get; }
-
+		public List<string> Clouds { get; set; }
 	}
 
 	#endregion

@@ -43,19 +43,24 @@ namespace ViewTo.RhinoGh.Setup
 			DA.GetDataList(0, wrappers);
 			var clouds = wrappers.Unwrap<CloudReference>();
 
-			var layout = new ViewerLayout(new List<ViewerDirection>
+			var layout = new ViewerLayout(new List<ViewDirection>
 			{
-				ViewerDirection.Front,
-				ViewerDirection.Right,
-				ViewerDirection.Back,
-				ViewerDirection.Left,
-				ViewerDirection.Up,
-				ViewerDirection.Down
+				ViewDirection.Front,
+				ViewDirection.Right,
+				ViewDirection.Back,
+				ViewDirection.Left,
+				ViewDirection.Up,
+				ViewDirection.Down
 			});
 
-			var viewerSystem = new Viewer(new List<IViewerLayout>
-				                              { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList());
-			DA.SetData(0, viewerSystem);
+			if (!clouds.Any())
+			{
+				DA.SetData(0, new Viewer(new List<IViewerLayout> { layout }));
+			}
+			else
+			{
+				DA.SetData(0, new ViewerLinked(new List<IViewerLayout> { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList()));
+			}
 		}
 	}
 }

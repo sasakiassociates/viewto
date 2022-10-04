@@ -28,7 +28,7 @@ namespace ViewObjects.Speckle
 		/// <param name="stage">Result stage flag</param>
 		/// <param name="name"></param>
 		/// <param name="layout">Viewer layout meta data</param>
-		[SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObjectSpeckle.Schema.Category, "Objects")]
+		[SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
 		public ResultCloudData(List<int> values, string contentId, ResultStage stage, string name = null, string layout = null)
 		{
 			Values = values;
@@ -43,7 +43,7 @@ namespace ViewObjects.Speckle
 		/// <param name="values">Pixel values connected to each point of a cloud</param>
 		/// <param name="option"></param>
 		/// <param name="layout">Viewer layout meta data</param>
-		[SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObjectSpeckle.Schema.Category, "Objects")]
+		[SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
 		public ResultCloudData(List<int> values, IContentOption option, string layout = null)
 		{
 			Values = values;

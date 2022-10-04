@@ -15,9 +15,9 @@ namespace ViewTests.Objects
 		[Test]
 		public void Kit_Types()
 		{
-			var kit = KitManager.GetKit(ViewObjectKit.AssemblyFullName);
+			var kit = KitManager.GetKit(ViewObject.AssemblyFullName);
 			Assert.IsNotNull(kit);
-			Assert.IsTrue(kit.Name.Equals(nameof(ViewObjectKit)));
+			Assert.IsTrue(kit.Name.Equals(nameof(ViewObject)));
 
 			var types = kit.Types.ToList();
 

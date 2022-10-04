@@ -50,9 +50,9 @@ namespace ViewObjects
 
 			objects.Add(cloud);
 			objects.AddRange(content.Select(x => (IViewObject)x).ToList());
-			objects.Add(new ViewerLayout(new List<ViewerDirection>()
+			objects.Add(new ViewerLayout(new List<ViewDirection>()
 			{
-				ViewerDirection.Front
+				ViewDirection.Front
 			}));
 
 			return new ViewStudy(objects, name);
