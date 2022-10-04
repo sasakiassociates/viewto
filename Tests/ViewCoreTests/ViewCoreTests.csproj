@@ -15,7 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Objects\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj"/>
-        <ProjectReference Include="..\..\ViewCore\ViewCore.csproj"/>
+        <ProjectReference Include="..\..\ViewCommander\ViewCommander.csproj"/>
     </ItemGroup>
 
     <Import Project="..\ViewTestsShared\ViewTestsShared.projitems" Label="Shared"/>

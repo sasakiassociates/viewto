@@ -20,7 +20,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\..\..\Speckle\speckle-sharp\Core\Core\Core.csproj"/>
         <ProjectReference Include="..\..\..\..\..\Speckle\speckle-sharp\Objects\Objects\Objects.csproj"/>
-        <ProjectReference Include="..\..\..\ViewCore\ViewCore.csproj"/>
+        <ProjectReference Include="..\..\..\ViewCommander\ViewCommander.csproj"/>
         <ProjectReference Include="..\..\Converters\ViewObjectsConverter\ViewObjectsConverter.csproj"/>
         <ProjectReference Include="..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj"/>
         <ProjectReference Include="..\..\ViewObjects\ViewObjects.csproj"/>

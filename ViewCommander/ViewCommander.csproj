@@ -6,7 +6,7 @@
         <LangVersion>8</LangVersion>
         <Configurations>Debug;Release;Objects;Base</Configurations>
         <Platforms>AnyCPU</Platforms>
-        <PackageId>ViewCore</PackageId>
+        <PackageId>ViewCommander</PackageId>
     </PropertyGroup>
 
     <ItemGroup>

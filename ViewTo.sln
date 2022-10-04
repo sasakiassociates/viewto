@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewCore", "ViewCore\ViewCore.csproj", "{605FC207-58A2-4CF0-ABFD-04F0D90C02EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewCommander", "ViewCommander\ViewCommander.csproj", "{605FC207-58A2-4CF0-ABFD-04F0D90C02EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjects", "Objects\ViewObjects\ViewObjects.csproj", "{AA039663-8443-47D8-AE7F-1F2A5A384777}"
 EndProject

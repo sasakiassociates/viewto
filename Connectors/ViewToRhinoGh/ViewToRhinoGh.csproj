@@ -72,9 +72,9 @@
             <Project>{aa039663-8443-47d8-ae7f-1f2a5a384777}</Project>
             <Name>ViewObjects</Name>
         </ProjectReference>
-        <ProjectReference Include="..\..\ViewCore\ViewCore.csproj">
+        <ProjectReference Include="..\..\ViewCommander\ViewCommander.csproj">
             <Project>{605fc207-58a2-4cf0-abfd-04f0d90c02ea}</Project>
-            <Name>ViewCore</Name>
+            <Name>ViewCommander</Name>
         </ProjectReference>
     </ItemGroup>
     <ItemGroup>
