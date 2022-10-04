@@ -28,7 +28,7 @@ namespace ViewTo.Cmd
 
 		public bool greatSuccess { get; set; }
 
-		public void Run()
+		public void Execute()
 		{
 			try
 			{

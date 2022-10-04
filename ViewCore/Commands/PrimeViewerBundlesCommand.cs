@@ -18,7 +18,7 @@ namespace ViewTo.Cmd
 				args.Add(primed);
 		}
 
-		public override void Run()
+		public override void Execute()
 		{
 			args.Add(new PrimeViewerBundleArgs(Obj));
 			greatSuccess = args.Any();

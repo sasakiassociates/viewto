@@ -13,7 +13,7 @@ namespace ViewTo.Cmd
 
 		public event Action<PrimeProcessArgs> onPrimedEvent;
 
-		public override void Run()
+		public override void Execute()
 		{
 			// // check if assigned colors worked
 			// Obj.AssignColors();

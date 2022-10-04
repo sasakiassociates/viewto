@@ -2,14 +2,15 @@
 
 namespace ViewObjects.Explorer
 {
-	public struct ResultPoint
+	public class ResultPoint
 	{
 
 		public int Index;
 		public double Value;
 		public Color Color;
 		public double X, Y, Z;
-		public ContentOption option;
+		public ContentOption Option;
+
 	}
 
 }

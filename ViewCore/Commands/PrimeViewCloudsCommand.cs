@@ -17,7 +17,7 @@ namespace ViewTo.Cmd
 
 		public Dictionary<string, CloudPoint[]> Points { get; private set; }
 
-		public override void Run()
+		public override void Execute()
 		{
 			Points = new Dictionary<string, CloudPoint[]>();
 			foreach (var cloud in Obj)

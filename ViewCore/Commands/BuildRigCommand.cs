@@ -9,7 +9,7 @@ namespace ViewTo.Cmd
 	{
 		public event Action<PrimeProcessArgs> onPrimedEvent;
 
-		public override void Run()
+		public override void Execute()
 		{
 			if (!ValidData)
 			{

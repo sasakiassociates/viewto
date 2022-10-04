@@ -36,9 +36,18 @@ namespace ViewObjects
 
 	public interface IRig
 	{
-		public List<IViewerSystem> Viewers { get; set; }
 
-		public List<RigParameters> Parameters { get; set; }
+		/// <summary>
+		/// Handle building the different viewer types
+		/// </summary>
+		/// <param name="viewers"></param>
+		public void Build(List<IViewerSystem> viewers);
+
+		/// <summary>
+		/// Handle all the data the rig needs to run a view study
+		/// </summary>
+		/// <param name="parameters"></param>
+		public void Initialize(List<RigParameters> parameters);
 	}
 
 	#region View Objects
@@ -67,12 +76,7 @@ namespace ViewObjects
 	}
 
 	public interface IViewerSystem : IViewerSystem<IViewerLayout>
-	{
-		/// <summary>
-		///   A list of cloud ids that can be used with this bundle
-		/// </summary>
-		public List<string> Clouds { get; set; }
-	}
+	{ }
 
 	/// <summary>
 	/// An interface for organizing <typeparamref name="TLayout"/> types for <see cref="IViewStudy"/> 
@@ -89,6 +93,12 @@ namespace ViewObjects
 		///   A list of cloud ids that can be used with this bundle
 		/// </summary>
 		public List<string> Clouds { get; set; }
+
+		/// <summary>
+		/// Optional flag to provide if layout should be run with shared parameters
+		/// </summary>
+		public bool IsGlobal { get; }
+
 	}
 
 	#endregion
@@ -185,6 +195,11 @@ namespace ViewObjects
 		///   The style of view content
 		/// </summary>
 		public ContentType ContentType { get; }
+
+		/// <summary>
+		/// The color of the content group
+		/// </summary>
+		public ViewColor Color { get; set; }
 	}
 
 	public interface IContentObjects<TObj>
@@ -193,6 +208,7 @@ namespace ViewObjects
 		/// Group of <typeparamref name="TObj"/> objects 
 		/// </summary>
 		public List<TObj> Objects { get; }
+
 	}
 
 	#endregion

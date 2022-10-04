@@ -40,5 +40,8 @@ namespace ViewObjects
 
 		/// <inheritdoc />
 		public List<object> Objects { get; set; }
+
+		/// <inheritdoc />
+		public ViewColor Color { get; set; }
 	}
 }

@@ -54,21 +54,25 @@ namespace ViewObjects
 
 	public class RigParameters : Container
 	{
-		public RigParameters(List<string> clouds, List<ViewColor> colors)
+		public RigParameters(List<string> clouds, List<ViewColor> colors, List<IViewerSystem> viewers)
 		{
-			this.clouds = clouds;
-			this.colors = colors;
+			this.Clouds = clouds;
+			this.Colors = colors;
+			this.Viewers = viewers;
 		}
+
+		public List<IViewerSystem> Viewers { get; set; }
 
 		/// <summary>
 		/// The lists of <see cref="IViewCloud"/> by <see cref="IViewCloud.ViewId"/> associated with the args
 		/// </summary>
-		public readonly List<string> clouds;
+		public List<string> Clouds { get; private set; }
 
 		/// <summary>
 		/// List of colors to use for run time analysis
 		/// </summary>
-		public readonly List<ViewColor> colors;
+		public List<ViewColor> Colors { get; private set; }
+
 	}
 
 }

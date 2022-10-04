@@ -24,7 +24,7 @@ namespace ViewTo.Cmd
 
 		public CsvDataArgs args { get; private set; }
 
-		public void Run()
+		public void Execute()
 		{
 			if (CloudV1 == null || !CloudV1.data.Valid() || !CloudV1.points.Valid())
 			{

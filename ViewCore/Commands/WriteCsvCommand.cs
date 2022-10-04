@@ -14,7 +14,7 @@ namespace ViewTo.Cmd
 			this.path = path;
 		}
 
-		public void Run()
+		public void Execute()
 		{
 			using var writer = new StreamWriter(path);
 

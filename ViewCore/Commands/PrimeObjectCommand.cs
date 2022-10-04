@@ -17,6 +17,6 @@ namespace ViewTo.Cmd
 
 		public bool greatSuccess { get; protected set; }
 
-		public abstract void Run();
+		public abstract void Execute();
 	}
 }

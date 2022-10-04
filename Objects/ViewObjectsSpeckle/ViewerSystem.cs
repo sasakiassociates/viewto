@@ -27,5 +27,11 @@ namespace ViewObjects.Speckle
 
 		/// <inheritdoc />
 		public List<string> Clouds { get; set; } = new List<string>();
+
+		/// <inheritdoc />
+		public bool IsGlobal { get; set; } = true;
+
+		/// <inheritdoc />
+		public List<IContent> Contents { get; set; } = new List<IContent>();
 	}
 }

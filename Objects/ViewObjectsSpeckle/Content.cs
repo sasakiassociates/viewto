@@ -35,5 +35,8 @@ namespace ViewObjects.Speckle
 		/// <inheritdoc />
 		public ContentType ContentType { get; set; }
 
+		/// <inheritdoc />
+		public ViewColor Color { get; set; }
+
 	}
 }

@@ -28,7 +28,7 @@ namespace ViewTo.Cmd
 			get => Study.LoadError.UnlinkedClouds;
 		}
 
-		public void Run()
+		public void Execute()
 		{
 			// var clouds = obj.GetAll<IViewCloud_v1>();
 			// var targets = obj.Get<IViewContentBundle_v1>().GetContents<ITargetContentV1>();

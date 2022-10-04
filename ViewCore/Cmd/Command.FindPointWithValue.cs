@@ -41,21 +41,21 @@ namespace ViewTo.Cmd
 			this.unimportantDifference = unimportantDifference;
 		}
 
-		public void Run()
+		public void Execute()
 		{
 			var res = -1;
 
 			// if the value being found is trash
 			if (double.IsNaN(valueToFind))
 			{
-				args = new PointWithValueArgs(res);
+				args = new PointWithValueArgs(res, $"No valid value was used to find. Value={valueToFind}");
 				return;
 			}
 
 			// if the values being searched is trash
 			if (values == null || !values.Any())
 			{
-				args = new PointWithValueArgs(res);
+				args = new PointWithValueArgs(res, "No valid list of values to search for");
 				return;
 			}
 
@@ -89,7 +89,7 @@ namespace ViewTo.Cmd
 				sampleOfValues.Add(res);
 			}
 
-			args = new PointWithValueArgs(sampleOfValues[new Random(DateTime.Now.Millisecond).Next(0, sampleOfValues.Count - 1)]);
+			args = new PointWithValueArgs(sampleOfValues[new Random(DateTime.Now.Millisecond).Next(0, sampleOfValues.Count - 1)], "Success!");
 		}
 
 	}

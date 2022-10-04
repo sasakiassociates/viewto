@@ -14,7 +14,29 @@ namespace ViewTo
 		///   Retrieves the active point result data
 		/// </summary>
 		/// <returns></returns>
-		public static ResultPoint GetResultPoint(this IExplorer explorer) => new ResultPoint();
+		public static bool TryGetResultPoint(this IExplorer explorer, double value, out ResultPoint point)
+		{
+			point = null;
+
+			var cmd = new FindPointWithValue(explorer.ActiveValues, value);
+			cmd.Execute();
+
+			if (cmd.args.IsValid())
+			{
+				var cp = explorer.Source.Points[cmd.args.index];
+				var v = explorer.ActiveValues[cmd.args.index];
+				point = new ResultPoint
+				{
+					X = cp.x, Y = cp.y, Z = cp.z,
+					Index = cmd.args.index,
+					Option = explorer.ActiveOption,
+					Value = v,
+					Color = explorer.Settings.GetColor(v),
+				};
+			}
+
+			return point != null;
+		}
 
 		/// <summary>
 		/// Get the valuess 
@@ -28,10 +50,10 @@ namespace ViewTo
 			results = Array.Empty<double>();
 			valueType.GetStages(out var stageA, out var stageB);
 
-			var getValueCmdA = new TryGetValuesCmd(exp.Data, exp.ActiveOption.Id, stageA);
-			var getValueCmdB = new TryGetValuesCmd(exp.Data, exp.ActiveOption.Id, stageB);
-			getValueCmdA.Run();
-			getValueCmdB.Run();
+			var getValueCmdA = new TryGetValues(exp.Data, exp.ActiveOption.Id, stageA);
+			var getValueCmdB = new TryGetValues(exp.Data, exp.ActiveOption.Id, stageB);
+			getValueCmdA.Execute();
+			getValueCmdB.Execute();
 
 			if (!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
 			{
@@ -39,8 +61,8 @@ namespace ViewTo
 				return false;
 			}
 
-			var normalizeCmd = new NormalizeValuesCmd(getValueCmdA.args.values, getValueCmdB.args.values);
-			normalizeCmd.Run();
+			var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
+			normalizeCmd.Execute();
 
 			if (!normalizeCmd.args.IsValid())
 			{

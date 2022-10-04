@@ -13,19 +13,22 @@ namespace ViewObjects.Explorer
 		{ }
 
 		/// <inheritdoc />
-		public IViewStudy Study { get; private set; }
+		public IViewStudy Study { get; internal set; }
 
 		/// <inheritdoc />
-		public IResultCloud Source { get; private set; }
+		public IResultCloud Source { get; internal set; }
 
 		/// <inheritdoc />
 		public ExplorerSettings Settings { get; set; } = new();
 
 		/// <inheritdoc />
-		public ContentOption ActiveOption { get; private set; }
+		public ContentOption ActiveOption { get; internal set; }
 
 		/// <inheritdoc />
-		public List<ContentOption> Options { get; private set; }
+		public List<ContentOption> Options { get; internal set; }
+
+		/// <inheritdoc />
+		public double[] ActiveValues { get; internal set; }
 
 		/// <inheritdoc />
 		public List<IResultCloudData> Data
@@ -81,6 +84,11 @@ namespace ViewObjects.Explorer
 		///   List of options to use for fetching values from <see cref="IExplorer" />. Multiple options will combine the values
 		/// </summary>
 		public List<ContentOption> Options { get; }
+
+		/// <summary>
+		/// Normalized values 
+		/// </summary>
+		public double[] ActiveValues { get; }
 
 		/// <summary>
 		/// 

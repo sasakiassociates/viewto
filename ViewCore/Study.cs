@@ -125,7 +125,7 @@ namespace ViewTo
 
 			var cmd = new CheckStudyDataCommand(study);
 			cmd.report += action;
-			cmd.Run();
+			cmd.Execute();
 		}
 
 		public static PrimedRigArgs LoadStudyForRig(this IViewStudy_v1 study)
@@ -134,7 +134,7 @@ namespace ViewTo
 			if (study.IsValid)
 			{
 				var cmd = new LoadStudyToRigCommand(study, ref rigV1);
-				cmd.Run();
+				cmd.Execute();
 			}
 
 			return new PrimedRigArgs(rigV1);
@@ -146,7 +146,7 @@ namespace ViewTo
 				return;
 
 			var cmd = new LoadStudyToRigCommand(study, ref rigV1ToBuild);
-			cmd.Run();
+			cmd.Execute();
 		}
 
 		public static void LoadStudyToRig(
@@ -161,7 +161,7 @@ namespace ViewTo
 				return;
 
 			var cmd = new RunStudyCommand(study);
-			cmd.Run();
+			cmd.Execute();
 
 			argsList = cmd.processArgs;
 			cancelArgs = cmd.cancelStudyArgs;

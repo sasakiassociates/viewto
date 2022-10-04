@@ -5,7 +5,7 @@ namespace ViewTo.Cmd
 	/// <summary>
 	/// <para>Normalizes two sets of a values</para>
 	/// </summary>
-	internal class NormalizeValuesCmd : ICmdWithArgs<ValuesForExplorerArgs>
+	internal class NormalizeValues : ICmdWithArgs<ValuesForExplorerArgs>
 	{
 		/// <summary>
 		/// Dividend values
@@ -36,7 +36,7 @@ namespace ViewTo.Cmd
 		/// <param name="valueB">The divisor value to use</param>
 		/// <param name="min">The minimum value to use when normalizing</param>
 		/// <param name="invalidValue">optional value to use when <paramref name="valueB"/> is 0 </param>
-		public NormalizeValuesCmd(IReadOnlyList<int> valueA, IReadOnlyList<int> valueB, double min = 0.0, double invalidValue = -1)
+		public NormalizeValues(IReadOnlyList<int> valueA, IReadOnlyList<int> valueB, double min = 0.0, double invalidValue = -1)
 		{
 			this.valueA = valueA;
 			this.valueB = valueB;
@@ -44,7 +44,7 @@ namespace ViewTo.Cmd
 			this.invalidValue = invalidValue;
 		}
 
-		public void Run()
+		public void Execute()
 		{
 			if (valueA == null || valueB == null || valueA.Count != valueB.Count)
 			{
@@ -58,7 +58,7 @@ namespace ViewTo.Cmd
 				values[i] = valueB[i] == 0 ? invalidValue : (valueA[i] - min) / (valueB[i] - min);
 			}
 
-			args = new ValuesForExplorerArgs(values);
+			args = new ValuesForExplorerArgs(values, $"Found values! {values.Length}");
 		}
 
 	}

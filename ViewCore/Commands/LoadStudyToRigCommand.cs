@@ -34,11 +34,11 @@ namespace ViewTo.Cmd
 
 		public IList<IStudyCommand> sequence { get; }
 
-		public void Run()
+		public void Execute()
 		{
 			foreach (var cmd in sequence)
 			{
-				cmd.Run();
+				cmd.Execute();
 
 				if (cmd.processArgs != null)
 					processArgs.AddRange(cmd.processArgs);

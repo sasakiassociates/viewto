@@ -7,7 +7,7 @@ namespace ViewTo.Cmd
 	/// <summary>
 	/// <para>Searches through a list of <see cref="IResultCloudData"/> to find a given object with a matching id and stage</para>
 	/// </summary>
-	internal class TryGetValuesCmd : ICmdWithArgs<ValuesRawForExplorerArgs>
+	internal class TryGetValues : ICmdWithArgs<ValuesRawForExplorerArgs>
 	{
 		/// <summary>
 		/// id from the content
@@ -32,28 +32,45 @@ namespace ViewTo.Cmd
 		/// <param name="data">data to search through</param>
 		/// <param name="contentId">id of the content to find</param>
 		/// <param name="stage">the analysis stage to find</param>
-		public TryGetValuesCmd(List<IResultCloudData> data, string contentId, ResultStage stage)
+		public TryGetValues(IReadOnlyCollection<IResultCloudData> data, string contentId, ResultStage stage)
 		{
 			this.data = data;
 			this.stage = stage;
 			this.contentId = contentId;
-
-			args = new ValuesRawForExplorerArgs();
 		}
 
-		public void Run()
+		public void Execute()
 		{
-			if (data != null && data.Any() && !string.IsNullOrEmpty(contentId))
+			if (string.IsNullOrEmpty(contentId))
 			{
-				foreach (var d in data)
+				args = new ValuesRawForExplorerArgs("Content ID does is not valid");
+				return;
+			}
+
+			if (data == null || !data.Any())
+			{
+				args = new ValuesRawForExplorerArgs("No data found to use");
+				return;
+			}
+
+			IResultCloudData dataFound = default;
+
+			foreach (var d in data)
+			{
+				if (d.Option.Id.Equals(contentId) && d.Option.Stage == stage)
 				{
-					if (d.Option.Id.Equals(contentId) && d.Option.Stage == stage)
-					{
-						args = new ValuesRawForExplorerArgs(d.Values);
-						break;
-					}
+					dataFound = d;
+					break;
 				}
 			}
+
+			if (dataFound == default)
+			{
+				args = new ValuesRawForExplorerArgs($"No id found in the data set. Input id={contentId}");
+				return;
+			}
+
+			args = new ValuesRawForExplorerArgs(dataFound.Values, $"Data found for {contentId} with {dataFound.Values.Count} ");
 		}
 
 	}

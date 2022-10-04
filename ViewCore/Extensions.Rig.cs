@@ -7,6 +7,7 @@ using ViewTo.Events.Report;
 
 namespace ViewTo
 {
+
 	public static partial class ViewCoreExtensions
 	{
 

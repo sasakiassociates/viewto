@@ -11,7 +11,7 @@ namespace ViewTo.Cmd
 
 		public IRig_v1 Obj { get; }
 
-		public override void Run()
+		public override void Execute()
 		{
 			if (!ValidData)
 			{

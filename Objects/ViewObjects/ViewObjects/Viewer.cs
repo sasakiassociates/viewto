@@ -17,8 +17,16 @@ namespace ViewObjects.Viewer
 			Clouds = clouds.Valid() ? clouds : new List<string>();
 		}
 
+		/// <inheritdoc />
 		public List<IViewerLayout> Layouts { get; set; }
 
+		/// <inheritdoc />
 		public List<string> Clouds { get; set; }
+
+		/// <inheritdoc />
+		public bool IsGlobal { get; set; } = true;
+
+		/// <inheritdoc />
+		public List<IContent> Contents { get; set; }
 	}
 }

@@ -42,12 +42,12 @@ namespace ViewTo.Cmd
 			get => Study.LoadError.ObjectSetup;
 		}
 
-		public void Run()
+		public void Execute()
 		{
 			var data = new PrimedStudy();
 			foreach (var cmd in sequence)
 			{
-				cmd.Run();
+				cmd.Execute();
 				if (!cmd.greatSuccess)
 				{
 					processArgs.Add(new CancelObjectSetupArgs(cmd.ToString(), errorFlag));

@@ -9,10 +9,11 @@ namespace ViewObjects
 	{
 
 		/// <inheritdoc />
-		public List<IViewerSystem> Viewers { get; set; }
+		public void Build(List<IViewerSystem> viewers)
+		{ }
 
 		/// <inheritdoc />
-		public List<RigParameters> Parameters { get; set; }
-
+		public void Initialize(List<RigParameters> parameters)
+		{ }
 	}
 }
