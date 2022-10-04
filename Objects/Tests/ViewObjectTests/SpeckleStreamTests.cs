@@ -39,15 +39,16 @@ namespace ViewTests.Objects
 			_stream.id = "1da7b18b31";
 			_stream.branch = "conversions";
 
-			VS.ResultCloud cloud = VO.ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
+			var cloud = VO.ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
 
 			_transport = new ServerTransport(_client.Account, _stream.id);
 
-			var id = await Operations.Send(cloud, new List<ITransport>() { _transport });
+			var id = await Operations.Send(cloud, new List<ITransport>
+				                               { _transport });
 
 			Assert.IsNotNull(id);
 
-			var commit = await _client.CommitCreate(new CommitCreateInput()
+			var commit = await _client.CommitCreate(new CommitCreateInput
 			{
 				streamId = _stream.id,
 				branchName = _stream.branch,
@@ -59,7 +60,8 @@ namespace ViewTests.Objects
 			Assert.IsNotNull(commit);
 		}
 
-		[Test, Ignore("Not working with current object type")]
+		[Test]
+		[Ignore("Not working with current object type")]
 		public async Task ReceiveResultCloudFromCommit()
 		{
 			_client = new Client(AccountManager.GetDefaultAccount());
@@ -84,14 +86,14 @@ namespace ViewTests.Objects
 			var obj = converter.ConvertToNative(@base);
 
 			Assert.IsNotNull(obj);
-			if (obj is ViewObjects.Speckle.ResultCloud viewObj)
+			if (obj is VS.ResultCloud viewObj)
 			{
 				Assert.IsNotEmpty(viewObj.Points);
 				Assert.IsNotEmpty(viewObj.Data);
 			}
 			else
 			{
-				Assert.Fail($"{obj.GetType()} received was not converted to {typeof(ViewObjects.Speckle.ResultCloud)}");
+				Assert.Fail($"{obj.GetType()} received was not converted to {typeof(VS.ResultCloud)}");
 			}
 		}
 	}

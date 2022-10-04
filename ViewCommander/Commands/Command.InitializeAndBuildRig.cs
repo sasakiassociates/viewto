@@ -6,12 +6,10 @@ namespace ViewTo.Cmd
 {
 	internal class InitializeAndBuildRig : ICmdWithArgs<SimpleResultArgs>
 	{
-		IRig _rig;
-		IReadOnlyList<IContent> _contents;
 		IReadOnlyList<IViewCloud> _clouds;
+		IReadOnlyList<IContent> _contents;
+		IRig _rig;
 		IReadOnlyList<IViewer> _viewers;
-
-		public SimpleResultArgs args { get; private set; }
 
 		public InitializeAndBuildRig(IRig rig, IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers)
 		{
@@ -20,6 +18,8 @@ namespace ViewTo.Cmd
 			_clouds = clouds;
 			_viewers = viewers;
 		}
+
+		public SimpleResultArgs args { get; private set; }
 
 		public void Execute()
 		{
@@ -52,8 +52,11 @@ namespace ViewTo.Cmd
 		}
 
 		/// <summary>
-		/// Goes through all the viewers and places
-		/// <para>this is where the view colors that are not meant to be shared globally would be separated, but for now we use all the colors</para>
+		///   Goes through all the viewers and places
+		///   <para>
+		///     this is where the view colors that are not meant to be shared globally would be separated, but for now we use
+		///     all the colors
+		///   </para>
 		/// </summary>
 		/// <param name="viewers"></param>
 		/// <param name="contents"></param>
@@ -68,8 +71,11 @@ namespace ViewTo.Cmd
 		}
 
 		/// <summary>
-		/// Goes through all the viewers and places
-		/// <para>this is where the view colors that are not meant to be shared globally would be separated, but for now we use all the colors</para>
+		///   Goes through all the viewers and places
+		///   <para>
+		///     this is where the view colors that are not meant to be shared globally would be separated, but for now we use
+		///     all the colors
+		///   </para>
 		/// </summary>
 		/// <param name="viewers"></param>
 		/// <param name="contents"></param>
@@ -86,6 +92,5 @@ namespace ViewTo.Cmd
 				viewers.ToList()
 			);
 		}
-
 	}
 }

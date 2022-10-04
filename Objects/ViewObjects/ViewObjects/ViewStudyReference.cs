@@ -5,17 +5,8 @@ namespace ViewObjects.Study
 {
 	public class ViewStudyReference : IViewStudy<ViewObjectReference>, IViewObject
 	{
-		/// <inheritdoc />
-		public string ViewId { get; }
-
-		/// <inheritdoc />
-		public string ViewName { get; set; }
-
-		/// <inheritdoc />
-		public List<ViewObjectReference> Objects { get; set; }
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public ViewStudyReference()
 		{
@@ -29,5 +20,14 @@ namespace ViewObjects.Study
 			ViewId = ObjUtils.CheckIfValidId(viewId);
 			Objects = objects ?? new List<ViewObjectReference>();
 		}
+
+		/// <inheritdoc />
+		public string ViewId { get; }
+
+		/// <inheritdoc />
+		public string ViewName { get; set; }
+
+		/// <inheritdoc />
+		public List<ViewObjectReference> Objects { get; set; }
 	}
 }

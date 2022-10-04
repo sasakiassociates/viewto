@@ -11,36 +11,57 @@ namespace ViewObjects.Converter
 
 		public static TBase SearchForType<TBase>(this Base obj, bool recursive) where TBase : Base
 		{
-			if (obj is TBase simpleCast) return simpleCast;
+			if (obj is TBase simpleCast)
+			{
+				return simpleCast;
+			}
 
 			foreach (var member in obj.GetMemberNames())
 			{
 				var nestedObj = obj[member];
 
 				// 1. Direct cast for object type 
-				if (nestedObj.IsBase(out TBase memberCast)) return memberCast;
+				if (nestedObj.IsBase(out TBase memberCast))
+				{
+					return memberCast;
+				}
 
 				// 2. Check if member is base type
 				if (nestedObj.IsBase(out var nestedBase))
 				{
 					var objectToFind = nestedBase.SearchForType<TBase>(recursive);
 
-					if (objectToFind != default) return objectToFind;
+					if (objectToFind != default)
+					{
+						return objectToFind;
+					}
 				}
 				else if (nestedObj.IsList(out var nestedList))
 				{
 					foreach (var listObj in nestedList)
 					{
-						if (listObj.IsBase(out TBase castedListObjectType)) return castedListObjectType;
+						if (listObj.IsBase(out TBase castedListObjectType))
+						{
+							return castedListObjectType;
+						}
 
 						// if not set to recursive we dont look through any other objects
-						if (!recursive) continue;
+						if (!recursive)
+						{
+							continue;
+						}
 
 						// if its not a base object we turn around
-						if (!listObj.IsBase(out var nestedListBase)) continue;
+						if (!listObj.IsBase(out var nestedListBase))
+						{
+							continue;
+						}
 
 						var objectToFind = nestedListBase.SearchForType<TBase>(true);
-						if (objectToFind != default) return objectToFind;
+						if (objectToFind != default)
+						{
+							return objectToFind;
+						}
 					}
 				}
 			}
@@ -52,7 +73,10 @@ namespace ViewObjects.Converter
 		{
 			list = new List<object>();
 
-			if (obj.IsList()) list = ((IEnumerable)obj).Cast<object>().ToList();
+			if (obj.IsList())
+			{
+				list = ((IEnumerable)obj).Cast<object>().ToList();
+			}
 
 			return list.Any();
 		}
@@ -61,7 +85,10 @@ namespace ViewObjects.Converter
 
 		public static bool IsList(this Type type)
 		{
-			if (type == null) return false;
+			if (type == null)
+			{
+				return false;
+			}
 
 			return typeof(IEnumerable).IsAssignableFrom(type) && !typeof(IDictionary).IsAssignableFrom(type) && type != typeof(string);
 		}
@@ -70,7 +97,10 @@ namespace ViewObjects.Converter
 		{
 			@base = default;
 
-			if (value != null && !value.GetType().IsSimpleType() && value is TBase o) @base = o;
+			if (value != null && !value.GetType().IsSimpleType() && value is TBase o)
+			{
+				@base = o;
+			}
 
 			return @base != null;
 		}
@@ -79,7 +109,10 @@ namespace ViewObjects.Converter
 		{
 			@base = null;
 
-			if (value != null && !value.GetType().IsSimpleType() && value is Base o) @base = o;
+			if (value != null && !value.GetType().IsSimpleType() && value is Base o)
+			{
+				@base = o;
+			}
 
 			return @base != null;
 		}

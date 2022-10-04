@@ -10,13 +10,11 @@ namespace ViewObjects
 		public Layout()
 		{ }
 
-		public Layout(List<ViewDirection> directions)
-		{
-			Viewers = directions;
-		}
+		public Layout(List<ViewDirection> directions) => Viewers = directions;
 
 		public List<ViewDirection> Viewers { get; protected set; } =
-			new List<ViewDirection> { ViewDirection.Front };
+			new()
+				{ ViewDirection.Front };
 	}
 
 	/// <summary>
@@ -28,13 +26,9 @@ namespace ViewObjects
 		public LayoutNormal()
 		{ }
 
-		public LayoutNormal(List<ViewDirection> directions)
-		{
-			Viewers = directions;
-		}
+		public LayoutNormal(List<ViewDirection> directions) => Viewers = directions;
 
 		public List<string> Clouds { get; set; }
-
 	}
 
 	/// <summary>
@@ -52,7 +46,6 @@ namespace ViewObjects
 		public double y { get; set; }
 
 		public double z { get; set; }
-
 	}
 
 	/// <summary>
@@ -64,10 +57,7 @@ namespace ViewObjects
 		public LayoutOrtho()
 		{ }
 
-		public LayoutOrtho(List<ViewDirection> directions)
-		{
-			Viewers = directions;
-		}
+		public LayoutOrtho(List<ViewDirection> directions) => Viewers = directions;
 
 		public double Size { get; set; }
 	}
@@ -78,19 +68,15 @@ namespace ViewObjects
 	public class LayoutCube : Layout
 	{
 
-		public LayoutCube()
+		public LayoutCube() => Viewers = new()
 		{
-			Viewers = new()
-			{
-				ViewDirection.Front,
-				ViewDirection.Right,
-				ViewDirection.Back,
-				ViewDirection.Left,
-				ViewDirection.Up,
-				ViewDirection.Down
-			};
-		}
-
+			ViewDirection.Front,
+			ViewDirection.Right,
+			ViewDirection.Back,
+			ViewDirection.Left,
+			ViewDirection.Up,
+			ViewDirection.Down
+		};
 	}
 
 	/// <summary>
@@ -98,16 +84,12 @@ namespace ViewObjects
 	/// </summary>
 	public class LayoutHorizontal : Layout
 	{
-		public LayoutHorizontal()
+		public LayoutHorizontal() => Viewers = new()
 		{
-			Viewers = new()
-			{
-				ViewDirection.Front,
-				ViewDirection.Right,
-				ViewDirection.Back,
-				ViewDirection.Left,
-			};
-		}
-
+			ViewDirection.Front,
+			ViewDirection.Right,
+			ViewDirection.Back,
+			ViewDirection.Left
+		};
 	}
 }

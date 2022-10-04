@@ -8,7 +8,7 @@ namespace ViewTo.Receivers
 	public class StudyObjectValidator
 	{
 		/// <summary>
-		/// Simple check for looking at a list for objects
+		///   Simple check for looking at a list for objects
 		/// </summary>
 		/// <param name="list"></param>
 		/// <param name="message"></param>
@@ -59,7 +59,7 @@ namespace ViewTo.Receivers
 			var countProposed = contents.Count(x => x.ContentType == ContentType.Proposed);
 			var countViewerLinked = viewers.Count(x => x is IViewerLinked);
 
-			int countTotalPoints = 0;
+			var countTotalPoints = 0;
 			foreach (var o in clouds)
 			{
 				if (o?.Points != null)
@@ -68,7 +68,7 @@ namespace ViewTo.Receivers
 				}
 			}
 
-			int countTotalLayouts = 0;
+			var countTotalLayouts = 0;
 			foreach (var o in viewers)
 			{
 				if (o?.Layouts != null)
@@ -91,7 +91,6 @@ namespace ViewTo.Receivers
 
 			return countTarget > 0 && countExisting > 0 && countViewerLinked > 0;
 		}
-
 	}
 
 }

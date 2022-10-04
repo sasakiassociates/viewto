@@ -3,7 +3,7 @@ using NUnit.Framework;
 using ViewObjects;
 using ViewObjects.Converter;
 using ViewObjects.References;
-using ViewObjects.Speckle;
+using ViewObjects.Study;
 using Cat = ViewTests.ViewTestCategories;
 
 namespace ViewTests.Objects
@@ -30,20 +30,21 @@ namespace ViewTests.Objects
 		{
 			var objs = new List<IViewObject>
 			{
-				new ContentReference(new List<string>() { "256ff84cf7" }, ContentType.Proposed),
+				new ContentReference(new List<string>
+					                     { "256ff84cf7" }, ContentType.Proposed),
 				new CloudReference(new List<string> { "256ff84cf7" }),
-				new ViewObjects.Viewer()
+				new Viewer()
 			};
 
-			var obj = new ViewObjects.Study.ViewStudy(objs, "Test View Study");
+			var obj = new ViewStudy(objs, "Test View Study");
 
 			var converter = new ViewObjectsConverter();
 			var res = converter.ConvertToSpeckle(obj);
 
 			Assert.IsNotNull(res);
-			Assert.IsTrue(res is ViewStudy);
+			Assert.IsTrue(res is ViewObjects.Speckle.ViewStudy);
 
-			var studyBase = res as ViewStudy;
+			var studyBase = res as ViewObjects.Speckle.ViewStudy;
 			Assert.IsTrue(obj.ViewId.Equals(studyBase.ViewId));
 			Assert.IsTrue(obj.ViewName.Equals(studyBase.ViewName));
 			Assert.IsTrue(obj.Objects.Count.Equals(studyBase.Objects.Count));

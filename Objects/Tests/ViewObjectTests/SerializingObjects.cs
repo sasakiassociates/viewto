@@ -50,7 +50,7 @@ namespace ViewTests.Objects
 			Assert.IsTrue(obj.MetaData.Count == result.MetaData.Count);
 			Assert.IsTrue(obj.Data.Count == result.Data.Count);
 
-			for (int i = 0; i < obj.Data.Count; i++)
+			for (var i = 0; i < obj.Data.Count; i++)
 			{
 				Check(obj.Data[i], result.Data[i]);
 			}

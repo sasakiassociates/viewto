@@ -12,7 +12,9 @@ namespace ViewTo.Receivers
 		public bool NearlyEqual(double value1, double value2, double unimportantDifference = 0.0001)
 		{
 			if (double.IsNaN(value1) || double.IsNaN(value2))
+			{
 				return false;
+			}
 
 			return Math.Abs(value1 - value2) < unimportantDifference;
 		}
@@ -40,7 +42,9 @@ namespace ViewTo.Receivers
 			var outputValues = new double[values.Count];
 
 			for (var i = 0; i < values.Count; i++)
+			{
 				outputValues[i] = Math.Log(values[i], logCustomBase);
+			}
 
 			return outputValues;
 		}

@@ -2,6 +2,7 @@
 using System.Linq;
 using Speckle.Core.Models;
 using ViewObjects.References;
+using ViewObjects.Study;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
@@ -10,7 +11,7 @@ namespace ViewObjects.Converter
 	/// <inheritdoc />
 	public partial class ViewObjectsConverter
 	{
-		IViewObject StudyToNative(VS.ViewStudy obj) => new Study.ViewStudy
+		IViewObject StudyToNative(VS.ViewStudy obj) => new ViewStudy
 		(
 			obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToNativeViewObject).ToList()
 				: new List<IViewObject>(),
@@ -30,9 +31,9 @@ namespace ViewObjects.Converter
 			new ViewerLinked(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
 
 		IViewObject ResultCloudToNative(VS.ResultCloud obj) =>
-			new VO.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);
+			new ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);
 
-		IResultCloudData ResultCloudDataToNative(IResultCloudData obj) => new VO.ResultCloudData(obj.Values, obj.Option, obj.Layout);
+		IResultCloudData ResultCloudDataToNative(IResultCloudData obj) => new ResultCloudData(obj.Values, obj.Option, obj.Layout);
 
 		VS.ViewStudy StudyToSpeckle(IViewStudy<IViewObject> obj) => new VS.ViewStudy
 		{
@@ -61,10 +62,7 @@ namespace ViewObjects.Converter
 			return new VS.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToSpeckle).ToList(), obj.ViewId);
 		}
 
-		VS.ResultCloudData ResultCloudDataToSpeckle(IResultCloudData obj)
-		{
-			return new VS.ResultCloudData(obj.Values, obj.Option, obj.Layout);
-		}
+		VS.ResultCloudData ResultCloudDataToSpeckle(IResultCloudData obj) => new VS.ResultCloudData(obj.Values, obj.Option, obj.Layout);
 
 		//TODO: Support getting list of objects from search
 		IViewObject HandleDefault(Base @base)
@@ -76,11 +74,12 @@ namespace ViewObjects.Converter
 				var obj = @base.SearchForType<VS.ViewObjectBase>(true);
 
 				if (obj != null)
+				{
 					o = obj;
+				}
 			}
 
 			return o;
 		}
-
 	}
 }

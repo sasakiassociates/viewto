@@ -15,11 +15,11 @@ namespace ViewTo
 
 			var reports = new List<string>();
 
-			var sequence = new List<ICmd>()
+			var sequence = new List<ICmd>
 			{
 				new CanStudyRun(contents, clouds, viewers),
 				new AssignViewColors(contents),
-				new InitializeAndBuildRig(rig, contents, clouds, viewers),
+				new InitializeAndBuildRig(rig, contents, clouds, viewers)
 			};
 
 			foreach (var s in sequence)
@@ -36,31 +36,30 @@ namespace ViewTo
 		}
 
 		/// <summary>
-		/// <para>Checks if a view study has the correct data necessary to run a view study.
-		/// The correct data is at least one <see cref="IViewCloud"/>, one <see cref="IViewer"/>,
-		/// one <see cref="Content"/> marked as <see cref="ContentType.Target"/> and one marked as <see cref="ContentType.Existing"/>
-		/// </para> 
+		///   <para>
+		///     Checks if a view study has the correct data necessary to run a view study.
+		///     The correct data is at least one <see cref="IViewCloud" />, one <see cref="IViewer" />,
+		///     one <see cref="Content" /> marked as <see cref="ContentType.Target" /> and one marked as
+		///     <see cref="ContentType.Existing" />
+		///   </para>
 		/// </summary>
 		/// <param name="study">object to check</param>
 		/// <returns></returns>
-		public static bool CanRun(this IViewStudy study)
-		{
-			return study.Has<IViewCloud>() && study.Has<IViewer>() && study.Has(ContentType.Target) && study.Has(ContentType.Existing);
-		}
+		public static bool CanRun(this IViewStudy study) =>
+			study.Has<IViewCloud>() && study.Has<IViewer>() && study.Has(ContentType.Target) && study.Has(ContentType.Existing);
 
 		/// <summary>
-		/// <para>Checks if a view study has the correct object types needed to visualize data.
-		/// The one object needed is a <see cref="IResultCloud"/></para>
+		///   <para>
+		///     Checks if a view study has the correct object types needed to visualize data.
+		///     The one object needed is a <see cref="IResultCloud" />
+		///   </para>
 		/// </summary>
 		/// <param name="study">object to check</param>
 		/// <returns></returns>
-		public static bool CanExplore(this IViewStudy study)
-		{
-			return study.Has<IResultCloud>();
-		}
+		public static bool CanExplore(this IViewStudy study) => study.Has<IResultCloud>();
 
 		/// <summary>
-		/// <para>Checks for a specific type of <see cref="IContent"/> object that fits the <see cref="ContentType"/></para> 
+		///   <para>Checks for a specific type of <see cref="IContent" /> object that fits the <see cref="ContentType" /></para>
 		/// </summary>
 		/// <param name="study">study to check</param>
 		/// <param name="type">type of content to find</param>
@@ -96,7 +95,7 @@ namespace ViewTo
 		}
 
 		/// <summary>
-		/// <para>Checks for a specific type of object to search for</para> 
+		///   <para>Checks for a specific type of object to search for</para>
 		/// </summary>
 		/// <param name="study">study to check</param>
 		/// <param name="id">optional id to use</param>
@@ -125,16 +124,13 @@ namespace ViewTo
 		}
 
 		/// <summary>
-		/// <para>Gets a list of objects of a specific type</para> 
+		///   <para>Gets a list of objects of a specific type</para>
 		/// </summary>
 		/// <param name="study">study to check</param>
-		public static List<TObjType> GetAll<TObjType>(this IViewStudy study)
-		{
-			return study.Objects.OfType<TObjType>().ToList();
-		}
+		public static List<TObjType> GetAll<TObjType>(this IViewStudy study) => study.Objects.OfType<TObjType>().ToList();
 
 		/// <summary>
-		/// <para>Gets a specific type of object to search for</para> 
+		///   <para>Gets a specific type of object to search for</para>
 		/// </summary>
 		/// <param name="study">study to check</param>
 		/// <param name="id">optional id to use</param>
@@ -156,6 +152,5 @@ namespace ViewTo
 
 			return default;
 		}
-
 	}
 }

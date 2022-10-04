@@ -40,15 +40,19 @@ namespace ViewObjects.Explorer
 		public void Load(IViewStudy viewObj)
 		{
 			if (viewObj == default)
+			{
 				return;
+			}
 
 			Source = viewObj.FindObject<ResultCloud>();
 
 			if (Source == null)
+			{
 				return;
+			}
 
-			this.Options = Source.Data.Where(x => x != null).Select(x => x.Option).Cast<ContentOption>().ToList();
-			this.ActiveOption = Options.FirstOrDefault();
+			Options = Source.Data.Where(x => x != null).Select(x => x.Option).Cast<ContentOption>().ToList();
+			ActiveOption = Options.FirstOrDefault();
 
 			Settings ??= new ExplorerSettings();
 			// Data.ActiveValues = this.Fetch();
@@ -86,12 +90,11 @@ namespace ViewObjects.Explorer
 		public List<ContentOption> Options { get; }
 
 		/// <summary>
-		/// Normalized values 
+		///   Normalized values
 		/// </summary>
 		public double[] ActiveValues { get; }
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public ContentOption ActiveOption { get; }
 
@@ -106,7 +109,6 @@ namespace ViewObjects.Explorer
 		/// </summary>
 		/// <returns></returns>
 		public ResultPoint GetResultPoint();
-
 	}
 
 	public struct ExplorerData

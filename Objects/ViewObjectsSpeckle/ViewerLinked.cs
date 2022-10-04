@@ -3,7 +3,7 @@
 namespace ViewObjects.Speckle
 {
 	/// <summary>
-	/// A linked viewer
+	///   A linked viewer
 	/// </summary>
 	public class ViewerLinked : ViewObjectBase, IViewerLinked<Layout>
 	{
@@ -28,6 +28,5 @@ namespace ViewObjects.Speckle
 
 		/// <inheritdoc />
 		public List<string> Clouds { get; set; } = new List<string>();
-
 	}
 }

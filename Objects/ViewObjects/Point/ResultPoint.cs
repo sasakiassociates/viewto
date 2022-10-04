@@ -4,13 +4,12 @@ namespace ViewObjects.Explorer
 {
 	public class ResultPoint
 	{
+		public Color Color;
 
 		public int Index;
-		public double Value;
-		public Color Color;
-		public double X, Y, Z;
 		public ContentOption Option;
-
+		public double Value;
+		public double X, Y, Z;
 	}
 
 }

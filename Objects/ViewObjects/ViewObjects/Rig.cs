@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace ViewObjects
 {
 	/// <summary>
-	/// Simple Rig Object to use for constructing a study for analysis 
+	///   Simple Rig Object to use for constructing a study for analysis
 	/// </summary>
 	public class Rig : IRig, IViewObject
 	{
 
-		public List<RigParameters> StoredObjs { get; protected set; }
-
 		public Rig()
 		{ }
+
+		public List<RigParameters> StoredObjs { get; protected set; }
 
 		/// <inheritdoc />
 		public void Build()

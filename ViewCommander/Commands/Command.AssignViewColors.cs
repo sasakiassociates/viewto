@@ -6,16 +6,13 @@ namespace ViewTo.Cmd
 {
 
 	/// <summary>
-	/// <para>Goes through all the valid view colors and assigns them a value through <see cref="IContent.Color"/></para>
+	///   <para>Goes through all the valid view colors and assigns them a value through <see cref="IContent.Color" /></para>
 	/// </summary>
 	public class AssignViewColors : ICmd
 	{
 		List<IContent> _contents;
 
-		public AssignViewColors(List<IContent> contents)
-		{
-			_contents = contents;
-		}
+		public AssignViewColors(List<IContent> contents) => _contents = contents;
 
 		public void Execute()
 		{
@@ -41,7 +38,6 @@ namespace ViewTo.Cmd
 				_contents[index++].Color = c;
 			}
 		}
-
 	}
 
 }

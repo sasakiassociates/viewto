@@ -39,7 +39,9 @@ namespace ViewTo.RhinoGh.Goo
 		public override bool CastTo<Q>(ref Q target)
 		{
 			if (!(target is GH_ViewObj))
+			{
 				return false;
+			}
 
 			target = (Q)(object)new GH_ViewObj
 			{
@@ -59,7 +61,9 @@ namespace ViewTo.RhinoGh.Goo
 			};
 
 			if (obj != null)
+			{
 				Value = obj;
+			}
 
 			return true;
 		}

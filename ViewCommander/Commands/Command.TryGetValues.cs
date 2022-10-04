@@ -5,29 +5,26 @@ using ViewObjects;
 namespace ViewTo.Cmd
 {
 	/// <summary>
-	/// <para>Searches through a list of <see cref="IResultCloudData"/> to find a given object with a matching id and stage</para>
+	///   <para>Searches through a list of <see cref="IResultCloudData" /> to find a given object with a matching id and stage</para>
 	/// </summary>
 	internal class TryGetValues : ICmdWithArgs<ValuesRawForExplorerArgs>
 	{
 		/// <summary>
-		/// id from the content
+		///   id from the content
 		/// </summary>
 		readonly string contentId;
 
 		/// <summary>
-		/// stage the data is linked with
+		///   the list of data to search through
+		/// </summary>
+		readonly IReadOnlyCollection<IResultCloudData> data;
+
+		/// <summary>
+		///   stage the data is linked with
 		/// </summary>
 		readonly ResultStage stage;
 
 		/// <summary>
-		/// the list of data to search through
-		/// </summary>
-		readonly IReadOnlyCollection<IResultCloudData> data;
-
-		public ValuesRawForExplorerArgs args { get; private set; }
-
-		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="data">data to search through</param>
 		/// <param name="contentId">id of the content to find</param>
@@ -38,6 +35,8 @@ namespace ViewTo.Cmd
 			this.stage = stage;
 			this.contentId = contentId;
 		}
+
+		public ValuesRawForExplorerArgs args { get; private set; }
 
 		public void Execute()
 		{
@@ -72,6 +71,5 @@ namespace ViewTo.Cmd
 
 			args = new ValuesRawForExplorerArgs(dataFound.Values, $"Data found for {contentId} with {dataFound.Values.Count} ");
 		}
-
 	}
 }

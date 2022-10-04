@@ -8,10 +8,7 @@ namespace ViewObjects
 
 		/// <summary>
 		/// </summary>
-		public Content()
-		{
-			ViewId = Guid.NewGuid().ToString();
-		}
+		public Content() => ViewId = Guid.NewGuid().ToString();
 
 		/// <summary>
 		///   Constructs a content for a view study
@@ -39,9 +36,9 @@ namespace ViewObjects
 		public ContentType ContentType { get; }
 
 		/// <inheritdoc />
-		public List<object> Objects { get; set; }
+		public ViewColor Color { get; set; }
 
 		/// <inheritdoc />
-		public ViewColor Color { get; set; }
+		public List<object> Objects { get; set; }
 	}
 }

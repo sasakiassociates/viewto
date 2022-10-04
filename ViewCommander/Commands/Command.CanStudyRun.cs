@@ -6,13 +6,11 @@ namespace ViewTo.Cmd
 {
 	internal class CanStudyRun : ICmdWithArgs<SimpleResultArgs>
 	{
-		IReadOnlyList<IContent> _contents;
 		IReadOnlyList<IViewCloud> _clouds;
-		IReadOnlyList<IViewer> _viewers;
+		IReadOnlyList<IContent> _contents;
 
 		StudyObjectValidator _receiver;
-
-		public SimpleResultArgs args { get; private set; }
+		IReadOnlyList<IViewer> _viewers;
 
 		public CanStudyRun(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers)
 		{
@@ -21,6 +19,8 @@ namespace ViewTo.Cmd
 			_viewers = viewers;
 			_receiver = new StudyObjectValidator();
 		}
+
+		public SimpleResultArgs args { get; private set; }
 
 		public void Execute()
 		{
@@ -41,6 +41,5 @@ namespace ViewTo.Cmd
 			// check that we right objects to run a study
 			args = new SimpleResultArgs(_receiver.CheckData(_contents, _clouds, _viewers, out message), message);
 		}
-
 	}
 }

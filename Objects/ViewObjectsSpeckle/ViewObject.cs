@@ -76,15 +76,23 @@ namespace ViewObjects.Speckle
 				foreach (var t in exported)
 				{
 					if (t.IsAbstract)
+					{
 						continue;
+					}
 
 					if (t.IsInterface)
+					{
 						continue;
+					}
 
 					if (t.IsSubclassOf(typeof(Container)))
+					{
 						types.Add(t);
+					}
 					else if (typeof(IViewObject).IsAssignableFrom(t))
+					{
 						types.Add(t);
+					}
 				}
 
 				return types;
@@ -95,7 +103,9 @@ namespace ViewObjects.Speckle
 		public ISpeckleConverter LoadConverter(string app)
 		{
 			if (_loadedConverters.ContainsKey(app) && _loadedConverters[app] != null)
+			{
 				return Activator.CreateInstance(_loadedConverters[app]) as ISpeckleConverter;
+			}
 
 			_converters = GetAvailableConverters();
 
@@ -103,8 +113,10 @@ namespace ViewObjects.Speckle
 			{
 				var path = Path.Combine(KitLocations.Desktop, CONVERTER_BASE_NAME + "." + $"{app}.dll");
 				if (File.Exists(path))
+				{
 					foreach (var t in Assembly.LoadFrom(path).GetTypes())
 					foreach (var i in t.GetInterfaces())
+					{
 						if (i.Name == nameof(ISpeckleConverter)
 						    && Activator.CreateInstance(t) is ISpeckleConverter c
 						    && c.GetServicedApplications().Contains(app))
@@ -112,6 +124,8 @@ namespace ViewObjects.Speckle
 							_loadedConverters[app] = t;
 							return c;
 						}
+					}
+				}
 			}
 			catch (Exception e)
 			{

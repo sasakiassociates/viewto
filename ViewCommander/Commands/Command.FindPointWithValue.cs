@@ -7,30 +7,31 @@ using ViewTo.Receivers;
 namespace ViewTo.Cmd
 {
 	/// <summary>
-	/// <para>Looks for any values that are nearly equal to <see cref="valueToFind"/> and returns a random index within the searched for values</para>
-	///  <para>If no value is found <see cref="PointWithValueArgs"/> returns invalid with a -1 index</para>
+	///   <para>
+	///     Looks for any values that are nearly equal to <see cref="valueToFind" /> and returns a random index within the
+	///     searched for values
+	///   </para>
+	///   <para>If no value is found <see cref="PointWithValueArgs" /> returns invalid with a -1 index</para>
 	/// </summary>
 	internal class FindPointWithValue : ICmdWithArgs<PointWithValueArgs>
 	{
+
 		/// <summary>
-		/// values to search
+		///   difference values to not care about
+		/// </summary>
+		readonly double unimportantDifference;
+		/// <summary>
+		///   values to search
 		/// </summary>
 		readonly IReadOnlyList<double> values;
 
 		/// <summary>
-		/// given value to search for 
+		///   given value to search for
 		/// </summary>
 		readonly double valueToFind;
 
 		/// <summary>
-		/// difference values to not care about
-		/// </summary>
-		readonly double unimportantDifference;
-
-		public PointWithValueArgs args { get; private set; }
-
-		/// <summary>
-		/// constructs the command to run
+		///   constructs the command to run
 		/// </summary>
 		/// <param name="values">values to search</param>
 		/// <param name="valueToFind">value to search for</param>
@@ -41,6 +42,8 @@ namespace ViewTo.Cmd
 			this.valueToFind = valueToFind;
 			this.unimportantDifference = unimportantDifference;
 		}
+
+		public PointWithValueArgs args { get; private set; }
 
 		public void Execute()
 		{
@@ -93,6 +96,5 @@ namespace ViewTo.Cmd
 
 			args = new PointWithValueArgs(sampleOfValues[new Random(DateTime.Now.Millisecond).Next(0, sampleOfValues.Count - 1)], "Success!");
 		}
-
 	}
 }

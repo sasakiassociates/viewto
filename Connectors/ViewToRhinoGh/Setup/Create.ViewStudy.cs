@@ -78,6 +78,5 @@ namespace ViewTo.RhinoGh.Setup
 
 			DA.SetData(0, viewObj);
 		}
-
 	}
 }

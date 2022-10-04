@@ -6,10 +6,7 @@ namespace ViewTo.Cmd
 {
 	internal abstract class CommandArgs : ICommandArgs
 	{
-		public CommandArgs(string message)
-		{
-			Message = message;
-		}
+		public CommandArgs(string message) => Message = message;
 
 		public string Message { get; protected set; }
 
@@ -20,10 +17,7 @@ namespace ViewTo.Cmd
 	{
 		bool _result;
 
-		public SimpleResultArgs(bool result, string message) : base(message)
-		{
-			_result = result;
-		}
+		public SimpleResultArgs(bool result, string message) : base(message) => _result = result;
 
 		public override bool IsValid() => _result;
 	}
@@ -36,10 +30,7 @@ namespace ViewTo.Cmd
 		public ValuesForExplorerArgs(string message) : base(message)
 		{ }
 
-		public ValuesForExplorerArgs(IEnumerable<double> values, string message) : base(message)
-		{
-			this.values = values.ToArray();
-		}
+		public ValuesForExplorerArgs(IEnumerable<double> values, string message) : base(message) => this.values = values.ToArray();
 
 		public override bool IsValid() => values != null && values.Any();
 	}
@@ -52,10 +43,7 @@ namespace ViewTo.Cmd
 		public ValuesRawForExplorerArgs(string message) : base(message)
 		{ }
 
-		public ValuesRawForExplorerArgs(IEnumerable<int> values, string message) : base(message)
-		{
-			this.values = values.ToArray();
-		}
+		public ValuesRawForExplorerArgs(IEnumerable<int> values, string message) : base(message) => this.values = values.ToArray();
 
 		public override bool IsValid() => values != null && values.Any();
 	}
@@ -67,10 +55,7 @@ namespace ViewTo.Cmd
 		public PointWithValueArgs(string message) : base(message)
 		{ }
 
-		public PointWithValueArgs(int index, string message) : base(message)
-		{
-			this.index = index;
-		}
+		public PointWithValueArgs(int index, string message) : base(message) => this.index = index;
 
 		public override bool IsValid() => index >= 0;
 	}

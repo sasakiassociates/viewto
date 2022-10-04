@@ -44,6 +44,7 @@ namespace ViewTo.RhinoGh.Objects
 		protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
 		{
 			foreach (ResultStage rt in Enum.GetValues(typeof(ResultStage)))
+			{
 				Menu_AppendItem(
 					menu,
 					rt.ToString(), (s, e) =>
@@ -57,6 +58,7 @@ namespace ViewTo.RhinoGh.Objects
 					true,
 					rt == _resultStage
 				).Tag = rt;
+			}
 
 			base.AppendAdditionalComponentMenuItems(menu);
 		}

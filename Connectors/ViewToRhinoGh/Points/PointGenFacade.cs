@@ -59,9 +59,20 @@ namespace ViewTo.RhinoGh.Points
 			var stepSizeX = new double();
 			var stepSizeZ = new double();
 
-			if (!DA.GetDataList(0, buildings)) return;
-			if (!DA.GetData(1, ref stepSizeX)) return;
-			if (!DA.GetData(2, ref stepSizeZ)) return;
+			if (!DA.GetDataList(0, buildings))
+			{
+				return;
+			}
+
+			if (!DA.GetData(1, ref stepSizeX))
+			{
+				return;
+			}
+
+			if (!DA.GetData(2, ref stepSizeZ))
+			{
+				return;
+			}
 
 			if (stepSizeX <= 0 || stepSizeZ <= 0)
 			{
@@ -104,7 +115,10 @@ namespace ViewTo.RhinoGh.Points
 			//---------------------------------BUILDING CONTOURS---------------------------------//
 			foreach (var building in buildings)
 			{
-				if (building == null) continue;
+				if (building == null)
+				{
+					continue;
+				}
 
 				// get starting point (at top of building)
 				var box = building.GetBoundingBox(false);

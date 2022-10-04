@@ -19,10 +19,7 @@ namespace ViewObjects
 		/// <inheritdoc />
 		public ResultStage Stage { get; set; }
 
-		public bool Equals(IContentOption obj)
-		{
-			return obj != default && Id.Valid() && Id.Equals(obj.Id) && Stage == obj.Stage;
-		}
+		public bool Equals(IContentOption obj) => obj != default && Id.Valid() && Id.Equals(obj.Id) && Stage == obj.Stage;
 	}
 
 	[Serializable]
@@ -36,9 +33,9 @@ namespace ViewObjects
 
 		public ResultCloudData(List<int> values, IContentOption option, string layout)
 		{
-			this.Values = values;
-			this.Option = option;
-			this.Layout = layout;
+			Values = values;
+			Option = option;
+			Layout = layout;
 		}
 
 		/// <inheritdoc />
@@ -49,30 +46,28 @@ namespace ViewObjects
 
 		/// <inheritdoc />
 		public List<int> Values { get; set; }
-
 	}
 
 	public class RigParameters : Container
 	{
 		public RigParameters(List<string> clouds, List<ViewColor> colors, List<IViewerLayout> viewer)
 		{
-			this.Clouds = clouds;
-			this.Colors = colors;
-			this.Viewer = viewer;
+			Clouds = clouds;
+			Colors = colors;
+			Viewer = viewer;
 		}
 
 		public List<IViewerLayout> Viewer { get; set; }
 
 		/// <summary>
-		/// The lists of <see cref="IViewCloud"/> by <see cref="IViewCloud.ViewId"/> associated with the args
+		///   The lists of <see cref="IViewCloud" /> by <see cref="IViewCloud.ViewId" /> associated with the args
 		/// </summary>
-		public List<string> Clouds { get; private set; }
+		public List<string> Clouds { get; }
 
 		/// <summary>
-		/// List of colors to use for run time analysis
+		///   List of colors to use for run time analysis
 		/// </summary>
-		public List<ViewColor> Colors { get; private set; }
-
+		public List<ViewColor> Colors { get; }
 	}
 
 }

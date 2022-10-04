@@ -54,12 +54,16 @@ namespace ViewObjects.Speckle
 			get
 			{
 				if (Positions.Count % 3 != 0)
+				{
 					throw new SpeckleException($"{nameof(ResultCloud)}.{nameof(Positions)} list is malformed: expected length to be multiple of 3");
+				}
 
 				var points = new CloudPoint[Positions.Count / 3];
 
 				for (int i = 2, c = 0; i < Positions.Count; i += 3, c++)
+				{
 					points[c] = new CloudPoint(Positions[i - 2], Positions[i - 1], Positions[i], 0, 0, 0, MetaData[c] ?? "empty");
+				}
 
 				return points;
 			}

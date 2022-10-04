@@ -64,9 +64,13 @@ namespace ViewTo.RhinoGh.Setup
 			var id = string.Empty;
 
 			if (DA.GetData(_input.Id, ref id) && Guid.TryParse(id, out var r))
+			{
 				id = r.ToString();
+			}
 			else
+			{
 				id = Guid.NewGuid().ToString();
+			}
 
 			var dataContainer = new List<IResultCloudData>();
 
@@ -76,11 +80,14 @@ namespace ViewTo.RhinoGh.Setup
 				var values = new List<int>();
 
 				foreach (var v in branchValue)
+				{
 					values.Add(v.Value);
+				}
 
 				if (treeOptions.Branches[bIndex].FirstOrDefault().Value is ContentOption co)
 				{
-					dataContainer.Add(new ResultCloudData() { Values = values, Option = co, Layout = nameof(Layout) });
+					dataContainer.Add(new ResultCloudData
+						                  { Values = values, Option = co, Layout = nameof(Layout) });
 				}
 			}
 

@@ -49,14 +49,12 @@ namespace ViewObjects
 
 			objects.Add(cloud);
 			objects.AddRange(content.Select(x => (IViewObject)x).ToList());
-			objects.Add(new Viewer(new List<IViewerLayout>() { new LayoutCube() }));
+			objects.Add(new Viewer(new List<IViewerLayout>
+				                       { new LayoutCube() }));
 			return new ViewStudy(objects, name);
 		}
 
-		public static IContent Content(ContentType type, string name = "test")
-		{
-			return new Content(type, ObjUtils.InitGuid, name);
-		}
+		public static IContent Content(ContentType type, string name = "test") => new Content(type, ObjUtils.InitGuid, name);
 
 		public static TCloud Cloud<TCloud>(int pointCount)
 			where TCloud : IViewCloud
@@ -89,7 +87,7 @@ namespace ViewObjects
 			var values = new List<TData>();
 			var random = new Random();
 
-			for (int c = 0; c < colorCount; c++)
+			for (var c = 0; c < colorCount; c++)
 			{
 				var id = ObjUtils.InitGuid;
 				foreach (ResultStage stage in Enum.GetValues(typeof(ResultStage)))
@@ -115,27 +113,27 @@ namespace ViewObjects
 			obj.Layout = string.IsNullOrEmpty(layout) ? nameof(Layout) : layout;
 			obj.Values = Values(pointCount, random);
 			obj.Option = ContentOption(
-				name: string.IsNullOrEmpty(contentName) ? "Test" : contentName,
-				id: ObjUtils.CheckIfValidId(id),
-				stage: stage);
+				string.IsNullOrEmpty(contentName) ? "Test" : contentName,
+				ObjUtils.CheckIfValidId(id),
+				stage);
 			return obj;
 		}
 
-		public static IContentOption ContentOption(string name = "test", string id = null, ResultStage stage = ResultStage.Existing)
+		public static IContentOption ContentOption(string name = "test", string id = null, ResultStage stage = ResultStage.Existing) => new ContentOption
 		{
-			return new ContentOption
-			{
-				Id = ObjUtils.CheckIfValidId(id), Stage = stage, Name = name
-			};
-		}
+			Id = ObjUtils.CheckIfValidId(id), Stage = stage, Name = name
+		};
 
 		public static CloudPoint[] CloudPoints(int count)
 		{
 			var rnd = new Random();
 			var points = new CloudPoint[count];
 			for (var i = 0; i < points.Length; i++)
+			{
 				points[i] = new CloudPoint(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(),
 				                           rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(), "1234-567-890");
+			}
+
 			return points;
 		}
 

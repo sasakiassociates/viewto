@@ -5,7 +5,8 @@ using ViewObjects.Explorer;
 using ViewTo;
 using Cat = ViewTests.ViewTestCategories;
 
-[TestFixture, Category(Cat.INT)]
+[TestFixture]
+[Category(Cat.INT)]
 public class CommandTests
 {
 

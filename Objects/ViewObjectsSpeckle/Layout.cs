@@ -17,13 +17,9 @@ namespace ViewObjects.Speckle
 		/// <summary>
 		/// </summary>
 		/// <param name="viewers"></param>
-		public Layout(List<ViewDirection> viewers)
-		{
-			Viewers = viewers;
-		}
+		public Layout(List<ViewDirection> viewers) => Viewers = viewers;
 
 		/// <inheritdoc />
 		public List<ViewDirection> Viewers { get; set; } = new List<ViewDirection>();
-
 	}
 }

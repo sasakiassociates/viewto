@@ -17,7 +17,10 @@ namespace ViewTo.Tests.Integration
 			var values = new List<uint>();
 
 			for (var j = 0; j < valueCount; j++)
+			{
 				values.Add((uint)rnd.Next());
+			}
+
 			return values;
 		}
 
@@ -27,7 +30,10 @@ namespace ViewTo.Tests.Integration
 			var values = new List<int>();
 
 			for (var j = 0; j < valueCount; j++)
+			{
 				values.Add(rnd.Next());
+			}
+
 			return values;
 		}
 
@@ -37,7 +43,10 @@ namespace ViewTo.Tests.Integration
 			var values = new List<double>();
 
 			for (var j = 0; j < valueCount; j++)
+			{
 				values.Add(rnd.NextDouble());
+			}
+
 			return values;
 		}
 	}

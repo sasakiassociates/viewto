@@ -13,9 +13,10 @@
 
 	internal interface ICommandArgs
 	{
-		public bool IsValid();
 
 		public string Message { get; }
+
+		public bool IsValid();
 	}
 
 }

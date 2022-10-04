@@ -22,7 +22,10 @@ namespace ViewTo.RhinoGh.Points
 		{
 			var pointsToProject = new List<Point3d>(); // XY grid of points projected onto ground mesh
 
-			if (region == null) return pointsToProject;
+			if (region == null)
+			{
+				return pointsToProject;
+			}
 
 			// base bounding box off of curve input
 			region.GetBoundingBox(Plane.WorldXY, out var regionBox);
@@ -52,7 +55,10 @@ namespace ViewTo.RhinoGh.Points
 
 				// test for region inclusion
 
-				if (region.Contains(xyPt, Plane.WorldXY, RhinoDoc.ActiveDoc.ModelAbsoluteTolerance) == PointContainment.Inside) pointsToProject.Add(xyPt);
+				if (region.Contains(xyPt, Plane.WorldXY, RhinoDoc.ActiveDoc.ModelAbsoluteTolerance) == PointContainment.Inside)
+				{
+					pointsToProject.Add(xyPt);
+				}
 			}
 
 			return pointsToProject;
@@ -76,11 +82,19 @@ namespace ViewTo.RhinoGh.Points
 			var zCount = 1.0;
 
 			if (xSpacing < xSpan)
+			{
 				xCount = xSpan / xSpacing;
+			}
+
 			if (ySpacing < ySpan)
+			{
 				yCount = ySpan / ySpacing;
+			}
+
 			if (zSpacing < zSpan)
+			{
 				zCount = zSpan / zSpacing;
+			}
 
 			var cloud = new List<Point3d>();
 

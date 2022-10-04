@@ -53,7 +53,9 @@ namespace ViewTo.RhinoGh.Results
 				var useExpressions = expressions != null && expressions.Count == values.Count;
 
 				for (var i = 0; i < values.Count; i++)
+				{
 					items.Add(new GH_ValueListItem(values[i], useExpressions ? $"\"{expressions[i]}\"" : $"\"{values[i]}\""));
+				}
 			}
 
 			return items;
@@ -75,7 +77,9 @@ namespace ViewTo.RhinoGh.Results
 				valueList.ListItems.Clear();
 
 				foreach (var t in values)
+				{
 					valueList.ListItems.Add(t);
+				}
 			}
 
 			return valueList;
@@ -86,7 +90,9 @@ namespace ViewTo.RhinoGh.Results
 			base.AfterSolveInstance();
 
 			if (!_refresh || _storedValues == null || !_storedValues.Any())
+			{
 				return;
+			}
 
 			var items = CreateValueListItems(_storedValues);
 			if (_activeList == null)
@@ -110,7 +116,9 @@ namespace ViewTo.RhinoGh.Results
 			{
 				_activeList.ListItems.Clear();
 				foreach (var i in items)
+				{
 					_activeList.ListItems.Add(i);
+				}
 
 				_activeList.SelectItem(0);
 			}

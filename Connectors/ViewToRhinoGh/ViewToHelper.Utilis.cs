@@ -10,8 +10,12 @@ namespace ViewTo.RhinoGh
 		{
 			var items = new List<TBase>();
 			foreach (var w in wrappers)
+			{
 				if (w.Value is TBase @base)
+				{
 					items.Add(@base);
+				}
+			}
 
 			return items;
 		}

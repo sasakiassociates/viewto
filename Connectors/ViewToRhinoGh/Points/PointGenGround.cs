@@ -65,10 +65,14 @@ namespace ViewTo.RhinoGh.Points
 		{
 			// Get grounds
 			var grounds = new List<Mesh>();
-			if (!DA.GetDataList(_input.Meshes, grounds)) return;
+			if (!DA.GetDataList(_input.Meshes, grounds))
+			{
+				return;
+			}
 
 			//grounds = grounds.Where(x => x != null).ToList();
 			for (var i = grounds.Count - 1; i >= 0; i--)
+			{
 				if (grounds[i] == null)
 				{
 					grounds.RemoveAt(i);
@@ -79,6 +83,7 @@ namespace ViewTo.RhinoGh.Points
 						return;
 					}
 				}
+			}
 
 			var bounds = new BoundingBox();
 			var mergedMesh = new Mesh();
@@ -113,6 +118,7 @@ namespace ViewTo.RhinoGh.Points
 			var area = grounds.Select(x => AreaMassProperties.Compute(x, true, false, false, false).Area).Sum();
 
 			if (area / (distanceBetweenPoints * distanceBetweenPoints) > 1000000)
+			{
 				if (MessageBox.Show(
 					    string.Concat("Lots and lots of points to generate! Could take a while...Continue?"),
 					    string.Concat(Name, " Warning"),
@@ -122,6 +128,7 @@ namespace ViewTo.RhinoGh.Points
 					AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Operation canceled. Try a smaller ground region or larger point spacing.");
 					return;
 				}
+			}
 
 			#endregion
 

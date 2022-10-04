@@ -44,14 +44,21 @@ namespace ViewTo.RhinoGh.Setup
 			var options = new List<ContentOption>();
 
 			if (stages.Valid() && targets.Valid() && targets.Count == stages.Count)
+			{
 				for (var i = 0; i < stages.Count; i++)
+				{
 					options.Add(new ContentOption
 					{
 						Name = targets[i],
 						Stage = (ResultStage)Enum.Parse(typeof(ResultStage), stages[i])
 					});
+				}
+			}
 
-			if (!options.Valid()) AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The content options are not valid");
+			if (!options.Valid())
+			{
+				AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The content options are not valid");
+			}
 
 			DA.SetDataList(0, options);
 		}

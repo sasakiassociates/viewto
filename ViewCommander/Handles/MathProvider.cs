@@ -11,7 +11,6 @@ namespace ViewTo.Values
 		public T Subtract(T a, T b) => Add(a, Negate(b));
 
 		// public virtual double Normalize(T value, T max, T min) => (double)Divide(Subtract(value, min), Subtract(max, min));
-
 	}
 
 	public class DoubleMath : MathProvider<double>
@@ -55,15 +54,23 @@ namespace ViewTo.Values
 		static Fraction()
 		{
 			if (typeof(T) == typeof(double))
+			{
 				_math = new DoubleMath() as MathProvider<T>;
+			}
 			else if (typeof(T) == typeof(int))
+			{
 				_math = new IntMath() as MathProvider<T>;
+			}
 			else if (typeof(T) == typeof(uint))
+			{
 				_math = new UintMath() as MathProvider<T>;
+			}
 
 			if (_math == null)
+			{
 				throw new InvalidOperationException(
 					"Type " + typeof(T) + " is not supported by Fraction.");
+			}
 		}
 
 		public Fraction(T numerator, T denominator)

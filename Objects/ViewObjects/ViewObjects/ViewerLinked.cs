@@ -17,13 +17,12 @@ namespace ViewObjects
 		}
 
 		/// <inheritdoc />
+		public bool IsGlobal { get; set; } = true;
+
+		/// <inheritdoc />
 		public List<string> Clouds { get; set; }
 
 		/// <inheritdoc />
 		public List<IViewerLayout> Layouts { get; set; }
-
-		/// <inheritdoc />
-		public bool IsGlobal { get; set; } = true;
-
 	}
 }

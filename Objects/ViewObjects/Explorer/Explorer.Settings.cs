@@ -15,7 +15,6 @@ namespace ViewObjects.Explorer
 		public ExplorerValueType valueType { get; }
 
 		public List<string> targets { get; }
-
 	}
 
 	public interface IExploreRange
@@ -90,7 +89,9 @@ namespace ViewObjects.Explorer
 		static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
 		{
 			if (val.CompareTo(min) < 0)
+			{
 				return min;
+			}
 
 			return val.CompareTo(max) > 0 ? max : val;
 		}

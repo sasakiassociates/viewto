@@ -8,13 +8,11 @@ namespace ViewObjects.References
 	public class ViewObjectReference : IReferenceObject, IViewObject
 	{
 		/// <summary>
-		/// 
 		/// </summary>
 		public ViewObjectReference()
 		{ }
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="references"></param>
 		/// <param name="type"></param>
@@ -22,10 +20,10 @@ namespace ViewObjects.References
 		/// <param name="viewName"></param>
 		public ViewObjectReference(List<string> references, Type type, string viewId = null, string viewName = null)
 		{
-			this.Type = type;
-			this.ViewName = viewName;
-			this.References = references;
-			this.ViewId = ObjUtils.CheckIfValidId(viewId);
+			Type = type;
+			ViewName = viewName;
+			References = references;
+			ViewId = ObjUtils.CheckIfValidId(viewId);
 		}
 
 		/// <inheritdoc />
@@ -38,52 +36,54 @@ namespace ViewObjects.References
 		public Type Type { get; protected set; }
 
 		/// <inheritdoc />
-		public List<string> References { get; protected set; } = new List<string>();
-
+		public List<string> References { get; protected set; } = new();
 	}
 
 	public abstract class ViewObjectReference<TObj> : ViewObjectReference where TObj : IViewObject
 	{
 		/// <summary>
-		/// 
 		/// </summary>
 		public ViewObjectReference()
 		{ }
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <param name="references"></param>
 		public ViewObjectReference(TObj obj, List<string> references)
 		{
-			this.References = references;
+			References = references;
 
 			if (obj == null)
+			{
 				return;
+			}
 
-			this.Type = obj.GetType();
+			Type = obj.GetType();
 
 			if (typeof(IId).IsAssignableFrom(Type) && obj is IId i)
-				this.ViewId = i.ViewId;
+			{
+				ViewId = i.ViewId;
+			}
+
 			if (typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
-				this.ViewId = n.ViewName;
+			{
+				ViewId = n.ViewName;
+			}
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="references"></param>
 		/// <param name="viewId"></param>
 		/// <param name="viewName"></param>
 		public ViewObjectReference(List<string> references, string viewId = null, string viewName = null)
 		{
-			this.Type = typeof(TObj);
-			this.ViewName = viewName;
-			this.References = references;
-			this.ViewId = ObjUtils.CheckIfValidId(viewId);
+			Type = typeof(TObj);
+			ViewName = viewName;
+			References = references;
+			ViewId = ObjUtils.CheckIfValidId(viewId);
 		}
-
 	}
 
 	public class CloudReference : ViewObjectReference<ViewCloud>
@@ -110,22 +110,16 @@ namespace ViewObjects.References
 
 	public class ContentReference : ViewObjectReference<Content>
 	{
+
+		/// <inheritdoc />
+		public ContentReference(Content obj, List<string> references) : base(obj, references) => ContentType = obj.ContentType;
+
+		/// <inheritdoc />
+		public ContentReference(List<string> references, ContentType type, string viewId = null, string viewName = null) : base(references, viewId, viewName) =>
+			ContentType = type;
+
 		/// <summary>
-		/// 
 		/// </summary>
 		public ContentType ContentType { get; }
-
-		/// <inheritdoc />
-		public ContentReference(Content obj, List<string> references) : base(obj, references)
-		{
-			this.ContentType = obj.ContentType;
-		}
-
-		/// <inheritdoc />
-		public ContentReference(List<string> references, ContentType type, string viewId = null, string viewName = null) : base(references, viewId, viewName)
-		{
-			this.ContentType = type;
-		}
-
 	}
 }

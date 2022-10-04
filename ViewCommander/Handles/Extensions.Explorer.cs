@@ -31,7 +31,7 @@ namespace ViewTo
 					Index = cmd.args.index,
 					Option = explorer.ActiveOption,
 					Value = v,
-					Color = explorer.Settings.GetColor(v),
+					Color = explorer.Settings.GetColor(v)
 				};
 			}
 
@@ -39,7 +39,7 @@ namespace ViewTo
 		}
 
 		/// <summary>
-		/// Get the values 
+		///   Get the values
 		/// </summary>
 		/// <param name="exp"></param>
 		/// <param name="valueType"></param>
@@ -99,7 +99,6 @@ namespace ViewTo
 		}
 
 		public static bool InRange(this IExploreRange obj, double value) => value >= obj.min && value <= obj.max;
-
 	}
 
 }

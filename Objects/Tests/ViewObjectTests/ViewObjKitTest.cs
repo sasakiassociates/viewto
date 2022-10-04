@@ -23,7 +23,9 @@ namespace ViewTests.Objects
 
 			Assert.IsNotEmpty(types);
 			foreach (var t in types)
+			{
 				Console.WriteLine(t.Name);
+			}
 		}
 	}
 }

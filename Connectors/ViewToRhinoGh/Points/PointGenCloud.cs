@@ -63,10 +63,16 @@ namespace ViewTo.RhinoGh.Points
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
 			var geo = new List<GeometryBase>();
-			if (!DA.GetDataList(_input.Bounds, geo)) return;
+			if (!DA.GetDataList(_input.Bounds, geo))
+			{
+				return;
+			}
 
 			var bb = new BoundingBox();
-			foreach (var g in geo.Where(g => g != null)) bb.Union(g.GetBoundingBox(false));
+			foreach (var g in geo.Where(g => g != null))
+			{
+				bb.Union(g.GetBoundingBox(false));
+			}
 
 			double xSpacing = 0;
 			DA.GetData(_input.SpacingX, ref xSpacing);
@@ -89,7 +95,10 @@ namespace ViewTo.RhinoGh.Points
 				var unmasked = new List<Point3d>();
 
 				var mergedMesh = new Mesh();
-				foreach (var m in meshes) mergedMesh.Append(m);
+				foreach (var m in meshes)
+				{
+					mergedMesh.Append(m);
+				}
 
 				foreach (var p in cloud)
 				{

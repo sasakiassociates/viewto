@@ -29,7 +29,6 @@ namespace ViewObjects
 	public interface IReferenceObject : IId, INameable, IStreamReference
 	{
 		public Type Type { get; }
-
 	}
 
 	#endregion
@@ -38,12 +37,12 @@ namespace ViewObjects
 	{
 
 		/// <summary>
-		/// Handle building the different viewer types
+		///   Handle building the different viewer types
 		/// </summary>
 		public void Build();
 
 		/// <summary>
-		/// Handle all the data the rig needs to run a view study
+		///   Handle all the data the rig needs to run a view study
 		/// </summary>
 		/// <param name="parameters"></param>
 		public void Initialize(List<RigParameters> parameters);
@@ -55,7 +54,7 @@ namespace ViewObjects
 	{ }
 
 	/// <summary>
-	/// An interface for organizing <typeparamref name="TObject"/> types processing view studies
+	///   An interface for organizing <typeparamref name="TObject" /> types processing view studies
 	/// </summary>
 	/// <typeparam name="TObject"></typeparam>
 	public interface IViewStudy<TObject> : INameable, IId where TObject : IViewObject
@@ -78,7 +77,7 @@ namespace ViewObjects
 	{ }
 
 	/// <summary>
-	/// An interface for organizing <typeparamref name="TLayout"/> types for <see cref="IViewStudy"/> 
+	///   An interface for organizing <typeparamref name="TLayout" /> types for <see cref="IViewStudy" />
 	/// </summary>
 	/// <typeparam name="TLayout"></typeparam>
 	public interface IViewer<TLayout> where TLayout : IViewerLayout
@@ -87,7 +86,6 @@ namespace ViewObjects
 		///   The group of <typeparamref name="TLayout" /> targeted to be used during the analysis
 		/// </summary>
 		public List<TLayout> Layouts { get; set; }
-
 	}
 
 	public interface IViewerLinked<TLayout> : IViewer<TLayout> where TLayout : IViewerLayout
@@ -132,19 +130,19 @@ namespace ViewObjects
 	#region Cloud Result Data
 
 	/// <summary>
-	/// The main structure for organizing result data
+	///   The main structure for organizing result data
 	/// </summary>
 	public interface IResultCloudData : IResultCloudMetaData
 	{
 
 		/// <summary>
-		///  the raw values gathered
+		///   the raw values gathered
 		/// </summary>
 		List<int> Values { get; set; }
 	}
 
 	/// <summary>
-	/// The meta data associated with the result values
+	///   The meta data associated with the result values
 	/// </summary>
 	public interface IResultCloudMetaData
 	{
@@ -202,7 +200,7 @@ namespace ViewObjects
 		public ContentType ContentType { get; }
 
 		/// <summary>
-		/// The color of the content group
+		///   The color of the content group
 		/// </summary>
 		public ViewColor Color { get; set; }
 	}
@@ -210,10 +208,9 @@ namespace ViewObjects
 	public interface IContentObjects<TObj>
 	{
 		/// <summary>
-		/// Group of <typeparamref name="TObj"/> objects 
+		///   Group of <typeparamref name="TObj" /> objects
 		/// </summary>
 		public List<TObj> Objects { get; }
-
 	}
 
 	#endregion

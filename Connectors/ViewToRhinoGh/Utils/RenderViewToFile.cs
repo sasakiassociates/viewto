@@ -56,15 +56,30 @@ namespace ViewTo.RhinoGh.Results
 			var vps = new List<string>();
 			DA.GetDataList(_input.views, vps);
 
-			if (!run) return;
-			if (string.IsNullOrWhiteSpace(prefix)) return;
-			if (string.IsNullOrWhiteSpace(dir)) return;
+			if (!run)
+			{
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(prefix))
+			{
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(dir))
+			{
+				return;
+			}
 
 			if (!dir.EndsWith(Path.DirectorySeparatorChar.ToString()))
+			{
 				dir += Path.DirectorySeparatorChar;
+			}
 
 			if (!Directory.Exists(dir))
+			{
 				Directory.CreateDirectory(dir);
+			}
 
 			var files = new List<string>();
 
@@ -72,7 +87,9 @@ namespace ViewTo.RhinoGh.Results
 			{
 				var view = RhinoDoc.ActiveDoc.Views.Find(vp, false);
 				if (view == null)
+				{
 					continue;
+				}
 
 				var fileName = Path.Combine(dir, vp, prefix);
 

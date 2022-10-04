@@ -14,7 +14,9 @@ namespace ViewTo.RhinoGh
 		public override void DrawViewportWires(IGH_PreviewArgs args)
 		{
 			if (renderedCloud != null)
+			{
 				args.Display.DrawPointCloud(renderedCloud, pointSize);
+			}
 		}
 	}
 }

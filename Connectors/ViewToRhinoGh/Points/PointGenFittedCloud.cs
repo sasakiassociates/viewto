@@ -39,16 +39,25 @@ namespace ViewTo.RhinoGh.Points
 
 		public override void DrawViewportWires(IGH_PreviewArgs args)
 		{
-			if (_pc != null) args.Display.DrawPointCloud(_pc, 1);
+			if (_pc != null)
+			{
+				args.Display.DrawPointCloud(_pc, 1);
+			}
 		}
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
 			var geo = new List<GeometryBase>();
-			if (!DA.GetDataList(_iBounds, geo)) return;
+			if (!DA.GetDataList(_iBounds, geo))
+			{
+				return;
+			}
 
 			var bb = new BoundingBox();
-			foreach (var g in geo.Where(g => g != null)) bb.Union(g.GetBoundingBox(false));
+			foreach (var g in geo.Where(g => g != null))
+			{
+				bb.Union(g.GetBoundingBox(false));
+			}
 
 			var xCount = 0;
 			DA.GetData(_iCountX, ref xCount);
@@ -92,7 +101,9 @@ namespace ViewTo.RhinoGh.Points
 			}
 
 			if (_pc == null)
+			{
 				_pc = new PointCloud();
+			}
 
 			_pc.AddRange(cloud);
 
