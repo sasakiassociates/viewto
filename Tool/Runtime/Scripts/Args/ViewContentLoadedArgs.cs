@@ -1,5 +1,7 @@
 ﻿#region
 
+using System.Collections.Generic;
+using ViewObjects;
 using ViewTo.Events.Args;
 
 #endregion
@@ -21,5 +23,6 @@ namespace ViewTo.Connector.Unity.Commands
 			          + $"Blocker Count:{this.blockerCount}\n"
 			          + $"Design Count:{this.designCount}\n";
 		}
+
 	}
 }

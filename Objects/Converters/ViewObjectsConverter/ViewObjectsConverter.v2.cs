@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Speckle.Core.Models;
-using ViewObjects.References;
-using ViewObjects.Study;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
@@ -11,17 +9,13 @@ namespace ViewObjects.Converter
 	/// <inheritdoc />
 	public partial class ViewObjectsConverter
 	{
-		IViewObject StudyToNative(VS.ViewStudy obj) => new ViewStudy
+		IViewObject StudyToNative(VS.ViewStudy obj) => new VO.ViewStudy
 		(
 			obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToNativeViewObject).ToList()
 				: new List<IViewObject>(),
 			obj.ViewName,
 			obj.ViewId
 		);
-
-		IViewObject ViewContentToNative(VS.Content obj) => new ContentReference(obj.References, obj.ContentType, obj.ViewId, obj.ViewName);
-
-		IViewObject ViewCloudToNative(IReferenceObject obj) => new CloudReference(obj.References, obj.ViewId);
 
 		IViewObject LayoutToNative(IViewerLayout obj) => new Layout(obj.Viewers);
 
@@ -35,6 +29,12 @@ namespace ViewObjects.Converter
 
 		IResultCloudData ResultCloudDataToNative(IResultCloudData obj) => new ResultCloudData(obj.Values, obj.Option, obj.Layout);
 
+		IViewObject ContentReferenceToNative(VS.Content obj) => new ContentReference(obj.References, obj.ContentType, obj.ViewId, obj.ViewName);
+
+		IViewObject ViewCloudReferenceToNative(IReferenceObject obj) => new VO.CloudReference(obj.References, obj.ViewId);
+
+		ViewObjectReference ReferenceToNative(IReferenceObject obj) => new ViewObjectReference(obj.References, obj.Type, obj.ViewId, obj.ViewName);
+
 		VS.ViewStudy StudyToSpeckle(IViewStudy<IViewObject> obj) => new VS.ViewStudy
 		{
 			Objects = obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToSpeckleViewObject).ToList() : new List<VS.ViewObjectBase>(),
@@ -46,15 +46,14 @@ namespace ViewObjects.Converter
 
 		VS.ViewCloud ViewCloudToSpeckle(IReferenceObject obj) => new VS.ViewCloud(obj.References, obj.ViewId);
 
-		VS.ViewObjectReferenceBase ViewObjectReferenceToSpeckle(IReferenceObject obj) =>
-			new VS.ViewObjectReferenceBase(obj.References, obj.Type, obj.ViewId, obj.ViewName);
+		VS.ViewObjectReference ReferenceToSpeckle(IReferenceObject obj) => new VS.ViewObjectReference(obj.References, obj.Type, obj.ViewId, obj.ViewName);
 
 		VS.Layout LayoutToSpeckle(IViewerLayout obj) => new VS.Layout(obj.Viewers);
 
 		VS.Viewer ViewerToSpeckle(IViewer<IViewerLayout> o) => new VS.Viewer(
 			o.Layouts.Where(x => x != null).Select(LayoutToSpeckle).ToList());
 
-		VS.ViewerLinked ViewerToSpeckle(IViewerLinked<IViewerLayout> o) => new VS.ViewerLinked(
+		VS.ViewerLinked ViewerToSpeckle(IViewerLinked o) => new VS.ViewerLinked(
 			o.Layouts.Where(x => x != null).Select(LayoutToSpeckle).ToList(), o.Clouds);
 
 		VS.ResultCloud ResultCloudToSpeckle(IResultCloud obj)
@@ -65,6 +64,7 @@ namespace ViewObjects.Converter
 		VS.ResultCloudData ResultCloudDataToSpeckle(IResultCloudData obj) => new VS.ResultCloudData(obj.Values, obj.Option, obj.Layout);
 
 		//TODO: Support getting list of objects from search
+
 		IViewObject HandleDefault(Base @base)
 		{
 			IViewObject o = default;
@@ -81,5 +81,6 @@ namespace ViewObjects.Converter
 
 			return o;
 		}
+
 	}
 }

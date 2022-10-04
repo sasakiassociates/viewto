@@ -5,7 +5,6 @@ using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using ViewObjects;
-using ViewObjects.References;
 using ViewTo.RhinoGh.Goo;
 using ViewTo.RhinoGh.Properties;
 

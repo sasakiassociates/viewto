@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace ViewObjects.Unity
 {
-	public static partial class ViewObjMonoExt
+	public static partial class ViewObject
 	{
 
 		public static bool CheckForInterface<IFace>(this Type objType)
@@ -14,7 +14,7 @@ namespace ViewObjects.Unity
 			return objType.GetInterfaces().Any(x => x == typeof(IFace));
 		}
 
-		public static void CheckAndAdd<TObj>(this List<IViewContent> values, List<IViewContent> items) where TObj : IViewContent
+		public static void CheckAndAdd<TObj>(this List<IContent> values, List<IContent> items) where TObj : IContent
 		{
 			if (items.Valid())
 				values.AddRange(items);

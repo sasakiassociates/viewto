@@ -1,17 +1,24 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace ViewObjects.Unity
 {
 
-	public class ViewStudyMono : ViewObjMono, IViewStudy
+	public class ViewStudy : ViewObjectMono, IViewStudy
 	{
 
-		[SerializeField] List<ViewObjMono> loadedObjs;
+		[SerializeField] string _viewId;
 
-		public List<TContent> GetContent<TContent>() where TContent : ContentMono
+		[SerializeField] List<ViewObjectMono> loadedObjs;
+
+		public string ViewId
+		{
+			get => _viewId;
+			set => _viewId = value;
+		}
+
+		public List<TContent> GetContent<TContent>() where TContent : Content
 		{
 			var res = new List<TContent>();
 
@@ -38,20 +45,20 @@ namespace ViewObjects.Unity
 
 			for (var i = 0; i < loadedObjs.Count; i++)
 			{
-				if (loadedObjs[i] is not ViewCloudMono cloud || !cloud.ViewId.Equals(results.id))
+				if (loadedObjs[i] is not ViewCloud cloud || !cloud.ViewId.Equals(results.id))
 					continue;
 
 				// reference game object with view cloud attached
 				var go = cloud.gameObject;
 
-				var resultCloud = go.AddComponent<ResultCloudMono>();
+				var resultCloud = go.AddComponent<ResultCloud>();
 				resultCloud.name = "Result Cloud";
 				resultCloud.ViewId = cloud.ViewId;
-				resultCloud.points = cloud.points;
-				resultCloud.data = results.data;
+				resultCloud.Points = cloud.Points;
+				resultCloud.Data = results.data;
 
 				// Remove the view cloud component
-				Destroy(go.GetComponent<ViewCloudMono>());
+				Destroy(go.GetComponent<ViewCloud>());
 
 				// replace the view cloud with the result cloud
 				loadedObjs[i] = resultCloud;
@@ -70,29 +77,31 @@ namespace ViewObjects.Unity
 			set => name = value;
 		}
 
-		public bool isValid
+		public bool IsValid
 		{
-			get => objs.Valid() && ViewName.Valid();
+			get => Objects.Valid() && ViewName.Valid();
 		}
 
-		public List<IViewObj> objs
+		public List<IViewObject> Objects
 		{
 			get
 			{
-				var res = new List<IViewObj>();
+				var res = new List<IViewObject>();
 
 				foreach (var obj in loadedObjs)
-					if (obj != null && obj is IViewObj casted)
+				{
+					if (obj != null && obj is IViewObject casted)
 						res.Add(casted);
+				}
 
 				return res;
 			}
 			set
 			{
-				loadedObjs = new List<ViewObjMono>();
+				loadedObjs = new List<ViewObjectMono>();
 
 				foreach (var obj in value)
-					if (obj is ViewObjMono mono)
+					if (obj is ViewObjectMono mono)
 					{
 						mono.transform.SetParent(transform);
 						loadedObjs.Add(mono);
@@ -104,7 +113,7 @@ namespace ViewObjects.Unity
 			}
 		}
 
-		public event UnityAction<ResultCloudMono> OnResultsSet;
+		public event UnityAction<ResultCloud> OnResultsSet;
 
 	}
 }

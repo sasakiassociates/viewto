@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Grasshopper.Kernel;
 using ViewObjects;
-using ViewObjects.References;
 using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Setup

@@ -12,11 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d619b42862299498e63a9765c06152, type: 3}
   m_Name: ViewObjUnityConverter
   m_EditorClassIdentifier: 
-  _description: 
-  _author: 
-  _websiteOrEmail: 
+  _description: View Object Converter for Unity
+  _author: David Morgan
+  _websiteOrEmail: www.sasaki.com
   _receiveMode: 0
-  _converters: []
+  _converters:
+  - {fileID: 11400000, guid: 3f86ac267ef2eca4a97f02be65add86c, type: 2}
+  - {fileID: 11400000, guid: 276681edaf0475648a472b83cdb07988, type: 2}
+  - {fileID: 11400000, guid: 5a752396535c04f48a2cc15c2887594d, type: 2}
+  - {fileID: 11400000, guid: 9208816b4d83ac24fa70d8367cbc9d5e, type: 2}
+  - {fileID: 11400000, guid: 8d3f770d276385944953f3b1504456f3, type: 2}
+  - {fileID: 11400000, guid: 0bf126cdc5cd77f4d8e390e0c79ada45, type: 2}
+  - {fileID: 11400000, guid: fd5badb03b0e55a43b3187acfe273fdd, type: 2}
+  - {fileID: 11400000, guid: c35cce7461270cb4aa2dc7297f3d4f29, type: 2}
+  - {fileID: 11400000, guid: 0034a009b3964fb469c73dd9d79a14a0, type: 2}
+  - {fileID: 11400000, guid: 8c3277418997e5a4b8abe5b7fa0bee56, type: 2}
+  - {fileID: 11400000, guid: dbf9b4585c504dd48b087249a99f7726, type: 2}
+  - {fileID: 11400000, guid: ede43ad32363fbf41bd50dd41ce8f032, type: 2}
   _settings:
     style: 1
-  _supportConverter: {fileID: 11400000, guid: cb3ad0f50505ffe498bd3cd56e4f5520, type: 2}
+    spawnSpeed: 50

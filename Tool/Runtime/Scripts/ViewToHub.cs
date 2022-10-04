@@ -15,12 +15,10 @@ using Speckle.Core.Kits;
 using Speckle.Core.Models;
 using UnityEngine;
 using UnityEngine.Events;
-using ViewObjects;
-using ViewObjects.Speckle;
-using ViewObjects.Unity;
-using ViewObjects.Viewer;
 using ViewTo.Connector.Unity.Commands;
 using Debug = UnityEngine.Debug;
+using VU = ViewObjects.Unity;
+using VO = ViewObjects;
 
 #endregion
 
@@ -40,22 +38,18 @@ namespace ViewTo.Connector.Unity
 
 		[SerializeField] bool _runRepeatCommand;
 
-		[SerializeField] ViewStudyMono _study;
+		[SerializeField] ViewObjects.Unity.ViewStudy _study;
 
-		[SerializeField] [HideInInspector] RigSystem _rig;
-
-		// [SerializeField] [HideInInspector] ResultExplorerMono _explorer;
+		[SerializeField] [HideInInspector] Rig _rig;
 
 		[SerializeField] ScriptableSpeckleConverter _converterUnity;
 		RepeatResultTester _tester;
 
 		Stopwatch _timer;
 
-		ViewStudyBase_v2 _studyBase;
-
 		public bool canRun
 		{
-			get => _study != null && _study.isValid && _rig != null && _rig.isReady;
+			get => _study != null && _study.IsValid && _rig != null && _rig.IsReady;
 		}
 
 		public bool inProcess { get; private set; }
@@ -76,7 +70,7 @@ namespace ViewTo.Connector.Unity
 
 		#endregion
 
-		public void TryLoadStudy(ViewStudyMono obj)
+		public void TryLoadStudy(ViewObjects.Unity.ViewStudy obj)
 		{
 			if (!IsInit)
 				Init();
@@ -86,9 +80,9 @@ namespace ViewTo.Connector.Unity
 			_study.OnResultsSet += SendResultsToStream;
 
 			if (_rig != null)
-				ViewObjMonoExt.SafeDestroy(_rig.gameObject);
+				VU.ViewObject.SafeDestroy(_rig.gameObject);
 
-			_rig = new GameObject().AddComponent<RigSystem>();
+			_rig = new GameObject().AddComponent<Rig>();
 
 			// setup events
 			_rig.OnReady += RigReady;
@@ -108,7 +102,7 @@ namespace ViewTo.Connector.Unity
 		{
 			if (!canRun)
 			{
-				ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {_study != null && _study.isValid}\nRig Ready{_rig != null && _rig.isReady}");
+				ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {_study != null && _study.IsValid}\nRig Ready{_rig != null && _rig.IsReady}");
 				return;
 			}
 
@@ -133,19 +127,6 @@ namespace ViewTo.Connector.Unity
 				_renderedMat = new Material(Shader.Find(@"Standard"));
 		}
 
-		async UniTask GetBrepTest()
-		{
-			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
-
-			client.token = this.GetCancellationTokenOnDestroy();
-
-			var commit = await client.CommitGet(STREAM, "96e1ed10be");
-
-			var @base = await SpeckleOps.Receive(client, STREAM, commit.referencedObject);
-
-			await SpeckleOps.ConvertToScene(new GameObject("Brep Test").transform, @base, _converterUnity, client.token);
-		}
-
 		async UniTask AutoStart()
 		{
 			Debug.Log("Starting Hacking Version of View To");
@@ -157,13 +138,15 @@ namespace ViewTo.Connector.Unity
 
 			var commit = await client.CommitGet(STREAM, COMMIT);
 
-			if (commit == null) return;
+			if (commit == null)
+				return;
 
 			Debug.Log($"Commit Found {commit.id}");
 
 			var @base = await SpeckleOps.Receive(client, STREAM, commit.referencedObject);
 
-			if (@base == null) return;
+			if (@base == null)
+				return;
 
 			Debug.Log($"Receive Done {@base.totalChildrenCount}");
 
@@ -171,7 +154,8 @@ namespace ViewTo.Connector.Unity
 
 			_studyBase = await @base.SearchForType<ViewStudyBase_v2>(true, client.token);
 
-			if (_studyBase == null) return;
+			if (_studyBase == null)
+				return;
 
 			Debug.Log($"Found Study {_studyBase.ViewName} with {_studyBase.Objects.Count} objects\n({_studyBase.ViewId})");
 
@@ -188,7 +172,7 @@ namespace ViewTo.Connector.Unity
 				switch (obj)
 				{
 					case ContentBase_v2 o:
-						ContentMono content;
+						ViewObjects.Unity.Content content;
 
 						// TODO: Remove different object types when ViewCore commands have been updated
 						switch (o.ContentType)
@@ -221,7 +205,7 @@ namespace ViewTo.Connector.Unity
 
 						break;
 					case ViewCloudBase_v2 o:
-						var cloud = go.AddComponent<ViewCloudMono>();
+						var cloud = go.AddComponent<ViewObjects.Unity.ViewCloud>();
 						cloud.ViewId = Guid.NewGuid().ToString();
 
 						var baseCloud = await ReceiveCommitWithData(client, STREAM, o.References.FirstOrDefault());
@@ -230,7 +214,7 @@ namespace ViewTo.Connector.Unity
 
 						if (pc != null)
 						{
-							cloud.points = ArrayToCloudPoint(pc.points, pc.units).ToArray();
+							cloud.Points = ArrayToCloudPoint(pc.points, pc.units).ToArray();
 							objectsToConvert.Add(cloud);
 						}
 						else
@@ -241,7 +225,7 @@ namespace ViewTo.Connector.Unity
 						break;
 					case ViewerSystemBase_v2 o:
 						// TODO: Bypassing linked clouds and different layout types but should be fixed in the near future
-						var bundle = go.AddComponent<ViewerBundleMono>();
+						var bundle = go.AddComponent<ViewObjects.Unity.Viewer>();
 						bundle.layouts = new List<IViewerLayout>
 							{ new ViewerLayoutHorizontal() };
 						objectsToConvert.Add(bundle);
@@ -253,11 +237,11 @@ namespace ViewTo.Connector.Unity
 			}
 
 			var contentBundle = new GameObject("Content Bundle").AddComponent<ContentBundleMono>();
-			contentBundle.contents = contents;
+			contentBundle.Contents = contents;
 			objectsToConvert.Add(contentBundle);
 
-			var studyToBuild = new GameObject().AddComponent<ViewStudyMono>();
-			studyToBuild.objs = objectsToConvert;
+			var studyToBuild = new GameObject().AddComponent<ViewObjects.Unity.ViewStudy>();
+			studyToBuild.Objects = objectsToConvert;
 
 			TryLoadStudy(studyToBuild);
 		}
@@ -310,7 +294,7 @@ namespace ViewTo.Connector.Unity
 			return await SpeckleOps.Receive(client, stream, refCommit.referencedObject);
 		}
 
-		async UniTask GetContentData(ContentMono content, ContentBase_v2 contentBase, SpeckleUnityClient client, string stream)
+		async UniTask GetContentData(ViewObjects.Unity.Content content, ContentBase_v2 contentBase, SpeckleUnityClient client, string stream)
 		{
 			content.ViewId = contentBase.ViewId;
 			content.ViewName = contentBase.ViewName;
@@ -390,7 +374,7 @@ namespace ViewTo.Connector.Unity
 		const string TEST_Commit = "1518e1cc4c";
 		const string TEST_Branch = "viewstudy/sphere";
 
-		void SendResultsToStream(ResultCloudMono mono)
+		void SendResultsToStream(ViewObjects.Unity.ResultCloud mono)
 		{
 			Debug.Log("Auto Send");
 
@@ -399,12 +383,12 @@ namespace ViewTo.Connector.Unity
 			// var node = new GameObject("Node").AddComponent<SpeckleNode>();
 			// node.AddLayer(layer);
 
-			var data = mono.data
+			var data = mono.Data
 				.Select(x => new ResultPixelBase_v2(x.values, x.content, (ResultStage)Enum.Parse(typeof(ResultStage), x.stage), x.layout))
 				.Cast<IResultCloudData>()
 				.ToList();
 
-			var resultCloud = new ResultCloudBase_v2 { Data = data, Points = ToSpeckle(mono.points) };
+			var resultCloud = new ResultCloudBase_v2 { Data = data, Points = ToSpeckle(mono.Points) };
 			_studyBase.Objects.Add(resultCloud);
 
 			if (_createCommit)
@@ -468,7 +452,7 @@ namespace ViewTo.Connector.Unity
 			OnStudyComplete?.Invoke(_study);
 		}
 
-		void TryLoadResultCloud(ResultCloudMono cloud)
+		void TryLoadResultCloud(ViewObjects.Unity.ResultCloud cloud)
 		{
 			if (cloud == null)
 			{
@@ -503,11 +487,11 @@ namespace ViewTo.Connector.Unity
 				if (obj == null)
 					continue;
 
-				if (obj.GetComponent<ViewStudyMono>() != null)
-					TryLoadStudy(obj.GetComponent<ViewStudyMono>());
+				if (obj.GetComponent<ViewObjects.Unity.ViewStudy>() != null)
+					TryLoadStudy(obj.GetComponent<ViewObjects.Unity.ViewStudy>());
 
-				else if (obj.GetComponent<ResultCloudMono>() != null)
-					TryLoadResultCloud(obj.GetComponent<ResultCloudMono>());
+				else if (obj.GetComponent<ViewObjects.Unity.ResultCloud>() != null)
+					TryLoadResultCloud(obj.GetComponent<ViewObjects.Unity.ResultCloud>());
 			}
 		}
 
@@ -592,9 +576,9 @@ namespace ViewTo.Connector.Unity
 
 		public event UnityAction<IRigSystem> OnRigBuilt;
 
-		public event UnityAction<ViewerSystemMono> OnActiveViewerSystem;
+		public event UnityAction<ViewerSystem> OnActiveViewerSystem;
 
-		public event UnityAction<ViewStudyMono> OnStudyComplete;
+		public event UnityAction<ViewObjects.Unity.ViewStudy> OnStudyComplete;
 
 		public event UnityAction<ResultStage> OnRigStageChanged;
 

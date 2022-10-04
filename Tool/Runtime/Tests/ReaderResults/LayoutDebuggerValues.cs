@@ -20,6 +20,6 @@ namespace ViewTo.Connector.Unity.Tests
 	[Serializable]
 	public class LayoutDebuggerValues : DebugValues
 	{
-		public ViewerSystemMono sys { get; set; }
+		public ViewerSystem sys { get; set; }
 	}
 }

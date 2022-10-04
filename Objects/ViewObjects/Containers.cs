@@ -48,6 +48,7 @@ namespace ViewObjects
 		public List<int> Values { get; set; }
 	}
 
+	[Serializable]
 	public class RigParameters : Container
 	{
 		public RigParameters(List<string> clouds, List<ViewColor> colors, List<IViewerLayout> viewer)

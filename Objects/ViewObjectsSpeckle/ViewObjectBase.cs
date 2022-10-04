@@ -26,11 +26,11 @@ namespace ViewObjects.Speckle
 
 	/// <summary>
 	/// </summary>
-	public class ViewObjectReferenceBase : ViewObjectBase, IReferenceObject
+	public class ViewObjectReference : ViewObjectBase, IReferenceObject
 	{
 		/// <summary>
 		/// </summary>
-		public ViewObjectReferenceBase()
+		public ViewObjectReference()
 		{ }
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace ViewObjects.Speckle
 		/// <param name="type"></param>
 		/// <param name="viewId"></param>
 		/// <param name="viewName"></param>
-		public ViewObjectReferenceBase(List<string> references, Type type, string viewId = null, string viewName = null)
+		public ViewObjectReference(List<string> references, Type type, string viewId = null, string viewName = null)
 		{
 			Type = type;
 			ViewName = viewName;
@@ -63,18 +63,18 @@ namespace ViewObjects.Speckle
 	/// <summary>
 	/// </summary>
 	/// <typeparam name="TObj"></typeparam>
-	public abstract class ViewObjectReferenceBase<TObj> : ViewObjectReferenceBase where TObj : IViewObject
+	public abstract class ViewObjectReference<TObj> : ViewObjectReference where TObj : IViewObject
 	{
 		/// <summary>
 		/// </summary>
-		public ViewObjectReferenceBase()
+		public ViewObjectReference()
 		{ }
 
 		/// <summary>
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <param name="references"></param>
-		public ViewObjectReferenceBase(TObj obj, List<string> references)
+		public ViewObjectReference(TObj obj, List<string> references)
 		{
 			References = references;
 
@@ -101,7 +101,7 @@ namespace ViewObjects.Speckle
 		/// <param name="references"></param>
 		/// <param name="viewId"></param>
 		/// <param name="viewName"></param>
-		public ViewObjectReferenceBase(List<string> references, string viewId = null, string viewName = null)
+		public ViewObjectReference(List<string> references, string viewId = null, string viewName = null)
 		{
 			Type = typeof(TObj);
 			ViewName = viewName;

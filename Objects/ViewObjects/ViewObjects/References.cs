@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using ViewObjects.Cloud;
 
-namespace ViewObjects.References
+namespace ViewObjects
 {
 
+	[Serializable]
 	public class ViewObjectReference : IReferenceObject, IViewObject
 	{
 		/// <summary>
@@ -86,6 +87,7 @@ namespace ViewObjects.References
 		}
 	}
 
+	[Serializable]
 	public class CloudReference : ViewObjectReference<ViewCloud>
 	{
 		/// <inheritdoc />
@@ -97,6 +99,7 @@ namespace ViewObjects.References
 		{ }
 	}
 
+	[Serializable]
 	public class ResultCloudReference : ViewObjectReference<ResultCloud>
 	{
 		/// <inheritdoc />
@@ -108,6 +111,7 @@ namespace ViewObjects.References
 		{ }
 	}
 
+	[Serializable]
 	public class ContentReference : ViewObjectReference<Content>
 	{
 

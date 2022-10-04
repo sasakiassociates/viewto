@@ -2,8 +2,6 @@
 using NUnit.Framework;
 using ViewObjects;
 using ViewObjects.Converter;
-using ViewObjects.References;
-using ViewObjects.Study;
 using Cat = ViewTests.ViewTestCategories;
 
 namespace ViewTests.Objects

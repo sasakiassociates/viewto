@@ -1,15 +1,24 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ViewObjects.Unity
 {
 	[ExecuteAlways]
-	public class ViewCloudMono : ViewObjMono, IViewCloud
+	public class ViewCloud : ViewObjectMono, IViewCloud
 	{
 
 		[SerializeField] string id;
 
 		[SerializeField] CloudPoint[] cloudPoints;
+
+		[SerializeField, HideInInspector] List<string> _reference;
+
+		public List<string> Reference
+		{
+			get => _reference;
+			set => _reference = value;
+		}
 
 		void Awake()
 		{
@@ -22,7 +31,7 @@ namespace ViewObjects.Unity
 			set => id = value;
 		}
 
-		public CloudPoint[] points
+		public CloudPoint[] Points
 		{
 			get => cloudPoints;
 			set => cloudPoints = value;

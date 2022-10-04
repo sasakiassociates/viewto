@@ -1,24 +1,17 @@
 ﻿using System.Collections.Generic;
-using ViewObjects.Content;
 
 namespace ViewObjects.Unity
 {
 	public class ResultsForCloud
 	{
-		public ResultsForCloud(string id, List<IResultData> data)
+		public ResultsForCloud(string id, List<IResultCloudData> data)
 		{
 			this.id = id;
 			this.data = data;
 		}
 
-		public string id
-		{
-			get;
-		}
+		public string id { get; }
 
-		public List<IResultData> data
-		{
-			get;
-		}
+		public List<IResultCloudData> data { get; }
 	}
 }

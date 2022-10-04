@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace ViewObjects
 {
 
+	[Serializable]
 	public class Layout : IViewerLayout, IViewObject
 	{
 

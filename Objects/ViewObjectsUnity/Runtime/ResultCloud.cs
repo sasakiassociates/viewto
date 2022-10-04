@@ -1,29 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using ViewObjects.Content;
 
 namespace ViewObjects.Unity
 {
 
 	[ExecuteAlways]
-	public class ResultCloudMono : ViewObjMono, IResultCloud
+	public class ResultCloud : ViewObjectMono, IResultCloud
 	{
 		[SerializeField] CloudPoint[] cloudPoints;
 
 		[SerializeField] string id;
 
-		[SerializeField] [HideInInspector]
-		List<string> targetOptions;
+		[SerializeField] [HideInInspector] List<string> targetOptions;
 
-		[SerializeField] [HideInInspector]
-		Vector3[] pointsV3;
+		[SerializeField] [HideInInspector] Vector3[] pointsV3;
 
-		[SerializeField] [HideInInspector]
-		List<ContentResultData> cloudData;
+		[SerializeField] [HideInInspector] List<ResultCloudData> cloudData;
 
-		[SerializeField] [HideInInspector]
-		int point;
+		[SerializeField] [HideInInspector] int point;
 
 		/// <summary>
 		///   returns the current game object position
@@ -35,7 +30,7 @@ namespace ViewObjects.Unity
 
 		public Vector3 activePoint
 		{
-			get => points.Valid(activeIndex) ? points[activeIndex].ToUnity() : Vector3.zero;
+			get => Points.Valid(activeIndex) ? Points[activeIndex].ToUnity() : Vector3.zero;
 		}
 
 		public int activeIndex
@@ -68,9 +63,10 @@ namespace ViewObjects.Unity
 
 		void Awake()
 		{
-			gameObject.SetLayerRecursively(ViewMonoExt.CloudLayer);
+			gameObject.SetLayerRecursively(this.GetLayerMask());
 		}
-		public CloudPoint[] points
+
+		public CloudPoint[] Points
 		{
 			get => cloudPoints;
 			set
@@ -92,31 +88,37 @@ namespace ViewObjects.Unity
 			set => id = value;
 		}
 
-		public List<IResultData> data
+		public List<IResultCloudData> Data
 		{
-			get => cloudData.Valid() ? cloudData.Cast<IResultData>().ToList() : new List<IResultData>();
+			get => cloudData.Valid() ? cloudData.Cast<IResultCloudData>().ToList() : new List<IResultCloudData>();
 			set
 			{
 				if (!value.Valid())
 					return;
 
-				cloudData = new List<ContentResultData>();
+				cloudData = new List<ResultCloudData>();
 				var targetNames = new HashSet<string>();
 				foreach (var item in value)
 				{
 					AddResultData(item);
-					targetNames.Add(item.content);
+					targetNames.Add(item.Option.Name);
 				}
 
 				targetOptions = targetNames.ToList();
 			}
 		}
 
-		public void AddResultData(IResultData value)
+		public void AddResultData(IResultCloudData value)
 		{
-			cloudData ??= new List<ContentResultData>();
-			cloudData.Add(new ContentResultData(value.values, value.stage, value.content, value.color, value.meta, value.layout));
+			cloudData ??= new List<ResultCloudData>();
+			cloudData.Add(new ResultCloudData()
+			{
+				Layout = value.Layout,
+				Values = value.Values,
+				Option = value.Option
+			});
 		}
+
 	}
 
 }

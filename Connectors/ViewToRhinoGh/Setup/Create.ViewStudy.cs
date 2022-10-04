@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using ViewObjects.References;
-using ViewObjects.Study;
+using ViewObjects;
 using ViewTo.RhinoGh.Goo;
 using ViewTo.RhinoGh.Properties;
 
@@ -55,26 +54,26 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var wrappers = new List<GH_ViewObj>();
 			DA.GetDataList(_input.Cloud, wrappers);
-			var clouds = wrappers.Unwrap<ViewObjectReference>();
+			var clouds = wrappers.Unwrap<IViewObject>();
 
 			wrappers.Clear();
 			DA.GetDataList(_input.Content, wrappers);
-			var contents = wrappers.Unwrap<ViewObjectReference>();
+			var contents = wrappers.Unwrap<IViewObject>();
 
 			wrappers.Clear();
 			DA.GetDataList(_input.Params, wrappers);
-			var systems = wrappers.Unwrap<ViewObjectReference>();
+			var systems = wrappers.Unwrap<IViewObject>();
 
 			var ghName = new GH_String();
 			DA.GetData(_input.Name, ref ghName);
 
-			var objs = new List<ViewObjectReference>();
+			var objs = new List<IViewObject>();
 
 			objs.AddRange(contents);
 			objs.AddRange(clouds);
 			objs.AddRange(systems);
 
-			var viewObj = new ViewStudyReference(objs, ghName.Value);
+			var viewObj = new ViewStudy(objs, ghName.Value);
 
 			DA.SetData(0, viewObj);
 		}

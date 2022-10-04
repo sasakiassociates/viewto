@@ -6,33 +6,36 @@ using Random = System.Random;
 
 namespace ViewObjects.Unity
 {
-	public static partial class ViewObjMonoExt
+	public static partial class ViewObject
 	{
 
-		public static List<ViewColor> CreateBundledColors(this ICollection content)
+		public static List<ViewCloud> GetCloudsByKey(List<string> ids)
 		{
-			var colorSet = new HashSet<ViewColor>();
-			var r = new Random();
+			var viewClouds = new List<ViewCloud>();
 
-			while (colorSet.Count < content.Count)
+			if (!ids.Valid())
 			{
-				var b = new byte[3];
-				r.NextBytes(b);
-				var tempColor = new ViewColor(b[0], b[1], b[2], 255);
-				colorSet.Add(tempColor);
+				return null;
 			}
 
-			return colorSet.ToList();
+			foreach (var key in ids)
+			{
+				var obj = TryFetchInScene<ViewCloud>(key);
+				if (obj != null)
+					viewClouds.Add(obj);
+			}
+
+			return viewClouds;
 		}
 
-		public static ViewColor ToView(this Color32 value, int index) => new(value.r, value.g, value.b, value.a);
+		public static ViewColor ToView(this Color32 value) => new(value.r, value.g, value.b, value.a);
 
 		public static List<Color32> ToUnity(this IEnumerable<ViewColor> value)
 		{
 			var res = new List<Color32>();
 			foreach (var v in value)
 				res.Add(v.ToUnity());
-			
+
 			return res;
 		}
 

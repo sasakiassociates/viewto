@@ -1,34 +1,32 @@
-﻿#region
-
+﻿using System;
 using System.Collections.Generic;
-using ViewObjects;
+using System.Linq;
 using ViewObjects.Unity;
-
-#endregion
+using ViewTo.Connector.Unity.Commands;
+using VO = ViewObjects;
 
 namespace ViewTo.Connector.Unity
 {
 
-	public readonly struct ViewerSetupData
+	[Serializable]
+	public class ViewerSetupData
 	{
-		public ViewerSetupData(
-			List<ViewCloudMono> clouds,
-			List<IViewerLayout> layouts,
-			List<ViewColorWithName> viewColors,
-			List<DesignContentMono> designContent
-		)
+
+		public List<VO.IViewerLayout> Layouts { get; private set; }
+
+		public List<Content> ProposedContent { get; private set; }
+
+		public List<ViewCloud> Clouds { get; private set; }
+
+		public List<ViewColorWithName> Colors { get; private set; }
+
+		public ViewerSetupData(VO.RigParameters data)
 		{
-			this.clouds = clouds;
-			this.layouts = layouts;
-			this.viewColors = viewColors;
-			this.designContent = designContent;
+			Layouts = data.Viewer;
+			Clouds = ViewObject.GetCloudsByKey(data.Clouds);
+			ProposedContent = ViewObject.TryFetchInScene(VO.ContentType.Proposed);
+			Colors = data.Colors.GetViewColorsFromScene().ToList();
 		}
 
-		public readonly List<ViewCloudMono> clouds;
-		public readonly List<ViewColorWithName> viewColors;
-		public readonly List<DesignContentMono> designContent;
-		public readonly List<IViewerLayout> layouts;
-
 	}
-
 }

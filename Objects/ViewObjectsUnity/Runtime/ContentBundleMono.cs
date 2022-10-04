@@ -8,11 +8,11 @@ using Object = UnityEngine.Object;
 namespace ViewObjects.Unity
 {
 
-	public class ContentBundleMono : ViewObjMono, IViewContentBundle
+	public class ContentBundleMono : ViewObjectMono
 	{
-		[SerializeField] List<ContentMono> viewContents;
+		[SerializeField] List<Content> viewContents;
 
-		public List<TContent> GetContent<TContent>() where TContent : ContentMono
+		public List<TContent> GetContent<TContent>() where TContent : Content
 		{
 			var res = new List<TContent>();
 
@@ -27,44 +27,34 @@ namespace ViewObjects.Unity
 			return res;
 		}
 
-		public List<IViewContent> contents
+		public List<IContent> Contents
 		{
-			get => viewContents.Valid() ? viewContents.Cast<IViewContent>().ToList() : new List<IViewContent>();
+			get => viewContents.Valid() ? viewContents.Cast<IContent>().ToList() : new List<IContent>();
 			set
 			{
-				viewContents = new List<ContentMono>();
+				viewContents = new List<Content>();
 				foreach (var v in value)
 				{
-					ContentMono mono = null;
-					if (v is ContentMono contentMono)
+					Content mono = null;
+					if (v is Content contentMono)
 						mono = contentMono;
 					else
-						mono = v switch
-						{
-							ITargetContent _ => new GameObject().AddComponent<TargetContentMono>(),
-							IBlockerContent _ => new GameObject().AddComponent<BlockerContentMono>(),
-							IDesignContent _ => new GameObject().AddComponent<DesignContentMono>(),
-							_ => null
-						};
+					{
+						mono = new GameObject(v.ViewId).AddComponent<Content>();
+						mono.ViewId = v.ViewId;
+						mono.Color = v.Color;
+						mono.ContentType = v.ContentType;
+						mono.ContentLayerMask = v.GetLayerMask();
+					}
 
-					mono.ContentLayerMask = v.GetLayerMask();
 					mono.transform.SetParent(transform);
 					viewContents.Add(mono);
 				}
 			}
 		}
 
-		public void ChangeColors()
+		public void Prime(Material material, Action<Content> OnAfterPrime = null, Action<ContentObj> OnContentObjPrimed = null)
 		{
-			var colors = contents.CreateBundledColors();
-			for (var i = 0; i < contents.Count; i++)
-				contents[i].viewColor = colors[i];
-		}
-
-		public void Prime(Material material, Action<ContentMono> OnAfterPrime = null, Action<ContentObj> OnContentObjPrimed = null)
-		{
-			ChangeColors();
-
 			foreach (var mono in viewContents)
 			{
 				var matInstance = Instantiate(material);
@@ -76,13 +66,13 @@ namespace ViewObjects.Unity
 		void Purge()
 		{
 			if (viewContents.Valid())
-				for (var i = contents.Count - 1; i >= 0; i--)
+				for (var i = Contents.Count - 1; i >= 0; i--)
 					if (Application.isPlaying)
 						Destroy(viewContents[i].gameObject);
 					else
 						DestroyImmediate(viewContents[i].gameObject);
 
-			viewContents = new List<ContentMono>();
+			viewContents = new List<Content>();
 		}
 	}
 
@@ -99,7 +89,8 @@ namespace ViewObjects.Unity
 			var currentVertexCount = 0;
 			foreach (var t in meshFilters)
 			{
-				if (t == null || t.sharedMesh == null) continue;
+				if (t == null || t.sharedMesh == null)
+					continue;
 
 				var temp = Object.Instantiate(t.sharedMesh);
 				if (currentVertexCount + temp.vertexCount >= int.MaxValue)

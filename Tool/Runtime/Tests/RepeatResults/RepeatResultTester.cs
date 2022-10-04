@@ -13,10 +13,10 @@ namespace ViewTo.Connector.Unity
 	public class RepeatResultTester
 	{
 
-		ResultCloudMono testCloudA, testCloudB;
+		ViewObjects.Unity.ResultCloud testCloudA, testCloudB;
 		ResultsForCloud testResultsA, testResultsB;
 
-		public void SetNewCloud(ResultCloudMono mono)
+		public void SetNewCloud(ViewObjects.Unity.ResultCloud mono)
 		{
 			if (testCloudA == null)
 			{
@@ -83,9 +83,9 @@ namespace ViewTo.Connector.Unity
 				// valuesB.Add(Enum.Parse<ResultStage>(dataB.stage), dataB.values);
 
 				// Test compare target count
-				if (dataA.values.Count != dataB.values.Count)
+				if (dataA.Values.Count != dataB.Values.Count)
 				{
-					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.values.Count} : B={dataB.values.Count} ");
+					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.Values.Count} : B={dataB.Values.Count} ");
 					continue;
 				}
 
@@ -93,10 +93,10 @@ namespace ViewTo.Connector.Unity
 				// collect any indexes that do not equal each other
 				var mismatchedValues = new List<int>();
 
-				for (var rIndex = 0; rIndex < dataA.values.Count; rIndex++)
+				for (var rIndex = 0; rIndex < dataA.Values.Count; rIndex++)
 				{
-					var valueA = dataA.values[rIndex];
-					var valueB = dataB.values[rIndex];
+					var valueA = dataA.Values[rIndex];
+					var valueB = dataB.Values[rIndex];
 
 					// Test compare target count
 					if (!valueA.Equals(valueB))
@@ -154,7 +154,7 @@ namespace ViewTo.Connector.Unity
 			ViewConsole.Log(concerns_existing.Valid() ? $"Concerned Values for Existing vs Proposed Found {concerns_existing.Count}" : "Values seem good!");
 		}
 
-		static void Compare(ResultCloudMono cloudA, ResultCloudMono cloudB)
+		static void Compare(ViewObjects.Unity.ResultCloud cloudA, ViewObjects.Unity.ResultCloud cloudB)
 		{
 			ViewConsole.Log("Comparing Data!");
 
@@ -172,9 +172,9 @@ namespace ViewTo.Connector.Unity
 			}
 
 			// Test against data count
-			if (cloudA.data.Count != cloudB.data.Count)
+			if (cloudA.Data.Count != cloudB.Data.Count)
 			{
-				ViewConsole.Error($"Cloud data count are not equal. A={cloudA.data.Count} : B={cloudB.data.Count} ");
+				ViewConsole.Error($"Cloud data count are not equal. A={cloudA.Data.Count} : B={cloudB.Data.Count} ");
 				return;
 			}
 
@@ -186,16 +186,16 @@ namespace ViewTo.Connector.Unity
 			}
 
 			// Test all data now
-			for (var dIndex = 0; dIndex < cloudA.data.Count; dIndex++)
+			for (var dIndex = 0; dIndex < cloudA.Data.Count; dIndex++)
 			{
 				// grab collection of data
-				var dataA = cloudA.data[dIndex];
-				var dataB = cloudB.data[dIndex];
+				var dataA = cloudA.Data[dIndex];
+				var dataB = cloudB.Data[dIndex];
 
 				// Test compare target count
-				if (dataA.values.Count != dataB.values.Count)
+				if (dataA.Values.Count != dataB.Values.Count)
 				{
-					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.values.Count} : B={dataB.values.Count} ");
+					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.Values.Count} : B={dataB.Values.Count} ");
 					continue;
 				}
 
@@ -203,10 +203,10 @@ namespace ViewTo.Connector.Unity
 				// collect any indexes that do not equal each other
 				var mismatchedValues = new List<int>();
 
-				for (var rIndex = 0; rIndex < dataA.values.Count; rIndex++)
+				for (var rIndex = 0; rIndex < dataA.Values.Count; rIndex++)
 				{
-					var valueA = dataA.values[rIndex];
-					var valueB = dataB.values[rIndex];
+					var valueA = dataA.Values[rIndex];
+					var valueB = dataB.Values[rIndex];
 
 					// Test compare target count
 					if (!valueA.Equals(valueB))
@@ -216,7 +216,7 @@ namespace ViewTo.Connector.Unity
 					}
 				}
 
-				ViewConsole.Log(mismatchedValues.Valid() ? $"Incorrect values found {mismatchedValues.Count}" : "No Incorrect values found");
+				ViewConsole.Log(mismatchedValues.Valid() ? $"Incorrect Values found {mismatchedValues.Count}" : "No Incorrect values found");
 			}
 		}
 

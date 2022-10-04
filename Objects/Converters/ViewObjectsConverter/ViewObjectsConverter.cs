@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Speckle.Core.Kits;
 using Speckle.Core.Models;
-using ViewObjects.References;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
@@ -73,7 +72,9 @@ namespace ViewObjects.Converter
 			{
 				case IReferenceObject _:
 					return true;
-				case IViewStudy _:
+				case IViewStudy<IViewObject> _:
+					return true;
+				case IViewStudy<IViewObjectReference> _:
 					return true;
 				case IResultCloud _:
 					return true;
@@ -120,7 +121,7 @@ namespace ViewObjects.Converter
 		{
 			switch (@object)
 			{
-				case IViewStudy o:
+				case IViewStudy<IViewObject> o:
 					return StudyToSpeckle(o);
 				case IViewerLayout o:
 					return LayoutToSpeckle(o);
@@ -137,7 +138,7 @@ namespace ViewObjects.Converter
 				case ContentReference o:
 					return ViewContentToSpeckle(o);
 				case ViewObjectReference o:
-					return ViewObjectReferenceToSpeckle(o);
+					return ReferenceToSpeckle(o);
 				default:
 					throw new ArgumentOutOfRangeException(nameof(@object), @object, null);
 			}
@@ -150,9 +151,9 @@ namespace ViewObjects.Converter
 				case VS.ViewStudy o:
 					return StudyToNative(o);
 				case VS.ViewCloud o:
-					return ViewCloudToNative(o);
+					return ViewCloudReferenceToNative(o);
 				case VS.Content o:
-					return ViewContentToNative(o);
+					return ContentReferenceToNative(o);
 				case VS.Layout o:
 					return LayoutToNative(o);
 				case VS.ViewerLinked o:
@@ -161,6 +162,8 @@ namespace ViewObjects.Converter
 					return ViewerToNative(o);
 				case VS.ResultCloud o:
 					return ResultCloudToNative(o);
+				case VS.ViewObjectReference o:
+					return ReferenceToNative(o);
 				case Base o:
 					return HandleDefault(o);
 				default:

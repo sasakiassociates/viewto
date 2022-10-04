@@ -1,14 +1,12 @@
 ﻿using System.Linq;
 using UnityEngine;
-using ViewObjects.Cloud;
 
 namespace ViewObjects.Unity
 {
-	public static partial class ViewObjMonoExt
+	public static partial class ViewObject
 	{
-		public static CloudShell GetShell(this IViewCloud obj) => new(obj, obj.ViewId, obj.count);
 
-		public static Vector3[] GetPointsAsVectors(this IViewCloud obj) => obj.points.Valid() ? obj.points.ToUnity() : null;
+		public static Vector3[] GetPointsAsVectors(this IViewCloud obj) => obj.Points.Valid() ? obj.Points.ToUnity() : null;
 
 		public static CloudPoint[] ToView(Vector3[] value, string[] meta)
 		{
@@ -63,7 +61,7 @@ namespace ViewObjects.Unity
 		{
 			// rest center 
 			Bounds bounds = default;
-			var v3 = cloud.points.ToUnity();
+			var v3 = cloud.Points.ToUnity();
 
 			if (v3.Valid())
 			{
@@ -80,7 +78,7 @@ namespace ViewObjects.Unity
 		{
 			// rest center 
 			Bounds bounds = default;
-			var v3 = cloud.points.ToUnity();
+			var v3 = cloud.Points.ToUnity();
 
 			if (v3.Valid())
 			{

@@ -1,19 +1,24 @@
 ﻿using Speckle.ConnectorUnity.Converter;
 using Speckle.Core.Models;
 using UnityEngine;
-using ViewObjects.Speckle;
-using ViewObjects.Unity;
+using VS = ViewObjects.Speckle;
+using VU = ViewObjects.Unity;
 
 namespace ViewObjects.Converter.Unity
 {
 	[CreateAssetMenu(menuName = ViewObjectUnity.ASSET_MENU + "Create " + nameof(ViewCloudConverter), fileName = nameof(ViewCloudConverter), order = 0)]
-	public class ViewCloudConverter : ComponentConverter<ViewCloudBaseV1, ViewCloudMono>
+	public class ViewCloudConverter : ComponentConverter<VS.ViewCloud, VU.ViewCloud>
 	{
-		protected override Base ConvertComponent(ViewCloudMono component) => throw new System.NotImplementedException();
-
-		protected override void ConvertBase(ViewCloudBaseV1 @base, ref ViewCloudMono instance)
+		public override Base ConvertComponent(VU.ViewCloud component)
 		{
-			throw new System.NotImplementedException();
+			return new VS.ViewCloud(component.Reference, component.ViewId);
 		}
+
+		protected override void ConvertBase(VS.ViewCloud obj, ref VU.ViewCloud instance)
+		{
+			instance.ViewId = obj.ViewId;
+			instance.Reference = obj.References;
+		}
+
 	}
 }

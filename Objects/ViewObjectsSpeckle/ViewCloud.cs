@@ -5,7 +5,7 @@ namespace ViewObjects.Speckle
 {
 	/// <summary>
 	/// </summary>
-	public class ViewCloud : ViewObjectReferenceBase<Cloud.ViewCloud>
+	public class ViewCloud : ViewObjectReference<Cloud.ViewCloud>
 	{
 
 		/// <summary>

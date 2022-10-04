@@ -60,25 +60,7 @@ namespace ViewTo.Connector.Unity
 			proposed = 0.0005028107
 		};
 
-		// ublic static SoViewerBundle Prime(this ViewerBundle obj, List<ViewCloudMono> clouds)
-		// {
-		//   var soItem = ScriptableObject.CreateInstance<SoViewerBundle>();
-		//   soItem.SetRef(obj);
-		//   soItem.linkedCloud = new List<ViewCloudMono>();
-		//
-		//   if (obj is ViewerBundleLinked linkedBundle)
-		//     foreach (var shell in linkedBundle.linkedClouds)
-		//     foreach (var c in clouds)
-		//       if (c.ViewId.Equals(shell.objId))
-		//       {
-		//         soItem.linkedCloud.Add(c);
-		//         break;
-		//       }
-		//
-		//   return soItem;
-		// }
-		//
-		//
+
 		public static void DrawFrustum(this Camera cam)
 		{
 			var nearCorners = new Vector3[4]; //Approx'd nearplane corners
@@ -121,36 +103,13 @@ namespace ViewTo.Connector.Unity
 
 		public static bool Sim(this ViewColor a, ViewColor b) => a.R == b.R && a.G == b.G && a.B == b.B;
 
-		// public static SoRigParam PrimeRigParams(this IRigParam param, List<ViewCloudMono> clouds, List<ViewColor> globalColors)
-		// {
-		//   var so = new SoRigParam();
-		//
-		//   so.viewers = new List<SoViewerBundle>();
-		//
-		//   foreach (var b in param.bundles)
-		//     if (b != null)
-		//       so.viewers.Add(b.Prime(clouds));
-		//
-		//   if (param is RigParametersIsolated iso)
-		//   {
-		//     so.isolate = true;
-		//     so.contentColors = iso.colors;
-		//   }
-		//   else
-		//   {
-		//     so.isolate = false;
-		//     so.contentColors = globalColors;
-		//   }
-		//
-		//   return so;
-		// }
 
-		public static List<ViewCloudMono> LocateViewCloud(string[] ids)
+		public static List<ViewCloud> LocateViewCloud(string[] ids)
 		{
-			var clouds = new List<ViewCloudMono>();
+			var clouds = new List<ViewCloud>();
 			foreach (var id in ids)
 			{
-				var sceneObj = ViewObjMonoExt.TryFetchInScene<ViewCloudMono>(id);
+				var sceneObj = ViewObject.TryFetchInScene<ViewCloud>(id);
 
 				if (sceneObj != null)
 					clouds.Add(sceneObj);
@@ -161,7 +120,7 @@ namespace ViewTo.Connector.Unity
 
 		public static IViewCloud TryFetchCloud(string idToFind)
 		{
-			foreach (var monoToCheck in Object.FindObjectsOfType<ViewObjMono>())
+			foreach (var monoToCheck in Object.FindObjectsOfType<ViewObjectMono>())
 				if (monoToCheck.GetType().CheckForInterface<IViewCloud>())
 					try
 					{

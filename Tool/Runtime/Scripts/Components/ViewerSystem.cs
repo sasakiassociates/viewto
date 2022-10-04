@@ -4,47 +4,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sasaki.Unity;
+using Speckle.ConnectorUnity;
 using UnityEngine;
 using UnityEngine.Events;
-using ViewObjects;
-using ViewObjects.Content;
+using VO = ViewObjects;
 using ViewObjects.Unity;
-using ViewObjects.Viewer;
 
 #endregion
 
 namespace ViewTo.Connector.Unity
 {
-	public class ViewerSystemMono : PixelSystem
+	public class ViewerSystem : PixelSystem
 	{
 		[SerializeField] bool _isGlobal;
 
 		(int cloud, int design) _active;
 
-		List<IResultData> _bundleDataForCloud;
+		List<VO.IResultCloudData> _bundleDataForCloud;
 
 		ViewerSetupData _data;
 
-		ResultStage _stage;
+		VO.ResultStage _stage;
 
-		List<DesignContentMono> designs
+		List<Content> designs
 		{
-			get => _data.designContent;
+			get => _data.ProposedContent;
 		}
 
-		ViewCloudMono activeCloud
+		ViewCloud activeCloud
 		{
 			get => clouds[_active.cloud];
 		}
 
-		List<ViewCloudMono> clouds
+		List<ViewCloud> clouds
 		{
-			get => _data.clouds;
+			get => _data.Clouds;
 		}
 
 		bool checkIfDesignStage
 		{
-			get => stage == ResultStage.Proposed && hasValidProposedOptions;
+			get => stage == VO.ResultStage.Proposed && hasValidProposedOptions;
 		}
 
 		bool hasValidProposedOptions
@@ -58,7 +57,7 @@ namespace ViewTo.Connector.Unity
 			set => _isGlobal = value;
 		}
 
-		public ResultStage stage
+		public VO.ResultStage stage
 		{
 			get => _stage;
 			set
@@ -76,9 +75,9 @@ namespace ViewTo.Connector.Unity
 		{
 			var values = new Dictionary<string, int>();
 
-			foreach (ResultStage v in Enum.GetValues(typeof(ResultStage)))
+			foreach (VO.ResultStage v in Enum.GetValues(typeof(VO.ResultStage)))
 			{
-				if (v == ResultStage.Proposed && !designs.Valid())
+				if (v == VO.ResultStage.Proposed && !designs.Valid())
 					continue;
 
 				values.Add(v.ToString(), v.GetCullingMask());
@@ -89,36 +88,33 @@ namespace ViewTo.Connector.Unity
 
 		public void Init(ViewerSetupData data)
 		{
-			if (!data.layouts.Valid() || !data.viewColors.Valid() || !data.clouds.Valid())
+			if (!data.Layouts.Valid() || !data.Colors.Valid() || !data.Clouds.Valid())
 			{
 				Debug.Log($"Invalid Layouts for {name}");
 				return;
 			}
 
-			// copy over 
-			_data = data;
-
 			var converted = new List<PixelLayout>();
 
-			foreach (var layout in _data.layouts)
+			foreach (var layout in data.Layouts)
 				switch (layout)
 				{
-					case ViewerLayoutCube:
+					case VO.LayoutCube:
 						converted.Add(new GameObject().AddComponent<PixelLayoutCube>());
 						break;
-					case ViewerLayoutHorizontal:
+					case VO.LayoutHorizontal:
 						converted.Add(new GameObject().AddComponent<PixelLayoutHorizontal>());
 						break;
-					case ViewerLayoutOrtho o:
+					case VO.LayoutOrtho o:
 						var res = new GameObject().AddComponent<PixelLayoutOrtho>();
-						res.orthoSize = (float)o.size;
+						res.orthoSize = (float)o.Size;
 						converted.Add(res);
 						break;
-					case ViewerLayoutFocus o:
+					case VO.LayoutFocus o:
 						Debug.LogWarning($"{o} is not supported yet");
 						// converted.Add(new GameObject().AddComponent<>());
 						break;
-					case ViewerLayoutNormal o:
+					case VO.LayoutNormal o:
 						// TODO: handle relating the normal cloud type
 						Debug.LogWarning($"{o} is not supported yet");
 						// converted.Add(new GameObject().AddComponent<>());
@@ -129,25 +125,25 @@ namespace ViewTo.Connector.Unity
 			_active.cloud = clouds.Count - 1;
 			var systemPoints = clouds[_active.cloud].GetPointsAsVectors();
 
-			Init(systemPoints, _data.viewColors.ToUnity().ToArray(), converted);
+			Init(systemPoints, data.Colors.ToUnity().ToArray(), converted);
 
 			// Note: important to do this here!
-			stage = ResultStage.Potential;
+			stage = VO.ResultStage.Potential;
 		}
 
 		bool hasMoreStagesToDo
 		{
 			get
 			{
-				if (stage == ResultStage.Potential)
+				if (stage == VO.ResultStage.Potential)
 					_active.design++;
 
 				stage = GetNextStage(stage);
 
-				if (stage != ResultStage.Proposed)
+				if (stage != VO.ResultStage.Proposed)
 					return true;
 
-				if (stage == ResultStage.Proposed && hasValidProposedOptions)
+				if (stage == VO.ResultStage.Proposed && hasValidProposedOptions)
 				{
 					foreach (var d in designs)
 						d.show = false;
@@ -161,13 +157,13 @@ namespace ViewTo.Connector.Unity
 			}
 		}
 
-		ResultStage GetNextStage(ResultStage s)
+		VO.ResultStage GetNextStage(VO.ResultStage s)
 		{
 			return s switch
 			{
-				ResultStage.Potential => ResultStage.Existing,
-				ResultStage.Existing => ResultStage.Proposed,
-				_ => ResultStage.Proposed
+				VO.ResultStage.Potential => VO.ResultStage.Existing,
+				VO.ResultStage.Existing => VO.ResultStage.Proposed,
+				_ => VO.ResultStage.Proposed
 			};
 		}
 
@@ -175,8 +171,7 @@ namespace ViewTo.Connector.Unity
 		{
 			_active.cloud = 0;
 			_active.design = 0;
-			_stage = ResultStage.Potential;
-			
+			_stage = VO.ResultStage.Potential;
 			base.ResetSystem();
 		}
 
@@ -188,7 +183,7 @@ namespace ViewTo.Connector.Unity
 				ResetDataContainer();
 
 				ViewConsole.Log($"{name} is starting next stage "
-				                + (checkIfDesignStage ? stage + $" {_data.designContent[_active.design].name}" : stage));
+				                + (checkIfDesignStage ? stage + $" {_data.ProposedContent[_active.design].name}" : stage));
 				return true;
 			}
 
@@ -212,7 +207,7 @@ namespace ViewTo.Connector.Unity
 				// store points
 				Points = clouds[_active.cloud].GetPointsAsVectors();
 
-				stage = ResultStage.Potential;
+				stage = VO.ResultStage.Potential;
 
 				// reset all views  
 				foreach (var d in designs)
@@ -228,7 +223,7 @@ namespace ViewTo.Connector.Unity
 
 		protected override IPixelSystemDataContainer GatherSystemData()
 		{
-			_bundleDataForCloud ??= new List<IResultData>();
+			_bundleDataForCloud ??= new List<VO.IResultCloudData>();
 
 			// gather all data
 			var container = new PixelSystemData(this);
@@ -239,94 +234,40 @@ namespace ViewTo.Connector.Unity
 				var layoutName = container.layoutNames[layoutIndex];
 
 				// each view color is associated with the second array (double[pointIndex][colorIndex])
-				for (var colorIndex = 0; colorIndex < _data.viewColors.Count; colorIndex++)
+				for (var colorIndex = 0; colorIndex < _data.Colors.Count; colorIndex++)
 				{
 					// go through each finder and compile each point for that color
 					var layoutValues = new int[CollectionSize];
-					var content = _data.viewColors[colorIndex].content;
+					var vc = _data.Colors[colorIndex];
 
 					var raw1d = layout.data.Get1d(colorIndex);
-					
+
 					for (var pIndex = 0; pIndex < raw1d.Length; pIndex++)
 					{
 						layoutValues[pIndex] += raw1d[pIndex];
 					}
 
 					_bundleDataForCloud.Add(
-						new ContentResultData(
-							layoutValues.ToList(),
-							stage.ToString(),
-							content,
-							colorIndex,
-							layout: layoutName
-						));
+						new VO.ResultCloudData()
+						{
+							Values = layoutValues.ToList(),
+							Layout = layoutName,
+							Option = new VO.ContentOption() { Id = vc.id, Name = vc.name }
+						}
+					);
 				}
 			}
 
 			ViewConsole.Log($"{name} is done gathering data for "
-			                + $"{(checkIfDesignStage ? stage + $" {_data.designContent[_active.design].name}" : stage)}");
+			                + $"{(checkIfDesignStage ? stage + $" {_data.ProposedContent[_active.design].name}" : stage)}");
 
 			return container;
 		}
 
-		public static ViewerSystemMono CreateGlobal(
-			List<IViewerLayout> layouts,
-			List<ViewCloudMono> clouds,
-			List<ViewColorWithName> viewColors,
-			List<DesignContentMono> designContent
-		)
-		{
-			var system = Create("Global", layouts, clouds, viewColors, designContent);
-
-			if (system != null)
-				system.isGlobal = true;
-
-			return system;
-		}
-
-		public static ViewerSystemMono Create(
-			string name,
-			List<IViewerLayout> layouts,
-			List<ViewCloudMono> clouds,
-			List<ViewColorWithName> viewColors,
-			List<DesignContentMono> designContent
-		)
-		{
-			if (!layouts.Valid() || !clouds.Valid() || !viewColors.Valid())
-			{
-				ViewConsole.Error("Viewer Setup Data could not be created, points or colors are not setup correctly");
-				return null;
-			}
-
-			var system = new GameObject().AddComponent<ViewerSystemMono>();
-			system.name = name;
-			system.Init(new ViewerSetupData(clouds, layouts, viewColors, designContent));
-
-			return system;
-		}
-
-		public event UnityAction<ResultStage> OnStageChange;
+		public event UnityAction<VO.ResultStage> OnStageChange;
 
 		public event UnityAction<ResultsForCloud> OnDataReadyForCloud;
 
-		// protected override void MoveAndRender()
-		// {
-		// 	// if (_saveScreenShot && pointIndex != 0)
-		// 	// 	foreach (var layout in layouts)
-		// 	// 	foreach (var finder in layout.finders)
-		// 	// 		SaveTextureAsPNG(finder.toTexture2D(), @"D:\Projects\ViewTo\captures\tests\premove\",
-		// 	// 		                 $"{stage}({pointIndex})_{finder.data.data[0].FirstOrDefault()}_{finder.name}_"
-		// 	// 		                 + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-		//
-		// 	base.MoveAndRender();
-		//
-		// 	// if (_saveScreenShot && pointIndex != 0)
-		// 	// 	foreach (var layout in layouts)
-		// 	// 	foreach (var finder in layout.finders)
-		// 	// 		SaveTextureAsPNG(finder.toTexture2D(), @"D:\Projects\ViewTo\captures\tests\postmove\",
-		// 	// 		                 $"{stage}({pointIndex})_{finder.data.data[0].FirstOrDefault()}_{finder.name}_"
-		// 	// 		                 + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-		// }
 	}
 
 }
