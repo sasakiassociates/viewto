@@ -48,6 +48,7 @@ namespace ViewTo.Cmd
 			rigParams.Insert(0, CreateRigParams(layouts, _contents, _clouds));
 			_rig.Initialize(rigParams);
 			_rig.Build();
+			args = new SimpleResultArgs(true, $"Rig Built! {rigParams.Count}");
 		}
 
 		/// <summary>

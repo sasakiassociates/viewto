@@ -9,22 +9,21 @@ namespace ViewObjects
 	public class Rig : IRig, IViewObject
 	{
 
-		public List<IViewer> Viewers { get; protected set; }
+		public List<RigParameters> StoredObjs { get; protected set; }
 
 		public Rig()
 		{ }
 
 		/// <inheritdoc />
 		public void Build()
-		{ }
+		{
+			Console.WriteLine("Building Rig");
+		}
 
 		/// <inheritdoc />
 		public void Initialize(List<RigParameters> parameters)
 		{
-			foreach (var p in parameters)
-			{
-				Activator.CreateInstance<Viewer>();
-			}
+			StoredObjs = parameters;
 		}
 	}
 }

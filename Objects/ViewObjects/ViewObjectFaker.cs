@@ -49,11 +49,7 @@ namespace ViewObjects
 
 			objects.Add(cloud);
 			objects.AddRange(content.Select(x => (IViewObject)x).ToList());
-			objects.Add(new Layout(new List<ViewDirection>()
-			{
-				ViewDirection.Front
-			}));
-
+			objects.Add(new Viewer(new List<IViewerLayout>() { new LayoutCube() }));
 			return new ViewStudy(objects, name);
 		}
 
