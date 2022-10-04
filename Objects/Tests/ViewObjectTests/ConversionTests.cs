@@ -30,9 +30,9 @@ namespace ViewTests.Objects
 		{
 			var objs = new List<IViewObject>
 			{
-				new ViewObjects.Content(ContentType.Proposed),
+				new ContentReference(new List<string>() { "256ff84cf7" }, ContentType.Proposed),
 				new CloudReference(new List<string> { "256ff84cf7" }),
-				new ViewObjects.Viewer.Viewer()
+				new ViewObjects.Viewer()
 			};
 
 			var obj = new ViewObjects.Study.ViewStudy(objs, "Test View Study");

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ViewObjects.Cloud;
 using ViewObjects.Study;
-using ViewObjects.Viewer;
 
 namespace ViewObjects
 {

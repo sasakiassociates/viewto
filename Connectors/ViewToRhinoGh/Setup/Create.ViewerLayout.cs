@@ -4,7 +4,6 @@ using System.Linq;
 using Grasshopper.Kernel;
 using ViewObjects;
 using ViewObjects.References;
-using ViewObjects.Viewer;
 using ViewTo.RhinoGh.Goo;
 
 namespace ViewTo.RhinoGh.Setup

@@ -22,13 +22,12 @@ namespace ViewObjects.Converter
 
 		IViewObject ViewCloudToNative(IReferenceObject obj) => new CloudReference(obj.References, obj.ViewId);
 
-		IViewObject LayoutToNative(IViewerLayout obj) => new Viewer.Layout(obj.Viewers);
+		IViewObject LayoutToNative(IViewerLayout obj) => new Layout(obj.Viewers);
 
-		IViewObject ViewerToNative(IViewer<VS.Layout> o) =>
-			new Viewer.Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList());
+		IViewObject ViewerToNative(IViewer<VS.Layout> o) => new Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList());
 
 		IViewObject ViewerToNative(IViewerLinked<VS.Layout> o) =>
-			new Viewer.ViewerLinked(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
+			new ViewerLinked(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
 
 		IViewObject ResultCloudToNative(VS.ResultCloud obj) =>
 			new VO.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);

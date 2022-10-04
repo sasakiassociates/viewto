@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ViewObjects.Viewer
+namespace ViewObjects
 {
 
 	public class Layout : IViewerLayout, IViewObject
