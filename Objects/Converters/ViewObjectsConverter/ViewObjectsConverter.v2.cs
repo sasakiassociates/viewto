@@ -22,7 +22,7 @@ namespace ViewObjects.Converter
 
 		IViewObject ViewCloudToNative(IReferenceObject obj) => new CloudReference(obj.References, obj.ViewId);
 
-		IViewObject LayoutToNative(IViewerLayout obj) => new Viewer.ViewerLayout(obj.Viewers);
+		IViewObject LayoutToNative(IViewerLayout obj) => new Viewer.Layout(obj.Viewers);
 
 		IViewObject ViewerToNative(IViewer<VS.Layout> o) =>
 			new Viewer.Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList());

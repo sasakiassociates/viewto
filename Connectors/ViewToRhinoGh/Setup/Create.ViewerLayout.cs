@@ -43,7 +43,7 @@ namespace ViewTo.RhinoGh.Setup
 			DA.GetDataList(0, wrappers);
 			var clouds = wrappers.Unwrap<CloudReference>();
 
-			var layout = new ViewerLayout(new List<ViewDirection>
+			var layout = new Layout(new List<ViewDirection>
 			{
 				ViewDirection.Front,
 				ViewDirection.Right,

@@ -36,7 +36,7 @@ namespace ViewObjects
 								         cloud.Points.Length,
 								         type,
 								         c.ViewId,
-								         nameof(ViewerLayout),
+								         nameof(Layout),
 								         c.ViewName
 							         )
 							);
@@ -50,7 +50,7 @@ namespace ViewObjects
 
 			objects.Add(cloud);
 			objects.AddRange(content.Select(x => (IViewObject)x).ToList());
-			objects.Add(new ViewerLayout(new List<ViewDirection>()
+			objects.Add(new Layout(new List<ViewDirection>()
 			{
 				ViewDirection.Front
 			}));
@@ -99,7 +99,7 @@ namespace ViewObjects
 				var id = ObjUtils.InitGuid;
 				foreach (ResultStage stage in Enum.GetValues(typeof(ResultStage)))
 				{
-					values.Add(Result<TData>(pointCount, stage, id, nameof(ViewerLayout), $"Test{c}", random));
+					values.Add(Result<TData>(pointCount, stage, id, nameof(Layout), $"Test{c}", random));
 				}
 			}
 
@@ -117,7 +117,7 @@ namespace ViewObjects
 		{
 			random ??= new Random();
 			var obj = Activator.CreateInstance<TData>();
-			obj.Layout = string.IsNullOrEmpty(layout) ? nameof(ViewerLayout) : layout;
+			obj.Layout = string.IsNullOrEmpty(layout) ? nameof(Layout) : layout;
 			obj.Values = Values(pointCount, random);
 			obj.Option = ContentOption(
 				name: string.IsNullOrEmpty(contentName) ? "Test" : contentName,
