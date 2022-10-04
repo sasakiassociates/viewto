@@ -39,7 +39,7 @@ namespace ViewTo
 		}
 
 		/// <summary>
-		/// Get the valuess 
+		/// Get the values 
 		/// </summary>
 		/// <param name="exp"></param>
 		/// <param name="valueType"></param>

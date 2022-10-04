@@ -13,10 +13,6 @@
         <ProjectReference Include="..\Objects\ViewObjects\ViewObjects.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Archive"/>
-    </ItemGroup>
-
     <PropertyGroup>
         <IsDesktopBuild Condition="'$(IsDesktopBuild)' == ''">true</IsDesktopBuild>
     </PropertyGroup>

@@ -2,8 +2,6 @@
 using System.Linq;
 using ViewObjects;
 using ViewTo.Cmd;
-using ViewTo.Events.Args;
-using ViewTo.Events.Process;
 
 namespace ViewTo
 {
@@ -159,23 +157,5 @@ namespace ViewTo
 			return default;
 		}
 
-		public static void LoadStudyToRig(
-			this IViewStudy_v1 study, out IRig_v1 rigV1ToBuild, out List<StudyProcessArgs> argsList, out CancelStudyArgs cancelArgs
-		)
-		{
-			cancelArgs = null;
-			rigV1ToBuild = default;
-			argsList = new List<StudyProcessArgs>();
-
-			if (!study.IsValid)
-				return;
-
-			var cmd = new RunStudyCommand(study);
-			cmd.Execute();
-
-			argsList = cmd.processArgs;
-			cancelArgs = cmd.cancelStudyArgs;
-			rigV1ToBuild = cmd.RigV1;
-		}
 	}
 }
