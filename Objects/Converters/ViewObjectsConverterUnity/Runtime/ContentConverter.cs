@@ -13,12 +13,12 @@ namespace ViewObjects.Converter.Unity
 
 		public override Base ConvertComponent(VU.Content component)
 		{
-			return new VS.Content(component.ContentType, component.Reference, component.ViewId, component.ViewName);
+			return new VS.Content(component.ContentType, component.References, component.ViewId, component.ViewName);
 		}
 
 		protected override void ConvertBase(VS.Content obj, ref VU.Content instance)
 		{
-			instance.Reference = obj.References;
+			instance.References = obj.References;
 			instance.ContentType = obj.ContentType;
 			instance.ViewId = obj.ViewId;
 			instance.ViewName = obj.ViewName.Valid() ? obj.ViewName : obj.ContentType.ToString();

@@ -5,42 +5,40 @@ using UnityEngine;
 
 namespace ViewObjects.Unity
 {
-	public class Content : ViewObjectMono, IContent, IContentObjects<ContentObj>
+	public class Content : ViewObjectMono, IContent, IContentObjects<GameObject>
 	{
 
 		[HideInInspector] [SerializeField] int _layerMask;
 
-		[SerializeField] List<ContentObj> _contentObjs;
+		[SerializeField] List<GameObject> _objects;
 
 		[SerializeField] ContentType _contentType;
 
-		[SerializeField] Color32 color;
-
-		[SerializeField] bool _combine = true;
+		[SerializeField] Color32 _color;
 
 		[SerializeField] string _viewId;
 
-		[SerializeField] string viewName;
-		
-		[SerializeField, HideInInspector] List<string> _reference;
+		[SerializeField] string _viewName;
 
-		public List<string> Reference
+		[SerializeField, HideInInspector] List<string> references;
+
+		public List<string> References
 		{
-			get => _reference;
-			set => _reference = value;
+			get => references;
+			set => references = value;
 		}
 
 		public ViewColor Color
 		{
-			get => new(color.r, color.g, color.b, color.a);
+			get => new(_color.r, _color.g, _color.b, _color.a);
 			set
 			{
 				if (value == null)
 					return;
 
-				Debug.Log($"new assigned to {viewName}:" + value.ToUnity());
+				Debug.Log($"new assigned to {_viewName}:" + value.ToUnity());
 
-				color = value.ToUnity();
+				_color = value.ToUnity();
 
 				ApplyColor();
 			}
@@ -66,47 +64,64 @@ namespace ViewObjects.Unity
 
 		public string ViewName
 		{
-			get => viewName;
+			get => _viewName;
 			set
 			{
-				viewName = value;
+				_viewName = value;
 				gameObject.name = FullName;
 			}
 		}
 
-		public List<ContentObj> Objects
+		public List<GameObject> Objects
 		{
-			get => _contentObjs;
-			set => _contentObjs = value;
+			get => _objects;
+			set => _objects = value;
 		}
 
 		public string FullName => $"Content {ContentType.ToString().Split('.').LastOrDefault()} - {ViewName}";
 
 		static int DiffuseColor => Shader.PropertyToID("_diffuseColor");
 
-		public bool show
+		public bool Show
 		{
 			set
 			{
-				if (!_contentObjs.Valid())
+				if (!_objects.Valid())
 					return;
 
-				foreach (var obj in _contentObjs)
+				foreach (var obj in _objects)
 					obj.gameObject.SetActive(value);
 			}
 		}
 
 		void ApplyColor()
 		{
-			if (_contentObjs.Valid())
-				foreach (var contentObj in _contentObjs)
-					contentObj.SetColor = color;
+			if (!_objects.Valid())
+			{
+				return;
+			}
+
+			foreach (var contentObj in _objects)
+			{
+				var meshRend = contentObj.GetComponent<MeshRenderer>();
+				if (meshRend != null)
+				{
+					if (Application.isPlaying)
+					{
+						meshRend.material.SetColor(DiffuseColor, _color);
+					}
+					else
+					{
+						meshRend.sharedMaterial.SetColor(DiffuseColor, _color);
+					}
+				}
+			}
 		}
 
 		/// <summary>
 		///   references the objects converted to the view content list and imports them
 		/// </summary>
-		public void PrimeMeshData(Material material, Action<ContentObj> onAfterPrime = null)
+		public void PrimeMeshData(Material material, Action<GameObject> onAfterPrime = null)
 		{
 			if (!Objects.Valid())
 			{
@@ -120,27 +135,28 @@ namespace ViewObjects.Unity
 				return;
 			}
 
-			var c = color;
+			var c = _color;
 
 			if (material.HasProperty(DiffuseColor))
-				material.SetColor(DiffuseColor, c);
-			else
-				Debug.Log($"No property {DiffuseColor} on shader");
-
-			if (_combine)
 			{
-				Debug.Log($"Combinding {_contentObjs.Count} Mesh(es)");
-				_contentObjs = new List<ContentObj>() { gameObject.CombineMeshes(material) };
+				material.SetColor(DiffuseColor, c);
 			}
+			else
+			{
+				Debug.Log($"No property {DiffuseColor} on shader");
+			}
+
+			Debug.Log($"Combinding {_objects.Count} Mesh(es)");
+			_objects = new List<GameObject>() { gameObject.CombineMeshes(material) };
 
 			gameObject.ApplyAll(material);
 			gameObject.SetLayerRecursively(ContentLayerMask);
 
-			// this little loop is taking care of all the filtering of what speckle might send back. ideally it will be just components
-			foreach (var obj in _contentObjs)
-			{
-				onAfterPrime?.Invoke(obj);
-			}
+			// // this little loop is taking care of all the filtering of what speckle might send back. ideally it will be just components
+			// foreach (var obj in _objects)
+			// {
+			// 	onAfterPrime?.Invoke(obj);
+			// }
 
 			Debug.Log($"{ViewName} is primed!\nview color {Color.ToUnity()}");
 		}

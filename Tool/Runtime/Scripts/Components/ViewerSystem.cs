@@ -146,9 +146,9 @@ namespace ViewTo.Connector.Unity
 				if (stage == VO.ResultStage.Proposed && hasValidProposedOptions)
 				{
 					foreach (var d in designs)
-						d.show = false;
+						d.Show = false;
 
-					designs[_active.design].show = true;
+					designs[_active.design].Show = true;
 
 					return true;
 				}
@@ -211,7 +211,7 @@ namespace ViewTo.Connector.Unity
 
 				// reset all views  
 				foreach (var d in designs)
-					d.show = false;
+					d.Show = false;
 
 				return true;
 			}
