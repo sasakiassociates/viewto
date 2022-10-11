@@ -15,7 +15,6 @@ using Speckle.Core.Kits;
 using Speckle.Core.Models;
 using UnityEngine;
 using UnityEngine.Events;
-using ViewObjects.Speckle;
 using ViewObjects;
 using ViewTo.Connector.Unity.Commands;
 using Debug = UnityEngine.Debug;
@@ -81,7 +80,6 @@ namespace ViewTo.Connector.Unity
 
 			ViewConsole.Log($"{name} is loading View Study {obj.ViewName} ");
 			_study = obj;
-			_study.OnResultsSet += SendResultsToStream;
 
 			if (_rig != null)
 				VU.ViewObject.SafeDestroy(_rig.gameObject);
@@ -95,8 +93,25 @@ namespace ViewTo.Connector.Unity
 			_rig.OnStageChange += OnRigStageChanged;
 			_rig.OnContentLoaded += OnViewContentLoaded;
 			_rig.OnActiveViewerSystem += OnActiveViewerSystem;
+			_rig.OnDataReadyForCloud += (data) =>
+			{
+				if (_study != null)
+				{
+					var rc = _study.TrySetResults(data);
+					if (rc != null)
+					{
+						SendResultsToStream(rc);
+					}
+				}
+			};
 
-			_rig.Build();
+			foreach (var c in _study.FindObjects<VU.Content>())
+			{
+				c.PrimeMeshData(_analysisMaterial);
+			}
+
+			var rig = (IRig)_rig;
+			_study.LoadStudyToRig(ref rig);
 
 			if (_runOnLoad)
 				StartRigSystemRun();
@@ -110,6 +125,8 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
+			Application.targetFrameRate = 200;
+			
 			ViewConsole.Log($"Starting Run for {_study.ViewName}");
 
 			inProcess = true;
@@ -168,9 +185,7 @@ namespace ViewTo.Connector.Unity
 
 			Debug.Log($"Found Study {_speckleStudy.ViewName} with {_speckleStudy.Objects.Count} objects\n({_speckleStudy.ViewId})");
 
-			var objectsToConvert = new List<VO.IViewObject>();
-
-			var contents = new List<VO.IContent>();
+			var objectsToConvert = new List<IViewObject>();
 
 			foreach (var obj in _speckleStudy.Objects)
 			{
@@ -180,17 +195,18 @@ namespace ViewTo.Connector.Unity
 
 				switch (obj)
 				{
-					case VS.Content o:
+					case VS.ContentReference o:
 						var content = go.AddComponent<VU.Content>();
 						content.ContentType = o.ContentType;
 						await GetContentData(content, o, client, STREAM);
-						contents.Add((VO.IContent)content);
+						objectsToConvert.Add(content);
 						break;
-					case VS.ViewCloud o:
+					case VS.ViewCloudReference o:
 						var cloud = go.AddComponent<ViewObjects.Unity.ViewCloud>();
-						cloud.ViewId = Guid.NewGuid().ToString();
+						cloud.ViewId = o.ViewId;
+						cloud.Reference = o.References;
 
-						var co = await ReceiveCommitWithData(client, STREAM, o.References.FirstOrDefault());
+						var co = await ReceiveCommitWithData(client, STREAM, cloud.Reference.FirstOrDefault());
 						var pc = await co.SearchForType<Pointcloud>(true, this.GetCancellationTokenOnDestroy());
 
 						cloud.Points = ArrayToCloudPoint(pc.points, pc.units).ToArray();
@@ -200,7 +216,7 @@ namespace ViewTo.Connector.Unity
 					case VS.Viewer o:
 						// TODO: Bypassing linked clouds and different layout types but should be fixed in the near future
 						var bundle = go.AddComponent<VU.Viewer>();
-						bundle.Layouts = new List<VO.IViewerLayout> { new VO.LayoutHorizontal() };
+						bundle.Layouts = new List<IViewerLayout> { new LayoutHorizontal() };
 						objectsToConvert.Add(bundle);
 						break;
 					default:
@@ -209,17 +225,13 @@ namespace ViewTo.Connector.Unity
 				}
 			}
 
-			var contentBundle = new GameObject("Content Bundle").AddComponent<VU.ContentBundleMono>();
-			contentBundle.Contents = contents;
-			objectsToConvert.Add(contentBundle);
-
 			var studyToBuild = new GameObject().AddComponent<ViewObjects.Unity.ViewStudy>();
 			studyToBuild.Objects = objectsToConvert;
 
 			TryLoadStudy(studyToBuild);
 		}
 
-		public static IEnumerable<VO.CloudPoint> ArrayToCloudPoint(IReadOnlyCollection<double> arr, string units)
+		public static IEnumerable<CloudPoint> ArrayToCloudPoint(IReadOnlyCollection<double> arr, string units)
 		{
 			if (arr == null)
 				throw new Exception("point array is not valid ");
@@ -227,7 +239,7 @@ namespace ViewTo.Connector.Unity
 			if (arr.Count % 3 != 0)
 				throw new Exception("Array malformed: length%3 != 0.");
 
-			var points = new VO.CloudPoint[arr.Count / 3];
+			var points = new CloudPoint[arr.Count / 3];
 			var asArray = arr.ToArray();
 
 			for (int i = 2, k = 0; i < arr.Count; i += 3)
@@ -236,27 +248,7 @@ namespace ViewTo.Connector.Unity
 			return points;
 		}
 
-		public static List<double> ToSpeckle(IEnumerable<VO.CloudPoint> points)
-		{
-			var res = new List<double>();
-
-			if (points == null)
-			{
-				Debug.LogException(new Exception("point array is not valid "));
-				return res;
-			}
-
-			foreach (var point in points)
-			{
-				res.Add(point.x);
-				res.Add(point.y);
-				res.Add(point.z);
-			}
-
-			return res;
-		}
-
-		public static VO.CloudPoint CloudByCoordinates(double x, double y, double z, string units) =>
+		public static CloudPoint CloudByCoordinates(double x, double y, double z, string units) =>
 			new((float)ScaleToNative(x, units), (float)ScaleToNative(y, units), (float)ScaleToNative(z, units));
 
 		public static double ScaleToNative(double value, string units) => value * Units.GetConversionFactor(units, Units.Meters);
@@ -267,7 +259,7 @@ namespace ViewTo.Connector.Unity
 			return await SpeckleOps.Receive(client, stream, refCommit.referencedObject);
 		}
 
-		async UniTask GetContentData(ViewObjects.Unity.Content content, VO.Speckle.Content contentBase, SpeckleUnityClient client, string stream)
+		async UniTask GetContentData(ViewObjects.Unity.Content content, VO.Speckle.ContentReference contentBase, SpeckleUnityClient client, string stream)
 		{
 			content.ViewId = contentBase.ViewId;
 			content.ViewName = contentBase.ViewName;
@@ -301,24 +293,6 @@ namespace ViewTo.Connector.Unity
 			return currentList;
 		}
 
-		async UniTask AutoStartViewStudy()
-		{
-			var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
-			Debug.Log("Starting");
-			client.token = this.GetCancellationTokenOnDestroy();
-			var commit = await client.CommitGet(STREAM, COMMIT);
-			Debug.Log("Commit Found");
-			// var @base = await Operations.Receive(commit.referencedObject, this.GetCancellationTokenOnDestroy(), transport);
-			var @base = await SpeckleOps.Receive(client, STREAM, commit.referencedObject);
-
-			var node = new GameObject().AddComponent<SpeckleObjectBehaviour>();
-			_converterUnity.SetConverterSettings(new ScriptableConverterSettings { style = ConverterStyle.Queue });
-
-			await node.ConvertToScene(@base, _converterUnity, this.GetCancellationTokenOnDestroy());
-
-			WhatIsThis(node);
-		}
-
 		const string STREAM = Inglewood_Stream;
 		const string BRANCH = Inglewood_Branch;
 		const string COMMIT = Inglewood_Commit;
@@ -336,12 +310,14 @@ namespace ViewTo.Connector.Unity
 		const string BCHP_Branch = "viewstudy/all-targets";
 
 		const string Inglewood_Stream = "4777dea055";
-		const string Inglewood_Commit = "e86f9ecc1f";
+		const string Inglewood_Commit = "8d3e9e3849";
 		const string Inglewood_Branch = "viewstudy/massing-from-road";
 
 		const string UPH_Stream = "a823053e07";
-		const string UPH_Commit = "3b5406b590";
-		const string UPH_Branch = "viewstudies/road-way";
+		const string UPH_Commit = "8479a2a2c9";
+		const string UPH_Branch = "viewstudies/demo";
+		
+		// const string UPH_Branch = "viewstudies/site";
 
 		const string TEST_Stream = "1da7b18b31";
 		const string TEST_Commit = "1518e1cc4c";
@@ -357,7 +333,7 @@ namespace ViewTo.Connector.Unity
 			// node.AddLayer(layer);
 
 			var data = mono.Data
-				.Select(x => new VS.ResultCloudData(x.Values, x.Option,  x.Layout))
+				.Select(x => new VS.ResultCloudData(x.Values, x.Option, x.Layout))
 				.ToList();
 
 			var resultCloud = new VS.ResultCloud() { Data = data, Points = mono.Points };
@@ -375,7 +351,7 @@ namespace ViewTo.Connector.Unity
 						// // TODO: fix this so no converter is needed
 						// var @base = node.SceneToData(_converterUnity, this.GetCancellationTokenOnDestroy());
 
-						var res = await SpeckleOps.Send(client, new Base { ["Data"] = resultCloud }, STREAM);
+						var res = await SpeckleOps.Send(client, new Base { ["Data"] = _speckleStudy }, STREAM);
 
 						await client.CommitCreate(new CommitCreateInput()
 						{
@@ -552,7 +528,7 @@ namespace ViewTo.Connector.Unity
 
 		public event UnityAction<ViewObjects.Unity.ViewStudy> OnStudyComplete;
 
-		public event UnityAction<VO.ResultStage> OnRigStageChanged;
+		public event UnityAction<ResultStage> OnRigStageChanged;
 
 		public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 
@@ -560,7 +536,7 @@ namespace ViewTo.Connector.Unity
 
 		public UnityEvent<Bounds> OnContentBoundsSet;
 
-		public UnityEvent<VO.ResultStage> OnResultStageSet;
+		public UnityEvent<ResultStage> OnResultStageSet;
 
 		// public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 

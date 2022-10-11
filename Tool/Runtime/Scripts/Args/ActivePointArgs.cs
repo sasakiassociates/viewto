@@ -1,12 +1,18 @@
 ﻿#region
 
+using System;
 using UnityEngine;
-using ViewTo.Events.Args;
 
 #endregion
 
 namespace ViewTo.Connector.Unity.Commands
 {
+
+	public class AReportEventArgs : EventArgs
+	{
+		public  string message;
+
+	}
 
 	public class ActivePointArgs : AReportEventArgs
 	{

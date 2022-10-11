@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ViewObjects.Cloud;
 
 namespace ViewObjects
 {
@@ -11,7 +10,7 @@ namespace ViewObjects
 		public static IViewStudy Study(string name = "test", bool hasResults = true)
 		{
 			List<IViewObject> objects = new();
-			List<IContent> content = new();
+			List<Content> content = new();
 
 			foreach (ContentType type in Enum.GetValues(typeof(ContentType)))
 			{
@@ -46,14 +45,14 @@ namespace ViewObjects
 				objects.Add(rc);
 			}
 
-			objects.Add(cloud);
-			objects.AddRange(content.Select(x => (IViewObject)x).ToList());
+			objects.Add(new ViewCloudReference(cloud, new List<string>()));
+			objects.AddRange(content.Select(x => new ContentReference(x, new List<string>() { })).ToList());
 			objects.Add(new Viewer(new List<IViewerLayout>
 				                       { new LayoutCube() }));
 			return new ViewStudy(objects, name);
 		}
 
-		public static IContent Content(ContentType type, string name = "test") => new Content(type, ObjUtils.InitGuid, name);
+		public static Content Content(ContentType type, string name = "test") => new Content(type, ObjUtils.InitGuid, name);
 
 		public static TCloud Cloud<TCloud>(int pointCount)
 			where TCloud : IViewCloud

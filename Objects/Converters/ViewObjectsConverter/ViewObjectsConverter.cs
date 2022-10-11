@@ -98,9 +98,9 @@ namespace ViewObjects.Converter
 				// V2 objects
 				case VS.ViewStudy _:
 					return true;
-				case VS.ViewCloud _:
+				case VS.ViewCloudReference _:
 					return true;
-				case VS.Content _:
+				case VS.ContentReference _:
 					return true;
 				case VS.Layout _:
 					return true;
@@ -129,14 +129,17 @@ namespace ViewObjects.Converter
 					return ViewerToSpeckle(o);
 				case IViewer o:
 					return ViewerToSpeckle(o);
+
 				case IResultCloud o:
 					return ResultCloudToSpeckle(o);
 				case IResultCloudData o:
 					return ResultCloudDataToSpeckle(o);
-				case CloudReference o:
-					return ViewCloudToSpeckle(o);
-				case ContentReference o:
+
+				case VO.ContentReference o:
 					return ViewContentToSpeckle(o);
+
+				case ViewCloudReference o:
+					return ViewCloudToSpeckle(o);
 				case ViewObjectReference o:
 					return ReferenceToSpeckle(o);
 				default:
@@ -150,9 +153,9 @@ namespace ViewObjects.Converter
 			{
 				case VS.ViewStudy o:
 					return StudyToNative(o);
-				case VS.ViewCloud o:
+				case VS.ViewCloudReference o:
 					return ViewCloudReferenceToNative(o);
-				case VS.Content o:
+				case VS.ContentReference o:
 					return ContentReferenceToNative(o);
 				case VS.Layout o:
 					return LayoutToNative(o);

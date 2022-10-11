@@ -7,14 +7,14 @@ using VU = ViewObjects.Unity;
 namespace ViewObjects.Converter.Unity
 {
 	[CreateAssetMenu(menuName = ViewObjectUnity.ASSET_MENU + "Create " + nameof(ViewCloudConverter), fileName = nameof(ViewCloudConverter), order = 0)]
-	public class ViewCloudConverter : ComponentConverter<VS.ViewCloud, VU.ViewCloud>
+	public class ViewCloudConverter : ComponentConverter<VS.ViewCloudReference, VU.ViewCloud>
 	{
 		public override Base ConvertComponent(VU.ViewCloud component)
 		{
-			return new VS.ViewCloud(component.Reference, component.ViewId);
+			return new VS.ViewCloudReference(component.Reference, component.ViewId);
 		}
 
-		protected override void ConvertBase(VS.ViewCloud obj, ref VU.ViewCloud instance)
+		protected override void ConvertBase(VS.ViewCloudReference obj, ref VU.ViewCloud instance)
 		{
 			instance.ViewId = obj.ViewId;
 			instance.Reference = obj.References;

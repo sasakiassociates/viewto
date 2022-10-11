@@ -29,9 +29,9 @@ namespace ViewObjects.Converter
 
 		IResultCloudData ResultCloudDataToNative(IResultCloudData obj) => new ResultCloudData(obj.Values, obj.Option, obj.Layout);
 
-		IViewObject ContentReferenceToNative(VS.Content obj) => new ContentReference(obj.References, obj.ContentType, obj.ViewId, obj.ViewName);
+		IViewObject ContentReferenceToNative(VS.ContentReference obj) => new ContentReference(obj.References, obj.ContentType, obj.ViewId, obj.ViewName);
 
-		IViewObject ViewCloudReferenceToNative(IReferenceObject obj) => new VO.CloudReference(obj.References, obj.ViewId);
+		IViewObject ViewCloudReferenceToNative(IReferenceObject obj) => new VO.ViewCloudReference(obj.References, obj.ViewId);
 
 		ViewObjectReference ReferenceToNative(IReferenceObject obj) => new ViewObjectReference(obj.References, obj.Type, obj.ViewId, obj.ViewName);
 
@@ -42,11 +42,15 @@ namespace ViewObjects.Converter
 			ViewId = obj.ViewId
 		};
 
-		VS.Content ViewContentToSpeckle(ContentReference obj) => new VS.Content(obj.ContentType, obj.References, obj.ViewId, obj.ViewName);
+		// VS.ContentReference ViewContentToSpeckle(Content obj) => new VS.ContentReference(obj, new List<string>());
 
-		VS.ViewCloud ViewCloudToSpeckle(IReferenceObject obj) => new VS.ViewCloud(obj.References, obj.ViewId);
+		// VS.ContentReference ViewContentToSpeckle(IContent obj) => new VS.ContentReference(obj, new List<string>());
 
-		VS.ViewObjectReference ReferenceToSpeckle(IReferenceObject obj) => new VS.ViewObjectReference(obj.References, obj.Type, obj.ViewId, obj.ViewName);
+		VS.ContentReference ViewContentToSpeckle(VO.ContentReference obj) => new VS.ContentReference(obj);
+
+		VS.ViewCloudReference ViewCloudToSpeckle(VO.ViewCloudReference obj) => new VS.ViewCloudReference(obj);
+
+		VS.ViewObjectReference ReferenceToSpeckle(IReferenceObject obj) => new VS.ViewObjectReference(obj.References, obj.ViewId, obj.ViewId) { };
 
 		VS.Layout LayoutToSpeckle(IViewerLayout obj) => new VS.Layout(obj.Viewers);
 

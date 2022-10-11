@@ -8,7 +8,7 @@ namespace ViewTo.RhinoGh.Setup
 	public class CreateContentOption : ViewToComponentBase
 	{
 
-		(int Targets, int Stages) _input;
+		(int Names, int Ids) _input;
 
 		public CreateContentOption() : base("Create View Content Option", "CCO", "Simple node for creating a view content option for exploring results",
 		                                    ConnectorInfo.Nodes.RESULTS)
@@ -22,10 +22,10 @@ namespace ViewTo.RhinoGh.Setup
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
 			var index = 0;
-			pManager.AddTextParameter("Targets", "T", "Targets to use", GH_ParamAccess.list);
-			_input.Targets = index++;
-			pManager.AddTextParameter("Stages", "S", "Stages to use", GH_ParamAccess.list);
-			_input.Stages = index;
+			pManager.AddTextParameter("Name", "N", "Name to use", GH_ParamAccess.list);
+			_input.Names = index++;
+			pManager.AddTextParameter("Id", "I", "Id to use", GH_ParamAccess.list);
+			_input.Ids = index;
 		}
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -35,23 +35,19 @@ namespace ViewTo.RhinoGh.Setup
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			var targets = new List<string>();
-			DA.GetDataList(_input.Targets, targets);
+			var names = new List<string>();
+			DA.GetDataList(_input.Names, names);
 
-			var stages = new List<string>();
-			DA.GetDataList(_input.Stages, stages);
+			var ids = new List<string>();
+			DA.GetDataList(_input.Ids, ids);
 
-			var options = new List<ContentOption>();
+			var options = new List<ContentInfo>();
 
-			if (stages.Valid() && targets.Valid() && targets.Count == stages.Count)
+			if (ids.Valid() && names.Valid() && names.Count == ids.Count)
 			{
-				for (var i = 0; i < stages.Count; i++)
+				for (var i = 0; i < ids.Count; i++)
 				{
-					options.Add(new ContentOption
-					{
-						Name = targets[i],
-						Stage = (ResultStage)Enum.Parse(typeof(ResultStage), stages[i])
-					});
+					options.Add(new ContentInfo(ids[i], names[i]));
 				}
 			}
 

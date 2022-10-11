@@ -24,7 +24,12 @@ namespace ViewObjects.Unity
 
 		public static int GetLayerMask(this IContent value)
 		{
-			return value.ContentType switch
+			return value.ContentType.GetLayerMask();
+		}
+
+		public static int GetLayerMask(this ContentType value)
+		{
+			return value switch
 			{
 				ContentType.Target => TargetLayer,
 				ContentType.Existing => BlockerLayer,

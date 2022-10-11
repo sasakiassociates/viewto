@@ -18,30 +18,16 @@ namespace ViewObjects.Unity
 			set => _viewId = value;
 		}
 
-		public List<TContent> GetContent<TContent>() where TContent : Content
-		{
-			var res = new List<TContent>();
-
-			foreach (var obj in loadedObjs)
-			{
-				if (obj == null || obj is not ContentBundleMono mono)
-					continue;
-
-				res.AddRange(mono.GetContent<TContent>());
-			}
-
-			return res;
-		}
-
-		public bool TrySetResults(ResultsForCloud results)
+		public ResultCloud TrySetResults(ResultsForCloud results)
 		{
 			if (results == null || !results.id.Valid())
 			{
 				Debug.Log("Cannot set results to cloud");
-				return false;
+				return null;
 			}
 
 			Debug.Log($"Trying to set new results to cloud {results.id}");
+			ResultCloud rc = null;
 
 			for (var i = 0; i < loadedObjs.Count; i++)
 			{
@@ -51,24 +37,20 @@ namespace ViewObjects.Unity
 				// reference game object with view cloud attached
 				var go = cloud.gameObject;
 
-				var resultCloud = go.AddComponent<ResultCloud>();
-				resultCloud.name = "Result Cloud";
-				resultCloud.ViewId = cloud.ViewId;
-				resultCloud.Points = cloud.Points;
-				resultCloud.Data = results.data;
+				rc = go.AddComponent<ResultCloud>();
+				rc.name = "Result Cloud";
+				rc.ViewId = cloud.ViewId;
+				rc.Points = cloud.Points;
+				rc.Data = results.data;
 
 				// Remove the view cloud component
 				Destroy(go.GetComponent<ViewCloud>());
 
 				// replace the view cloud with the result cloud
-				loadedObjs[i] = resultCloud;
-
-				OnResultsSet?.Invoke(resultCloud);
-				return true;
+				loadedObjs[i] = rc;
 			}
 
-			Debug.Log($"No Clouds were found with {results.id}");
-			return false;
+			return rc;
 		}
 
 		public string ViewName
@@ -112,8 +94,6 @@ namespace ViewObjects.Unity
 					}
 			}
 		}
-
-		public event UnityAction<ResultCloud> OnResultsSet;
-
+		
 	}
 }

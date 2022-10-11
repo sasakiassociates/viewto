@@ -1,9 +1,5 @@
 ﻿#region
 
-using System.Collections.Generic;
-using ViewObjects;
-using ViewTo.Events.Args;
-
 #endregion
 
 namespace ViewTo.Connector.Unity.Commands

@@ -3,8 +3,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using ViewObjects;
 using ViewObjects.Unity;
+using ViewObjects;
+using VO = ViewObjects;
+using VU = ViewObjects.Unity;
 using ViewTo.Connector.Unity.Tests;
 using Object = UnityEngine.Object;
 
@@ -60,7 +62,6 @@ namespace ViewTo.Connector.Unity
 			proposed = 0.0005028107
 		};
 
-
 		public static void DrawFrustum(this Camera cam)
 		{
 			var nearCorners = new Vector3[4]; //Approx'd nearplane corners
@@ -103,13 +104,12 @@ namespace ViewTo.Connector.Unity
 
 		public static bool Sim(this ViewColor a, ViewColor b) => a.R == b.R && a.G == b.G && a.B == b.B;
 
-
-		public static List<ViewCloud> LocateViewCloud(string[] ids)
+		public static List<VU.ViewCloud> LocateViewCloud(string[] ids)
 		{
-			var clouds = new List<ViewCloud>();
+			var clouds = new List<VU.ViewCloud>();
 			foreach (var id in ids)
 			{
-				var sceneObj = ViewObject.TryFetchInScene<ViewCloud>(id);
+				var sceneObj = ViewObject.TryFetchInScene<VU.ViewCloud>(id);
 
 				if (sceneObj != null)
 					clouds.Add(sceneObj);

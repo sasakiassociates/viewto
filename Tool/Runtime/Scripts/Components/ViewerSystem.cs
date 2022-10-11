@@ -94,8 +94,9 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
-			var converted = new List<PixelLayout>();
+			_data = data;
 
+			var converted = new List<PixelLayout>();
 			foreach (var layout in data.Layouts)
 				switch (layout)
 				{
@@ -252,7 +253,10 @@ namespace ViewTo.Connector.Unity
 						{
 							Values = layoutValues.ToList(),
 							Layout = layoutName,
-							Option = new VO.ContentOption() { Id = vc.id, Name = vc.name }
+							Option = new VO.ContentOption()
+							{
+								Id = vc.id, Name = vc.name, Stage = stage
+							}
 						}
 					);
 				}

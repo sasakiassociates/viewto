@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ViewObjects.Cloud;
 
 namespace ViewObjects
 {
@@ -15,11 +14,30 @@ namespace ViewObjects
 
 		/// <summary>
 		/// </summary>
+		public ViewObjectReference(List<string> references)
+		{
+			References = references;
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="references"></param>
+		/// <param name="viewId"></param>
+		/// <param name="viewName"></param>
+		public ViewObjectReference(List<string> references, string viewId, string viewName = null)
+		{
+			ViewName = viewName;
+			References = references;
+			ViewId = ObjUtils.CheckIfValidId(viewId);
+		}
+
+		/// <summary>
+		/// </summary>
 		/// <param name="references"></param>
 		/// <param name="type"></param>
 		/// <param name="viewId"></param>
 		/// <param name="viewName"></param>
-		public ViewObjectReference(List<string> references, Type type, string viewId = null, string viewName = null)
+		public ViewObjectReference(List<string> references, Type type, string viewId, string viewName = null)
 		{
 			Type = type;
 			ViewName = viewName;
@@ -42,19 +60,24 @@ namespace ViewObjects
 
 	public abstract class ViewObjectReference<TObj> : ViewObjectReference where TObj : IViewObject
 	{
+
 		/// <summary>
 		/// </summary>
-		public ViewObjectReference()
-		{ }
+		/// <param name="references"></param>
+		/// <param name="viewId"></param>
+		/// <param name="viewName"></param>
+		protected ViewObjectReference(List<string> references, string viewId, string viewName = null) :
+			base(references, viewId, viewName)
+		{
+			Type = typeof(TObj);
+		}
 
 		/// <summary>
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <param name="references"></param>
-		public ViewObjectReference(TObj obj, List<string> references)
+		protected ViewObjectReference(TObj obj, List<string> references) : base(references)
 		{
-			References = references;
-
 			if (obj == null)
 			{
 				return;
@@ -69,33 +92,21 @@ namespace ViewObjects
 
 			if (typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
 			{
-				ViewId = n.ViewName;
+				ViewName = n.ViewName;
 			}
 		}
 
-		/// <summary>
-		/// </summary>
-		/// <param name="references"></param>
-		/// <param name="viewId"></param>
-		/// <param name="viewName"></param>
-		public ViewObjectReference(List<string> references, string viewId = null, string viewName = null)
-		{
-			Type = typeof(TObj);
-			ViewName = viewName;
-			References = references;
-			ViewId = ObjUtils.CheckIfValidId(viewId);
-		}
 	}
 
 	[Serializable]
-	public class CloudReference : ViewObjectReference<ViewCloud>
+	public class ViewCloudReference : ViewObjectReference<ViewCloud>
 	{
 		/// <inheritdoc />
-		public CloudReference(ViewCloud obj, List<string> references) : base(obj, references)
+		public ViewCloudReference(ViewCloud obj, List<string> references) : base(obj, references)
 		{ }
 
 		/// <inheritdoc />
-		public CloudReference(List<string> references, string viewId = null, string viewName = null) : base(references, viewId, viewName)
+		public ViewCloudReference(List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
 		{ }
 	}
 
@@ -107,19 +118,22 @@ namespace ViewObjects
 		{ }
 
 		/// <inheritdoc />
-		public ResultCloudReference(List<string> references, string viewId = null, string viewName = null) : base(references, viewId, viewName)
+		public ResultCloudReference(List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
 		{ }
 	}
 
 	[Serializable]
-	public class ContentReference : ViewObjectReference<Content>
+	public class ContentReference : ViewObjectReference<Content>, IContentInfo
 	{
 
 		/// <inheritdoc />
-		public ContentReference(Content obj, List<string> references) : base(obj, references) => ContentType = obj.ContentType;
+		public ContentReference(Content obj, List<string> references) : base(obj, references)
+		{
+			ContentType = obj.ContentType;
+		}
 
 		/// <inheritdoc />
-		public ContentReference(List<string> references, ContentType type, string viewId = null, string viewName = null) : base(references, viewId, viewName) =>
+		public ContentReference(List<string> references, ContentType type, string viewId, string viewName = null) : base(references, viewId, viewName) =>
 			ContentType = type;
 
 		/// <summary>

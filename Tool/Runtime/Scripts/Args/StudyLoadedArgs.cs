@@ -1,7 +1,5 @@
 ﻿#region
 
-using ViewTo.Events.Args;
-
 #endregion
 
 namespace ViewTo.Connector.Unity.Commands

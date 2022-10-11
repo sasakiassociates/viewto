@@ -20,6 +20,40 @@ namespace ViewObjects
 		public ResultStage Stage { get; set; }
 
 		public bool Equals(IContentOption obj) => obj != default && Id.Valid() && Id.Equals(obj.Id) && Stage == obj.Stage;
+
+	}
+
+	[Serializable]
+	public class ContentInfo : Container, IContentInfo
+	{
+
+		public ContentInfo(IContentOption obj)
+		{
+			ViewName = obj.Name;
+			ViewId = obj.Id;
+		}
+
+		public ContentInfo(string viewId, string viewName)
+		{
+			ViewName = viewName;
+			ViewId = viewId;
+		}
+
+		public ContentInfo(IContent obj)
+		{
+			ViewName = obj.ViewName;
+			ViewId = obj.ViewId;
+		}
+
+		/// <inheritdoc />
+		public string ViewName { get; set; }
+
+		/// <inheritdoc />
+		public string ViewId { get; set; }
+
+		public bool Equals(IContentInfo obj) => obj != default && ViewId.Valid() && ViewId.Equals(obj.ViewId);
+		public bool Equals(IContentOption obj) => obj != default && ViewId.Valid() && ViewId.Equals(obj.Id);
+
 	}
 
 	[Serializable]

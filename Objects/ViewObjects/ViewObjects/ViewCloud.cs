@@ -1,5 +1,6 @@
-﻿namespace ViewObjects.Cloud
+﻿namespace ViewObjects
 {
+
 	public class ViewCloud : IViewCloud, IViewObject
 	{
 

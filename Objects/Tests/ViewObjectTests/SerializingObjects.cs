@@ -32,7 +32,7 @@ namespace ViewTests.Objects
 		[Test]
 		public void Serialize_Content()
 		{
-			var obj_v2 = Serialize_Process(new VS.Content());
+			var obj_v2 = Serialize_Process(new VS.ContentReference());
 		}
 
 		[Test]

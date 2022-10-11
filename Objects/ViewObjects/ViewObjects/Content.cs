@@ -40,5 +40,15 @@ namespace ViewObjects
 
 		/// <inheritdoc />
 		public List<object> Objects { get; set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public bool Equals(IContent obj)
+		{
+			return obj != default && ViewId.Equals(obj.ViewId) && ContentType == obj.ContentType;
+		}
 	}
 }

@@ -25,12 +25,12 @@ namespace ViewTo.Cmd
 	internal class ValuesForExplorerArgs : CommandArgs
 	{
 
-		public readonly double[] values = Array.Empty<double>();
+		public readonly IEnumerable<double> values = Array.Empty<double>();
 
 		public ValuesForExplorerArgs(string message) : base(message)
 		{ }
 
-		public ValuesForExplorerArgs(IEnumerable<double> values, string message) : base(message) => this.values = values.ToArray();
+		public ValuesForExplorerArgs(IEnumerable<double> values, string message) : base(message) => this.values = values;
 
 		public override bool IsValid() => values != null && values.Any();
 	}
@@ -38,12 +38,12 @@ namespace ViewTo.Cmd
 	internal class ValuesRawForExplorerArgs : CommandArgs
 	{
 
-		public readonly int[] values = Array.Empty<int>();
+		public readonly IEnumerable<int> values = Array.Empty<int>();
 
 		public ValuesRawForExplorerArgs(string message) : base(message)
 		{ }
 
-		public ValuesRawForExplorerArgs(IEnumerable<int> values, string message) : base(message) => this.values = values.ToArray();
+		public ValuesRawForExplorerArgs(IEnumerable<int> values, string message) : base(message) => this.values = values;
 
 		public override bool IsValid() => values != null && values.Any();
 	}

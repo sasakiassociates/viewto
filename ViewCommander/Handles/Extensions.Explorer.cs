@@ -14,24 +14,24 @@ namespace ViewTo
 		///   Retrieves the active point result data
 		/// </summary>
 		/// <returns></returns>
-		public static bool TryGetResultPoint(this IExplorer explorer, double value, out ResultPoint point)
+		public static bool TryGetResultPoint(this IExplorer obj, double[] values, double value, out ResultPoint point)
 		{
 			point = null;
 
-			var cmd = new FindPointWithValue(explorer.ActiveValues, value);
+			var cmd = new FindPointWithValue(values, value);
 			cmd.Execute();
 
 			if (cmd.args.IsValid())
 			{
-				var cp = explorer.Source.Points[cmd.args.index];
-				var v = explorer.ActiveValues[cmd.args.index];
+				var cp = obj.Cloud.Points[cmd.args.index];
+				var v = values[cmd.args.index];
 				point = new ResultPoint
 				{
 					X = cp.x, Y = cp.y, Z = cp.z,
 					Index = cmd.args.index,
-					Option = explorer.ActiveOption,
+					Option = obj.ActiveContent,
 					Value = v,
-					Color = explorer.Settings.GetColor(v)
+					Color = obj.Settings.GetColor(v)
 				};
 			}
 
@@ -50,8 +50,9 @@ namespace ViewTo
 			results = Array.Empty<double>();
 			valueType.GetStages(out var stageA, out var stageB);
 
-			var getValueCmdA = new TryGetValues(exp.Data, exp.ActiveOption.Id, stageA);
-			var getValueCmdB = new TryGetValues(exp.Data, exp.ActiveOption.Id, stageB);
+			var getValueCmdA = new TryGetValues(exp.Data, exp.ActiveContent.ViewId, stageA);
+			var getValueCmdB = new TryGetValues(exp.Data, exp.ActiveContent.ViewId, stageB);
+
 			getValueCmdA.Execute();
 			getValueCmdB.Execute();
 
@@ -71,6 +72,49 @@ namespace ViewTo
 			}
 
 			results = normalizeCmd.args.values;
+
+			return results.Any();
+		}
+
+		/// <summary>
+		///   Get the values
+		/// </summary>
+		/// <param name="exp"></param>
+		/// <param name="valueType"></param>
+		/// <param name="target"></param>
+		/// <param name="results"></param>
+		/// <returns></returns>
+		public static bool TryGetValues(this IExplorer exp, ExplorerValueType valueType, string target, ref double[] results)
+		{
+			if (!exp.SetTarget(target))
+			{
+				return false;
+			}
+
+			valueType.GetStages(out var stageA, out var stageB);
+
+			var getValueCmdA = new TryGetValues(exp.Data, exp.ActiveContent.ViewId, stageA);
+			var getValueCmdB = new TryGetValues(exp.Data, exp.ActiveContent.ViewId, stageB);
+
+			getValueCmdA.Execute();
+			getValueCmdB.Execute();
+
+			if (!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
+			{
+				// TODO: return issue
+				return false;
+			}
+
+			var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
+			normalizeCmd.Execute();
+
+			if (!normalizeCmd.args.IsValid())
+			{
+				// TODO: report
+				return false;
+			}
+
+			results = normalizeCmd.args.values.ToArray();
 
 			return results.Any();
 		}
@@ -96,6 +140,33 @@ namespace ViewTo
 					stageB = ResultStage.Potential;
 					break;
 			}
+		}
+
+		public static bool SetTarget(this IExplorer obj, string targetByIdOrName, ResultStage stage)
+		{
+			var opt = obj.Cloud.GetTarget(targetByIdOrName, stage);
+
+			if (opt != null)
+			{
+				obj.ActiveContent = opt;
+			}
+
+			return obj.ActiveContent != null && obj.ActiveContent.ViewId.Equals(targetByIdOrName) || obj.ActiveContent.ViewName.Equals(targetByIdOrName);
+		}
+
+		public static bool SetTarget(this IExplorer obj, string targetByIdOrName)
+		{
+			var opt = obj.Cloud.GetTarget(targetByIdOrName);
+
+			if (opt == null)
+			{
+				return false;
+			}
+
+			obj.ActiveContent = opt;
+
+			return true;
+			// return obj.ActiveContent != null && obj.ActiveContent.ViewId.Equals(targetByIdOrName) || obj.ActiveContent.ViewName.Equals(targetByIdOrName);
 		}
 
 		public static bool InRange(this IExploreRange obj, double value) => value >= obj.min && value <= obj.max;

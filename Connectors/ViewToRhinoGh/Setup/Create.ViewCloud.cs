@@ -36,7 +36,7 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var reference = string.Empty;
 			DA.GetData(0, ref reference);
-			DA.SetData(0, new CloudReference(new List<string> { reference }));
+			DA.SetData(0, new ViewCloudReference(new List<string> { reference }, ObjUtils.InitGuid));
 		}
 	}
 }

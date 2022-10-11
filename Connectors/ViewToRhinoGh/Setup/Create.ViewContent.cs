@@ -44,7 +44,12 @@ namespace ViewTo.RhinoGh.Setup
 			var items = new List<GH_String>();
 			DA.GetDataList(_input.References, items);
 
-			DA.SetData(0, new ContentReference(items.Where(x => x != null).Select(x => x.Value).ToList(), ContentType));
+			DA.SetData(0, new ContentReference(
+				           items.Where(x => x != null).Select(x => x.Value).ToList(),
+				           ContentType,
+				           ObjUtils.InitGuid,
+				           tempName?.Value)
+			);
 		}
 	}
 

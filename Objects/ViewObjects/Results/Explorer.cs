@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace ViewObjects.Explorer
@@ -13,66 +12,66 @@ namespace ViewObjects.Explorer
 		{ }
 
 		/// <inheritdoc />
-		public IViewStudy Study { get; internal set; }
+		public IViewStudy Source { get; internal set; }
 
 		/// <inheritdoc />
-		public IResultCloud Source { get; internal set; }
+		public IResultCloud Cloud { get; internal set; }
 
 		/// <inheritdoc />
 		public ExplorerSettings Settings { get; set; } = new();
 
 		/// <inheritdoc />
-		public ContentOption ActiveOption { get; internal set; }
+		public ContentInfo ActiveContent { get; set; }
 
-		/// <inheritdoc />
+		// /// <inheritdoc />
 		public List<ContentOption> Options { get; internal set; }
-
-		/// <inheritdoc />
-		public double[] ActiveValues { get; internal set; }
 
 		/// <inheritdoc />
 		public List<IResultCloudData> Data
 		{
-			get => Source?.Data ?? new List<IResultCloudData>();
+			get => Cloud?.Data ?? new List<IResultCloudData>();
 		}
 
 		/// <inheritdoc />
 		public void Load(IViewStudy viewObj)
 		{
-			if (viewObj == default)
+			if (viewObj == default || !viewObj.CanExplore())
 			{
 				return;
 			}
 
-			Source = viewObj.FindObject<ResultCloud>();
+			Source = viewObj;
+			Cloud = viewObj.FindObject<ResultCloud>();
 
-			if (Source == null)
+			if (Cloud == null)
 			{
 				return;
 			}
-
-			Options = Source.Data.Where(x => x != null).Select(x => x.Option).Cast<ContentOption>().ToList();
-			ActiveOption = Options.FirstOrDefault();
 
 			Settings ??= new ExplorerSettings();
-			// Data.ActiveValues = this.Fetch();
+
+			Options = Cloud.Data.Where(x => x != null).Select(x => x.Option).Cast<ContentOption>().ToList();
+			var opt = Options.FirstOrDefault();
+			ActiveContent = new ContentInfo(opt);
 		}
 
-		/// <inheritdoc />
-		public ResultPoint GetResultPoint() => throw new NotImplementedException();
+		public bool IsValid
+		{
+			get => Source != null && Cloud != null && ActiveContent != null;
+		}
 	}
 
-	public interface IExplorer
+	public interface IExplorer : IValidate
 	{
 		/// <summary>
 		///   The active view study being used with the source cloud.
 		/// </summary>
-		public IViewStudy Study { get; }
+		public IViewStudy Source { get; }
 
 		/// <summary>
 		///   The heart and soul of the data being explored
 		/// </summary>
-		public IResultCloud Source { get; }
+		public IResultCloud Cloud { get; }
 
 		/// <summary>
 		///   Set of data settings for the explorer to use
@@ -84,19 +83,14 @@ namespace ViewObjects.Explorer
 		/// </summary>
 		public List<IResultCloudData> Data { get; }
 
-		/// <summary>
-		///   List of options to use for fetching values from <see cref="IExplorer" />. Multiple options will combine the values
-		/// </summary>
-		public List<ContentOption> Options { get; }
-
-		/// <summary>
-		///   Normalized values
-		/// </summary>
-		public double[] ActiveValues { get; }
+		// /// <summary>
+		// ///   List of options to use for fetching values from <see cref="IExplorer" />. Multiple options will combine the values
+		// /// </summary>
+		// public List<ContentOption> Options { get; }
 
 		/// <summary>
 		/// </summary>
-		public ContentOption ActiveOption { get; }
+		public ContentInfo ActiveContent { get; set; }
 
 		/// <summary>
 		///   Load in a new view study for the explorer to explore!
@@ -104,11 +98,6 @@ namespace ViewObjects.Explorer
 		/// <param name="viewObj">The view study to load in</param>
 		public void Load(IViewStudy viewObj);
 
-		/// <summary>
-		///   Retrieves the active point result data
-		/// </summary>
-		/// <returns></returns>
-		public ResultPoint GetResultPoint();
 	}
 
 	public struct ExplorerData

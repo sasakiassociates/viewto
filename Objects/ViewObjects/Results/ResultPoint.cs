@@ -7,7 +7,7 @@ namespace ViewObjects.Explorer
 		public Color Color;
 
 		public int Index;
-		public ContentOption Option;
+		public ContentInfo Option;
 		public double Value;
 		public double X, Y, Z;
 	}

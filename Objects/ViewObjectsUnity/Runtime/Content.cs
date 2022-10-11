@@ -53,7 +53,11 @@ namespace ViewObjects.Unity
 		public ContentType ContentType
 		{
 			get => _contentType;
-			set => _contentType = value;
+			set
+			{
+				_contentType = value;
+				ContentLayerMask = value.GetLayerMask();
+			}
 		}
 
 		public int ContentLayerMask
@@ -75,7 +79,7 @@ namespace ViewObjects.Unity
 		public List<GameObject> Objects
 		{
 			get => _objects;
-			set => _objects = value;
+			set { _objects = value; }
 		}
 
 		public string FullName => $"Content {ContentType.ToString().Split('.').LastOrDefault()} - {ViewName}";
@@ -98,6 +102,7 @@ namespace ViewObjects.Unity
 		{
 			if (!_objects.Valid())
 			{
+				Debug.Log("No Objects to apply");
 				return;
 			}
 
@@ -151,12 +156,6 @@ namespace ViewObjects.Unity
 
 			gameObject.ApplyAll(material);
 			gameObject.SetLayerRecursively(ContentLayerMask);
-
-			// // this little loop is taking care of all the filtering of what speckle might send back. ideally it will be just components
-			// foreach (var obj in _objects)
-			// {
-			// 	onAfterPrime?.Invoke(obj);
-			// }
 
 			Debug.Log($"{ViewName} is primed!\nview color {Color.ToUnity()}");
 		}

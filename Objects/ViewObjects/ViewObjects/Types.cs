@@ -63,6 +63,7 @@ namespace ViewObjects
 		///   A list of <typeparamref name="TObject" /> objects to group in a study
 		/// </summary>
 		public List<TObject> Objects { get; set; }
+
 	}
 
 	public interface IViewerLayout
@@ -182,17 +183,15 @@ namespace ViewObjects
 	#region View Content Objects
 
 	/// <summary>
-	///   Grouping object for bundling the objects
+	/// Interface for passing around view content data
 	/// </summary>
-	public interface IContents<TContent> where TContent : IContent
-	{
-		public List<TContent> Contents { get; set; }
-	}
+	public interface IContentInfo : INameable, IId
+	{ }
 
 	/// <summary>
 	///   basic view content type object
 	/// </summary>
-	public interface IContent : INameable, IId
+	public interface IContent : IContentInfo
 	{
 		/// <summary>
 		///   The style of view content

@@ -133,6 +133,16 @@ namespace ViewObjects
 			return false;
 		}
 
+		public static List<ContentInfo> GetAllTargetContentInfo(this IViewStudy obj)
+		{
+			return obj == default ?
+				new List<ContentInfo>() :
+				obj.FindObjects<ContentReference>()
+					.Where(x => x != null && x.ContentType == ContentType.Target)
+					.Select(x => new ContentInfo(x.ViewId, x.ViewName))
+					.ToList();
+		}
+
 		/// <summary>
 		///   <para>Gets a list of objects of a specific type</para>
 		/// </summary>

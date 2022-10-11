@@ -4,7 +4,8 @@ using System.Drawing;
 using System.Linq;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Special;
-using ViewTo.RhinoGh.Goo;
+using Grasshopper.Kernel.Types;
+using ViewObjects;
 
 namespace ViewTo.RhinoGh.Results
 {
@@ -15,7 +16,7 @@ namespace ViewTo.RhinoGh.Results
 		(int Object, int Values ) _input;
 
 		bool _refresh;
-		List<string> _storedValues;
+		List<ContentInfo> _storedValues;
 
 		public ExtractTargetNames() : base(
 			"Extract Targets",
@@ -32,7 +33,7 @@ namespace ViewTo.RhinoGh.Results
 		protected override void RegisterInputParams(GH_InputParamManager pManager)
 		{
 			var index = 0;
-			pManager.AddGenericParameter("Result Cloud", "RC", "Result cloud to get target names from", GH_ParamAccess.item);
+			pManager.AddGenericParameter("View Study", "V", "View Study To get data from", GH_ParamAccess.item);
 			_input.Object = index++;
 			pManager.AddTextParameter("Results", "R", "Results of data", GH_ParamAccess.list);
 			_input.Values = index;
@@ -42,7 +43,7 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void RegisterOutputParams(GH_OutputParamManager pManager)
 		{
-			pManager.AddTextParameter("Targets", "T", "List of View Targets", GH_ParamAccess.list);
+			pManager.AddGenericParameter("Targets", "T", "List of View Targets", GH_ParamAccess.list);
 		}
 
 		public static List<GH_ValueListItem> CreateValueListItems(List<string> values, List<string> expressions = null)
@@ -50,11 +51,9 @@ namespace ViewTo.RhinoGh.Results
 			var items = new List<GH_ValueListItem>();
 			if (values != null && values.Any())
 			{
-				var useExpressions = expressions != null && expressions.Count == values.Count;
-
 				for (var i = 0; i < values.Count; i++)
 				{
-					items.Add(new GH_ValueListItem(values[i], useExpressions ? $"\"{expressions[i]}\"" : $"\"{values[i]}\""));
+					items.Add(new GH_ValueListItem(values[i], expressions?[i] != null ? $"\"{expressions[i]}\"" : $"\"{values[i]}\""));
 				}
 			}
 
@@ -94,7 +93,7 @@ namespace ViewTo.RhinoGh.Results
 				return;
 			}
 
-			var items = CreateValueListItems(_storedValues);
+			var items = CreateValueListItems(_storedValues.Select(x => x.ViewName).ToList(), _storedValues.Select(x => x.ViewId).ToList());
 			if (_activeList == null)
 			{
 				_activeList = PopulateValueList(
@@ -128,38 +127,31 @@ namespace ViewTo.RhinoGh.Results
 
 		protected override void SolveInstance(IGH_DataAccess DA)
 		{
-			GH_ViewObj wrapper = null;
+			GH_ObjectWrapper wrapper = null;
 			DA.GetData(_input.Object, ref wrapper);
 
 			var inputTargets = new List<string>();
 			DA.GetDataList(_input.Values, inputTargets);
 
-			// if (wrapper?.Value is ResultCloudV1V1 cloud)
-			// {
-			// 	if (!inputTargets.Any())
-			// 	{
-			// 		_storedValues = cloud.GetTargets();
-			// 		_refresh = true;
-			// 	}
-			// 	else
-			// 	{
-			// 		var tempValues = cloud.GetTargets();
-			// 		if (tempValues != null && tempValues.Count != inputTargets.Count)
-			// 		{
-			// 			_storedValues = tempValues;
-			// 			_refresh = true;
-			// 		}
-			// 		else
-			// 		{
-			// 			for (var i = 0; i < inputTargets.Count; i++)
-			// 				if (!inputTargets[i].Equals(tempValues[i]))
-			// 				{
-			// 					_storedValues = tempValues;
-			// 					_refresh = true;
-			// 				}
-			// 		}
-			// 	}
-			// }
+			if (wrapper?.Value is ViewStudy obj && obj.Has<IContentInfo>())
+			{
+				_storedValues = obj.FindObjects<ContentReference>()
+					.Where(x => x != null && x.ContentType == ContentType.Target)
+					.Select(x => new ContentInfo(x.ViewId, x.ViewName))
+					.ToList();
+
+				if (!inputTargets.Any())
+				{
+					_refresh = true;
+				}
+				else
+				{
+					if (_storedValues.Count != inputTargets.Count)
+					{
+						_refresh = true;
+					}
+				}
+			}
 
 			DA.SetDataList(0, _storedValues);
 		}

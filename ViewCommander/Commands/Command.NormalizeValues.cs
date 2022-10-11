@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ViewTo.Cmd
 {
@@ -33,10 +34,10 @@ namespace ViewTo.Cmd
 		/// <param name="valueB">The divisor value to use</param>
 		/// <param name="min">The minimum value to use when normalizing</param>
 		/// <param name="invalidValue">optional value to use when <paramref name="valueB" /> is 0 </param>
-		public NormalizeValues(IReadOnlyList<int> valueA, IReadOnlyList<int> valueB, double min = 0.0, double invalidValue = -1)
+		public NormalizeValues(IEnumerable<int> valueA, IEnumerable<int> valueB, double min = 0.0, double invalidValue = -1)
 		{
-			this.valueA = valueA;
-			this.valueB = valueB;
+			this.valueA = valueA.ToArray();
+			this.valueB = valueB.ToArray();
 			this.min = min;
 			this.invalidValue = invalidValue;
 		}

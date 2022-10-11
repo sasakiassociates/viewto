@@ -1,7 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +8,6 @@ using UnityEngine.Events;
 using ViewObjects;
 using ViewObjects.Unity;
 using ViewTo.Connector.Unity.Commands;
-using ViewTo.Events.Report;
 using VU = ViewObjects.Unity;
 using VO = ViewObjects;
 
@@ -31,9 +28,7 @@ namespace ViewTo.Connector.Unity
 
 		#region unity fields
 
-		[SerializeField] VO.ResultStage _stage;
-
-		[SerializeField, HideInInspector] int _activeViewerIndex;
+		[SerializeField] ResultStage _stage;
 
 		[SerializeField] List<RigParameters> _parameters;
 
@@ -47,7 +42,7 @@ namespace ViewTo.Connector.Unity
 			protected set => _parameters = value;
 		}
 
-		public VO.ResultStage Stage
+		public ResultStage Stage
 		{
 			get => _stage;
 			private set => _stage = value;
@@ -57,7 +52,7 @@ namespace ViewTo.Connector.Unity
 
 		public bool IsReady
 		{
-			get => Application.isPlaying && RigParams.Valid() && ActiveViewer && ActiveViewer != null;
+			get => Application.isPlaying && ActiveViewer != null;
 		}
 
 		/// <inheritdoc />
@@ -154,7 +149,7 @@ namespace ViewTo.Connector.Unity
 			OnComplete?.Invoke();
 		}
 
-		void SetStageChange(VO.ResultStage arg)
+		void SetStageChange(ResultStage arg)
 		{
 			Stage = arg;
 			OnStageChange?.Invoke(Stage);

@@ -83,6 +83,7 @@
         <Compile Include="ConnectorInfo.cs"/>
         <Compile Include="Goo\GH_ViewObj.cs"/>
         <Compile Include="Goo\ViewObjParam.cs"/>
+        <Compile Include="Objects\DeconstructStudy.cs"/>
         <Compile Include="Objects\ExplorerValueTypeComponent.cs"/>
         <Compile Include="Objects\ResultTypeComponent.cs"/>
         <Compile Include="Points\Helpers.Points.cs"/>

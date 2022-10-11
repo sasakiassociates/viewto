@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace ViewObjects.Explorer
@@ -13,8 +12,6 @@ namespace ViewObjects.Explorer
 	public interface IExploreContent
 	{
 		public ExplorerValueType valueType { get; }
-
-		public List<string> targets { get; }
 	}
 
 	public interface IExploreRange
@@ -46,8 +43,6 @@ namespace ViewObjects.Explorer
 		///   Comparable value type to use when exploring values
 		/// </summary>
 		public ExplorerValueType valueType { get; set; } = ExplorerValueType.ExistingOverPotential;
-
-		public List<string> targets { get; set; } = new();
 
 		/// <summary>
 		///   Min value from <see cref="IExplorer" /> active values

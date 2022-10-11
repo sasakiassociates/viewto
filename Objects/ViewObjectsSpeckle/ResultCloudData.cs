@@ -11,8 +11,8 @@ namespace ViewObjects.Speckle
 	public class ResultCloudData : ViewObjectBase, IResultCloudData
 	{
 
-		const string NAME = nameof(IContent);
-		const string ID = nameof(IId);
+		const string NAME = "ViewName";
+		const string ID = "ViewId";
 		const string STAGE = nameof(ResultStage);
 
 		/// <summary>

@@ -39,7 +39,7 @@ namespace ViewTo.RhinoGh.Setup
 		{
 			var wrappers = new List<GH_ViewObj>();
 			DA.GetDataList(0, wrappers);
-			var clouds = wrappers.Unwrap<CloudReference>();
+			var clouds = wrappers.Unwrap<ViewCloudReference>();
 
 			var layout = new Layout(new List<ViewDirection>
 			{
