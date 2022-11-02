@@ -1,38 +1,48 @@
 ﻿using System.Collections.Generic;
 using ViewObjects;
 using ViewTo.Cmd;
-
 namespace ViewTo
 {
-	public static partial class ViewCoreExtensions
-	{
-		public static List<string> LoadStudyToRig(this IViewStudy study, ref IRig rig)
-		{
-			var contents = study.GetAll<IContent>();
-			var clouds = study.GetAll<IViewCloud>();
-			var viewers = study.GetAll<IViewer>();
+  public static partial class ViewCoreExtensions
+  {
+    public static List<string> LoadStudyToRig(this IViewStudy study, ref IRig rig)
+    {
+      // look for layouts as well since there could be a layout not attached to a 
+      study.GatherLooseLayouts();
+      var viewers = study.GetAll<IViewer>();
+      var clouds = study.GetAll<IViewCloud>();
+      var contents = study.GetAll<IContent>();
 
-			var reports = new List<string>();
+      var reports = new List<string>();
 
-			var sequence = new List<ICmd>
-			{
-				new CanStudyRun(contents, clouds, viewers),
-				new AssignViewColors(contents),
-				new InitializeAndBuildRig(rig, contents, clouds, viewers)
-			};
+      var sequence = new List<ICmd>
+      {
+        new CanStudyRun(contents, clouds, viewers),
+        new AssignViewColors(contents),
+        new InitializeAndBuildRig(rig, contents, clouds, viewers)
+      };
 
-			foreach (var s in sequence)
-			{
-				s.Execute();
+      foreach (var s in sequence)
+      {
+        s.Execute();
 
-				if (s is ICmdWithArgs<CommandArgs> cmdWithArgs)
-				{
-					reports.Add(cmdWithArgs.args.Message);
-				}
-			}
+        if (s is ICmdWithArgs<CommandArgs> cmdWithArgs)
+        {
+          reports.Add(cmdWithArgs.args.Message);
+        }
+      }
 
-			return reports;
-		}
+      return reports;
+    }
+    public static void GatherLooseLayouts(this IViewStudy study)
+    {
+      var layouts = study.GetAll<IViewerLayout>();
+      if (layouts.Valid())
+      {
+        // if layouts are loose we add them to a default viewer since they will run on a global viewer 
+        study.Objects.Add(new Viewer(layouts));
+      }
+    }
 
-	}
+  }
 }
