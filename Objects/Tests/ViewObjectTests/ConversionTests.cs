@@ -11,7 +11,7 @@ namespace ViewTo.Tests.Objects
   public class ConversionTests
   {
 
-    ViewObjectsConverter _converter;
+    private ViewObjectsConverter _converter;
 
     [OneTimeSetUp]
     public void Setup()
@@ -27,7 +27,7 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Convert_Content()
     {
-      var obj = new ViewObjects.ContentReference(new Content(ContentType.Target), new List<string>() { "123443q312" });
+      var obj = new ContentReference(new Content(ContentType.Target), new List<string>() { "123443q312" });
       var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
       Assert.IsTrue(res.ViewId.Equals(obj.ViewId));
     }
@@ -37,7 +37,7 @@ namespace ViewTo.Tests.Objects
     {
       var objs = new List<IViewObject>
       {
-        new ViewObjects.ContentReference(new Content(ContentType.Target), new List<string>() { "123443q312" }),
+        new ContentReference(new Content(ContentType.Target), new List<string>() { "123443q312" }),
         new ViewCloudReference(new List<string> { "256ff84cf7" }, ObjUtils.InitGuid),
         new Viewer()
       };

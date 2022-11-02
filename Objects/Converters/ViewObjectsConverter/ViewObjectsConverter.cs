@@ -11,25 +11,13 @@ namespace ViewObjects.Converter
   public partial class ViewObjectsConverter : ISpeckleConverter
   {
 
-    public virtual string Name
-    {
-      get => nameof(ViewObjectsConverter);
-    }
+    public virtual string Name => nameof(ViewObjectsConverter);
 
-    public virtual string Description
-    {
-      get => "Converter for basic view objects";
-    }
+    public virtual string Description => "Converter for basic view objects";
 
-    public virtual string Author
-    {
-      get => "David Morgan";
-    }
+    public virtual string Author => "David Morgan";
 
-    public virtual string WebsiteOrEmail
-    {
-      get => "https://sasaki.com";
-    }
+    public virtual string WebsiteOrEmail => "https://sasaki.com";
 
     public virtual ProgressReport Report { get; set; }
 
@@ -62,13 +50,25 @@ namespace ViewObjects.Converter
     {
     }
 
-    public List<Base> ConvertToSpeckle(List<object> objects) => objects.Select(ConvertToSpeckle).ToList();
+    public List<Base> ConvertToSpeckle(List<object> objects)
+    {
+      return objects.Select(ConvertToSpeckle).ToList();
+    }
 
-    public Base ConvertToSpeckle(object @object) => ConvertToSpeckleViewObject(@object);
+    public Base ConvertToSpeckle(object @object)
+    {
+      return ConvertToSpeckleViewObject(@object);
+    }
 
-    public List<object> ConvertToNative(List<Base> objects) => objects.Select(ConvertToNative).ToList();
+    public List<object> ConvertToNative(List<Base> objects)
+    {
+      return objects.Select(ConvertToNative).ToList();
+    }
 
-    public object ConvertToNative(Base @object) => ConvertToNativeViewObject(@object);
+    public object ConvertToNative(Base @object)
+    {
+      return ConvertToNativeViewObject(@object);
+    }
 
     public bool CanConvertToSpeckle(object @object)
     {
@@ -139,7 +139,7 @@ namespace ViewObjects.Converter
         case IResultCloudData o:
           return ResultCloudDataToSpeckle(o);
 
-        case VO.ContentReference o:
+        case ContentReference o:
           return ViewContentToSpeckle(o);
 
         case ViewCloudReference o:

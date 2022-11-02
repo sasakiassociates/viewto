@@ -25,10 +25,10 @@ namespace ViewTo.Tests.Objects
       _client?.Dispose();
     }
 
-    Client _client;
-    ServerTransport _transport;
+    private Client _client;
+    private ServerTransport _transport;
 
-    (string id, string branch, string commit) _stream;
+    private (string id, string branch, string commit) _stream;
 
 
     [Test]
@@ -40,7 +40,7 @@ namespace ViewTo.Tests.Objects
       _stream.id = "1da7b18b31";
       _stream.branch = "conversions";
 
-      var cloud = VO.ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
+      var cloud = ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
 
       _transport = new ServerTransport(_client.Account, _stream.id);
 
@@ -54,13 +54,16 @@ namespace ViewTo.Tests.Objects
         streamId = _stream.id,
         branchName = _stream.branch,
         objectId = id,
-        message = "Test commit from Script",
+        message = "Test commit from Script"
       });
 
       Assert.IsNotNull(commit);
     }
 
-    public static string TerminalURL(string caption, string url) => $"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
+    public static string TerminalURL(string caption, string url)
+    {
+      return $"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
+    }
 
 
 
@@ -75,7 +78,7 @@ namespace ViewTo.Tests.Objects
       _stream.id = "1da7b18b31";
       _stream.branch = "conversions";
 
-      var obj = VO.ViewObjectFaker.Study();
+      var obj = ViewObjectFaker.Study();
       var converter = new ViewObjectsConverter();
       var @base = converter.ConvertToSpeckle(obj);
 
@@ -90,7 +93,7 @@ namespace ViewTo.Tests.Objects
         streamId = _stream.id,
         branchName = _stream.branch,
         objectId = id,
-        message = "Test commit from Script",
+        message = "Test commit from Script"
       });
 
       Assert.IsNotNull(commit);
@@ -115,13 +118,13 @@ namespace ViewTo.Tests.Objects
       var cloudBase = await Operations.Receive(cloudCommit.referencedObject, _transport);
 
       var converter = new ViewObjectsConverter();
-      var study = converter.ConvertToNativeViewObject(studyBase.SearchForType<VS.ViewStudy>(true)) as VO.ViewStudy;
-      var cloud = converter.ConvertToNativeViewObject(cloudBase.SearchForType<VS.ResultCloud>(true)) as VO.ResultCloud;
+      var study = converter.ConvertToNativeViewObject(studyBase.SearchForType<VS.ViewStudy>(true)) as ViewStudy;
+      var cloud = converter.ConvertToNativeViewObject(cloudBase.SearchForType<VS.ResultCloud>(true)) as ResultCloud;
 
       var targets = study.GetAll<ContentReference>().Where(x => x.ContentType == ContentType.Target).ToList();
 
       Assert.IsTrue(targets.Count * 2 == cloud.Data.Count);
-      for (int i = 0; i < targets.Count; i++)
+      for (var i = 0; i < targets.Count; i++)
       {
         var t = targets[i];
         cloud.Data[i].Option = new ContentOption
@@ -182,7 +185,7 @@ namespace ViewTo.Tests.Objects
         streamId = _stream.id,
         branchName = _stream.branch,
         objectId = id,
-        message = "Test for combinding objects",
+        message = "Test for combinding objects"
       });
 
       Assert.IsNotNull(obj);

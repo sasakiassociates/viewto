@@ -1,22 +1,22 @@
 ﻿namespace ViewTo.Cmd
 {
 
-	internal interface ICmd
-	{
-		public void Execute();
-	}
+  internal interface ICmd
+  {
+    public void Execute();
+  }
 
-	internal interface ICmdWithArgs<out TArgs> : ICmd where TArgs : CommandArgs
-	{
-		public TArgs args { get; }
-	}
+  internal interface ICmdWithArgs<out TArgs> : ICmd where TArgs : CommandArgs
+  {
+    public TArgs args { get; }
+  }
 
-	internal interface ICommandArgs
-	{
+  internal interface ICommandArgs
+  {
 
-		public string Message { get; }
+    public string Message { get; }
 
-		public bool IsValid();
-	}
+    public bool IsValid();
+  }
 
 }

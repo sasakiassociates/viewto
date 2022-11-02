@@ -45,7 +45,7 @@ namespace ViewTo.Tests.Objects
     {
       var obj = VO.ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(100, 2);
       var result = Serialize_Process(obj);
-      Assert.IsTrue(obj != default && result != default);
+      Assert.IsTrue(obj != default(object) && result != default(object));
       Assert.IsTrue(obj.MetaData.Count == result.MetaData.Count);
       Assert.IsTrue(obj.Data.Count == result.Data.Count);
 
@@ -62,7 +62,7 @@ namespace ViewTo.Tests.Objects
       Check(obj, Serialize_Process(obj));
     }
 
-    static TObj Serialize_Process<TObj>(TObj obj) where TObj : Base
+    private static TObj Serialize_Process<TObj>(TObj obj) where TObj : Base
     {
       var json = Operations.Serialize(obj);
       var res = Operations.Deserialize(json);
@@ -75,9 +75,9 @@ namespace ViewTo.Tests.Objects
       return res as TObj;
     }
 
-    static void Check(VO.IResultCloudData dataA, VO.IResultCloudData dataB)
+    private static void Check(VO.IResultCloudData dataA, VO.IResultCloudData dataB)
     {
-      Assert.IsTrue(dataA != default && dataB != default);
+      Assert.IsTrue(dataA != default(object) && dataB != default(object));
       Assert.IsTrue(dataA.Layout.Equals(dataB.Layout));
       Assert.IsTrue(dataA.Values.Count == dataB.Values.Count);
       Assert.IsTrue(dataA.Option.Stage.Equals(dataB.Option.Stage)
@@ -86,7 +86,10 @@ namespace ViewTo.Tests.Objects
       );
     }
 
-    static List<Type> GetSubclassTypes(Type parentType) => Assembly.GetAssembly(parentType).GetTypes()
-      .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(parentType)).ToList();
+    private static List<Type> GetSubclassTypes(Type parentType)
+    {
+      return Assembly.GetAssembly(parentType).GetTypes()
+        .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(parentType)).ToList();
+    }
   }
 }

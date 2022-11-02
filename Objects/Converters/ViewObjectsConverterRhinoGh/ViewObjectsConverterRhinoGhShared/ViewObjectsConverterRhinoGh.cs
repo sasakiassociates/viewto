@@ -15,15 +15,9 @@ namespace ViewObjects.Converter.Rhino
     public static string RhinoAppName = HostApplications.Rhino.GetVersion(HostAppVersion.v7);
 		#endif
 
-    public override string Name
-    {
-      get => nameof(ViewObjRhinoConverter);
-    }
+    public override string Name => nameof(ViewObjRhinoConverter);
 
-    public override string Description
-    {
-      get => "Converter for rhino/gh objects into base view objects";
-    }
+    public override string Description => "Converter for rhino/gh objects into base view objects";
 
     // public override IEnumerable<string> GetServicedApplications()
     // {

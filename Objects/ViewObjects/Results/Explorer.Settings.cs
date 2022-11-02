@@ -1,95 +1,98 @@
 ﻿using System;
 using System.Drawing;
-
 namespace ViewObjects.Explorer
 {
 
-	public interface IExploreView
-	{
-		public int point { get; }
-	}
+  public interface IExploreView
+  {
+    public int point { get; }
+  }
 
-	public interface IExploreContent
-	{
-		public ExplorerValueType valueType { get; }
-	}
+  public interface IExploreContent
+  {
+    public ExplorerValueType valueType { get; }
+  }
 
-	public interface IExploreRange
-	{
+  public interface IExploreRange
+  {
 
-		public double min { get; }
+    public double min { get; }
 
-		public double max { get; }
+    public double max { get; }
 
-		public bool normalize { get; }
+    public bool normalize { get; }
 
-		public Color[] colorRamp { get; }
+    public Color[] colorRamp { get; }
 
-		public Color invalidColor { get; }
-	}
+    public Color invalidColor { get; }
+  }
 
-	public class ExplorerSettings : IExploreContent, IExploreRange, IExploreView
-	{
+  public class ExplorerSettings : IExploreContent, IExploreRange, IExploreView
+  {
 
-		public ExplorerSettings()
-		{ }
+    public ExplorerSettings()
+    {
+    }
 
-		/// <summary>
-		///   When set to true will output all points and values for <see cref="options" />
-		/// </summary>
-		public bool showAll { get; set; } = true;
+    /// <summary>
+    ///   When set to true will output all points and values for <see cref="options" />
+    /// </summary>
+    public bool showAll { get; set; } = true;
 
-		/// <summary>
-		///   Comparable value type to use when exploring values
-		/// </summary>
-		public ExplorerValueType valueType { get; set; } = ExplorerValueType.ExistingOverPotential;
+    /// <summary>
+    ///   Comparable value type to use when exploring values
+    /// </summary>
+    public ExplorerValueType valueType { get; set; } = ExplorerValueType.ExistingOverPotential;
 
-		/// <summary>
-		///   Min value from <see cref="IExplorer" /> active values
-		/// </summary>
-		public double min { get; set; } = 0.0;
+    /// <summary>
+    ///   Min value from <see cref="IExplorer" /> active values
+    /// </summary>
+    public double min { get; set; } = 0.0;
 
-		/// <summary>
-		///   Max value from <see cref="IExplorer" /> active values
-		/// </summary>
-		public double max { get; set; } = 1.0;
+    /// <summary>
+    ///   Max value from <see cref="IExplorer" /> active values
+    /// </summary>
+    public double max { get; set; } = 1.0;
 
-		/// <summary>
-		///   When set to true will normalize the active values
-		/// </summary>
-		public bool normalize { get; set; } = false;
+    /// <summary>
+    ///   When set to true will normalize the active values
+    /// </summary>
+    public bool normalize { get; set; } = false;
 
-		/// <summary>
-		///   Gradient ramp for visualizing the value of point
-		/// </summary>
-		public Color[] colorRamp { get; set; } = ViewColor.Ramp();
+    /// <summary>
+    ///   Gradient ramp for visualizing the value of point
+    /// </summary>
+    public Color[] colorRamp { get; set; } = ViewColor.Ramp();
 
-		/// <summary>
-		///   Color for any point with no value in cloud
-		/// </summary>
-		public Color invalidColor { get; set; } = Color.Black;
+    /// <summary>
+    ///   Color for any point with no value in cloud
+    /// </summary>
+    public Color invalidColor { get; set; } = Color.Black;
 
-		/// <summary>
-		///   Active index of a point being explored
-		/// </summary>
-		public int point { get; set; } = 0;
+    /// <summary>
+    ///   Active index of a point being explored
+    /// </summary>
+    public int point { get; set; } = 0;
 
-		/// <summary>
-		///   Get a color along the gradient ramp
-		/// </summary>
-		/// <param name="t"></param>
-		/// <returns></returns>
-		public Color GetColor(double t) => colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * Clamp(t, 0.0, 1.0), 0)];
+    /// <summary>
+    ///   Get a color along the gradient ramp
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public Color GetColor(double t)
+    {
+      return colorRamp[(int)Math.Round((colorRamp.Length - 1.0) * Clamp(t, 0.0, 1.0), 0)];
+    }
 
-		static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
-		{
-			if (val.CompareTo(min) < 0)
-			{
-				return min;
-			}
+    private static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
+    {
+      if (val.CompareTo(min) < 0)
+      {
+        return min;
+      }
 
-			return val.CompareTo(max) > 0 ? max : val;
-		}
-	}
+      return val.CompareTo(max) > 0 ? max : val;
+    }
+  }
 
 }

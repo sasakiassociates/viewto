@@ -17,34 +17,28 @@ namespace ViewTo.RhinoGh.Results
     // TODO: Allow for remapping colors to a range of values 
     // TODO: Setting value type for exploring 
 
-    const int MAX_ALPHA = 255;
+    private const int MAX_ALPHA = 255;
 
-    const int MIN_ALPHA = 100;
+    private const int MIN_ALPHA = 100;
 
-    IExplorer _explorer;
+    private IExplorer _explorer;
 
-    (int Obj, int Options, int ValueType, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
-    double _min = 1.0, _max;
+    private (int Obj, int Options, int ValueType, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
+    private double _min = 1.0, _max;
 
-    (int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
-    ExplorerSettings _settings;
+    private (int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
+    private ExplorerSettings _settings;
 
-    ExplorerValueType _valueType = ExplorerValueType.ExistingOverPotential;
+    private ExplorerValueType _valueType = ExplorerValueType.ExistingOverPotential;
 
     public ResultExplorerComponent() : base("Result Explorer", "EX", "Explore a set of view study results", ConnectorInfo.Nodes.EXPLORER)
     {
       _explorer = new Explorer();
     }
 
-    public override Guid ComponentGuid
-    {
-      get => new Guid("01ffe845-0a7b-4bf8-9d35-48f234fc8cfc");
-    }
+    public override Guid ComponentGuid => new Guid("01ffe845-0a7b-4bf8-9d35-48f234fc8cfc");
 
-    protected override Bitmap Icon
-    {
-      get => new Bitmap(Icons.ExploreResults);
-    }
+    protected override Bitmap Icon => new Bitmap(Icons.ExploreResults);
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
@@ -103,7 +97,7 @@ namespace ViewTo.RhinoGh.Results
       _output.ActiveColor = index;
     }
 
-    void SetMinMax(double[] value)
+    private void SetMinMax(double[] value)
     {
       _min = 1.0;
       _max = 0.0;
@@ -114,7 +108,7 @@ namespace ViewTo.RhinoGh.Results
             SetMinMax(t);
     }
 
-    void SetMinMax(double value)
+    private void SetMinMax(double value)
     {
       // values that have no view are set to -1
       if (value < 0)
@@ -165,7 +159,7 @@ namespace ViewTo.RhinoGh.Results
       // load cloud point
       if (wrapper?.Value is ViewStudy obj)
       {
-        if (_explorer.Source == default || !_explorer.Source.ViewId.Equals(obj.ViewId))
+        if (_explorer.Source == default(object) || !_explorer.Source.ViewId.Equals(obj.ViewId))
         {
           _explorer.Load(obj);
         }
