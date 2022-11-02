@@ -13,6 +13,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DefineConstants>TRACE;</DefineConstants>
+        <DocumentationFile>bin\Debug\ViewObjects.xml</DocumentationFile>
     </PropertyGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(IsDesktopBuild)' == true">
