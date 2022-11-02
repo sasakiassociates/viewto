@@ -6,8 +6,9 @@
         "Sasaki.Utilities",
         "Sasaki.ViewObjects",
         "Sasaki.ViewObjects.Converter",
-        "Speckle.Connector",
+        "Speckle.Objects",
         "Speckle.Core",
+        "Speckle.Connector",
         "UniTask",
         "Pcx"
     ],

@@ -1,46 +1,45 @@
 ﻿using Rhino;
 using Speckle.Core.Kits;
-
 namespace ViewObjects.Converter.Rhino
 {
-	public class ViewObjRhinoConverter : ViewObjectsConverter
-	{
+  public class ViewObjRhinoConverter : ViewObjectsConverter
+  {
 
 		#if RHINO6 && GRASSHOPPER
-		public static string RhinoAppName = VersionedHostApplications.Grasshopper6;
+    public static string RhinoAppName = HostApplications.Grasshopper.GetVersion(HostAppVersion.v6);
 		#elif RHINO7 && GRASSHOPPER
-		public static string RhinoAppName = VersionedHostApplications.Grasshopper7;
+    public static string RhinoAppName = HostApplications.Grasshopper.GetVersion(HostAppVersion.v7);
 		#elif RHINO6
-		public static string RhinoAppName = VersionedHostApplications.Rhino6;
+    public static string RhinoAppName = HostApplications.Rhino.GetVersion(HostAppVersion.v6);
 		#elif RHINO7
-		public static string RhinoAppName = VersionedHostApplications.Rhino7;
+    public static string RhinoAppName = HostApplications.Rhino.GetVersion(HostAppVersion.v7);
 		#endif
 
-		public override string Name
-		{
-			get => nameof(ViewObjRhinoConverter);
-		}
+    public override string Name
+    {
+      get => nameof(ViewObjRhinoConverter);
+    }
 
-		public override string Description
-		{
-			get => "Converter for rhino/gh objects into base view objects";
-		}
+    public override string Description
+    {
+      get => "Converter for rhino/gh objects into base view objects";
+    }
 
-		// public override IEnumerable<string> GetServicedApplications()
-		// {
-		// 	return new[] { RhinoAppName };
-		// }
+    // public override IEnumerable<string> GetServicedApplications()
+    // {
+    // 	return new[] { RhinoAppName };
+    // }
 
-		/// <summary>
-		///   Current way of attaching default object kit to this converter
-		/// </summary>
-		/// <param name="doc"></param>
-		public override void SetContextDocument(object doc)
-		{
-			Doc = (RhinoDoc)doc;
-		}
+    /// <summary>
+    ///   Current way of attaching default object kit to this converter
+    /// </summary>
+    /// <param name="doc"></param>
+    public override void SetContextDocument(object doc)
+    {
+      Doc = (RhinoDoc)doc;
+    }
 
-		public RhinoDoc Doc { get; set; }
+    public RhinoDoc Doc { get; set; }
 
-	}
+  }
 }
