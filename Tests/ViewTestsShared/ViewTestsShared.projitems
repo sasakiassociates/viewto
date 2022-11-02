@@ -9,7 +9,7 @@
     <Import_RootNamespace>ViewTestsShared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)BaseMil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Categories.cs" />
   </ItemGroup>
 </Project>

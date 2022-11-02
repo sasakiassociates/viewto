@@ -1,190 +1,191 @@
-﻿using System;
+﻿using NUnit.Framework;
+using Speckle.Core.Api;
+using Speckle.Core.Credentials;
+using Speckle.Core.Transports;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using Speckle.Core.Api;
-using Speckle.Core.Credentials;
-using Speckle.Core.Kits;
-using Speckle.Core.Transports;
 using ViewObjects;
 using ViewObjects.Converter;
-using Cat = ViewTests.ViewTestCategories;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
-namespace ViewTests.Objects
+namespace ViewTo.Tests.Objects
 {
-	[TestFixture]
-	[Category(Cat.SPECKLE)]
-	public class SpeckleStreamTests
-	{
+  [TestFixture]
+  [Category(Categories.SPECKLE)]
+  public class SpeckleStreamTests
+  {
 
-		[TearDown]
-		public void BreakDown()
-		{
-			_transport?.Dispose();
-			_client?.Dispose();
-		}
+    [TearDown]
+    public void BreakDown()
+    {
+      _transport?.Dispose();
+      _client?.Dispose();
+    }
 
-		Client _client;
-		ServerTransport _transport;
+    Client _client;
+    ServerTransport _transport;
 
-		(string id, string branch, string commit) _stream;
+    (string id, string branch, string commit) _stream;
 
-		[Test]
-		public async Task SendTestResultCloud()
-		{
-			_client = new Client(AccountManager.GetDefaultAccount());
 
-			// test stream for view to 
-			_stream.id = "1da7b18b31";
-			_stream.branch = "conversions";
+    [Test]
+    public async Task SendTestResultCloud()
+    {
+      _client = new Client(AccountManager.GetDefaultAccount());
 
-			var cloud = VO.ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
+      // test stream for view to 
+      _stream.id = "1da7b18b31";
+      _stream.branch = "conversions";
 
-			_transport = new ServerTransport(_client.Account, _stream.id);
+      var cloud = VO.ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
 
-			var id = await Operations.Send(cloud, new List<ITransport>
-				                               { _transport });
+      _transport = new ServerTransport(_client.Account, _stream.id);
 
-			Assert.IsNotNull(id);
+      var id = await Operations.Send(cloud, new List<ITransport>
+        { _transport });
 
-			var commit = await _client.CommitCreate(new CommitCreateInput
-			{
-				streamId = _stream.id,
-				branchName = _stream.branch,
-				objectId = id,
-				message = "Test commit from Script",
-				sourceApplication = VersionedHostApplications.Script
-			});
+      Assert.IsNotNull(id);
 
-			Assert.IsNotNull(commit);
-		}
+      var commit = await _client.CommitCreate(new CommitCreateInput
+      {
+        streamId = _stream.id,
+        branchName = _stream.branch,
+        objectId = id,
+        message = "Test commit from Script",
+      });
 
-		[Test]
-		public async Task Send_ViewStudy()
-		{
-			_client = new Client(AccountManager.GetDefaultAccount());
+      Assert.IsNotNull(commit);
+    }
 
-			// test stream for view to
-			_stream.id = "1da7b18b31";
-			_stream.branch = "conversions";
+    public static string TerminalURL(string caption, string url) => $"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
 
-			var obj = VO.ViewObjectFaker.Study();
-			var converter = new ViewObjectsConverter();
-			var @base = converter.ConvertToSpeckle(obj);
 
-			_transport = new ServerTransport(_client.Account, _stream.id);
 
-			var id = await Operations.Send(@base, new List<ITransport> { _transport });
 
-			Assert.IsNotNull(id);
 
-			var commit = await _client.CommitCreate(new CommitCreateInput
-			{
-				streamId = _stream.id,
-				branchName = _stream.branch,
-				objectId = id,
-				message = "Test commit from Script",
-				sourceApplication = VersionedHostApplications.Script
-			});
+    [Test]
+    public async Task Send_ViewStudy()
+    {
+      _client = new Client(AccountManager.GetDefaultAccount());
 
-			Assert.IsNotNull(commit);
-		}
+      // test stream for view to
+      _stream.id = "1da7b18b31";
+      _stream.branch = "conversions";
 
-		[Test]
-		[Ignore("Test for merging data")]
-		public async Task AddCloudToStudy()
-		{
-			_client = new Client(AccountManager.GetDefaultAccount());
+      var obj = VO.ViewObjectFaker.Study();
+      var converter = new ViewObjectsConverter();
+      var @base = converter.ConvertToSpeckle(obj);
 
-			// test stream for view to 
-			_stream.id = "a823053e07";
-			_stream.branch = "viewstudies/site";
+      _transport = new ServerTransport(_client.Account, _stream.id);
 
-			_transport = new ServerTransport(_client.Account, _stream.id);
+      var id = await Operations.Send(@base, new List<ITransport> { _transport });
 
-			var cloudCommit = await _client.CommitGet(_stream.id, "c65fb6fd85");
-			var studyCommit = await _client.CommitGet(_stream.id, "34a98434f1");
+      Assert.IsNotNull(id);
 
-			var studyBase = await Operations.Receive(studyCommit.referencedObject, _transport);
-			var cloudBase = await Operations.Receive(cloudCommit.referencedObject, _transport);
+      var commit = await _client.CommitCreate(new CommitCreateInput
+      {
+        streamId = _stream.id,
+        branchName = _stream.branch,
+        objectId = id,
+        message = "Test commit from Script",
+      });
 
-			var converter = new ViewObjectsConverter();
-			var study = converter.ConvertToNativeViewObject(studyBase.SearchForType<VS.ViewStudy>(true)) as VO.ViewStudy;
-			var cloud = converter.ConvertToNativeViewObject(cloudBase.SearchForType<VS.ResultCloud>(true)) as VO.ResultCloud;
+      Assert.IsNotNull(commit);
+    }
 
-			var targets = study.GetAll<ContentReference>().Where(x => x.ContentType == ContentType.Target).ToList();
+    [Test]
+    [Ignore("Test for merging data")]
+    public async Task AddCloudToStudy()
+    {
+      _client = new Client(AccountManager.GetDefaultAccount());
 
-			Assert.IsTrue(targets.Count * 2 == cloud.Data.Count);
-			for (int i = 0; i < targets.Count; i++)
-			{
-				var t = targets[i];
-				cloud.Data[i].Option = new ContentOption
-				{
-					Stage = ResultStage.Potential, Id = t.ViewId, Name = t.ViewName
-				};
-				cloud.Data[i + targets.Count].Option = new ContentOption
-				{
-					Stage = ResultStage.Existing, Id = t.ViewId, Name = t.ViewName
-				};
-			}
+      // test stream for view to 
+      _stream.id = "a823053e07";
+      _stream.branch = "viewstudies/site";
 
-			study.Objects.Add(cloud);
+      _transport = new ServerTransport(_client.Account, _stream.id);
 
-			var res = converter.ConvertToSpeckle(study);
-			var id = await Operations.Send(res, new List<ITransport> { _transport });
+      var cloudCommit = await _client.CommitGet(_stream.id, "c65fb6fd85");
+      var studyCommit = await _client.CommitGet(_stream.id, "34a98434f1");
 
-			var commit = await _client.CommitCreate(new CommitCreateInput
-			{
-				streamId = _stream.id,
-				branchName = _stream.branch,
-				objectId = id,
-				message = "Test for combinding objects",
-				sourceApplication = VersionedHostApplications.Script
-			});
+      var studyBase = await Operations.Receive(studyCommit.referencedObject, _transport);
+      var cloudBase = await Operations.Receive(cloudCommit.referencedObject, _transport);
 
-			Assert.IsNotNull(commit);
-		}
+      var converter = new ViewObjectsConverter();
+      var study = converter.ConvertToNativeViewObject(studyBase.SearchForType<VS.ViewStudy>(true)) as VO.ViewStudy;
+      var cloud = converter.ConvertToNativeViewObject(cloudBase.SearchForType<VS.ResultCloud>(true)) as VO.ResultCloud;
 
-		[Test]
-		public async Task ReceiveResultCloudFromCommit()
-		{
-			_client = new Client(AccountManager.GetDefaultAccount());
+      var targets = study.GetAll<ContentReference>().Where(x => x.ContentType == ContentType.Target).ToList();
 
-			// example from uph stream
-			_stream.id = "4777dea055";
-			_stream.branch = "viewstudy/massing-from-road";
-			_stream.commit = "78dc82b648";
+      Assert.IsTrue(targets.Count * 2 == cloud.Data.Count);
+      for (int i = 0; i < targets.Count; i++)
+      {
+        var t = targets[i];
+        cloud.Data[i].Option = new ContentOption
+        {
+          Stage = ResultStage.Potential, Id = t.ViewId, Name = t.ViewName
+        };
+        cloud.Data[i + targets.Count].Option = new ContentOption
+        {
+          Stage = ResultStage.Existing, Id = t.ViewId, Name = t.ViewName
+        };
+      }
 
-			var commit = await _client.CommitGet(_stream.id, _stream.commit);
+      study.Objects.Add(cloud);
 
-			Assert.NotNull(commit);
-			_transport = new ServerTransport(_client.Account, _stream.id);
+      var res = converter.ConvertToSpeckle(study);
+      var id = await Operations.Send(res, new List<ITransport> { _transport });
 
-			var @base = await Operations.Receive(commit.referencedObject, _transport);
+      var commit = await _client.CommitCreate(new CommitCreateInput
+      {
+        streamId = _stream.id,
+        branchName = _stream.branch,
+        objectId = id,
+        message = "Test for combinding objects"
+      });
 
-			Assert.IsNotNull(@base);
+      Assert.IsNotNull(commit);
+    }
 
-			Console.WriteLine($"{@base.speckle_type} Total Child Cout={@base.totalChildrenCount}");
+    [Test]
+    public async Task ReceiveResultCloudFromCommit()
+    {
+      _client = new Client(AccountManager.GetDefaultAccount());
 
-			var obj = @base.SearchForType<VS.ViewStudy>(true);
+      // example from uph stream
+      _stream.id = "4777dea055";
+      _stream.branch = "viewstudy/massing-from-road";
+      _stream.commit = "78dc82b648";
 
-			Assert.IsNotNull(obj);
+      var commit = await _client.CommitGet(_stream.id, _stream.commit);
 
-			var id = await Operations.Send(obj, new List<ITransport> { _transport });
+      Assert.NotNull(commit);
+      _transport = new ServerTransport(_client.Account, _stream.id);
 
-			var commitCreated = await _client.CommitCreate(new CommitCreateInput
-			{
-				streamId = _stream.id,
-				branchName = _stream.branch,
-				objectId = id,
-				message = "Test for combinding objects",
-				sourceApplication = VersionedHostApplications.Script
-			});
+      var @base = await Operations.Receive(commit.referencedObject, _transport);
 
-			Assert.IsNotNull(obj);
-		}
-	}
+      Assert.IsNotNull(@base);
+
+      Console.WriteLine($"{@base.speckle_type} Total Child Cout={@base.totalChildrenCount}");
+
+      var obj = @base.SearchForType<VS.ViewStudy>(true);
+
+      Assert.IsNotNull(obj);
+
+      var id = await Operations.Send(obj, new List<ITransport> { _transport });
+
+      var commitCreated = await _client.CommitCreate(new CommitCreateInput
+      {
+        streamId = _stream.id,
+        branchName = _stream.branch,
+        objectId = id,
+        message = "Test for combinding objects",
+      });
+
+      Assert.IsNotNull(obj);
+    }
+  }
 }
