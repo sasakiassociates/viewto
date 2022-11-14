@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="account-list" src="project://database/Packages/com.speckle.connector/GUI/UXML/account-list.uxml?fileID=9197481963319205126&amp;guid=82692bb22a4d49aea8b4da104c8beea9&amp;type=3#account-list" />
+    <Style src="project://database/Assets/_ViewTo/Gui/Uss/viewtostyles.uss?fileID=7433441132597879392&amp;guid=bc2992c1256f2df47992b9a76fee0e8f&amp;type=3#viewtostyles" />
+    <ui:VisualElement name="bar" class="group" style="max-width: 400px; max-height: none; min-width: 20px; min-height: 100%; width: auto; height: auto; align-items: stretch;">
+        <ui:VisualElement name="top-ribbon">
+            <ui:VisualElement name="header" style="flex-direction: row; align-items: stretch; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1; max-width: none;">
+                <ui:Label text="ViewTo" display-tooltip-when-elided="true" name="title" style="padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; flex-shrink: 1;" />
+                <ui:Label text="BY SASAKI" display-tooltip-when-elided="true" name="sub" style="-unity-font: url(&apos;project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD.OTF?fileID=12800000&amp;guid=1b04039271d5a5e40889d1c7b9c1590c&amp;type=3#KOROLEV BOLD&apos;); -unity-text-align: lower-left; flex-shrink: 1;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="tabs" style="flex-direction: row; flex-grow: 0;">
+            <ui:Button display-tooltip-when-elided="true" name="home" style="background-image: url(&apos;project://database/Assets/_ViewTo/Gui/Assets/home-outline.svg?fileID=7388822144124034973&amp;guid=e88900d36e5febf47a8e3064006e14c0&amp;type=3#home-outline&apos;); -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;" />
+            <ui:Button display-tooltip-when-elided="true" name="results" style="background-image: url(&apos;project://database/Assets/_ViewTo/Gui/Assets/chart-scatter-plot.svg?fileID=7388822144124034973&amp;guid=02ed1492f39a04e45be75e28e2e0f6e3&amp;type=3#chart-scatter-plot&apos;); -unity-background-scale-mode: scale-to-fit; flex-shrink: 1; margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0;" />
+            <ui:Button display-tooltip-when-elided="true" name="settings" style="background-image: url(&apos;project://database/Assets/_ViewTo/Gui/Assets/cog-outline.svg?fileID=7388822144124034973&amp;guid=67498fa3af78a774fbb926689caea449&amp;type=3#cog-outline&apos;); -unity-background-scale-mode: scale-to-fit; flex-shrink: 1; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="setup">
+            <ui:Instance template="account-list" name="account-list" />
+            <ui:Foldout text="Streams" name="streams-list" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

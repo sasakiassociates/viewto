@@ -1,0 +1,76 @@
+:root {
+    --dark-purple: rgb(5, 0, 56);
+    --light-purple: rgb(187, 189, 252);
+    --purple: rgb(102, 102, 255);
+    --white: rgb(255, 255, 255);
+    --gray: rgb(226, 228, 232);
+    --background-purple: rgb(237, 235, 255);
+    --background-gray: rgb(242, 245, 250);
+    --icon-size: 20px;
+    --font-title: 18;
+    --font-sub-title: 12;
+    -unity-font-definition: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20MEDIUM%20SDF.asset?fileID=11400000&guid=f282f51f817364440b40fa0f87afa9ce&type=2#KOROLEV MEDIUM SDF');
+    --font-bold: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20SDF.asset?fileID=11400000&guid=c4e6c1059cc6f6c498a85ae2fefca497&type=2#KOROLEV BOLD SDF');
+    --font-bold-italic: "project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20ITALIC%20SDF.asset";
+    --font-light: "project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20LIGHT%20SDF.asset";
+    --font-light-italic: "project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20LIGHT%20ITALIC%20SDF.asset";
+    --font-medium: "project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20MEDIUM%20SDF.asset";
+    --font-medium-italic: "project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20MEDIUM%20ITALIC%20SDF.asset";
+}
+
+#top-ribbon #header {
+    background-color: var(--dark-purple);
+    margin: 0;
+    padding: 5px;
+    background-image: none;
+}
+
+#top-ribbon #header Label#title {
+    -unity-font-definition: var(--font-medium);
+    color: var(--white);
+    font-size: 42px;
+    justify-content: space-around;
+    -unity-text-align: lower-left;
+}
+
+#top-ribbon #header Label#sub {
+    -unity-font-definition: var(--font-bold);
+    font-size: 18px;
+    padding: 0 0 9px 0;
+    -unity-text-align: lower-left;
+    justify-content: space-around;
+}
+
+#tabs Button {
+    min-width: 100px;
+    min-height: 20px;
+    margin: 1px;
+    padding: 1px;
+    border-left-color: var(--purple);
+    border-right-color: var(--purple);
+    border-bottom-color: var(--purple);
+    border-top-color: rgba(0, 0, 0, 0);
+    background-color: var(--background-purple);
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: var(--purple);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    flex-grow: 1;
+}
+
+#tabs Button:hover {
+    background-color: var(--dark-purple);
+}
+
+#setup #streams-list #unity-checkmark {
+    background-image: url('project://database/Assets/_ViewTo/Gui/Assets/folder-table-outline.svg?fileID=7388822144124034973&guid=40b9a13abbc573d40bd9af76ec6f6734&type=3#folder-table-outline');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.group {
+    background-color: var(--background-gray);
+    color: var(--purple);
+}
