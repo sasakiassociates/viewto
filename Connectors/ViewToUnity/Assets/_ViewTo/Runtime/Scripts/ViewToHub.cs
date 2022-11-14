@@ -41,10 +41,6 @@ namespace ViewTo.Connector.Unity
     [SerializeField] bool _createCommit = true;
     [SerializeField] bool _runOnLoad = true;
     [SerializeField] bool _autoRun = false;
-    
-    // [field: SerializeField] public string testText { get; private set; } = "I am a test";
-     public string testText = "I am a test";
-
 
     [SerializeField] bool _runRepeatCommand;
 
@@ -54,9 +50,13 @@ namespace ViewTo.Connector.Unity
     [SerializeField][HideInInspector] Rig _rig;
 
     [SerializeField] ScriptableSpeckleConverter _converterUnity;
+
+
     RepeatResultTester _tester;
 
     Stopwatch _timer;
+
+    public Account account { get; set; }
 
     public bool canRun
     {
@@ -443,7 +443,7 @@ namespace ViewTo.Connector.Unity
 
 		#region unity methods
 
-    void OnEnable()
+    void Awake()
     {
       Instance = this;
 
@@ -465,7 +465,7 @@ namespace ViewTo.Connector.Unity
       // AutoStartViewStudy().Forget();
 
       LoadStreams();
-      
+
       if (_autoRun)
         AutoStart().Forget();
     }
@@ -473,10 +473,10 @@ namespace ViewTo.Connector.Unity
 
     void LoadStreams()
     {
-      
+
     }
-    
-    
+
+
     void OnDisable()
     {
       if (_rig != null)
@@ -524,6 +524,11 @@ namespace ViewTo.Connector.Unity
 
 		#endregion
 
+    #region macros
+
+    public IEnumerable<Account> GetSpeckleAccounts() => AccountManager.GetAccounts();
+
+ #endregion
   }
 
 }
