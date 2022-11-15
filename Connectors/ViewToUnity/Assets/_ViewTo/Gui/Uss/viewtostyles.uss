@@ -18,59 +18,118 @@
     --font-medium-italic: "project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20MEDIUM%20ITALIC%20SDF.asset";
 }
 
-#top-ribbon #header {
+.group {
+    background-color: var(--background-gray);
+    color: var(--purple);
+}
+
+.font--title {
+    -unity-font-definition: var(--font-medium);
+}
+
+.font--title-sub {
+    -unity-font-definition: var(--font-bold);
+}
+
+.icon {
+}
+
+.viewto-container {
+    margin: 4px;
+    padding: 5px;
+}
+
+#ribbon #header {
     background-color: var(--dark-purple);
     margin: 0;
     padding: 5px;
     background-image: none;
 }
 
-#top-ribbon #header Label#title {
-    -unity-font-definition: var(--font-medium);
+#header Label.font--title {
     color: var(--white);
     font-size: 42px;
     justify-content: space-around;
     -unity-text-align: lower-left;
 }
 
-#top-ribbon #header Label#sub {
-    -unity-font-definition: var(--font-bold);
+#header Label.font--title-sub {
     font-size: 18px;
     padding: 0 0 9px 0;
     -unity-text-align: lower-left;
     justify-content: space-around;
 }
 
-#tabs Button {
-    min-width: 100px;
-    min-height: 20px;
+#body Label#title {
+    font-size: 18px;
+    color: var(--dark-purple);
+    margin: 0 5px 5px 0;
+}
+
+#body .unity-base-field__input {
+    background-color: var(--background-gray);
+    border-left-color: var(--purple);
+    border-right-color: var(--purple);
+    border-top-color: var(--purple);
+    border-bottom-color: var(--purple);
+    min-height: 30px;
+}
+
+#body .unity-base-field__input .unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: var(--purple);
+    background-image: url('project://database/Assets/_ViewTo/Gui/Assets/chevron-down.svg?fileID=7388822144124034973&guid=c8a091da75caa8a46ab5f264bb5ae6ca&type=3#chevron-down');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+Button {
+    flex-shrink: 1;
+    align-items: stretch;
     margin: 1px;
-    padding: 1px;
+    padding: 0;
+    min-height: 100%;
+    min-width: 100px;
+    max-height: 100%;
+}
+
+Button #icon {
+    -unity-background-scale-mode: scale-to-fit;
+    flex-shrink: 1;
+    flex-grow: 1;
+    padding: 2px;
+    margin: 1px;
+}
+
+Button#run {
+    background-color: var(--purple);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    min-width: 150px;
+}
+
+#tabs Button {
+    flex-grow: 1;
     border-left-color: var(--purple);
     border-right-color: var(--purple);
     border-bottom-color: var(--purple);
     border-top-color: rgba(0, 0, 0, 0);
     background-color: var(--background-purple);
-    -unity-background-scale-mode: scale-to-fit;
-    -unity-background-image-tint-color: var(--purple);
     border-left-width: 2px;
     border-right-width: 2px;
     border-top-width: 2px;
     border-bottom-width: 2px;
     border-radius: 5px;
-    flex-grow: 1;
 }
 
-#tabs Button:hover {
+#tabs Button #icon {
+    -unity-background-image-tint-color: var(--purple);
+}
+
+#tabs Button:hover #icon {
     background-color: var(--dark-purple);
 }
 
-#setup #streams-list #unity-checkmark {
-    background-image: url('project://database/Assets/_ViewTo/Gui/Assets/folder-table-outline.svg?fileID=7388822144124034973&guid=40b9a13abbc573d40bd9af76ec6f6734&type=3#folder-table-outline');
-    -unity-background-scale-mode: scale-to-fit;
-}
-
-.group {
-    background-color: var(--background-gray);
-    color: var(--purple);
+#account-card .unity-image {
+    -unity-background-image-tint-color: var(--purple);
 }

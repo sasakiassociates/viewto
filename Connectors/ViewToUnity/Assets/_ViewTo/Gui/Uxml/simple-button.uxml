@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Button display-tooltip-when-elided="true" name="home" style="background-image: none; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;">
+        <ui:VisualElement name="icon" style="background-image: url(&apos;project://database/Assets/_ViewTo/Gui/Assets/home-outline.svg?fileID=7388822144124034973&amp;guid=e88900d36e5febf47a8e3064006e14c0&amp;type=3#home-outline&apos;); width: auto; height: auto; -unity-background-scale-mode: scale-to-fit; flex-grow: 1;" />
+    </ui:Button>
+</ui:UXML>

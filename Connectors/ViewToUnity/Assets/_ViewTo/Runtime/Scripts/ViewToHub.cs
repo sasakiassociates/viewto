@@ -56,7 +56,7 @@ namespace ViewTo.Connector.Unity
 
     Stopwatch _timer;
 
-    public Account account { get; set; }
+    public Account account => GetConnector().Account;
 
     public bool canRun
     {
@@ -232,6 +232,15 @@ namespace ViewTo.Connector.Unity
       TryLoadStudy(studyToBuild);
     }
 
+
+
+    void CheckStream()
+    {
+      
+    }
+
+    #region Converter shit that should be moved away
+
     public static IEnumerable<CloudPoint> ArrayToCloudPoint(IReadOnlyCollection<double> arr, string units)
     {
       if (arr == null)
@@ -249,16 +258,20 @@ namespace ViewTo.Connector.Unity
       return points;
     }
 
+
     public static CloudPoint CloudByCoordinates(double x, double y, double z, string units) =>
       new((float)ScaleToNative(x, units), (float)ScaleToNative(y, units), (float)ScaleToNative(z, units));
 
+
     public static double ScaleToNative(double value, string units) => value * Units.GetConversionFactor(units, Units.Meters);
+
 
     static async UniTask<Base> ReceiveCommitWithData(SpeckleUnityClient client, string stream, string refId)
     {
       var refCommit = await client.CommitGet(stream, refId);
       return await SpeckleOps.Receive(client, stream, refCommit.referencedObject);
     }
+
 
     async UniTask GetContentData(ViewObjects.Unity.Content content, VO.Speckle.ContentReference contentBase, SpeckleUnityClient client, string stream)
     {
@@ -280,6 +293,7 @@ namespace ViewTo.Connector.Unity
       UniTask.Yield();
     }
 
+
     static List<GameObject> GetKids(Transform parent)
     {
       var currentList = new List<GameObject>();
@@ -294,6 +308,7 @@ namespace ViewTo.Connector.Unity
       return currentList;
     }
 
+#endregion
 
     void SendResultsToStream(VU.ResultCloud mono)
     {
@@ -443,39 +458,31 @@ namespace ViewTo.Connector.Unity
 
 		#region unity methods
 
+    SpeckleConnector GetConnector()
+    {
+      var connector = SpeckleConnector.Instance;
+      if (connector == null)
+      {
+        connector = new GameObject("Speckle Connector").AddComponent<SpeckleConnector>();
+      }
+
+      return connector;
+    }
+
     void Awake()
     {
       Instance = this;
 
       if (!IsInit)
         Init();
-
-      // OnStudyComplete += mono => ViewConsole.Log($"{mono} is complete!");
-      //
-      // if (_speckleConnector == null)
-      // 	return;
-      //
-      // // hacky way of getting connector data
-      // _speckleConnector.OnReceiverCreated += ProcessReceiver;
-      // _speckleConnector.OnSenderCreated += ProcessSender;
     }
 
     void Start()
     {
-      // AutoStartViewStudy().Forget();
-
-      LoadStreams();
 
       if (_autoRun)
         AutoStart().Forget();
     }
-
-
-    void LoadStreams()
-    {
-
-    }
-
 
     void OnDisable()
     {
@@ -488,18 +495,17 @@ namespace ViewTo.Connector.Unity
         _rig.OnStageChange -= OnRigStageChanged;
         _rig.OnContentLoaded -= OnViewContentLoaded;
       }
-
-      // if (_speckleConnector != null)
-      // {
-      // 	_speckleConnector.OnReceiverCreated -= ProcessReceiver;
-      // 	_speckleConnector.OnSenderCreated -= ProcessSender;
-      // }
     }
 
-		#endregion
 
-		#region Events
 
+ 
+
+#endregion
+
+#region Events
+
+    public event UnityAction<List<VU.ViewStudy>> OnStudiesFound;
     public event UnityAction OnRigReady;
 
     public event UnityAction OnRigComplete;
@@ -522,13 +528,10 @@ namespace ViewTo.Connector.Unity
 
     // public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 
-		#endregion
+#endregion
 
-    #region macros
 
-    public IEnumerable<Account> GetSpeckleAccounts() => AccountManager.GetAccounts();
 
- #endregion
   }
 
 }
