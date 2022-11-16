@@ -8,7 +8,7 @@
                 <ui:Label text="BY SASAKI" display-tooltip-when-elided="true" name="sub" class="font--title-sub" style="-unity-font: url(&apos;project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD.OTF?fileID=12800000&amp;guid=1b04039271d5a5e40889d1c7b9c1590c&amp;type=3#KOROLEV BOLD&apos;); -unity-text-align: lower-left; flex-shrink: 1;" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="tabs" style="flex-direction: row; flex-grow: 0; min-height: 25px; justify-content: flex-start;">
+        <ui:VisualElement name="tabs" style="flex-direction: row; flex-grow: 0; min-height: 25px; justify-content: flex-start; margin-left: 5px; margin-right: 5px;">
             <ui:Button display-tooltip-when-elided="true" name="home" style="background-image: none; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1;">
                 <ui:VisualElement name="icon" style="background-image: url(&apos;project://database/Assets/_ViewTo/Gui/Assets/home-outline.svg?fileID=7388822144124034973&amp;guid=e88900d36e5febf47a8e3064006e14c0&amp;type=3#home-outline&apos;); width: auto; height: auto; -unity-background-scale-mode: scale-to-fit; flex-grow: 1;" />
             </ui:Button>
@@ -24,28 +24,32 @@
                 <ui:Label text="Account" display-tooltip-when-elided="true" name="title" class="font--title" />
                 <ui:Instance template="account-card" name="account-card" style="margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px; padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;" />
             </ui:VisualElement>
-            <ui:VisualElement name="streams" class="viewto-container">
+            <ui:VisualElement name="streams" class="viewto-container" style="flex-grow: 1;">
                 <ui:Label text="Streams" display-tooltip-when-elided="true" name="title" />
-                <ui:DropdownField index="-1" choices="view study streams" name="streams" />
+                <ui:ListView focusable="true" name="stream-list" />
             </ui:VisualElement>
-            <ui:VisualElement name="branches" class="viewto-container">
-                <ui:Label text="Branches" display-tooltip-when-elided="true" name="title" />
-                <ui:DropdownField index="-1" choices="view study streams" name="streams" />
+            <ui:VisualElement name="stream-selection" focusable="false" style="display: none; visibility: visible;">
+                <ui:VisualElement name="commits" class="viewto-container">
+                    <ui:Label text="Commits" display-tooltip-when-elided="true" name="title" enable-rich-text="true" />
+                    <ui:DropdownField index="-1" choices="view study streams" name="streams" />
+                </ui:VisualElement>
+                <ui:VisualElement name="branches" class="viewto-container">
+                    <ui:Label text="Branches" display-tooltip-when-elided="true" name="title" />
+                    <ui:DropdownField index="-1" choices="view study streams" name="streams" />
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="commits" class="viewto-container">
-                <ui:Label text="Commits" display-tooltip-when-elided="true" name="title" enable-rich-text="true" />
-                <ui:DropdownField index="-1" choices="view study streams" name="streams" />
-            </ui:VisualElement>
-            <ui:VisualElement name="studies" class="viewto-container">
-                <ui:Label text="Studies" display-tooltip-when-elided="true" name="title" />
-                <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="streams" />
-            </ui:VisualElement>
-            <ui:VisualElement name="details" class="viewto-container" style="flex-grow: 1;">
-                <ui:Label text="Study Details" display-tooltip-when-elided="true" name="title" />
-                <ui:ListView focusable="false" virtualization-method="DynamicHeight" reorderable="false" show-bound-collection-size="false" name="data" style="flex-grow: 1;" />
+            <ui:VisualElement name="study-selection" style="display: none;">
+                <ui:VisualElement name="details" class="viewto-container" style="flex-grow: 1;">
+                    <ui:Label text="Study Details" display-tooltip-when-elided="true" name="title" />
+                    <ui:ListView focusable="false" virtualization-method="DynamicHeight" reorderable="false" show-bound-collection-size="false" name="data" style="flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="studies" class="viewto-container">
+                    <ui:Label text="Studies" display-tooltip-when-elided="true" name="title" />
+                    <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="streams" />
+                </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="footer" style="flex-direction: column; justify-content: flex-start; min-width: auto; align-items: auto; flex-grow: 0; bottom: auto; position: relative; min-height: 100px;">
-                <ui:Button display-tooltip-when-elided="true" name="run" style="flex-shrink: 1; background-image: none; align-items: stretch; -unity-background-scale-mode: scale-to-fit; flex-direction: column; max-height: none; min-height: 30%;">
+                <ui:Button display-tooltip-when-elided="true" name="run" style="flex-shrink: 1; background-image: none; align-items: stretch; -unity-background-scale-mode: scale-to-fit; flex-direction: column; max-height: none; min-height: 30%; padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;">
                     <ui:VisualElement name="icon" style="justify-content: space-between; background-image: url(&apos;project://database/Assets/_ViewTo/Gui/Assets/play.svg?fileID=7388822144124034973&amp;guid=455ad82da7406834c838d1e1cf5fcfaa&amp;type=3#play&apos;); -unity-background-scale-mode: scale-to-fit; flex-grow: 1; flex-shrink: 0; align-items: auto;" />
                 </ui:Button>
             </ui:VisualElement>

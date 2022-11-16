@@ -35,7 +35,8 @@ namespace ViewTo.Connector.Unity
     [SerializeField] Material _analysisMaterial;
     [SerializeField] Material _renderedMat;
 
-    [field: SerializeField] public SpeckleStreamObject stream { get; private set; }
+    public SpeckleStream stream { get; set; }
+    [field: SerializeField] public SpeckleStreamObject streamObject { get; private set; }
 
     [SerializeField] bool _loadResults = true;
     [SerializeField] bool _createCommit = true;
@@ -162,15 +163,15 @@ namespace ViewTo.Connector.Unity
     {
       Debug.Log("Starting Hacking Version of View To");
 
-      var client = new SpeckleUnityClient(stream.Account);
+      var client = new SpeckleUnityClient(streamObject.Account);
       client.token = this.GetCancellationTokenOnDestroy();
 
-      var commit = await client.CommitGet(stream.Id, stream.Commit.id);
+      var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
 
       if (commit == null)
         return;
 
-      var @base = await SpeckleOps.Receive(client, stream.Id, commit.referencedObject);
+      var @base = await SpeckleOps.Receive(client, streamObject.Id, commit.referencedObject);
 
       if (@base == null)
         return;
@@ -199,7 +200,7 @@ namespace ViewTo.Connector.Unity
           case VS.ContentReference o:
             var content = go.AddComponent<VU.Content>();
             content.ContentType = o.ContentType;
-            await GetContentData(content, o, client, stream.Id);
+            await GetContentData(content, o, client, streamObject.Id);
             objectsToConvert.Add(content);
             break;
           case VS.ViewCloudReference o:
@@ -207,7 +208,7 @@ namespace ViewTo.Connector.Unity
             cloud.ViewId = o.ViewId;
             cloud.Reference = o.References;
 
-            var co = await ReceiveCommitWithData(client, stream.Id, cloud.Reference.FirstOrDefault());
+            var co = await ReceiveCommitWithData(client, streamObject.Id, cloud.Reference.FirstOrDefault());
             var pc = await co.SearchForType<Pointcloud>(true, this.GetCancellationTokenOnDestroy());
 
             cloud.Points = ArrayToCloudPoint(pc.points, pc.units).ToArray();
@@ -232,13 +233,7 @@ namespace ViewTo.Connector.Unity
       TryLoadStudy(studyToBuild);
     }
 
-
-
-    void CheckStream()
-    {
-      
-    }
-
+    
     #region Converter shit that should be moved away
 
     public static IEnumerable<CloudPoint> ArrayToCloudPoint(IReadOnlyCollection<double> arr, string units)
@@ -338,15 +333,15 @@ namespace ViewTo.Connector.Unity
             // // TODO: fix this so no converter is needed
             // var @base = node.SceneToData(_converterUnity, this.GetCancellationTokenOnDestroy());
 
-            var res = await SpeckleOps.Send(client, new Base { ["Data"] = _speckleStudy }, stream.Id);
+            var res = await SpeckleOps.Send(client, new Base { ["Data"] = _speckleStudy }, streamObject.Id);
 
             await client.CommitCreate(new CommitCreateInput
             {
               objectId = res,
               message = $"{_study.ViewName} is complete! {mono.count}",
-              branchName = stream.IsValid() && stream.Branch.Valid() ? stream.Branch.name : "main",
+              branchName = streamObject.IsValid() && streamObject.Branch.Valid() ? streamObject.Branch.name : "main",
               sourceApplication = SpeckleUnity.APP,
-              streamId = stream.Id
+              streamId = streamObject.Id
             });
           });
         }

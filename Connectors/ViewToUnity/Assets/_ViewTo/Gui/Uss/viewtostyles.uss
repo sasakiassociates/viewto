@@ -1,11 +1,13 @@
 :root {
+    --border-width: 2px;
+    --border-radius: 5px;
     --dark-purple: rgb(5, 0, 56);
     --light-purple: rgb(187, 189, 252);
     --purple: rgb(102, 102, 255);
     --white: rgb(255, 255, 255);
-    --gray: rgb(226, 228, 232);
+    --gray: rgb(218, 218, 218);
     --background-purple: rgb(237, 235, 255);
-    --background-gray: rgb(242, 245, 250);
+    --background-gray: rgb(246, 246, 246);
     --icon-size: 20px;
     --font-title: 18;
     --font-sub-title: 12;
@@ -19,7 +21,7 @@
 }
 
 .group {
-    background-color: var(--background-gray);
+    background-color: var(--white);
     color: var(--purple);
 }
 
@@ -37,6 +39,18 @@
 .viewto-container {
     margin: 4px;
     padding: 5px;
+}
+
+#body {
+    border-left-color: var(--purple);
+    border-right-color: var(--purple);
+    border-top-color: var(--purple);
+    border-bottom-color: var(--purple);
+    border-left-width: var(--border-width);
+    border-top-width: var(--border-width);
+    border-right-width: var(--border-width);
+    border-bottom-width: var(--border-width);
+    border-radius: var(--border-radius);
 }
 
 #ribbon #header {
@@ -81,6 +95,28 @@
     -unity-background-scale-mode: scale-to-fit;
 }
 
+#tabs Button {
+    flex-grow: 1;
+    background-color: var(--background-purple);
+    border-left-color: var(--purple);
+    border-right-color: var(--purple);
+    border-bottom-color: var(--purple);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-left-width: var(--border-width);
+    border-top-width: var(--border-width);
+    border-right-width: var(--border-width);
+    border-bottom-width: var(--border-width);
+    border-radius: var(--border-radius);
+}
+
+#tabs Button #icon {
+    -unity-background-image-tint-color: var(--purple);
+}
+
+#tabs Button:hover #icon {
+    background-color: var(--dark-purple);
+}
+
 Button {
     flex-shrink: 1;
     align-items: stretch;
@@ -108,28 +144,37 @@ Button#run {
     min-width: 150px;
 }
 
-#tabs Button {
-    flex-grow: 1;
-    border-left-color: var(--purple);
-    border-right-color: var(--purple);
-    border-bottom-color: var(--purple);
-    border-top-color: rgba(0, 0, 0, 0);
-    background-color: var(--background-purple);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-radius: 5px;
-}
-
-#tabs Button #icon {
-    -unity-background-image-tint-color: var(--purple);
-}
-
-#tabs Button:hover #icon {
-    background-color: var(--dark-purple);
-}
-
 #account-card .unity-image {
     -unity-background-image-tint-color: var(--purple);
+}
+
+#account-card .sub {
+    align-items: center;
+}
+
+#streams {
+    flex-shrink: 1;
+    flex-grow: 1;
+
+}
+
+#stream-list {
+    flex-grow: 1;
+    min-height: 100px;
+    /*max-height: 500px;*/
+    background-color: var(--background-gray);
+}
+
+#stream-list .unity-list-view__item:checked {
+    background-color: var(--background-gray);
+    border-left-color: var(--purple);
+    border-right-color: var(--purple);
+    border-top-color: var(--purple);
+    border-bottom-color: var(--purple);
+    border-width: 1px;
+    border-radius: 3px;
+}
+
+#stream-list .unity-list-view__item:hover {
+    background-color: var(--background-purple);
 }

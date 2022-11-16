@@ -1,12 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
-using Speckle.ConnectorUnity;
+﻿using Speckle.ConnectorUnity;
 using Speckle.ConnectorUnity.Elements;
 using Speckle.ConnectorUnity.Ops;
 using Speckle.Core.Credentials;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using ViewObjects.Unity;
@@ -15,9 +12,8 @@ namespace ViewTo.Connector.Unity
   public class ViewToHubUi : MonoBehaviour
   {
 
-    [field: SerializeField] public UIDocument ui { get; private set; }
-
-    [SerializeField] VisualTreeAsset accountVisual;
+    [SerializeField] UIDocument ui;
+    [SerializeField] VisualTreeAsset streamListItem;
 
     List<Account> _accounts;
     ListView _accountList;
@@ -25,8 +21,10 @@ namespace ViewTo.Connector.Unity
     SpeckleConnector _connector;
     AccountElement _account;
 
-    DropdownField _streams, _studies;
+    List<SpeckleStream> _streams;
+    ListView _streamsList;
     ListView _details;
+    DropdownField _branches, _commits, _studies;
 
     void Start()
     {
@@ -38,7 +36,7 @@ namespace ViewTo.Connector.Unity
       }
 
       _account = ui.rootVisualElement.Q<AccountElement>();
-      _streams = ui.rootVisualElement.Q<DropdownField>("streams");
+      _streamsList = ui.rootVisualElement.Q<ListView>("stream-list");
       _studies = ui.rootVisualElement.Q<DropdownField>("studies");
       _details = ui.rootVisualElement.Q<ListView>();
 
@@ -73,60 +71,37 @@ namespace ViewTo.Connector.Unity
 
     void SetStreams(List<SpeckleStream> args)
     {
-      // _streams.Clear();
-      var values = new List<string>();
+      _streams = args;
+      _streamsList.makeItem = streamListItem.CloneTree;
 
-      foreach (var stream in args)
+      _streamsList.bindItem = (item, index) =>
       {
-        var v = stream.Name + " | " + stream.Id;
-        Debug.Log(v);
-        values.Add(v);
-      }
+        var i = item.Q<SpeckleStreamListItem>();
+        if (i == null)
+        {
+          Debug.Log("no item found");
+        }
+        // i.SetValueWithoutNotify(_streams[index]);
+        item.Q<SpeckleStreamListItem>().SetValueWithoutNotify(_streams[index]);
+      };
 
-      _streams.choices = values;
-      _streams.index = 0;
 
+      _streamsList.fixedItemHeight = 45;
+      _streamsList.selectionType = SelectionType.Single;
+      _streamsList.reorderable = false;
+      _streamsList.itemsSource = _streams;
+
+      _streamsList.onSelectionChange += (objects) =>
+      {
+        _hub.stream = _streams[_streamsList.selectedIndex];
+      };
     }
 
     void SetAccount()
     {
-
       _account.SetAccount(_hub.account);
     }
 
-
-    // void SetUpAccountList()
-    // {
-    //   _accountList = ui.rootVisualElement.Q<ListView>("accounts");
-    //
-    //   // _accountList.makeItem = () =>
-    //   // {
-    //   //   var entry = accountVisual.Instantiate();
-    //   //   // entry
-    //   // };
-    //
-    //   _accountList.bindItem = (item, index) =>
-    //   {
-    //     if (item.userData is AccountElement ae)
-    //     {
-    //       var a = _accounts[index];
-    //       ae.SetUserInfo(a.userInfo);
-    //       ae.SetServerInfo(a.serverInfo);
-    //     }
-    //   };
-    //   // Set a fixed item height
-    //   _accountList.fixedItemHeight = 45;
-    //   _accountList.selectionType = SelectionType.Single;
-    //   _accountList.reorderable = false;
-    //   _accountList.itemsSource = _accounts;
-    //
-    //   void onAccountSelected(IEnumerable<object> selectedItems)
-    //   {
-    //     _hub.account = _accounts[_accountList.selectedIndex];
-    //   }
-    //
-    //   _accountList.onSelectionChange += onAccountSelected;
-    // }
 
   }
 

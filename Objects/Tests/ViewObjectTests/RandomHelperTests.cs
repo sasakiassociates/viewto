@@ -6,6 +6,7 @@ using Speckle.Core.Transports;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
@@ -122,6 +123,8 @@ namespace ViewTo.Tests.Objects
 
     }
 
+    
+    
     [Test]
     public async Task Modify_ViewId_FromScript()
     {
@@ -179,6 +182,26 @@ namespace ViewTo.Tests.Objects
 
     }
 
+    [Test]
+    public async Task Scan_Stream_Objects()
+    {
+      var timer = new Stopwatch();
+      timer.Start();
+      
+      _client = new Client(AccountManager.GetDefaultAccount());
+
+      // test stream for view to 
+      _stream.id = "81c40b04df";
+
+      var commits = await _client.StreamGetCommits(_stream.id, 10);
+
+      foreach (var commitRef in commits)
+      {
+        var data = await _client.CommitGet(_stream.id, commitRef.id);
+        
+      }
+
+    }
 
   }
 }

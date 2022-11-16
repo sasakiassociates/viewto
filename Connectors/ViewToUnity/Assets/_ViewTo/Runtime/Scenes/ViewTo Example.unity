@@ -171,7 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _analysisMaterial: {fileID: 2100000, guid: 09b5f80fe77f176408b7eef499106725, type: 2}
   _renderedMat: {fileID: 2100000, guid: 3ed5e4e1c823c134eb3a1ed5f29569c1, type: 2}
-  <stream>k__BackingField: {fileID: 0}
+  <streamObject>k__BackingField: {fileID: 0}
   _loadResults: 1
   _createCommit: 1
   _runOnLoad: 1
@@ -214,8 +214,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b6491eff3cd41a4a73bc276d084f513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ui>k__BackingField: {fileID: 633459015}
-  accountVisual: {fileID: 0}
+  ui: {fileID: 633459015}
+  streamListItem: {fileID: 9197481963319205126, guid: 4e6ee5f3584c6994fac8a3ffb54f2a6a, type: 3}
 --- !u!1 &1409413060
 GameObject:
   m_ObjectHideFlags: 0
