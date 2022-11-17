@@ -28,7 +28,7 @@
                 <ui:Label text="Streams" display-tooltip-when-elided="true" name="title" />
                 <ui:ListView focusable="true" name="stream-list" />
             </ui:VisualElement>
-            <ui:VisualElement name="stream-selection" focusable="false" style="display: none; visibility: visible;">
+            <ui:VisualElement name="stream-selection" focusable="false" style="display: flex; visibility: visible;">
                 <ui:VisualElement name="commits" class="viewto-container">
                     <ui:Label text="Commits" display-tooltip-when-elided="true" name="title" enable-rich-text="true" />
                     <ui:DropdownField index="-1" choices="view study streams" name="streams" />
@@ -38,7 +38,7 @@
                     <ui:DropdownField index="-1" choices="view study streams" name="streams" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="study-selection" style="display: none;">
+            <ui:VisualElement name="study-selection" style="display: flex;">
                 <ui:VisualElement name="details" class="viewto-container" style="flex-grow: 1;">
                     <ui:Label text="Study Details" display-tooltip-when-elided="true" name="title" />
                     <ui:ListView focusable="false" virtualization-method="DynamicHeight" reorderable="false" show-bound-collection-size="false" name="data" style="flex-grow: 1;" />

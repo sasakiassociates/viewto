@@ -155,17 +155,20 @@ Button#run {
 #streams {
     flex-shrink: 1;
     flex-grow: 1;
-
 }
 
 #stream-list {
     flex-grow: 1;
     min-height: 100px;
-    /*max-height: 500px;*/
     background-color: var(--background-gray);
 }
 
+.stream-element Button#openInWeb #icon {
+    -unity-background-image-tint-color: var(--purple);
+}
+
 #stream-list .unity-list-view__item:checked {
+    color: var(--purple);
     background-color: var(--background-gray);
     border-left-color: var(--purple);
     border-right-color: var(--purple);
@@ -177,4 +180,50 @@ Button#run {
 
 #stream-list .unity-list-view__item:hover {
     background-color: var(--background-purple);
+}
+
+Scroller RepeatButton {
+    background-color: var(--background-gray);
+    -unity-background-image-tint-color: var(--purple);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+Scroller RepeatButton#unity-low-button {
+    background-image: url('project://database/Assets/_ViewTo/Gui/Assets/chevron-down.svg?fileID=7388822144124034973&guid=c8a091da75caa8a46ab5f264bb5ae6ca&type=3#chevron-down');
+    rotate: 180deg;
+
+}
+
+Scroller RepeatButton#unity-high-button {
+    background-image: url('project://database/Assets/_ViewTo/Gui/Assets/chevron-down.svg?fileID=7388822144124034973&guid=c8a091da75caa8a46ab5f264bb5ae6ca&type=3#chevron-down');
+}
+
+Scroller #unity-tracker {
+    background-color: var(--background-gray);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+Scroller #unity-dragger-border {
+    background-color: var(--background-gray);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+Scroller #unity-dragger {
+    background-color: var(--white);
+    border-left-color: var(--purple);
+    border-right-color: var(--purple);
+    border-top-color: var(--purple);
+    border-bottom-color: var(--purple);
+    border-width: 2px;
+    border-radius: 4px;
 }

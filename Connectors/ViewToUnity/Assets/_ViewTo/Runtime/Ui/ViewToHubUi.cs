@@ -2,9 +2,11 @@
 using Speckle.ConnectorUnity.Elements;
 using Speckle.ConnectorUnity.Ops;
 using Speckle.Core.Credentials;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.UIElements;
 using ViewObjects.Unity;
 namespace ViewTo.Connector.Unity
@@ -12,6 +14,7 @@ namespace ViewTo.Connector.Unity
   public class ViewToHubUi : MonoBehaviour
   {
 
+    [SerializeField] HubStage stage;
     [SerializeField] UIDocument ui;
     [SerializeField] VisualTreeAsset streamListItem;
 
@@ -26,8 +29,21 @@ namespace ViewTo.Connector.Unity
     ListView _details;
     DropdownField _branches, _commits, _studies;
 
+
+    public enum HubStage
+    {
+      SelectStream,
+      SearchStream,
+      ShowStudy,
+      RunStudy
+
+    }
+
     void Start()
     {
+
+
+      stage = HubStage.SearchStream;
 
       if (ui == null)
       {
@@ -60,14 +76,54 @@ namespace ViewTo.Connector.Unity
       _connector.OnAccountSet += SetAccount;
       _connector.OnStreamsLoaded += SetStreams;
 
-
       SetAccount();
+      SetStage();
+    }
+
+
+    void SetStage()
+    {
+      switch (stage)
+      {
+
+        case HubStage.SearchStream:
+          SetupStreamUI();
+          break;
+        case HubStage.SelectStream:
+          break;
+        case HubStage.ShowStudy:
+          break;
+        case HubStage.RunStudy:
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
+
+    }
+
+    void SetupStreamUI()
+    {
+      SetRootVisible(true, "streams");
+      SetRootVisible(false, "stream-selection");
+      SetRootVisible(false, "study-selection");
+      SetRootVisible(false, "footer");
+
     }
 
     void SetStudies(List<ViewStudy> args)
     {
     }
 
+    void SetRootVisible(bool value, string ueName)
+    {
+      var root = ui.rootVisualElement.Q<VisualElement>(ueName);
+      if (root == null)
+      {
+        Debug.Log($"no root with name {ueName}");
+        return;
+      }
+      root.visible = value;
+    }
 
     void SetStreams(List<SpeckleStream> args)
     {
