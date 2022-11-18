@@ -1,0 +1,118 @@
+@import url('project://database/Assets/_ViewTo/Gui/Uss/viewto-graphics.uss?fileID=7433441132597879392&guid=c343132f4ec64d06a86ee5a53c859d19&type=3#viewto-graphics');
+#bar {
+    background-color: var(--viewto-colors-white);
+    color: var(--viewto-colors-purple);
+}
+
+#body {
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-top-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    border-width: var(--viewto-border-width);
+    border-radius: var(--viewto-border-radius);
+}
+
+.ribbon__header > .viewto-label__title {
+    color: var(--viewto-colors-white);
+    justify-content: space-around;
+    -unity-text-align: lower-left;
+}
+
+.ribbon__header > .viewto-label__subtitle {
+    padding: 0 0 5px 4px;
+    -unity-text-align: lower-left;
+    justify-content: space-around;
+}
+
+.viewto-button#run {
+    background-color: var(--viewto-colors-purple);
+    min-width: 150px;
+}
+
+.viewto-button#run > .viewto-button-icon {
+    background-image: var(--viewto-icons-play);
+}
+
+#account-card .unity-image {
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+}
+
+#account-card .sub {
+    align-items: center;
+}
+
+#streams {
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+
+#stream-list {
+    flex-grow: 1;
+    min-height: 100px;
+    background-color: var(--viewto-colors-background-gray);
+}
+
+.stream-element Button#openInWeb #icon {
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+}
+
+#stream-list .unity-list-view__item:checked {
+    color: var(--viewto-colors-purple);
+    background-color: var(--viewto-colors-background-gray);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-top-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    border-width: 1px;
+    border-radius: 3px;
+}
+
+#stream-list .unity-list-view__item:hover {
+    background-color: var(--viewto-colors-background-purple);
+}
+
+Scroller RepeatButton {
+    background-color: var(--viewto-colors-background-gray);
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+Scroller RepeatButton#unity-low-button {
+    background-image: var(--viewto-icons-chevron_down);
+    rotate: 180deg;
+}
+
+Scroller RepeatButton#unity-high-button {
+    background-image: var(--viewto-icons-chevron_down);
+}
+
+Scroller #unity-tracker {
+    background-color: var(--viewto-colors-background-gray);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+Scroller #unity-dragger-border {
+    background-color: var(--viewto-colors-background-gray);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+Scroller #unity-dragger {
+    background-color: var(--viewto-colors-white);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-top-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    border-width: 2px;
+    border-radius: 4px;
+}
