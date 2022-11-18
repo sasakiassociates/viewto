@@ -5,7 +5,7 @@
     --viewto-border-radius: 5px;
     
     --viewto-icons-chevron_down: url('project://database/Assets/_ViewTo/Gui/Assets/chevron-down.svg?fileID=7388822144124034973&guid=c8a091da75caa8a46ab5f264bb5ae6ca&type=3#chevron-down');
-    --viewto-icons-play : url('project://database/Assets/_ViewTo/Gui/Assets/play.svg?fileID=7388822144124034973&guid=455ad82da7406834c838d1e1cf5fcfaa&type=3#play');
+    --viewto-icons-play: url('project://database/Assets/_ViewTo/Gui/Assets/play.svg?fileID=7388822144124034973&guid=455ad82da7406834c838d1e1cf5fcfaa&type=3#play');
     
     --viewto-font-bold: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20SDF.asset?fileID=11400000&guid=c4e6c1059cc6f6c498a85ae2fefca497&type=2#KOROLEV BOLD SDF');
     --viewto-font-bold-italic: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20ITALIC%20SDF.asset?fileID=11400000&guid=1d2e8e05697423a49b5d226c89001d01&type=2#KOROLEV BOLD ITALIC SDF');
@@ -139,21 +139,62 @@
 }
 
 
-.tabs {
+.viewto-tabs {
     
 }
 
-.icon {
+.viewto-icon {
 }
 
-.ribbon {
+.viewto-ribbon {
     
 }
 
-.ribbon__header {
+.viewto-ribbon__header {
     background-color: var(--viewto-colors-dark-purple);
     margin: 0;
     padding: 5px;
     background-image: none;
+}
+
+
+Scroller RepeatButton#unity-low-button {
+    background-image: var(--viewto-icons-chevron_down);
+    background-color: var(--viewto-colors-background-gray);
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+    -unity-background-scale-mode: scale-to-fit;
+    rotate: 180deg;
+    border-width: 0;
+    
+}
+
+Scroller RepeatButton#unity-high-button {
+    background-image: var(--viewto-icons-chevron_down);
+    background-color: var(--viewto-colors-background-gray);
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+    -unity-background-scale-mode: scale-to-fit;
+    border-width: 0;
+    
+}
+
+
+Scroller #unity-tracker {
+    background-color: var(--viewto-colors-background-gray);
+    border-width: 0;
+}
+
+Scroller #unity-dragger-border {
+    background-color: var(--viewto-colors-background-gray);
+    border-width: 0;
+}
+
+Scroller #unity-dragger {
+    background-color: var(--viewto-colors-white);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-top-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    border-width: 2px;
+    border-radius: 4px;
 }
 

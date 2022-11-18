@@ -3,13 +3,13 @@
     <Style src="project://database/Assets/_ViewTo/Gui/Uss/viewto-bar.uss?fileID=7433441132597879392&amp;guid=bc2992c1256f2df47992b9a76fee0e8f&amp;type=3#viewto-bar" />
     <Style src="project://database/Assets/_ViewTo/Gui/Uss/viewto-graphics.uss?fileID=7433441132597879392&amp;guid=c343132f4ec64d06a86ee5a53c859d19&amp;type=3#viewto-graphics" />
     <ui:VisualElement name="bar" style="max-width: 400px; max-height: none; min-width: 20px; min-height: 100%; width: auto; height: auto; align-items: stretch; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; justify-content: flex-start; flex-grow: 1;">
-        <ui:VisualElement name="ribbon" class="ribbon">
-            <ui:VisualElement name="header" class="ribbon__header" style="flex-direction: row; align-items: stretch; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1; max-width: none; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0;">
+        <ui:VisualElement name="ribbon" class="viewto-ribbon">
+            <ui:VisualElement name="header" class="viewto-ribbon__header" style="flex-direction: row; align-items: stretch; -unity-background-scale-mode: scale-to-fit; flex-shrink: 1; max-width: none; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0;">
                 <ui:Label text="ViewTo" display-tooltip-when-elided="true" name="title" class="viewto-label__title" style="padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; flex-shrink: 1;" />
                 <ui:Label text="BY SASAKI" display-tooltip-when-elided="true" name="sub" class="viewto-label__subtitle" style="-unity-font: url(&apos;project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD.OTF?fileID=12800000&amp;guid=1b04039271d5a5e40889d1c7b9c1590c&amp;type=3#KOROLEV BOLD&apos;); -unity-text-align: lower-left; flex-shrink: 1;" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="tabs" class="tabs" style="flex-direction: row; flex-grow: 0; min-height: 25px; justify-content: flex-start; margin-left: 5px; margin-right: 5px;">
+        <ui:VisualElement name="tabs" class="viewto-tabs" style="flex-direction: row; flex-grow: 0; min-height: 25px; justify-content: flex-start; margin-left: 5px; margin-right: 5px;">
             <ui:Button display-tooltip-when-elided="true" name="home" focusable="false" class="viewto-tab__button">
                 <ui:VisualElement name="icon" class="viewto-tab__button-icon" style="background-image: url(&apos;project://database/Assets/_ViewTo/Gui/Assets/home-outline.svg?fileID=7388822144124034973&amp;guid=e88900d36e5febf47a8e3064006e14c0&amp;type=3#home-outline&apos;); width: auto; height: auto; -unity-background-scale-mode: scale-to-fit; flex-grow: 1;" />
             </ui:Button>
