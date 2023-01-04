@@ -1,50 +1,63 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewCommander", "ViewCommander\ViewCommander.csproj", "{605FC207-58A2-4CF0-ABFD-04F0D90C02EA}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewCommander", "ViewCommander\ViewCommander.csproj", "{605FC207-58A2-4CF0-ABFD-04F0D90C02EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjects", "Objects\ViewObjects\ViewObjects.csproj", "{AA039663-8443-47D8-AE7F-1F2A5A384777}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjects", "Objects\ViewObjects\ViewObjects.csproj", "{AA039663-8443-47D8-AE7F-1F2A5A384777}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Objects", "Objects", "{4A4D420E-99EC-4FF2-9669-9DBD4B539B66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsSpeckle", "Objects\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj", "{84BAC0CA-8109-434B-A1D5-743F1C3084D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjectsSpeckle", "Objects\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj", "{84BAC0CA-8109-434B-A1D5-743F1C3084D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Converters", "Converters", "{D75B10DF-F517-49D4-B70A-A3476F71E90B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverter", "Objects\Converters\ViewObjectsConverter\ViewObjectsConverter.csproj", "{A5E86138-9312-45ED-B44A-F3363DA92478}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjectsConverter", "Objects\Converters\ViewObjectsConverter\ViewObjectsConverter.csproj", "{A5E86138-9312-45ED-B44A-F3363DA92478}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Connectors", "Connectors", "{78B677B3-A342-432B-AD68-E5EE03422520}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewToRhinoGh", "Connectors\ViewToRhinoGh\ViewToRhinoGh.csproj", "{67BCDB66-9DA6-4DCA-9D2F-D9FD3DAC638A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewToRhinoGh", "Connectors\ViewToRhinoGh\ViewToRhinoGh.csproj", "{646E8256-BA77-41C7-9807-C1F69C655775}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RhinoGh", "RhinoGh", "{1362A473-A3FE-48F5-833D-D84235E8893C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterRhino6", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhino6\ViewObjectsConverterRhino6.csproj", "{18300C5A-65EC-46B8-8F6F-BF27CC5BC343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjectsConverterRhino6", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhino6\ViewObjectsConverterRhino6.csproj", "{18300C5A-65EC-46B8-8F6F-BF27CC5BC343}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterGrasshopper6", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterGrasshopper6\ViewObjectsConverterGrasshopper6.csproj", "{7B3482B9-D418-4AA4-A5E9-D3EC88805E40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjectsConverterGrasshopper6", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterGrasshopper6\ViewObjectsConverterGrasshopper6.csproj", "{7B3482B9-D418-4AA4-A5E9-D3EC88805E40}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ViewObjectsConverterRhinoGhShared", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.shproj", "{CB99F6A2-00BF-432D-9A29-612DD2BC92C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterRhino7", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhino7\ViewObjectsConverterRhino7.csproj", "{9CBB6B6F-040F-4B14-88E0-4F02A8081871}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjectsConverterRhino7", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhino7\ViewObjectsConverterRhino7.csproj", "{9CBB6B6F-040F-4B14-88E0-4F02A8081871}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterGrasshopper7", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterGrasshopper7\ViewObjectsConverterGrasshopper7.csproj", "{1D381456-0256-47AB-ABC3-774EBAA9B4EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjectsConverterGrasshopper7", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterGrasshopper7\ViewObjectsConverterGrasshopper7.csproj", "{1D381456-0256-47AB-ABC3-774EBAA9B4EA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deps", "Deps", "{F5729DD9-93A9-48ED-8C7C-047CE5DEF5C8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{71F71E49-65C6-49C1-9ADB-5004EB293AD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectTests", "Objects\Tests\ViewObjectTests\ViewObjectTests.csproj", "{7FDADDFF-8F72-45A2-9913-9DE7B5289828}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewObjectTests", "Objects\Tests\ViewObjectTests\ViewObjectTests.csproj", "{7FDADDFF-8F72-45A2-9913-9DE7B5289828}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A6F3C883-C36B-4D83-94F7-ACEB2B9348D8}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ViewTestsShared", "Tests\ViewTestsShared\ViewTestsShared.shproj", "{884DA6C6-45AA-474A-A50A-0ED7F08A1209}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewCoreTests", "Tests\ViewCoreTests\ViewCoreTests.csproj", "{60D89A06-E392-4812-9F55-F252E3801F60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewCoreTests", "Tests\ViewCoreTests\ViewCoreTests.csproj", "{60D89A06-E392-4812-9F55-F252E3801F60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\..\Speckle\speckle-sharp\Core\Core\Core.csproj", "{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\..\Speckle\speckle-sharp\Core\Core\Core.csproj", "{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Objects", "..\..\Speckle\speckle-sharp\Objects\Objects\Objects.csproj", "{560FA065-63C9-43F5-821C-6B06080FBEB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Objects", "..\..\Speckle\speckle-sharp\Objects\Objects\Objects.csproj", "{560FA065-63C9-43F5-821C-6B06080FBEB9}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems*{18300c5a-65ec-46b8-8f6f-bf27cc5bc343}*SharedItemsImports = 5
+		Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems*{1d381456-0256-47ab-abc3-774ebaa9b4ea}*SharedItemsImports = 5
+		Tests\ViewTestsShared\ViewTestsShared.projitems*{60d89a06-e392-4812-9f55-f252e3801f60}*SharedItemsImports = 5
+		Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems*{7b3482b9-d418-4aa4-a5e9-d3ec88805e40}*SharedItemsImports = 5
+		Tests\ViewTestsShared\ViewTestsShared.projitems*{7fdaddff-8f72-45a2-9913-9de7b5289828}*SharedItemsImports = 5
+		Tests\ViewTestsShared\ViewTestsShared.projitems*{884da6c6-45aa-474a-a50a-0ed7f08a1209}*SharedItemsImports = 13
+		Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems*{9cbb6b6f-040f-4b14-88e0-4f02a8081871}*SharedItemsImports = 5
+		Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterRhinoGhShared\ViewObjectsConverterRhinoGhShared.projitems*{cb99f6a2-00bf-432d-9a29-612dd2bc92c3}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -66,10 +79,10 @@ Global
 		{A5E86138-9312-45ED-B44A-F3363DA92478}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5E86138-9312-45ED-B44A-F3363DA92478}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5E86138-9312-45ED-B44A-F3363DA92478}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67BCDB66-9DA6-4DCA-9D2F-D9FD3DAC638A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67BCDB66-9DA6-4DCA-9D2F-D9FD3DAC638A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67BCDB66-9DA6-4DCA-9D2F-D9FD3DAC638A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67BCDB66-9DA6-4DCA-9D2F-D9FD3DAC638A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{646E8256-BA77-41C7-9807-C1F69C655775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{646E8256-BA77-41C7-9807-C1F69C655775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{646E8256-BA77-41C7-9807-C1F69C655775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{646E8256-BA77-41C7-9807-C1F69C655775}.Release|Any CPU.Build.0 = Release|Any CPU
 		{18300C5A-65EC-46B8-8F6F-BF27CC5BC343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{18300C5A-65EC-46B8-8F6F-BF27CC5BC343}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18300C5A-65EC-46B8-8F6F-BF27CC5BC343}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -103,12 +116,16 @@ Global
 		{560FA065-63C9-43F5-821C-6B06080FBEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{560FA065-63C9-43F5-821C-6B06080FBEB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{605FC207-58A2-4CF0-ABFD-04F0D90C02EA} = {A6F3C883-C36B-4D83-94F7-ACEB2B9348D8}
 		{AA039663-8443-47D8-AE7F-1F2A5A384777} = {4A4D420E-99EC-4FF2-9669-9DBD4B539B66}
 		{84BAC0CA-8109-434B-A1D5-743F1C3084D8} = {4A4D420E-99EC-4FF2-9669-9DBD4B539B66}
 		{D75B10DF-F517-49D4-B70A-A3476F71E90B} = {4A4D420E-99EC-4FF2-9669-9DBD4B539B66}
 		{A5E86138-9312-45ED-B44A-F3363DA92478} = {D75B10DF-F517-49D4-B70A-A3476F71E90B}
-		{67BCDB66-9DA6-4DCA-9D2F-D9FD3DAC638A} = {78B677B3-A342-432B-AD68-E5EE03422520}
+		{646E8256-BA77-41C7-9807-C1F69C655775} = {78B677B3-A342-432B-AD68-E5EE03422520}
 		{1362A473-A3FE-48F5-833D-D84235E8893C} = {D75B10DF-F517-49D4-B70A-A3476F71E90B}
 		{18300C5A-65EC-46B8-8F6F-BF27CC5BC343} = {1362A473-A3FE-48F5-833D-D84235E8893C}
 		{7B3482B9-D418-4AA4-A5E9-D3EC88805E40} = {1362A473-A3FE-48F5-833D-D84235E8893C}
@@ -116,10 +133,12 @@ Global
 		{9CBB6B6F-040F-4B14-88E0-4F02A8081871} = {1362A473-A3FE-48F5-833D-D84235E8893C}
 		{1D381456-0256-47AB-ABC3-774EBAA9B4EA} = {1362A473-A3FE-48F5-833D-D84235E8893C}
 		{7FDADDFF-8F72-45A2-9913-9DE7B5289828} = {71F71E49-65C6-49C1-9ADB-5004EB293AD9}
-		{605FC207-58A2-4CF0-ABFD-04F0D90C02EA} = {A6F3C883-C36B-4D83-94F7-ACEB2B9348D8}
 		{884DA6C6-45AA-474A-A50A-0ED7F08A1209} = {71F71E49-65C6-49C1-9ADB-5004EB293AD9}
 		{60D89A06-E392-4812-9F55-F252E3801F60} = {71F71E49-65C6-49C1-9ADB-5004EB293AD9}
 		{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C} = {F5729DD9-93A9-48ED-8C7C-047CE5DEF5C8}
 		{560FA065-63C9-43F5-821C-6B06080FBEB9} = {F5729DD9-93A9-48ED-8C7C-047CE5DEF5C8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6655ADDE-96DB-4F4E-B979-F599551C7FFD}
 	EndGlobalSection
 EndGlobal

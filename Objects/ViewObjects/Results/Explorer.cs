@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 namespace ViewObjects.Explorer
 {
+
+  /// <summary>
+  /// The main class for visualizing 
+  /// </summary>
   public class Explorer : IExplorer
   {
 
     /// <summary>
     /// </summary>
     public Explorer()
-    {
-    }
+    { }
 
     /// <inheritdoc />
     public IViewStudy Source { get; internal set; }
@@ -23,7 +27,9 @@ namespace ViewObjects.Explorer
     /// <inheritdoc />
     public ContentInfo ActiveContent { get; set; }
 
-    // /// <inheritdoc />
+    /// <summary>
+    /// The list of options
+    /// </summary>
     public List<ContentOption> Options { get; internal set; }
 
     /// <inheritdoc />
@@ -32,7 +38,7 @@ namespace ViewObjects.Explorer
     /// <inheritdoc />
     public void Load(IViewStudy viewObj)
     {
-      if (viewObj == default(object) || !viewObj.CanExplore())
+      if(viewObj == default(object) || !viewObj.CanExplore())
       {
         return;
       }
@@ -40,7 +46,7 @@ namespace ViewObjects.Explorer
       Source = viewObj;
       Cloud = viewObj.FindObject<ResultCloud>();
 
-      if (Cloud == null)
+      if(Cloud == null)
       {
         return;
       }
@@ -52,7 +58,11 @@ namespace ViewObjects.Explorer
       ActiveContent = new ContentInfo(opt);
     }
 
+    /// <summary>
+    /// Returns true if <see cref="Source"/>, <see cref="Cloud"/> and <see cref="ActiveContent"/> are valid objects
+    /// </summary>
     public bool IsValid => Source != null && Cloud != null && ActiveContent != null;
+
   }
 
   public interface IExplorer : IValidate
@@ -77,10 +87,6 @@ namespace ViewObjects.Explorer
     /// </summary>
     public List<IResultCloudData> Data { get; }
 
-    // /// <summary>
-    // ///   List of options to use for fetching values from <see cref="IExplorer" />. Multiple options will combine the values
-    // /// </summary>
-    // public List<ContentOption> Options { get; }
 
     /// <summary>
     /// </summary>

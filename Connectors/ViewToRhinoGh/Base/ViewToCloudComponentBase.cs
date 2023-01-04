@@ -1,7 +1,9 @@
 ﻿using Grasshopper.Kernel;
 using Rhino.Geometry;
+
 namespace ViewTo.RhinoGh
 {
+
   public abstract class ViewToCloudComponentBase : ViewToComponentBase
   {
     protected int pointSize = 3;
@@ -14,10 +16,11 @@ namespace ViewTo.RhinoGh
 
     public override void DrawViewportWires(IGH_PreviewArgs args)
     {
-      if (renderedCloud != null)
+      if(renderedCloud != null)
       {
         args.Display.DrawPointCloud(renderedCloud, pointSize);
       }
     }
   }
+
 }

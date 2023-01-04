@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 namespace ViewObjects
 {
+
   public static class Extensions
   {
     public static List<IContentOption> FindObject(this IResultCloud<IResultCloudData> obj)
@@ -12,14 +14,14 @@ namespace ViewObjects
     public static TObj FindObject<TObj>(this IViewStudy obj) where TObj : IViewObject
     {
       TObj viewObj = default;
-      if (!obj.Objects.Any())
+      if(!obj.Objects.Any())
       {
         return viewObj;
       }
 
-      foreach (var o in obj.Objects)
+      foreach(var o in obj.Objects)
       {
-        if (o is TObj casted)
+        if(o is TObj casted)
         {
           viewObj = casted;
           break;
@@ -33,11 +35,11 @@ namespace ViewObjects
     {
       List<TObj> viewObjs = new();
 
-      if (obj.Objects.Any())
+      if(obj.Objects.Any())
       {
-        foreach (var o in obj.Objects)
+        foreach(var o in obj.Objects)
         {
-          if (o is TObj casted)
+          if(o is TObj casted)
           {
             viewObjs.Add(casted);
           }
@@ -84,25 +86,25 @@ namespace ViewObjects
     /// <returns></returns>
     public static bool Has(this IViewStudy study, ContentType type, string id = "")
     {
-      if (study?.Objects == null || !study.Objects.Any())
+      if(study?.Objects == null || !study.Objects.Any())
       {
         return false;
       }
 
-      foreach (var obj in study.GetAll<IContent>())
+      foreach(var obj in study.GetAll<IContent>())
       {
-        if (obj.ContentType != type)
+        if(obj.ContentType != type)
         {
           continue;
         }
 
         // found at least one but no name was passed in 
-        if (!id.Valid())
+        if(!id.Valid())
         {
           return true;
         }
 
-        if (obj is IId objWithID && objWithID.ViewId.Equals(id))
+        if(obj is IId objWithID && objWithID.ViewId.Equals(id))
         {
           return true;
         }
@@ -118,20 +120,20 @@ namespace ViewObjects
     /// <param name="id">optional id to use</param>
     public static bool Has<TObjType>(this IViewStudy study, string id = "")
     {
-      if (study?.Objects == null || !study.Objects.Any())
+      if(study?.Objects == null || !study.Objects.Any())
       {
         return false;
       }
 
-      foreach (var obj in study.Objects.OfType<TObjType>())
+      foreach(var obj in study.Objects.OfType<TObjType>())
       {
         // found at least one but no name was passed in 
-        if (!id.Valid())
+        if(!id.Valid())
         {
           return true;
         }
 
-        if (obj is IId objWithID && objWithID.ViewId.Equals(id))
+        if(obj is IId objWithID && objWithID.ViewId.Equals(id))
         {
           return true;
         }
@@ -166,15 +168,15 @@ namespace ViewObjects
     /// <param name="id">optional id to use</param>
     public static TObjType Get<TObjType>(this IViewStudy study, string id = "")
     {
-      foreach (var obj in study.Objects.OfType<TObjType>())
+      foreach(var obj in study.Objects.OfType<TObjType>())
       {
         // found at least one but no name was passed in 
-        if (!id.Valid())
+        if(!id.Valid())
         {
           return obj;
         }
 
-        if (obj is IId objWithID && objWithID.ViewId.Equals(id))
+        if(obj is IId objWithID && objWithID.ViewId.Equals(id))
         {
           return obj;
         }
@@ -196,7 +198,7 @@ namespace ViewObjects
       existingCount = 0;
       proposedCount = 0;
 
-      if (obj != default(object))
+      if(obj != default(object))
       {
         var contents = obj.GetAll<IContent>();
 
