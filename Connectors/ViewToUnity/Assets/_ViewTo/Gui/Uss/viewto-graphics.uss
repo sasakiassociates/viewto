@@ -1,0 +1,201 @@
+﻿:root {
+    --viewto-icon-size: 20px;
+    --viewto-border-width: 2px;
+    --viewto-border-width--hover: 3px;
+    --viewto-border-radius: 5px;
+    
+    --viewto-icons-chevron_down: url('project://database/Assets/_ViewTo/Gui/Assets/chevron-down.svg?fileID=7388822144124034973&guid=c8a091da75caa8a46ab5f264bb5ae6ca&type=3#chevron-down');
+    --viewto-icons-play: url('project://database/Assets/_ViewTo/Gui/Assets/play.svg?fileID=7388822144124034973&guid=455ad82da7406834c838d1e1cf5fcfaa&type=3#play');
+    
+    --viewto-font-bold: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20SDF.asset?fileID=11400000&guid=c4e6c1059cc6f6c498a85ae2fefca497&type=2#KOROLEV BOLD SDF');
+    --viewto-font-bold-italic: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20ITALIC%20SDF.asset?fileID=11400000&guid=1d2e8e05697423a49b5d226c89001d01&type=2#KOROLEV BOLD ITALIC SDF');
+    --viewto-font-light: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20LIGHT%20SDF.asset?fileID=11400000&guid=0afc86d1c5ce66141ab544e208278cde&type=2#KOROLEV LIGHT SDF');
+    --viewto-font-light-italic: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20LIGHT%20ITALIC%20SDF.asset?fileID=11400000&guid=f35257d90364ab2438d645ce2492dab4&type=2#KOROLEV LIGHT ITALIC SDF');
+    --viewto-font-medium: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20MEDIUM%20SDF.asset?fileID=11400000&guid=f282f51f817364440b40fa0f87afa9ce&type=2#KOROLEV MEDIUM SDF');
+    --viewto-font-medium-italic: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20MEDIUM%20ITALIC%20SDF.asset?fileID=11400000&guid=68fae34b4b6ec6c4bb635883d0b0f36d&type=2#KOROLEV MEDIUM ITALIC SDF');
+    --viewto-font-size-title: 42px;
+    --viewto-font-size-subtitle: 18px;
+    --viewto-font-size-body: 12px;
+    --viewto-font-size-header_2: 18px;
+    
+    --viewto-colors-dark-purple: rgb(5, 0, 56);
+    --viewto-colors-light-purple: rgb(187, 189, 252);
+    --viewto-colors-purple: rgb(102, 102, 255);
+    --viewto-colors-white: rgb(255, 255, 255);
+    --viewto-colors-gray: rgb(218, 218, 218);
+    --viewto-colors-background-purple: rgb(237, 235, 255);
+    --viewto-colors-background-gray: rgb(246, 246, 246);
+}
+
+
+.viewto-button {
+    flex-shrink: 1;
+    align-items: stretch;
+    margin: 1px;
+    padding: 0;
+    min-height: 100%;
+    min-width: 100px;
+    max-height: 100%;
+    border-width: 0;
+}
+
+
+.viewto-button-icon {
+    -unity-background-scale-mode: scale-to-fit;
+    flex-shrink: 1;
+    flex-grow: 1;
+    padding: 5px;
+    margin: 1px;
+}
+
+.viewto-tabs > .viewto-button {
+    flex-grow: 1;
+    background-color: var(--viewto-colors-background-purple);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-width: var(--viewto-border-width);
+    border-radius: var(--viewto-border-radius);
+}
+
+.viewto-tabs {
+    flex-direction: row;
+}
+
+.viewto-tabs .viewto-button-icon {
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+}
+
+
+.viewto-tabs > .viewto-button:hover {
+    padding: 1px;
+    
+    border-width: var(--viewto-border-width);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    border-top-color: rgba(0, 0, 0, 0);
+    
+    background-color: var(--viewto-colors-background-purple);
+}
+
+.viewto-tabs viewto-button-icon:hover {
+    -unity-background-image-tint-color: var(--viewto-colors-dark-purple);
+}
+
+.viewto-label-title {
+    -unity-font-definition: var(--viewto-font-medium);
+    font-size: var(--viewto-font-size-title);
+}
+
+
+.viewto-label-subtitle {
+    -unity-font-definition: var(--viewto-font-bold);
+    font-size: var(--viewto-font-size-subtitle);
+    
+}
+
+.viewto-label-body {
+    -unity-font-definition: var(--viewto-font-medium);
+    font-size: var(--viewto-font-size-body);
+    
+}
+
+.viewto-label-header-2 {
+    font-size: var(--viewto-font-size-header_2);
+    color: var(--viewto-colors-dark-purple);
+    margin: 5px;
+}
+
+
+.viewto-popup {
+    background-color: var(--viewto-colors-background-gray);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-top-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    min-height: 30px;
+}
+
+.viewto-popup > .unity-base-field__input {
+    background-color: var(--viewto-colors-background-gray);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-top-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    min-height: 30px;
+}
+
+
+.viewto-popup .unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+    background-image: var(--viewto-icons-chevron_down);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+
+/*stuff to clean up */
+
+.viewto-container {
+    margin: 4px;
+    padding: 5px;
+}
+
+
+
+.viewto-icon {
+}
+
+.viewto-ribbon {
+    
+}
+
+.viewto-ribbon-header {
+    background-color: var(--viewto-colors-dark-purple);
+    margin: 0;
+    padding: 5px;
+    background-image: none;
+}
+
+
+Scroller RepeatButton#unity-low-button {
+    background-image: var(--viewto-icons-chevron_down);
+    background-color: var(--viewto-colors-background-gray);
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+    -unity-background-scale-mode: scale-to-fit;
+    rotate: 180deg;
+    border-width: 0;
+    
+}
+
+Scroller RepeatButton#unity-high-button {
+    background-image: var(--viewto-icons-chevron_down);
+    background-color: var(--viewto-colors-background-gray);
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+    -unity-background-scale-mode: scale-to-fit;
+    border-width: 0;
+    
+}
+
+
+Scroller #unity-tracker {
+    background-color: var(--viewto-colors-background-gray);
+    border-width: 0;
+}
+
+Scroller #unity-dragger-border {
+    background-color: var(--viewto-colors-background-gray);
+    border-width: 0;
+}
+
+Scroller #unity-dragger {
+    background-color: var(--viewto-colors-white);
+    border-left-color: var(--viewto-colors-purple);
+    border-right-color: var(--viewto-colors-purple);
+    border-top-color: var(--viewto-colors-purple);
+    border-bottom-color: var(--viewto-colors-purple);
+    border-width: 2px;
+    border-radius: 4px;
+}
+

@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ab31f277ec4052a117826962b4d4ea, type: 3}
+  m_Name: BPY
+  m_EditorClassIdentifier: 
+  _stream:
+    _id: 
+    _name: 
+    _description: 
+    _role: 
+    _createdAt: 
+    _updatedAt: 
+    _favoritedDate: 
+    _isPublic: 0
+    _commit:
+      id: 
+      message: 
+      branchName: 
+      authorName: 
+      authorId: 
+      authorAvatar: 
+      createdAt: 
+      sourceApplication: 
+      referencedObject: 
+      totalChildrenCount: 0
+      parents: []
+    _branch:
+      name: 
+      id: 
+      description: 
+      commitCursor: 
+      commitTotalCount: 0
+      commits: []
+    _branches: []
+    _commits: []
+    _speckleObject:
+      id: 
+      createdAt: 
+      speckleType: 
+      applicationId: 
+      totalChildrenCount: 0
+  _account:
+    _serverUrl: 
+    _serverName: 
+    _serverCompany: 
+    _userId: 
+    _userName: 
+    _userEmail: 
+    _userAvatar: 
+    _userCompany: 
+  _update:
+    name: 
+    description: 
+    isPublic: 0

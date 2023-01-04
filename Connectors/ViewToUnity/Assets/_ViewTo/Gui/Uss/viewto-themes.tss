@@ -1,0 +1,18 @@
+@import url("/Assets/UI Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss");
+
+@import url("viewto-graphics.uss");
+@import url("viewto-bar.uss");
+@import url("/Packages/com.speckle.connector/GUI/USS/StylishBlueCube.uss");
+
+
+
+
+
+
+/*Button.unity-button {*/
+/*    padding: 0;*/
+/*}*/
+
+.viewto-images{
+    --chevron: url('project://database/Assets/_ViewTo/Gui/Assets/chevron-down.svg?fileID=7388822144124034973&guid=c8a091da75caa8a46ab5f264bb5ae6ca&type=3#chevron-down');
+}

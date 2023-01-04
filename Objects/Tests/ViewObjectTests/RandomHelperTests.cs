@@ -6,6 +6,7 @@ using Speckle.Core.Transports;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
@@ -34,24 +35,25 @@ namespace ViewTo.Tests.Objects
     {
       var contents = new List<IViewObject>
       {
-        new ContentReference(new List<string> { "bf100bfa87" }, ContentType.Target, ObjUtils.InitGuid, "Capitol Dome"),
-        new ContentReference(new List<string> { "2c47ef9dd9" }, ContentType.Target, ObjUtils.InitGuid, "Capitol Base"),
-        new ContentReference(new List<string> { "4a592aa84e" }, ContentType.Existing, ObjUtils.InitGuid, "Topo"),
-        new ContentReference(new List<string> { "3f2c42f4eb" }, ContentType.Existing, ObjUtils.InitGuid, "Context Buildings"),
-        new ContentReference(new List<string> { "1b874412bb" }, ContentType.Existing, ObjUtils.InitGuid, "Trees"),
-        new ContentReference(new List<string> { "749482d9c9" }, ContentType.Existing, ObjUtils.InitGuid, "CCMP Monuments"),
-        new ContentReference(new List<string> { "aeb3f65de0" }, ContentType.Existing, ObjUtils.InitGuid, "CCMP Buildings"),
-        new ViewCloudReference(new List<string> { "77a617d330" }, ObjUtils.InitGuid),
-        new Viewer(new List<IViewerLayout>() { new LayoutHorizontal() })
+        new ContentReference(new List<string> { "2e14d7936c" }, ContentType.Target, ObjUtils.InitGuid, "Park"),
+        new ContentReference(new List<string> { "a7af04b287" }, ContentType.Target, ObjUtils.InitGuid, "Water"),
+        new ContentReference(new List<string> { "afc4a766e5" }, ContentType.Target, ObjUtils.InitGuid, "Landmark"),
+        new ContentReference(new List<string> { "e91a49c540" }, ContentType.Target, ObjUtils.InitGuid, "Mountain"),
+        new ContentReference(new List<string> { "bc49a5e0b0" }, ContentType.Target, ObjUtils.InitGuid, "Mountain-Top-View-Deck"),
+        new ContentReference(new List<string> { "813d4062e8" }, ContentType.Existing, ObjUtils.InitGuid, "Topo"),
+        new ContentReference(new List<string> { "b2fe722cb8" }, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Adjacent"),
+        new ContentReference(new List<string> { "bfe46788b8" }, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Context"),
+        new ViewCloudReference(new List<string> { "e01e2058b2" }, ObjUtils.InitGuid),
+        new Viewer(new List<IViewerLayout> { new LayoutHorizontal() })
       };
 
       _client = new Client(AccountManager.GetDefaultAccount());
 
       // test stream for view to 
-      _stream.id = "81c40b04df";
-      _stream.branch = "studies/site";
+      _stream.id = "9a45304b95";
+      _stream.branch = "studies/towers";
 
-      var obj = new ViewStudy(contents, "site");
+      var obj = new ViewStudy(contents, "towers");
       var converter = new ViewObjectsConverter();
       var @base = converter.ConvertToSpeckle(obj);
 
@@ -66,7 +68,7 @@ namespace ViewTo.Tests.Objects
         streamId = _stream.id,
         branchName = _stream.branch,
         objectId = id,
-        message = "Draped Topo"
+        message = "First study creations"
       });
 
       Assert.IsNotNull(commit);
@@ -118,7 +120,11 @@ namespace ViewTo.Tests.Objects
 
       Console.WriteLine($"Commit {commit}\n", _client.ServerUrl + "/streams/" + _stream.id + "/commits/" + commit);
 
+
     }
+
+    
+    
     [Test]
     public async Task Modify_ViewId_FromScript()
     {
@@ -176,6 +182,26 @@ namespace ViewTo.Tests.Objects
 
     }
 
+    [Test]
+    public async Task Scan_Stream_Objects()
+    {
+      var timer = new Stopwatch();
+      timer.Start();
+      
+      _client = new Client(AccountManager.GetDefaultAccount());
+
+      // test stream for view to 
+      _stream.id = "81c40b04df";
+
+      var commits = await _client.StreamGetCommits(_stream.id, 10);
+
+      foreach (var commitRef in commits)
+      {
+        var data = await _client.CommitGet(_stream.id, commitRef.id);
+        
+      }
+
+    }
 
   }
 }
