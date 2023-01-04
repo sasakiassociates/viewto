@@ -16,7 +16,6 @@ using Speckle.Core.Kits;
 using Speckle.Core.Models;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 using ViewObjects;
 using ViewTo.Connector.Unity.Commands;
 using Debug = UnityEngine.Debug;
@@ -50,14 +49,12 @@ namespace ViewTo.Connector.Unity
 
     [SerializeField][HideInInspector] Rig _rig;
 
-    [SerializeField] ScriptableSpeckleConverter _converterUnity;
+    [SerializeField] ScriptableConverter _converterUnity;
 
 
     RepeatResultTester _tester;
 
     Stopwatch _timer;
-
-    public Account account => GetConnector().Account;
 
     public bool canRun
     {
@@ -66,13 +63,13 @@ namespace ViewTo.Connector.Unity
 
     public bool inProcess { get; private set; }
 
-		#region static methods
+  #region static methods
 
     public static ViewToHub Initialize()
     {
       var hub = FindObjectOfType<ViewToHub>();
 
-      if (hub == null)
+      if(hub == null)
         hub = new GameObject("ViewToHub").AddComponent<ViewToHub>();
 
       hub.Init();
@@ -80,17 +77,17 @@ namespace ViewTo.Connector.Unity
       return hub;
     }
 
-		#endregion
+  #endregion
 
     public void TryLoadStudy(ViewObjects.Unity.ViewStudy obj)
     {
-      if (!IsInit)
+      if(!IsInit)
         Init();
 
       ViewConsole.Log($"{name} is loading View Study {obj.ViewName} ");
       _study = obj;
 
-      if (_rig != null)
+      if(_rig != null)
         VU.ViewObject.SafeDestroy(_rig.gameObject);
 
       _rig = new GameObject().AddComponent<Rig>();
@@ -104,17 +101,17 @@ namespace ViewTo.Connector.Unity
       _rig.OnActiveViewerSystem += OnActiveViewerSystem;
       _rig.OnDataReadyForCloud += (data) =>
       {
-        if (_study != null)
+        if(_study != null)
         {
           var rc = _study.TrySetResults(data);
-          if (rc != null)
+          if(rc != null)
           {
             SendResultsToStream(rc);
           }
         }
       };
 
-      foreach (var c in _study.FindObjects<VU.Content>())
+      foreach(var c in _study.FindObjects<VU.Content>())
       {
         c.PrimeMeshData(_analysisMaterial);
       }
@@ -122,7 +119,7 @@ namespace ViewTo.Connector.Unity
       var rig = (IRig)_rig;
       _study.LoadStudyToRig(ref rig);
 
-      if (_runOnLoad)
+      if(_runOnLoad)
       {
         StartRigSystemRun();
       }
@@ -130,7 +127,7 @@ namespace ViewTo.Connector.Unity
 
     public void StartRigSystemRun(int pointToStart = 0)
     {
-      if (!canRun)
+      if(!canRun)
       {
         ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {_study != null && _study.IsValid}\nRig Ready{_rig != null && _rig.IsReady}");
         return;
@@ -152,10 +149,10 @@ namespace ViewTo.Connector.Unity
     {
       Instance = this;
 
-      if (_analysisMaterial == null)
+      if(_analysisMaterial == null)
         _analysisMaterial = new Material(Resources.Load<Shader>("UnlitDoubleSided"));
 
-      if (_renderedMat == null)
+      if(_renderedMat == null)
         _renderedMat = new Material(Shader.Find(@"Standard"));
     }
 
@@ -168,12 +165,12 @@ namespace ViewTo.Connector.Unity
 
       var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
 
-      if (commit == null)
+      if(commit == null)
         return;
 
       var @base = await SpeckleOps.Receive(client, streamObject.Id, commit.referencedObject);
 
-      if (@base == null)
+      if(@base == null)
         return;
 
       Debug.Log($"Receive Done {@base.totalChildrenCount}");
@@ -182,20 +179,20 @@ namespace ViewTo.Connector.Unity
 
       _speckleStudy = await @base.SearchForType<VS.ViewStudy>(true, client.token);
 
-      if (_speckleStudy == null)
+      if(_speckleStudy == null)
         return;
 
       Debug.Log($"Found Study {_speckleStudy.ViewName} with {_speckleStudy.Objects.Count} objects\n({_speckleStudy.ViewId})");
 
       var objectsToConvert = new List<IViewObject>();
 
-      foreach (var obj in _speckleStudy.Objects)
+      foreach(var obj in _speckleStudy.Objects)
       {
         var go = new GameObject();
 
         Debug.Log($"Object {obj.speckle_type}");
 
-        switch (obj)
+        switch(obj)
         {
           case VS.ContentReference o:
             var content = go.AddComponent<VU.Content>();
@@ -218,7 +215,7 @@ namespace ViewTo.Connector.Unity
           case VS.Viewer o:
             // TODO: Bypassing linked clouds and different layout types but should be fixed in the near future
             var bundle = go.AddComponent<VU.Viewer>();
-            bundle.Layouts = new List<IViewerLayout> { new LayoutHorizontal() };
+            bundle.Layouts = new List<IViewerLayout> {new LayoutHorizontal()};
             objectsToConvert.Add(bundle);
             break;
           default:
@@ -233,21 +230,21 @@ namespace ViewTo.Connector.Unity
       TryLoadStudy(studyToBuild);
     }
 
-    
-    #region Converter shit that should be moved away
+
+  #region Converter shit that should be moved away
 
     public static IEnumerable<CloudPoint> ArrayToCloudPoint(IReadOnlyCollection<double> arr, string units)
     {
-      if (arr == null)
+      if(arr == null)
         throw new Exception("point array is not valid ");
 
-      if (arr.Count % 3 != 0)
+      if(arr.Count % 3 != 0)
         throw new Exception("Array malformed: length%3 != 0.");
 
       var points = new CloudPoint[arr.Count / 3];
       var asArray = arr.ToArray();
 
-      for (int i = 2, k = 0; i < arr.Count; i += 3)
+      for(int i = 2, k = 0; i < arr.Count; i += 3)
         points[k++] = CloudByCoordinates(asArray[i - 2], asArray[i - 1], asArray[i], units);
 
       return points;
@@ -275,7 +272,7 @@ namespace ViewTo.Connector.Unity
       content.ContentType = contentBase.ContentType;
       content.References = contentBase.References;
 
-      foreach (var refId in content.References)
+      foreach(var refId in content.References)
       {
         var referenceBase = await ReceiveCommitWithData(client, stream, refId);
         var hierarchy = await SpeckleOps.ConvertToScene(content.transform, referenceBase, _converterUnity, client.token);
@@ -293,17 +290,17 @@ namespace ViewTo.Connector.Unity
     {
       var currentList = new List<GameObject>();
 
-      foreach (Transform child in parent)
+      foreach(Transform child in parent)
       {
         currentList.Add(child.gameObject);
-        if (child.childCount > 0)
+        if(child.childCount > 0)
           currentList.AddRange(GetKids(child));
       }
 
       return currentList;
     }
 
-#endregion
+  #endregion
 
     void SendResultsToStream(VU.ResultCloud mono)
     {
@@ -318,10 +315,10 @@ namespace ViewTo.Connector.Unity
         .Select(x => new VS.ResultCloudData(x.Values, x.Option, x.Layout))
         .ToList();
 
-      var resultCloud = new VS.ResultCloud() { Data = data, Points = mono.Points };
+      var resultCloud = new VS.ResultCloud() {Data = data, Points = mono.Points};
       _speckleStudy.Objects.Add(resultCloud);
 
-      if (_createCommit)
+      if(_createCommit)
       {
         var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
         try
@@ -333,7 +330,7 @@ namespace ViewTo.Connector.Unity
             // // TODO: fix this so no converter is needed
             // var @base = node.SceneToData(_converterUnity, this.GetCancellationTokenOnDestroy());
 
-            var res = await SpeckleOps.Send(client, new Base { ["Data"] = _speckleStudy }, streamObject.Id);
+            var res = await SpeckleOps.Send(client, new Base {["Data"] = _speckleStudy}, streamObject.Id);
 
             await client.CommitCreate(new CommitCreateInput
             {
@@ -345,7 +342,7 @@ namespace ViewTo.Connector.Unity
             });
           });
         }
-        catch (Exception e)
+        catch(Exception e)
         {
           Debug.Log(e.Message);
         }
@@ -365,7 +362,7 @@ namespace ViewTo.Connector.Unity
       var ts = _timer.Elapsed;
       ViewConsole.Log("Runtime-" + $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00}");
 
-      if (_runRepeatCommand)
+      if(_runRepeatCommand)
       {
         ViewConsole.Log("Running Second Pass");
 
@@ -384,7 +381,7 @@ namespace ViewTo.Connector.Unity
 
     void TryLoadResultCloud(ViewObjects.Unity.ResultCloud cloud)
     {
-      if (cloud == null)
+      if(cloud == null)
       {
         ViewConsole.Warn("Trying to load a null result cloud");
         return;
@@ -412,15 +409,15 @@ namespace ViewTo.Connector.Unity
 
       ViewConsole.Log($"{data.Count}");
 
-      foreach (var obj in data)
+      foreach(var obj in data)
       {
-        if (obj == null)
+        if(obj == null)
           continue;
 
-        if (obj.GetComponent<ViewObjects.Unity.ViewStudy>() != null)
+        if(obj.GetComponent<ViewObjects.Unity.ViewStudy>() != null)
           TryLoadStudy(obj.GetComponent<ViewObjects.Unity.ViewStudy>());
 
-        else if (obj.GetComponent<ViewObjects.Unity.ResultCloud>() != null)
+        else if(obj.GetComponent<ViewObjects.Unity.ResultCloud>() != null)
           TryLoadResultCloud(obj.GetComponent<ViewObjects.Unity.ResultCloud>());
       }
     }
@@ -430,7 +427,7 @@ namespace ViewTo.Connector.Unity
       ViewConsole.Log($"Nothing set for {nameof(ProcessSender)} function");
     }
 
-		#region static props
+  #region static props
 
     public static Material AnalysisMat
     {
@@ -449,14 +446,14 @@ namespace ViewTo.Connector.Unity
       get => Instance != null && AnalysisMat != null && RenderedMat != null;
     }
 
-		#endregion
+  #endregion
 
-		#region unity methods
+  #region unity methods
 
     SpeckleConnector GetConnector()
     {
       var connector = SpeckleConnector.Instance;
-      if (connector == null)
+      if(connector == null)
       {
         connector = new GameObject("Speckle Connector").AddComponent<SpeckleConnector>();
       }
@@ -468,20 +465,20 @@ namespace ViewTo.Connector.Unity
     {
       Instance = this;
 
-      if (!IsInit)
+      if(!IsInit)
         Init();
     }
 
     void Start()
     {
 
-      if (_autoRun)
+      if(_autoRun)
         AutoStart().Forget();
     }
 
     void OnDisable()
     {
-      if (_rig != null)
+      if(_rig != null)
       {
         // setup events
         _rig.OnReady -= RigReady;
@@ -492,13 +489,9 @@ namespace ViewTo.Connector.Unity
       }
     }
 
+  #endregion
 
-
- 
-
-#endregion
-
-#region Events
+  #region Events
 
     public event UnityAction<List<VU.ViewStudy>> OnStudiesFound;
     public event UnityAction OnRigReady;
@@ -523,7 +516,7 @@ namespace ViewTo.Connector.Unity
 
     // public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 
-#endregion
+  #endregion
 
 
 

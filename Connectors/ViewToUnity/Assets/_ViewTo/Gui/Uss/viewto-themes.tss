@@ -2,6 +2,8 @@
 
 @import url("viewto-graphics.uss");
 @import url("viewto-bar.uss");
+@import url("/Packages/com.speckle.connector/GUI/USS/StylishBlueCube.uss");
+
 
 
 

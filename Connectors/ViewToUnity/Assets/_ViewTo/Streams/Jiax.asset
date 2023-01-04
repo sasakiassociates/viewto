@@ -18,19 +18,19 @@ MonoBehaviour:
     description: View study stream
     role: stream:owner
     createdAt: 2022-11-10T16:31:43.672Z
-    updatedAt: 2022-11-11T04:04:04.235Z
+    updatedAt: 2022-11-11T04:34:12.767Z
     favoritedDate: 
     isPublic: 1
     commit:
-      id: ac935f28b3
+      id: fbd3ac9ca5
       message: First study creations
       branchName: studies/towers
       authorName: David Morgan
       authorId: 
       authorAvatar: 
-      createdAt: 2022-11-11T04:04:04.227Z
+      createdAt: 2022-11-10T18:14:49.958Z
       sourceApplication: .net
-      referencedObject: 7d2af8a40575c5eae0f0bfba05511fca
+      referencedObject: a6c70000cf4977de037e79ddc87d341c
       totalChildrenCount: 1
       parents: []
     branch:
@@ -45,7 +45,7 @@ MonoBehaviour:
       id: 57f05302a4
       description: default branch
       commitCursor: 
-      commitTotalCount: 1
+      commitTotalCount: 2
       commits: []
     - name: contents/park
       id: 18aa9df710
@@ -121,4 +121,4 @@ MonoBehaviour:
     avatar: {fileID: 0}
   preview: {fileID: 0}
   show: 0
-  originalUrlInput: https://speckle.xyz/streams/9a45304b95/commits/ac935f28b3
+  originalUrlInput: https://speckle.xyz/streams/9a45304b95/commits/fbd3ac9ca5

@@ -6,11 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.UIElements;
 using ViewObjects.Unity;
+
 namespace ViewTo.Connector.Unity
 {
+
   public class ViewToHubUi : MonoBehaviour
   {
 
@@ -45,7 +46,7 @@ namespace ViewTo.Connector.Unity
 
       stage = HubStage.SearchStream;
 
-      if (ui == null)
+      if(ui == null)
       {
         Debug.Log($"{this} is missing a {typeof(UIDocument)}");
         return;
@@ -60,13 +61,13 @@ namespace ViewTo.Connector.Unity
       _hub = ViewToHub.Instance;
       _connector = SpeckleConnector.Instance;
 
-      if (_hub == null)
+      if(_hub == null)
       {
         Debug.Log($"{this} needs an instance of {nameof(ViewToHub)}");
         return;
       }
 
-      if (_connector == null)
+      if(_connector == null)
       {
         Debug.Log($"{this} needs an instance of {nameof(SpeckleConnector)}");
         return;
@@ -83,7 +84,7 @@ namespace ViewTo.Connector.Unity
 
     void SetStage()
     {
-      switch (stage)
+      switch(stage)
       {
 
         case HubStage.SearchStream:
@@ -111,13 +112,12 @@ namespace ViewTo.Connector.Unity
     }
 
     void SetStudies(List<ViewStudy> args)
-    {
-    }
+    { }
 
     void SetRootVisible(bool value, string ueName)
     {
       var root = ui.rootVisualElement.Q<VisualElement>(ueName);
-      if (root == null)
+      if(root == null)
       {
         Debug.Log($"no root with name {ueName}");
         return;
@@ -133,7 +133,7 @@ namespace ViewTo.Connector.Unity
       _streamsList.bindItem = (item, index) =>
       {
         var i = item.Q<SpeckleStreamListItem>();
-        if (i == null)
+        if(i == null)
         {
           Debug.Log("no item found");
         }
@@ -155,7 +155,7 @@ namespace ViewTo.Connector.Unity
 
     void SetAccount()
     {
-      _account.SetAccount(_hub.account);
+      _account.value = SpeckleConnector.Instance.accounts.FirstOrDefault();
     }
 
 

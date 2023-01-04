@@ -48,9 +48,8 @@
     margin: 1px;
 }
 
-.viewto-tab__button {
+.viewto-tabs > .viewto-button {
     flex-grow: 1;
-    padding: 1px;
     background-color: var(--viewto-colors-background-purple);
     border-left-color: var(--viewto-colors-purple);
     border-right-color: var(--viewto-colors-purple);
@@ -60,45 +59,50 @@
     border-radius: var(--viewto-border-radius);
 }
 
+.viewto-tabs {
+    flex-direction: row;
+}
 
-.viewto-tab__button:hover {
+.viewto-tabs .viewto-button-icon {
+    -unity-background-image-tint-color: var(--viewto-colors-purple);
+}
+
+
+.viewto-tabs > .viewto-button:hover {
     padding: 1px;
-    background-color: var(--viewto-colors-background-purple);
+    
+    border-width: var(--viewto-border-width);
     border-left-color: var(--viewto-colors-purple);
     border-right-color: var(--viewto-colors-purple);
     border-bottom-color: var(--viewto-colors-purple);
     border-top-color: rgba(0, 0, 0, 0);
-    border-width: var(--viewto-border-width);
+    
+    background-color: var(--viewto-colors-background-purple);
 }
 
-.viewto-tab__button-icon {
-    -unity-background-image-tint-color: var(--viewto-colors-purple);
-    -unity-background-scale-mode: scale-to-fit;
-}
-
-.viewto-tab__button-icon:hover {
+.viewto-tabs viewto-button-icon:hover {
     -unity-background-image-tint-color: var(--viewto-colors-dark-purple);
 }
 
-.viewto-label__title {
+.viewto-label-title {
     -unity-font-definition: var(--viewto-font-medium);
     font-size: var(--viewto-font-size-title);
 }
 
 
-.viewto-label__subtitle {
+.viewto-label-subtitle {
     -unity-font-definition: var(--viewto-font-bold);
     font-size: var(--viewto-font-size-subtitle);
     
 }
 
-.viewto-label__body {
+.viewto-label-body {
     -unity-font-definition: var(--viewto-font-medium);
     font-size: var(--viewto-font-size-body);
     
 }
 
-.viewto-label__header-2 {
+.viewto-label-header-2 {
     font-size: var(--viewto-font-size-header_2);
     color: var(--viewto-colors-dark-purple);
     margin: 5px;
@@ -139,9 +143,6 @@
 }
 
 
-.viewto-tabs {
-    
-}
 
 .viewto-icon {
 }
@@ -150,7 +151,7 @@
     
 }
 
-.viewto-ribbon__header {
+.viewto-ribbon-header {
     background-color: var(--viewto-colors-dark-purple);
     margin: 0;
     padding: 5px;

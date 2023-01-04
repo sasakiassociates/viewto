@@ -9,7 +9,7 @@ using ViewObjects.Unity;
 namespace ViewObjects.Converter.Unity
 {
 
-	public class ViewObjectsConverterUnity : ScriptableSpeckleConverter
+	public class ViewObjectsConverterUnity : ScriptableConverter
 	{
 
 		/// <summary>
