@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Authors>Sasaki</Authors>
-        <RootNamespace></RootNamespace>
+        <RootNamespace>ViewObjects</RootNamespace>
         <AssemblyName>ViewObjects</AssemblyName>
         <LangVersion>latestmajor</LangVersion>
         <TargetFramework>netstandard2.0</TargetFramework>
