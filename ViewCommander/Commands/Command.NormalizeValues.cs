@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 namespace ViewTo.Cmd
 {
+
   /// <summary>
   ///   <para>Normalizes two sets of a values</para>
   /// </summary>
@@ -11,21 +13,21 @@ namespace ViewTo.Cmd
     /// <summary>
     ///   optional value to use when normalized values would be invalid
     /// </summary>
-    private readonly double invalidValue;
+    readonly double invalidValue;
 
     /// <summary>
     ///   Minimum value to apply during normalizing
     /// </summary>
-    private readonly double min;
+    readonly double min;
     /// <summary>
     ///   Dividend values
     /// </summary>
-    private readonly IReadOnlyList<int> valueA;
+    readonly IReadOnlyList<int> valueA;
 
     /// <summary>
     ///   Divisor values
     /// </summary>
-    private readonly IReadOnlyList<int> valueB;
+    readonly IReadOnlyList<int> valueB;
 
     /// <summary>
     /// </summary>
@@ -45,14 +47,14 @@ namespace ViewTo.Cmd
 
     public void Execute()
     {
-      if (valueA == null || valueB == null || valueA.Count != valueB.Count)
+      if(valueA == null || valueB == null || valueA.Count != valueB.Count)
       {
         return;
       }
 
       var values = new double[valueA.Count];
 
-      for (var i = 0; i < values.Length; i++)
+      for(var i = 0; i < values.Length; i++)
       {
         values[i] = valueB[i] == 0 ? invalidValue : (valueA[i] - min) / (valueB[i] - min);
       }
@@ -60,4 +62,5 @@ namespace ViewTo.Cmd
       args = new ValuesForExplorerArgs(values, $"Found values! {values.Length}");
     }
   }
+
 }

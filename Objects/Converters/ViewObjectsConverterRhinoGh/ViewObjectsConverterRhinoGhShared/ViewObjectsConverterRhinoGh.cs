@@ -1,19 +1,21 @@
 ﻿using Rhino;
 using Speckle.Core.Kits;
+
 namespace ViewObjects.Converter.Rhino
 {
+
   public class ViewObjRhinoConverter : ViewObjectsConverter
   {
 
-		#if RHINO6 && GRASSHOPPER
+  #if RHINO6 && GRASSHOPPER
     public static string RhinoAppName = HostApplications.Grasshopper.GetVersion(HostAppVersion.v6);
-		#elif RHINO7 && GRASSHOPPER
+  #elif RHINO7 && GRASSHOPPER
     public static string RhinoAppName = HostApplications.Grasshopper.GetVersion(HostAppVersion.v7);
-		#elif RHINO6
+  #elif RHINO6
     public static string RhinoAppName = HostApplications.Rhino.GetVersion(HostAppVersion.v6);
-		#elif RHINO7
+  #elif RHINO7
     public static string RhinoAppName = HostApplications.Rhino.GetVersion(HostAppVersion.v7);
-		#endif
+  #endif
 
     public override string Name => nameof(ViewObjRhinoConverter);
 
@@ -36,4 +38,5 @@ namespace ViewObjects.Converter.Rhino
     public RhinoDoc Doc { get; set; }
 
   }
+
 }

@@ -1,12 +1,15 @@
 ﻿using System;
+
 namespace ViewTo.Values
 {
+
   public abstract class MathProvider<T>
   {
     public abstract T Divide(T a, T b);
     public abstract T Multiply(T a, T b);
     public abstract T Add(T a, T b);
     public abstract T Negate(T a);
+
     public T Subtract(T a, T b)
     {
       return Add(a, Negate(b));
@@ -19,7 +22,7 @@ namespace ViewTo.Values
   {
     public override double Divide(double a, double b)
     {
-      return !double.IsNaN(b) ? a / b : double.NaN;
+      return!double.IsNaN(b) ? a / b : double.NaN;
     }
 
     public override double Multiply(double a, double b)
@@ -34,7 +37,7 @@ namespace ViewTo.Values
 
     public override double Negate(double a)
     {
-      return -a;
+      return-a;
     }
   }
 
@@ -80,31 +83,31 @@ namespace ViewTo.Values
 
     public override int Negate(int a)
     {
-      return -a;
+      return-a;
     }
   }
 
   // https://stackoverflow.com/questions/63694/creating-a-math-library-using-generics-in-c-sharp
   public class Fraction<T>
   {
-    private static MathProvider<T> _math;
+    static MathProvider<T> _math;
 
     static Fraction()
     {
-      if (typeof(T) == typeof(double))
+      if(typeof(T) == typeof(double))
       {
         _math = new DoubleMath() as MathProvider<T>;
       }
-      else if (typeof(T) == typeof(int))
+      else if(typeof(T) == typeof(int))
       {
         _math = new IntMath() as MathProvider<T>;
       }
-      else if (typeof(T) == typeof(uint))
+      else if(typeof(T) == typeof(uint))
       {
         _math = new UintMath() as MathProvider<T>;
       }
 
-      if (_math == null)
+      if(_math == null)
       {
         throw new InvalidOperationException(
           "Type " + typeof(T) + " is not supported by Fraction.");

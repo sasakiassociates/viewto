@@ -22,7 +22,14 @@ public class Layout : ILayout, IViewObject
     Viewers = directions;
   }
 
-  public List<ViewDirection> Viewers { get; protected set; } =
-    new()
-      {ViewDirection.Front};
+  /// <summary>
+  /// The collection of enums that determine the direction of each viewer in a layout
+  /// </summary>
+  public List<ViewDirection> Viewers { get; protected set; } = new() {ViewDirection.Front};
+
+
+  public override string ToString()
+  {
+    return$"{nameof(Layout)} with {Viewers?.Count ?? 0} viewers";
+  }
 }

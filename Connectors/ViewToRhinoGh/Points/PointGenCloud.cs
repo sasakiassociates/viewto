@@ -5,21 +5,22 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ViewTo.RhinoGh.Properties;
+
 namespace ViewTo.RhinoGh.Points
 {
+
   public class PointGenCloud : ViewToCloudComponentBase
   {
 
-    private (int SpacingX, int SpacingY, int SpacingZ, int Bounds, int Mask) _input;
+    (int SpacingX, int SpacingY, int SpacingZ, int Bounds, int Mask) _input;
 
-    private (int Masked, int UnMasked) _output;
+    (int Masked, int UnMasked) _output;
 
     public PointGenCloud() : base(
       "Cloud Point Generator", "CPG",
       "Generate A Cloud of Points",
       ConnectorInfo.Nodes.CLOUD)
-    {
-    }
+    { }
 
     protected override Bitmap Icon => new Bitmap(Icons.GeneratePointsCloud);
 
@@ -57,13 +58,13 @@ namespace ViewTo.RhinoGh.Points
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       var geo = new List<GeometryBase>();
-      if (!DA.GetDataList(_input.Bounds, geo))
+      if(!DA.GetDataList(_input.Bounds, geo))
       {
         return;
       }
 
       var bb = new BoundingBox();
-      foreach (var g in geo.Where(g => g != null))
+      foreach(var g in geo.Where(g => g != null))
       {
         bb.Union(g.GetBoundingBox(false));
       }
@@ -83,21 +84,21 @@ namespace ViewTo.RhinoGh.Points
 
       renderedCloud = new PointCloud();
 
-      if (meshes.Count > 0)
+      if(meshes.Count > 0)
       {
         var maskedPoints = new List<Point3d>();
         var unmasked = new List<Point3d>();
 
         var mergedMesh = new Mesh();
-        foreach (var m in meshes)
+        foreach(var m in meshes)
         {
           mergedMesh.Append(m);
         }
 
-        foreach (var p in cloud)
+        foreach(var p in cloud)
         {
           var color = Color.White;
-          if (mergedMesh.IsPointInside(p, 0.001, false))
+          if(mergedMesh.IsPointInside(p, 0.001, false))
           {
             maskedPoints.Add(p);
             color = Color.Aqua;
@@ -121,4 +122,5 @@ namespace ViewTo.RhinoGh.Points
       }
     }
   }
+
 }

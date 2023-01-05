@@ -15,12 +15,12 @@ namespace ViewTo.RhinoGh.Results
 
   public class ExtractTargetNames : ViewToComponentBase
   {
-    private GH_ValueList _activeList;
+    GH_ValueList _activeList;
 
-    private(int Object, int Values ) _input;
+    (int Object, int Values ) _input;
 
-    private bool _refresh;
-    private List<ContentInfo> _storedValues;
+    bool _refresh;
+    List<ContentInfo> _storedValues;
 
     public ExtractTargetNames() : base(
       "Extract Targets",

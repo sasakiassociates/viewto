@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
 namespace ViewTo.Receivers
 {
+
   public class ValueReceiver
   {
     //https://floating-point-gui.de/errors/comparison/
@@ -10,7 +12,7 @@ namespace ViewTo.Receivers
     //https://stackoverflow.com/questions/3874627/floating-point-comparison-functions-for-c-sharp
     public bool NearlyEqual(double value1, double value2, double unimportantDifference = 0.0001)
     {
-      if (double.IsNaN(value1) || double.IsNaN(value2))
+      if(double.IsNaN(value1) || double.IsNaN(value2))
       {
         return false;
       }
@@ -25,7 +27,7 @@ namespace ViewTo.Receivers
 
       var outputValues = new double[values.Length];
 
-      for (var i = 0; i < values.Length; i++)
+      for(var i = 0; i < values.Length; i++)
       {
         var pxValue = values[i];
 
@@ -40,7 +42,7 @@ namespace ViewTo.Receivers
       var logCustomBase = Math.Pow(maxValue, 1 / desiredScore);
       var outputValues = new double[values.Count];
 
-      for (var i = 0; i < values.Count; i++)
+      for(var i = 0; i < values.Count; i++)
       {
         outputValues[i] = Math.Log(values[i], logCustomBase);
       }
@@ -48,4 +50,5 @@ namespace ViewTo.Receivers
       return outputValues;
     }
   }
+
 }

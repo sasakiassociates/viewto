@@ -14,7 +14,7 @@ namespace ViewTo.RhinoGh.Objects
 
   public class DeconstructStudy : ViewToComponentBase
   {
-    private(int Clouds, int Targets, int Existing, int Proposals, int ResultClouds, int Viewers, int Options) _output;
+    (int Clouds, int Targets, int Existing, int Proposals, int ResultClouds, int Viewers, int Options) _output;
 
     public DeconstructStudy() :
       base("Deconstruct Study", "DS", "Deconstruct a View Study", ConnectorInfo.Nodes.STUDY)

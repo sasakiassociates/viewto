@@ -2,20 +2,21 @@
 using Rhino;
 using Rhino.Geometry;
 using System;
+
 namespace ViewTo.RhinoGh.Results
 {
+
   public class MoveToView : ViewToComponentBase
   {
 
-    private (int camera, int target, int horizontal, int vertical) _input;
+    (int camera, int target, int horizontal, int vertical) _input;
 
-    public MoveToView(	) :
+    public MoveToView() :
       base("Move To View",
         "MV",
         "Move the rhino viewport to specific point and target",
         ConnectorInfo.Nodes.UTIL)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("119E066B-FBE2-41CD-BFAD-7868F9A10C80");
 
@@ -40,8 +41,7 @@ namespace ViewTo.RhinoGh.Results
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
-    {
-    }
+    { }
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
@@ -66,4 +66,5 @@ namespace ViewTo.RhinoGh.Results
       view.ActiveViewport.Rotate(verticalAngle, Vector3d.XAxis, cameraPoint);
     }
   }
+
 }

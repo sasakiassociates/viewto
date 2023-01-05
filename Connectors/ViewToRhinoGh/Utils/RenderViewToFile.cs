@@ -3,20 +3,21 @@ using Rhino;
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 namespace ViewTo.RhinoGh.Results
 {
+
   public class RenderViewToFile : ViewToComponentBase
   {
 
-    private ( int run, int path, int prefix, int views ) _input;
+    ( int run, int path, int prefix, int views ) _input;
 
     public RenderViewToFile() : base(
       "Render View",
       "RV",
       "Render View to File",
       ConnectorInfo.Nodes.UTIL)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("604853A2-05CF-4C70-8ABE-479221B53BA0");
 
@@ -53,37 +54,37 @@ namespace ViewTo.RhinoGh.Results
       var vps = new List<string>();
       DA.GetDataList(_input.views, vps);
 
-      if (!run)
+      if(!run)
       {
         return;
       }
 
-      if (string.IsNullOrWhiteSpace(prefix))
+      if(string.IsNullOrWhiteSpace(prefix))
       {
         return;
       }
 
-      if (string.IsNullOrWhiteSpace(dir))
+      if(string.IsNullOrWhiteSpace(dir))
       {
         return;
       }
 
-      if (!dir.EndsWith(Path.DirectorySeparatorChar.ToString()))
+      if(!dir.EndsWith(Path.DirectorySeparatorChar.ToString()))
       {
         dir += Path.DirectorySeparatorChar;
       }
 
-      if (!Directory.Exists(dir))
+      if(!Directory.Exists(dir))
       {
         Directory.CreateDirectory(dir);
       }
 
       var files = new List<string>();
 
-      foreach (var vp in vps)
+      foreach(var vp in vps)
       {
         var view = RhinoDoc.ActiveDoc.Views.Find(vp, false);
-        if (view == null)
+        if(view == null)
         {
           continue;
         }
@@ -100,4 +101,5 @@ namespace ViewTo.RhinoGh.Results
       DA.SetDataList(0, files);
     }
   }
+
 }

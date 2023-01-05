@@ -16,7 +16,7 @@ namespace ViewTo.RhinoGh.Setup
   public abstract class CreateViewContent : ViewToComponentBase
   {
 
-    private(int Name, int References) _input;
+    (int Name, int References) _input;
 
     public CreateViewContent(string name, string nickname, string description) : base(name, nickname, description, ConnectorInfo.Nodes.CONTENT)
     { }

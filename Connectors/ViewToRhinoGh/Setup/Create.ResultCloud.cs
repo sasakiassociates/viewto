@@ -16,7 +16,7 @@ namespace ViewTo.RhinoGh.Setup
   public class CreateResultCloudComponent : ViewToComponentBase
   {
 
-    private(int Points, int Id, int Target, int Values) _input;
+    (int Points, int Id, int Target, int Values) _input;
 
     public CreateResultCloudComponent() : base(
       "Create Result Cloud",

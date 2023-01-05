@@ -64,7 +64,7 @@ namespace ViewTo.Tests.Objects
       Check(obj, Serialize_Process(obj));
     }
 
-    private static TObj Serialize_Process<TObj>(TObj obj) where TObj : Base
+    static TObj Serialize_Process<TObj>(TObj obj) where TObj : Base
     {
       var json = Operations.Serialize(obj);
       var res = Operations.Deserialize(json);
@@ -77,7 +77,7 @@ namespace ViewTo.Tests.Objects
       return res as TObj;
     }
 
-    private static void Check(IResultCloudData dataA, IResultCloudData dataB)
+    static void Check(IResultCloudData dataA, IResultCloudData dataB)
     {
       Assert.IsTrue(dataA != default(object) && dataB != default(object));
       Assert.IsTrue(dataA.Layout.Equals(dataB.Layout));
@@ -88,7 +88,7 @@ namespace ViewTo.Tests.Objects
       );
     }
 
-    private static List<Type> GetSubclassTypes(Type parentType)
+    static List<Type> GetSubclassTypes(Type parentType)
     {
       return Assembly.GetAssembly(parentType).GetTypes()
         .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(parentType)).ToList();

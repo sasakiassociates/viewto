@@ -125,7 +125,7 @@ namespace ViewTo.RhinoGh.Points
       return cloud;
     }
 
-    private static Vector3d CreateBoundDir(BoundingBox bounds)
+    static Vector3d CreateBoundDir(BoundingBox bounds)
     {
       var lineDirection = new Line(bounds.Corner(true, true, false), bounds.Corner(true, true, true));
       var dir = lineDirection.Direction;

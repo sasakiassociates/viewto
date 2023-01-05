@@ -14,7 +14,7 @@ namespace ViewTo.RhinoGh.Results
   public class ExplorerSettingsComponent : ViewToComponentBase
   {
 
-    private( int ValueType, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
+    ( int ValueType, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
 
     public ExplorerSettingsComponent()
       : base("Explorer Settings",

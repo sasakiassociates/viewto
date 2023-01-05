@@ -12,10 +12,10 @@ namespace ViewTo.Cmd
 
   internal class InitializeAndBuildRig : ICmdWithArgs<SimpleResultArgs>
   {
-    private IReadOnlyList<IViewCloud> _clouds;
-    private IReadOnlyList<IContent> _contents;
-    private IRig _rig;
-    private IReadOnlyList<IViewer> _viewers;
+    IReadOnlyList<IViewCloud> _clouds;
+    IReadOnlyList<IContent> _contents;
+    IRig _rig;
+    IReadOnlyList<IViewer> _viewers;
 
     public InitializeAndBuildRig(IRig rig, IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers)
     {

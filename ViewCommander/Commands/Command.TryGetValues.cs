@@ -14,17 +14,17 @@ namespace ViewTo.Cmd
     /// <summary>
     ///   id from the content
     /// </summary>
-    private readonly string contentId;
+    readonly string contentId;
 
     /// <summary>
     ///   the list of data to search through
     /// </summary>
-    private readonly IReadOnlyCollection<IResultCloudData> data;
+    readonly IReadOnlyCollection<IResultCloudData> data;
 
     /// <summary>
     ///   stage the data is linked with
     /// </summary>
-    private readonly ContentType stage;
+    readonly ContentType stage;
 
     /// <summary>
     /// </summary>

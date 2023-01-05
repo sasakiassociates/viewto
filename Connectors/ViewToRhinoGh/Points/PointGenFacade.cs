@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ViewTo.RhinoGh.Properties;
+
 namespace ViewTo.RhinoGh.Points
 {
+
   public class PointGenFacade : ViewToCloudComponentBase
   {
 
@@ -20,8 +22,7 @@ namespace ViewTo.RhinoGh.Points
         "FPG",
         "Generate Viewpoints on Building",
         ConnectorInfo.Nodes.CLOUD)
-    {
-    }
+    { }
 
     protected override Bitmap Icon => new Bitmap(Icons.GeneratePointFacade);
 
@@ -46,41 +47,42 @@ namespace ViewTo.RhinoGh.Points
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-			#region get input data
+
+    #region get input data
 
       var buildings = new List<GeometryBase>();
 
       var stepSizeX = new double();
       var stepSizeZ = new double();
 
-      if (!DA.GetDataList(0, buildings))
+      if(!DA.GetDataList(0, buildings))
       {
         return;
       }
 
-      if (!DA.GetData(1, ref stepSizeX))
+      if(!DA.GetData(1, ref stepSizeX))
       {
         return;
       }
 
-      if (!DA.GetData(2, ref stepSizeZ))
+      if(!DA.GetData(2, ref stepSizeZ))
       {
         return;
       }
 
-      if (stepSizeX <= 0 || stepSizeZ <= 0)
+      if(stepSizeX <= 0 || stepSizeZ <= 0)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Dimensions must be positive, non-zero numbers.");
         return;
       }
 
-      if (stepSizeX < 0.3)
+      if(stepSizeX < 0.3)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Step Size X is too small - adjusting to 0.3.");
         stepSizeX = 0.3;
       }
 
-      if (stepSizeZ < 0.3)
+      if(stepSizeZ < 0.3)
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Step Size Z is too small - adjusting to 0.3.");
         stepSizeZ = 0.3;
@@ -92,9 +94,9 @@ namespace ViewTo.RhinoGh.Points
       stepSizeX *= scaleFactor;
       stepSizeZ *= scaleFactor;
 
-			#endregion
+    #endregion
 
-			#region initialize
+    #region initialize
 
       // output data
       var viewPoints = new List<GH_Point>();
@@ -104,12 +106,12 @@ namespace ViewTo.RhinoGh.Points
       renderedCloud = new PointCloud();
       var intersectionTolerance = 0.01;
 
-			#endregion
+    #endregion
 
       //---------------------------------BUILDING CONTOURS---------------------------------//
-      foreach (var building in buildings)
+      foreach(var building in buildings)
       {
-        if (building == null)
+        if(building == null)
         {
           continue;
         }
@@ -122,7 +124,7 @@ namespace ViewTo.RhinoGh.Points
 
         // iterate down level by level from top, until bottom of geometry is reached
         var count = 0;
-        while (z > box.Min.Z)
+        while(z > box.Min.Z)
         {
           // create intersection plane at that level
           var levelPoint = new Point3d(buildingPt.X, buildingPt.Y, z);
@@ -132,7 +134,7 @@ namespace ViewTo.RhinoGh.Points
           Curve[] intersectionCurves;
           Point3d[] intersectionPoints;
 
-          switch (building.ObjectType)
+          switch(building.ObjectType)
           {
             case ObjectType.Brep:
             case ObjectType.Extrusion:
@@ -151,14 +153,14 @@ namespace ViewTo.RhinoGh.Points
           }
 
           // get points from each level curve
-          foreach (var curve in intersectionCurves)
+          foreach(var curve in intersectionCurves)
           {
             // get number of steps based on length of curve and step size
             var length = curve.GetLength(RhinoDoc.ActiveDoc.ModelAbsoluteTolerance);
             var steps = (int)(length / stepSizeX);
 
             // iterate along curve to get points
-            for (var x = 0; x <= steps; x++)
+            for(var x = 0; x <= steps; x++)
             {
               var curvePoint = curve.PointAtLength(x * stepSizeX);
 
@@ -168,12 +170,12 @@ namespace ViewTo.RhinoGh.Points
               double t, s;
               var surfaceNormal = new Vector3d();
 
-              if (building.ObjectType == ObjectType.Brep || building.ObjectType == ObjectType.Extrusion)
+              if(building.ObjectType == ObjectType.Brep || building.ObjectType == ObjectType.Extrusion)
               {
                 var _building = (Brep)building;
                 var normal = _building.ClosestPoint(curvePoint, out surfacePoint, out ci, out s, out t, 1, out surfaceNormal);
               }
-              else if (building.ObjectType == ObjectType.Mesh)
+              else if(building.ObjectType == ObjectType.Mesh)
               {
                 var _building = (Mesh)building;
                 var meshPoint = _building.ClosestMeshPoint(curvePoint, 1);
@@ -193,7 +195,7 @@ namespace ViewTo.RhinoGh.Points
           }
 
           // make sure while loop doesn't go underneath mesh...
-          if (count > 1000)
+          if(count > 1000)
           {
             AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "something's wrong...too many points logged");
             break;
@@ -204,12 +206,14 @@ namespace ViewTo.RhinoGh.Points
         }
       }
 
-			#region output
+    #region output
 
       DA.SetDataList(0, viewPoints);
       DA.SetDataList(1, viewNormals);
 
-			#endregion
+    #endregion
+
     }
   }
+
 }

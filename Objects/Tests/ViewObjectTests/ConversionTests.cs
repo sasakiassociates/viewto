@@ -17,7 +17,7 @@ namespace ViewTo.Tests.Objects
   public class ConversionTests
   {
 
-    private ViewObjectsConverter _converter;
+    ViewObjectsConverter _converter;
 
     [OneTimeSetUp]
     public void Setup()

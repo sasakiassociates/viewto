@@ -14,7 +14,7 @@ namespace ViewTo.RhinoGh.Setup
   public class CreateStudy : ViewToComponentBase
   {
 
-    private(int Name, int Cloud, int Content, int Params) _input;
+    (int Name, int Cloud, int Content, int Params) _input;
 
     public CreateStudy() : base(
       "Create View Study",

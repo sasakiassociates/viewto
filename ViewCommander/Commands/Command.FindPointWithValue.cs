@@ -20,16 +20,16 @@ namespace ViewTo.Cmd
     /// <summary>
     ///   difference values to not care about
     /// </summary>
-    private readonly double unimportantDifference;
+    readonly double unimportantDifference;
     /// <summary>
     ///   values to search
     /// </summary>
-    private readonly IReadOnlyList<double> values;
+    readonly IReadOnlyList<double> values;
 
     /// <summary>
     ///   given value to search for
     /// </summary>
-    private readonly double valueToFind;
+    readonly double valueToFind;
 
     /// <summary>
     ///   constructs the command to run

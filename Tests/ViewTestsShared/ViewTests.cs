@@ -1,14 +1,16 @@
 ﻿using Speckle.Core.Credentials;
 using System;
 using System.Collections.Generic;
+
 namespace ViewTo.Tests
 {
+
   public static class ViewTests
   {
     public static void WriteSpeckleURL(StreamWrapperType type, string value, string streamId, string server)
     {
       var path = "";
-      switch (type)
+      switch(type)
       {
         case StreamWrapperType.Stream:
           path = null;
@@ -40,7 +42,7 @@ namespace ViewTo.Tests
       rnd ??= new Random();
       var values = new List<uint>();
 
-      for (var j = 0; j < valueCount; j++)
+      for(var j = 0; j < valueCount; j++)
       {
         values.Add((uint)rnd.Next());
       }
@@ -53,7 +55,7 @@ namespace ViewTo.Tests
       rnd ??= new Random();
       var values = new List<int>();
 
-      for (var j = 0; j < valueCount; j++)
+      for(var j = 0; j < valueCount; j++)
       {
         values.Add(rnd.Next());
       }
@@ -66,7 +68,7 @@ namespace ViewTo.Tests
       rnd ??= new Random();
       var values = new List<double>();
 
-      for (var j = 0; j < valueCount; j++)
+      for(var j = 0; j < valueCount; j++)
       {
         values.Add(rnd.NextDouble());
       }
@@ -74,4 +76,5 @@ namespace ViewTo.Tests
       return values;
     }
   }
+
 }

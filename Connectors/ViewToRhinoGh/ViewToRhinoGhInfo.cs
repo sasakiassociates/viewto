@@ -1,8 +1,10 @@
 ﻿using Grasshopper.Kernel;
 using System;
 using System.Drawing;
+
 namespace ViewTo.RhinoGh
 {
+
   public class ViewToRhinoGhInfo : GH_AssemblyInfo
   {
     public override string Name => "ViewToRhinoGh";
@@ -19,4 +21,5 @@ namespace ViewTo.RhinoGh
 
     public override string AuthorContact => "dmorgan@sasaki.com";
   }
+
 }

@@ -10,7 +10,7 @@ namespace ViewTo.RhinoGh.Objects
   public class ResultTypeComponent : ViewToComponentBase
   {
 
-    private ContentType _contentType = ContentType.Proposed;
+    ContentType _contentType = ContentType.Proposed;
 
     public ResultTypeComponent() : base("Result Type",
       "RT",

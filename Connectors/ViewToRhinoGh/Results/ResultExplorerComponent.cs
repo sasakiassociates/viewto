@@ -22,19 +22,19 @@ namespace ViewTo.RhinoGh.Results
     // TODO: Allow for remapping colors to a range of values 
     // TODO: Setting value type for exploring 
 
-    private const int MAX_ALPHA = 255;
+    const int MAX_ALPHA = 255;
 
-    private const int MIN_ALPHA = 100;
+    const int MIN_ALPHA = 100;
 
-    private IExplorer _explorer;
+    IExplorer _explorer;
 
-    private(int Obj, int Options, int ValueType, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
-    private double _min = 1.0, _max;
+    (int Obj, int Options, int ValueType, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
+    double _min = 1.0, _max;
 
-    private(int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
-    private ExplorerSettings _settings;
+    (int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
+    ExplorerSettings _settings;
 
-    private ExplorerValueType _valueType = ExplorerValueType.ExistingOverPotential;
+    ExplorerValueType _valueType = ExplorerValueType.ExistingOverPotential;
 
     public ResultExplorerComponent() : base("Result Explorer", "EX", "Explore a set of view study results", ConnectorInfo.Nodes.EXPLORER)
     {
@@ -102,7 +102,7 @@ namespace ViewTo.RhinoGh.Results
       _output.ActiveColor = index;
     }
 
-    private void SetMinMax(double[] value)
+    void SetMinMax(double[] value)
     {
       _min = 1.0;
       _max = 0.0;
@@ -113,7 +113,7 @@ namespace ViewTo.RhinoGh.Results
             SetMinMax(t);
     }
 
-    private void SetMinMax(double value)
+    void SetMinMax(double value)
     {
       // values that have no view are set to -1
       if(value < 0)

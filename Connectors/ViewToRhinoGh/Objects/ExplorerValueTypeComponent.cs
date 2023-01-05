@@ -3,25 +3,25 @@ using Grasshopper.Kernel;
 using System;
 using System.Windows.Forms;
 using ViewObjects;
+
 namespace ViewTo.RhinoGh.Objects
 {
+
   public class ExplorerValueTypeComponent : ViewToComponentBase
   {
 
-    private ExplorerValueType _type = ExplorerValueType.ExistingOverPotential;
+    ExplorerValueType _type = ExplorerValueType.ExistingOverPotential;
 
     public ExplorerValueTypeComponent() : base("Explorer Value Type",
       "EV",
       "A set of options for comparing explorer values",
       ConnectorInfo.Nodes.RESULTS)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("3388A5A6-6969-4ED0-8155-22D94334DE30");
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
-    {
-    }
+    { }
 
     public override bool Write(GH_IWriter writer)
     {
@@ -40,13 +40,13 @@ namespace ViewTo.RhinoGh.Objects
 
     protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
     {
-      foreach (ExplorerValueType rt in Enum.GetValues(typeof(ExplorerValueType)))
+      foreach(ExplorerValueType rt in Enum.GetValues(typeof(ExplorerValueType)))
       {
         Menu_AppendItem(
           menu,
           rt.ToString(), (s, e) =>
           {
-            if (s is ToolStripMenuItem item && item.Tag is ExplorerValueType tag)
+            if(s is ToolStripMenuItem item && item.Tag is ExplorerValueType tag)
             {
               _type = tag;
               ExpireSolution(true);
@@ -70,4 +70,5 @@ namespace ViewTo.RhinoGh.Objects
       DA.SetData(0, _type.ToString());
     }
   }
+
 }

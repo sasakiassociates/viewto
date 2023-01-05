@@ -5,14 +5,16 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ViewTo.RhinoGh.Properties;
+
 namespace ViewTo.RhinoGh.Points
 {
+
   public class PointGenFittedCloud : GH_Component
   {
 
-    private int _iBounds, _iCountX, _iCountY, _iCountZ;
+    int _iBounds, _iCountX, _iCountY, _iCountZ;
 
-    private PointCloud _pc;
+    PointCloud _pc;
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
@@ -38,7 +40,7 @@ namespace ViewTo.RhinoGh.Points
 
     public override void DrawViewportWires(IGH_PreviewArgs args)
     {
-      if (_pc != null)
+      if(_pc != null)
       {
         args.Display.DrawPointCloud(_pc, 1);
       }
@@ -47,13 +49,13 @@ namespace ViewTo.RhinoGh.Points
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       var geo = new List<GeometryBase>();
-      if (!DA.GetDataList(_iBounds, geo))
+      if(!DA.GetDataList(_iBounds, geo))
       {
         return;
       }
 
       var bb = new BoundingBox();
-      foreach (var g in geo.Where(g => g != null))
+      foreach(var g in geo.Where(g => g != null))
       {
         bb.Union(g.GetBoundingBox(false));
       }
@@ -82,15 +84,15 @@ namespace ViewTo.RhinoGh.Points
       var minZ = bb.Min.Z;
       var maxZ = bb.Max.Z;
 
-      for (var x = 0; x < xCount; x++)
+      for(var x = 0; x < xCount; x++)
       {
         var xPos = CheckPos(x, xCount, minX, maxX, xSize[x]);
 
-        for (var y = 0; y < yCount; y++)
+        for(var y = 0; y < yCount; y++)
         {
           var yPos = CheckPos(y, yCount, minY, maxY, ySize[y]);
 
-          for (var z = 0; z < zCount; z++)
+          for(var z = 0; z < zCount; z++)
           {
             var zPos = CheckPos(z, zCount, minZ, maxZ, zSize[z]);
 
@@ -99,7 +101,7 @@ namespace ViewTo.RhinoGh.Points
         }
       }
 
-      if (_pc == null)
+      if(_pc == null)
       {
         _pc = new PointCloud();
       }
@@ -109,25 +111,25 @@ namespace ViewTo.RhinoGh.Points
       DA.SetDataList(0, cloud);
     }
 
-    private static double CheckPos(int index, int count, double min, double max, double size)
+    static double CheckPos(int index, int count, double min, double max, double size)
     {
       return index >= count ? max : min + index + size;
     }
 
-		#region Component Info
+  #region Component Info
 
     public PointGenFittedCloud() : base(
       "Fitted Point Cloud Generator", "FPG",
       "Generate a point cloud that is nice and tight!",
       ConnectorInfo.CATEGORY, ConnectorInfo.Nodes.CLOUD)
-    {
-    }
+    { }
 
     protected override Bitmap Icon => new Bitmap(Icons.GeneratePointGround);
 
     public override Guid ComponentGuid => new Guid("17BAE830-6740-4854-BF67-E1F78A4C455E");
 
-		#endregion
+  #endregion
 
   }
+
 }

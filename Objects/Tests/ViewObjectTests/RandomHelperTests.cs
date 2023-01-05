@@ -26,9 +26,9 @@ namespace ViewTo.Tests.Objects
   [Category(Categories.CMD)]
   public class RandomHelperTests
   {
-    private Client _client;
-    private ServerTransport _transport;
-    private(string id, string branch, string commit) _stream;
+    Client _client;
+    ServerTransport _transport;
+    (string id, string branch, string commit) _stream;
 
     [TearDown]
     public void BreakDown()

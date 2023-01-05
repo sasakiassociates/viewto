@@ -1,5 +1,6 @@
 namespace ViewTo.RhinoGh
 {
+
   public static class ConnectorInfo
   {
     public const string CATEGORY = "ViewTo";
@@ -16,4 +17,5 @@ namespace ViewTo.RhinoGh
       public const string UTIL = "Utilities";
     }
   }
+
 }

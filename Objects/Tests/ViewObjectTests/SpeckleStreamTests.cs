@@ -30,10 +30,10 @@ namespace ViewTo.Tests.Objects
       _client?.Dispose();
     }
 
-    private Client _client;
-    private ServerTransport _transport;
+    Client _client;
+    ServerTransport _transport;
 
-    private(string id, string branch, string commit) _stream;
+    (string id, string branch, string commit) _stream;
 
 
     [Test]

@@ -10,7 +10,7 @@ namespace ViewTo.RhinoGh.Setup
   public class CreateContentOption : ViewToComponentBase
   {
 
-    private(int Names, int Ids) _input;
+    (int Names, int Ids) _input;
 
     public CreateContentOption() : base("Create View Content Option", "CCO", "Simple node for creating a view content option for exploring results",
       ConnectorInfo.Nodes.RESULTS)

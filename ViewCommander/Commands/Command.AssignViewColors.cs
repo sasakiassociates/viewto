@@ -10,7 +10,7 @@ namespace ViewTo.Cmd
   /// </summary>
   public class AssignViewColors : ICmd
   {
-    private List<IContent> _contents;
+    List<IContent> _contents;
 
     public AssignViewColors(List<IContent> contents)
     {

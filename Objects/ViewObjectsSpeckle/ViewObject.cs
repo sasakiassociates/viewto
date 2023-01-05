@@ -12,11 +12,11 @@ namespace ViewObjects.Speckle
   public class ViewObject : ISpeckleKit
   {
 
-    private const string CONVERTER_BASE_NAME = "ViewObjects.Converter";
+    const string CONVERTER_BASE_NAME = "ViewObjects.Converter";
 
-    private List<string> _converters;
+    List<string> _converters;
 
-    private Dictionary<string, Type> _loadedConverters = new Dictionary<string, Type>();
+    Dictionary<string, Type> _loadedConverters = new Dictionary<string, Type>();
 
     /// <summary>
     ///   Quick property for getting the full assembly name
@@ -117,7 +117,7 @@ namespace ViewObjects.Speckle
     /// <inheritdoc />
     public IEnumerable<string> Converters => _converters ??= GetAvailableConverters();
 
-    private List<string> GetAvailableConverters()
+    List<string> GetAvailableConverters()
     {
       return Directory.EnumerateFiles(KitLocations.Desktop, CONVERTER_BASE_NAME + ".*").ToList()
         .Select(dllPath => dllPath.Split('.').Reverse().ToList()[1])

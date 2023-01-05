@@ -14,7 +14,7 @@ namespace ViewObjects.Speckle
   public class ContentReference : ViewObjectReference<References.ContentReference>, IContent
   {
 
-    private const string CONTENT_TYPE = "Content_Type";
+    const string CONTENT_TYPE = "Content_Type";
 
     /// <summary>
     /// 
