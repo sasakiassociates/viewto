@@ -1,8 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+using ViewObjects.Contents;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
+
 namespace ViewTo.Cmd
 {
+
   internal class InitializeAndBuildRig : ICmdWithArgs<SimpleResultArgs>
   {
     private IReadOnlyList<IViewCloud> _clouds;
@@ -22,7 +29,7 @@ namespace ViewTo.Cmd
 
     public void Execute()
     {
-      if (_rig == default(object))
+      if(_rig == default(object))
       {
         args = new SimpleResultArgs(false, "Rig is not valid for initializing");
         return;
@@ -30,11 +37,11 @@ namespace ViewTo.Cmd
 
       var rigParams = new List<RigParameters>();
 
-      var layouts = new List<IViewerLayout>();
-      foreach (var v in _viewers)
+      var layouts = new List<ILayout>();
+      foreach(var v in _viewers)
       {
         // if its not a global object
-        if (v is IViewerLinked vl)
+        if(v is IViewerLinked vl)
         {
           rigParams.Add(CreateRigParams(vl.Layouts, _contents, vl.Clouds));
         }
@@ -61,7 +68,7 @@ namespace ViewTo.Cmd
     /// <param name="contents"></param>
     /// <param name="clouds"></param>
     public RigParameters CreateRigParams(
-      IEnumerable<IViewerLayout> viewers,
+      IEnumerable<ILayout> viewers,
       IEnumerable<IContent> contents,
       IEnumerable<IId> clouds
     )
@@ -80,16 +87,17 @@ namespace ViewTo.Cmd
     /// <param name="contents"></param>
     /// <param name="clouds"></param>
     public RigParameters CreateRigParams(
-      IEnumerable<IViewerLayout> viewers,
+      IEnumerable<ILayout> viewers,
       IEnumerable<IContent> contents,
       IEnumerable<string> clouds
     )
     {
       return new RigParameters(
         clouds.ToList(),
-        contents.Where(x => x != null && x.ContentType == ContentType.Target).Select(x => x.Color).ToList(),
+        contents.Where(x => x != null && x.ContentType == ContentType.Potential).Select(x => x.Color).ToList(),
         viewers.ToList()
       );
     }
   }
+
 }
