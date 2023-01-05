@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace ViewObjects
+using ViewObjects;
+using ViewObjects.Content;
+using ViewObjects.Viewer;
+using ViewObjects.ViewObjects;
+
+namespace ViewTo.Tests
 {
+
   public static class ViewObjectFaker
   {
 
@@ -11,22 +17,22 @@ namespace ViewObjects
       List<IViewObject> objects = new();
       List<Content> content = new();
 
-      foreach (ContentType type in Enum.GetValues(typeof(ContentType)))
+      foreach(ContentType type in Enum.GetValues(typeof(ContentType)))
       {
         content.Add(Content(type, $"test-{type}"));
       }
 
       var cloud = Cloud<ViewCloud>(100);
 
-      if (hasResults)
+      if(hasResults)
       {
         List<IResultCloudData> data = new();
 
-        foreach (var c in content)
+        foreach(var c in content)
         {
-          if (c.ContentType == ContentType.Target)
+          if(c.ContentType == ContentType.Target)
           {
-            foreach (ResultStage type in Enum.GetValues(typeof(ResultStage)))
+            foreach(ContentType type in Enum.GetValues(typeof(ContentType)))
             {
               data.Add(Result<ResultCloudData>(
                   cloud.Points.Length,
@@ -40,14 +46,14 @@ namespace ViewObjects
           }
         }
 
-        ResultCloud rc = new() { Points = cloud.Points, Data = data };
+        ResultCloud rc = new() {Points = cloud.Points, Data = data};
         objects.Add(rc);
       }
 
       objects.Add(new ViewCloudReference(cloud, new List<string>()));
       objects.AddRange(content.Select(x => new ContentReference(x, new List<string>() { })).ToList());
-      objects.Add(new Viewer(new List<IViewerLayout>
-        { new LayoutCube() }));
+      objects.Add(new Viewer(new List<ILayout>
+        {new LayoutCube()}));
       return new ViewStudy(objects, name);
     }
 
@@ -87,10 +93,10 @@ namespace ViewObjects
       var values = new List<TData>();
       var random = new Random();
 
-      for (var c = 0; c < colorCount; c++)
+      for(var c = 0; c < colorCount; c++)
       {
         var id = ObjUtils.InitGuid;
-        foreach (ResultStage stage in Enum.GetValues(typeof(ResultStage)))
+        foreach(ContentType stage in Enum.GetValues(typeof(ContentType)))
         {
           values.Add(Result<TData>(pointCount, stage, id, nameof(Layout), $"Test{c}", random));
         }
@@ -101,7 +107,7 @@ namespace ViewObjects
 
     public static TData Result<TData>(
       int pointCount,
-      ResultStage stage,
+      ContentType stage,
       string id = null,
       string layout = null,
       string contentName = null,
@@ -119,7 +125,7 @@ namespace ViewObjects
       return obj;
     }
 
-    public static IContentOption ContentOption(string name = "test", string id = null, ResultStage stage = ResultStage.Existing)
+    public static IContentOption ContentOption(string name = "test", string id = null, ContentType stage = ContentType.Existing)
     {
       return new ContentOption
       {
@@ -131,7 +137,7 @@ namespace ViewObjects
     {
       var rnd = new Random();
       var points = new CloudPoint[count];
-      for (var i = 0; i < points.Length; i++)
+      for(var i = 0; i < points.Length; i++)
       {
         points[i] = new CloudPoint(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(),
           rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(), "1234-567-890");
@@ -145,7 +151,7 @@ namespace ViewObjects
       rnd ??= new Random();
 
       var values = new List<int>();
-      for (var j = 0; j < valueCount; j++)
+      for(var j = 0; j < valueCount; j++)
       {
         var bytes = new byte[4];
         rnd.NextBytes(bytes);
@@ -155,4 +161,5 @@ namespace ViewObjects
       return values;
     }
   }
+
 }
