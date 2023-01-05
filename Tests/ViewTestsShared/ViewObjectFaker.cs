@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
-using ViewObjects.Content;
-using ViewObjects.Viewer;
-using ViewObjects.ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+using ViewObjects.Contents;
+using ViewObjects.References;
+using ViewObjects.Results;
+using ViewObjects.Studies;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
 
 namespace ViewTo.Tests
 {
