@@ -1,4 +1,5 @@
 ﻿using Speckle.Core.Models;
+
 namespace ViewObjects.Speckle
 {
 
@@ -10,8 +11,7 @@ namespace ViewObjects.Speckle
     /// <summary>
     /// </summary>
     public ViewObjectBase()
-    {
-    }
+    { }
 
     /// <summary>
     ///   Returns <see cref="ViewObjectBase" />

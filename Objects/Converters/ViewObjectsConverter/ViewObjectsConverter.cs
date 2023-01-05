@@ -3,11 +3,19 @@ using Speckle.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+using ViewObjects.Contents;
+using ViewObjects.References;
+using ViewObjects.Studies;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
 namespace ViewObjects.Converter
 {
+
   public partial class ViewObjectsConverter : ISpeckleConverter
   {
 
@@ -35,20 +43,16 @@ namespace ViewObjects.Converter
     }
 
     public virtual void SetContextDocument(object doc)
-    {
-    }
+    { }
 
     public virtual void SetContextObjects(List<ApplicationObject> objects)
-    {
-    }
+    { }
 
     public virtual void SetPreviousContextObjects(List<ApplicationObject> objects)
-    {
-    }
+    { }
 
     public virtual void SetConverterSettings(object settings)
-    {
-    }
+    { }
 
     public List<Base> ConvertToSpeckle(List<object> objects)
     {
@@ -72,7 +76,7 @@ namespace ViewObjects.Converter
 
     public bool CanConvertToSpeckle(object @object)
     {
-      switch (@object)
+      switch(@object)
       {
         case IReferenceObject _:
           return true;
@@ -86,7 +90,7 @@ namespace ViewObjects.Converter
           return true;
         case IContent _:
           return true;
-        case IViewerLayout _:
+        case ILayout _:
           return true;
         case IViewer _:
           return true;
@@ -97,7 +101,7 @@ namespace ViewObjects.Converter
 
     public bool CanConvertToNative(Base @base)
     {
-      switch (@base)
+      switch(@base)
       {
         // V2 objects
         case VS.ViewStudy _:
@@ -123,11 +127,11 @@ namespace ViewObjects.Converter
 
     public VS.ViewObjectBase ConvertToSpeckleViewObject(object @object)
     {
-      switch (@object)
+      switch(@object)
       {
         case IViewStudy<IViewObject> o:
           return StudyToSpeckle(o);
-        case IViewerLayout o:
+        case ILayout o:
           return LayoutToSpeckle(o);
         case IViewerLinked o:
           return ViewerToSpeckle(o);
@@ -153,7 +157,7 @@ namespace ViewObjects.Converter
 
     public IViewObject ConvertToNativeViewObject(Base @object)
     {
-      switch (@object)
+      switch(@object)
       {
         case VS.ViewStudy o:
           return StudyToNative(o);
@@ -178,4 +182,5 @@ namespace ViewObjects.Converter
       }
     }
   }
+
 }

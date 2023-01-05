@@ -10,18 +10,25 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
 using ViewObjects.Converter;
+using ViewObjects.References;
+using ViewObjects.Studies;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
 using VS = ViewObjects.Speckle;
 
 namespace ViewTo.Tests.Objects
 {
+
   [TestFixture]
   [Category(Categories.CMD)]
   public class RandomHelperTests
   {
     private Client _client;
     private ServerTransport _transport;
-    private (string id, string branch, string commit) _stream;
+    private(string id, string branch, string commit) _stream;
 
     [TearDown]
     public void BreakDown()
@@ -35,16 +42,16 @@ namespace ViewTo.Tests.Objects
     {
       var contents = new List<IViewObject>
       {
-        new ContentReference(new List<string> { "2e14d7936c" }, ContentType.Target, ObjUtils.InitGuid, "Park"),
-        new ContentReference(new List<string> { "a7af04b287" }, ContentType.Target, ObjUtils.InitGuid, "Water"),
-        new ContentReference(new List<string> { "afc4a766e5" }, ContentType.Target, ObjUtils.InitGuid, "Landmark"),
-        new ContentReference(new List<string> { "e91a49c540" }, ContentType.Target, ObjUtils.InitGuid, "Mountain"),
-        new ContentReference(new List<string> { "bc49a5e0b0" }, ContentType.Target, ObjUtils.InitGuid, "Mountain-Top-View-Deck"),
-        new ContentReference(new List<string> { "813d4062e8" }, ContentType.Existing, ObjUtils.InitGuid, "Topo"),
-        new ContentReference(new List<string> { "b2fe722cb8" }, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Adjacent"),
-        new ContentReference(new List<string> { "bfe46788b8" }, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Context"),
-        new ViewCloudReference(new List<string> { "e01e2058b2" }, ObjUtils.InitGuid),
-        new Viewer(new List<IViewerLayout> { new LayoutHorizontal() })
+        new ContentReference(new List<string> {"2e14d7936c"}, ContentType.Potential, ObjUtils.InitGuid, "Park"),
+        new ContentReference(new List<string> {"a7af04b287"}, ContentType.Potential, ObjUtils.InitGuid, "Water"),
+        new ContentReference(new List<string> {"afc4a766e5"}, ContentType.Potential, ObjUtils.InitGuid, "Landmark"),
+        new ContentReference(new List<string> {"e91a49c540"}, ContentType.Potential, ObjUtils.InitGuid, "Mountain"),
+        new ContentReference(new List<string> {"bc49a5e0b0"}, ContentType.Potential, ObjUtils.InitGuid, "Mountain-Top-View-Deck"),
+        new ContentReference(new List<string> {"813d4062e8"}, ContentType.Existing, ObjUtils.InitGuid, "Topo"),
+        new ContentReference(new List<string> {"b2fe722cb8"}, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Adjacent"),
+        new ContentReference(new List<string> {"bfe46788b8"}, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Context"),
+        new ViewCloudReference(new List<string> {"e01e2058b2"}, ObjUtils.InitGuid),
+        new Viewer(new List<ILayout> {new LayoutHorizontal()})
       };
 
       _client = new Client(AccountManager.GetDefaultAccount());
@@ -59,7 +66,7 @@ namespace ViewTo.Tests.Objects
 
       _transport = new ServerTransport(_client.Account, _stream.id);
 
-      var id = await Operations.Send(@base, new List<ITransport> { _transport });
+      var id = await Operations.Send(@base, new List<ITransport> {_transport});
 
       Assert.IsNotNull(id);
 
@@ -91,13 +98,13 @@ namespace ViewTo.Tests.Objects
 
       var values = new List<double>();
       var cloud = await Operations.Receive("e3da2a2017b94e5c8fe8ee6a25ac194c", _transport);
-      if (cloud["@A"] is IList itemsA)
+      if(cloud["@A"] is IList itemsA)
       {
         values.AddRange(itemsA.Cast<double>());
       }
 
       cloud = await Operations.Receive("67f4245e919c1861fc4595f227f79639", _transport);
-      if (cloud["@A"] is IList itemsB)
+      if(cloud["@A"] is IList itemsB)
       {
         values.AddRange(itemsB.Cast<double>());
       }
@@ -108,7 +115,7 @@ namespace ViewTo.Tests.Objects
         points = values.ToList()
       };
 
-      var id = await Operations.Send(pointCloud, new List<ITransport> { _transport });
+      var id = await Operations.Send(pointCloud, new List<ITransport> {_transport});
 
       var commit = await _client.CommitCreate(new CommitCreateInput
       {
@@ -123,8 +130,8 @@ namespace ViewTo.Tests.Objects
 
     }
 
-    
-    
+
+
     [Test]
     public async Task Modify_ViewId_FromScript()
     {
@@ -142,7 +149,7 @@ namespace ViewTo.Tests.Objects
       var item = await Operations.Receive("82be3de3a781e6ea0652edf9000850e3", _transport);
       var obj = converter.ConvertToNative(item);
 
-      if (obj is not ViewStudy study)
+      if(obj is not ViewStudy study)
       {
         Assert.Fail($"Object should be converted to View Study but is " + (obj == null ? "null" : obj.GetType()));
         return;
@@ -150,10 +157,10 @@ namespace ViewTo.Tests.Objects
       }
 
       var cloud = study.Get<ResultCloud>();
-      for (var i = 0; i < study.Objects.Count; i++)
+      for(var i = 0; i < study.Objects.Count; i++)
       {
         var o = study.Objects[i];
-        if (o is ResultCloud)
+        if(o is ResultCloud)
         {
           study.Objects.RemoveAt(i);
           study.Objects.Insert(i, new ResultCloud(
@@ -167,7 +174,7 @@ namespace ViewTo.Tests.Objects
 
       _transport = new ServerTransport(_client.Account, _stream.id);
 
-      var id = await Operations.Send(@base, new List<ITransport> { _transport });
+      var id = await Operations.Send(@base, new List<ITransport> {_transport});
 
       var commit = await _client.CommitCreate(new CommitCreateInput
       {
@@ -187,7 +194,7 @@ namespace ViewTo.Tests.Objects
     {
       var timer = new Stopwatch();
       timer.Start();
-      
+
       _client = new Client(AccountManager.GetDefaultAccount());
 
       // test stream for view to 
@@ -195,13 +202,14 @@ namespace ViewTo.Tests.Objects
 
       var commits = await _client.StreamGetCommits(_stream.id, 10);
 
-      foreach (var commitRef in commits)
+      foreach(var commitRef in commits)
       {
         var data = await _client.CommitGet(_stream.id, commitRef.id);
-        
+
       }
 
     }
 
   }
+
 }

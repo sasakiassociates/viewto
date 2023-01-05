@@ -1,9 +1,11 @@
 ﻿using NUnit.Framework;
 using System;
 using ViewObjects;
-using ViewObjects.Explorer;
+using ViewObjects.Results;
+using ViewObjects.Systems;
 using ViewTo;
 using ViewTo.Tests;
+
 [TestFixture]
 [Category(Categories.INT)]
 public class CommandTests

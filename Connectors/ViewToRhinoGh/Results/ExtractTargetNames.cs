@@ -6,13 +6,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Contents;
+using ViewObjects.References;
+using ViewObjects.Studies;
+
 namespace ViewTo.RhinoGh.Results
 {
+
   public class ExtractTargetNames : ViewToComponentBase
   {
     private GH_ValueList _activeList;
 
-    private (int Object, int Values ) _input;
+    private(int Object, int Values ) _input;
 
     private bool _refresh;
     private List<ContentInfo> _storedValues;
@@ -22,8 +27,7 @@ namespace ViewTo.RhinoGh.Results
       "ET",
       "Extract Targets from a result cloud into a value list",
       ConnectorInfo.Nodes.RESULTS)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("601505A6-A108-4DB4-AEFA-E15722C008A6");
 
@@ -46,9 +50,9 @@ namespace ViewTo.RhinoGh.Results
     public static List<GH_ValueListItem> CreateValueListItems(List<string> values, List<string> expressions = null)
     {
       var items = new List<GH_ValueListItem>();
-      if (values != null && values.Any())
+      if(values != null && values.Any())
       {
-        for (var i = 0; i < values.Count; i++)
+        for(var i = 0; i < values.Count; i++)
         {
           items.Add(new GH_ValueListItem(values[i], expressions?[i] != null ? $"\"{expressions[i]}\"" : $"\"{values[i]}\""));
         }
@@ -61,7 +65,7 @@ namespace ViewTo.RhinoGh.Results
     {
       GH_ValueList valueList = null;
       //make dropdown box
-      if (values != null && values.Any())
+      if(values != null && values.Any())
       {
         valueList = new GH_ValueList();
         valueList.CreateAttributes();
@@ -72,7 +76,7 @@ namespace ViewTo.RhinoGh.Results
 
         valueList.ListItems.Clear();
 
-        foreach (var t in values)
+        foreach(var t in values)
         {
           valueList.ListItems.Add(t);
         }
@@ -85,13 +89,13 @@ namespace ViewTo.RhinoGh.Results
     {
       base.AfterSolveInstance();
 
-      if (!_refresh || _storedValues == null || !_storedValues.Any())
+      if(!_refresh || _storedValues == null || !_storedValues.Any())
       {
         return;
       }
 
       var items = CreateValueListItems(_storedValues.Select(x => x.ViewName).ToList(), _storedValues.Select(x => x.ViewId).ToList());
-      if (_activeList == null)
+      if(_activeList == null)
       {
         _activeList = PopulateValueList(
           items,
@@ -111,7 +115,7 @@ namespace ViewTo.RhinoGh.Results
       else
       {
         _activeList.ListItems.Clear();
-        foreach (var i in items)
+        foreach(var i in items)
         {
           _activeList.ListItems.Add(i);
         }
@@ -130,20 +134,20 @@ namespace ViewTo.RhinoGh.Results
       var inputTargets = new List<string>();
       DA.GetDataList(_input.Values, inputTargets);
 
-      if (wrapper?.Value is ViewStudy obj && obj.Has<IContentInfo>())
+      if(wrapper?.Value is ViewStudy obj && obj.Has<IContentInfo>())
       {
         _storedValues = obj.FindObjects<ContentReference>()
-          .Where(x => x != null && x.ContentType == ContentType.Target)
+          .Where(x => x != null && x.ContentType == ContentType.Potential)
           .Select(x => new ContentInfo(x.ViewId, x.ViewName))
           .ToList();
 
-        if (!inputTargets.Any())
+        if(!inputTargets.Any())
         {
           _refresh = true;
         }
         else
         {
-          if (_storedValues.Count != inputTargets.Count)
+          if(_storedValues.Count != inputTargets.Count)
           {
             _refresh = true;
           }
@@ -153,4 +157,5 @@ namespace ViewTo.RhinoGh.Results
       DA.SetDataList(0, _storedValues);
     }
   }
+
 }

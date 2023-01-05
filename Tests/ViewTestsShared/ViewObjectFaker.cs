@@ -35,7 +35,7 @@ namespace ViewTo.Tests
 
         foreach(var c in content)
         {
-          if(c.ContentType == ContentType.Target)
+          if(c.ContentType == ContentType.Potential)
           {
             foreach(ContentType type in Enum.GetValues(typeof(ContentType)))
             {

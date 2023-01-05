@@ -5,22 +5,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ViewObjects;
-using ViewObjects.Explorer;
+using ViewObjects.Contents;
+using ViewObjects.Results;
+
 namespace ViewTo.RhinoGh.Results
 {
 
   public class ExplorerSettingsComponent : ViewToComponentBase
   {
 
-    private ( int ValueType, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
+    private( int ValueType, int Normalize, int Range, int Show, int Point, int Colors, int InvalidColor) _input;
 
     public ExplorerSettingsComponent()
       : base("Explorer Settings",
         "ES",
         "Result Explorer Settings",
         ConnectorInfo.Nodes.EXPLORER)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("4817C001-C72E-4992-AF53-5CDB16D55765");
 
@@ -84,7 +85,7 @@ namespace ViewTo.RhinoGh.Results
       DA.GetData(_input.InvalidColor, ref invalidColor);
 
       var colors = new List<Color>();
-      if (!DA.GetDataList(_input.Colors, colors))
+      if(!DA.GetDataList(_input.Colors, colors))
         colors = ViewColor.Ramp().ToList();
 
       var settings = new ExplorerSettings
@@ -102,4 +103,5 @@ namespace ViewTo.RhinoGh.Results
       DA.SetData(0, settings);
     }
   }
+
 }
