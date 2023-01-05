@@ -1,8 +1,16 @@
 ﻿using System.Collections.Generic;
 using ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+using ViewObjects.Contents;
+using ViewObjects.Studies;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
 using ViewTo.Cmd;
+
 namespace ViewTo
 {
+
   public static partial class ViewCoreExtensions
   {
     public static List<string> LoadStudyToRig(this IViewStudy study, ref IRig rig)
@@ -22,11 +30,11 @@ namespace ViewTo
         new InitializeAndBuildRig(rig, contents, clouds, viewers)
       };
 
-      foreach (var s in sequence)
+      foreach(var s in sequence)
       {
         s.Execute();
 
-        if (s is ICmdWithArgs<CommandArgs> cmdWithArgs)
+        if(s is ICmdWithArgs<CommandArgs> cmdWithArgs)
         {
           reports.Add(cmdWithArgs.args.Message);
         }
@@ -34,10 +42,11 @@ namespace ViewTo
 
       return reports;
     }
+
     public static void GatherLooseLayouts(this IViewStudy study)
     {
-      var layouts = study.GetAll<IViewerLayout>();
-      if (layouts.Valid())
+      var layouts = study.GetAll<ILayout>();
+      if(layouts.Valid())
       {
         // if layouts are loose we add them to a default viewer since they will run on a global viewer 
         study.Objects.Add(new Viewer(layouts));
@@ -45,4 +54,5 @@ namespace ViewTo
     }
 
   }
+
 }

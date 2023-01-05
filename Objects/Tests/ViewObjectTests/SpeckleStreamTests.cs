@@ -7,12 +7,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.Contents;
 using ViewObjects.Converter;
+using ViewObjects.References;
+using ViewObjects.Studies;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
 namespace ViewTo.Tests.Objects
 {
+
   [TestFixture]
   [Category(Categories.SPECKLE)]
   public class SpeckleStreamTests
@@ -28,7 +33,7 @@ namespace ViewTo.Tests.Objects
     private Client _client;
     private ServerTransport _transport;
 
-    private (string id, string branch, string commit) _stream;
+    private(string id, string branch, string commit) _stream;
 
 
     [Test]
@@ -45,7 +50,7 @@ namespace ViewTo.Tests.Objects
       _transport = new ServerTransport(_client.Account, _stream.id);
 
       var id = await Operations.Send(cloud, new List<ITransport>
-        { _transport });
+        {_transport});
 
       Assert.IsNotNull(id);
 
@@ -62,7 +67,7 @@ namespace ViewTo.Tests.Objects
 
     public static string TerminalURL(string caption, string url)
     {
-      return $"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
+      return$"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
     }
 
 
@@ -84,7 +89,7 @@ namespace ViewTo.Tests.Objects
 
       _transport = new ServerTransport(_client.Account, _stream.id);
 
-      var id = await Operations.Send(@base, new List<ITransport> { _transport });
+      var id = await Operations.Send(@base, new List<ITransport> {_transport});
 
       Assert.IsNotNull(id);
 
@@ -121,26 +126,26 @@ namespace ViewTo.Tests.Objects
       var study = converter.ConvertToNativeViewObject(studyBase.SearchForType<VS.ViewStudy>(true)) as ViewStudy;
       var cloud = converter.ConvertToNativeViewObject(cloudBase.SearchForType<VS.ResultCloud>(true)) as ResultCloud;
 
-      var targets = study.GetAll<ContentReference>().Where(x => x.ContentType == ContentType.Target).ToList();
+      var targets = study.GetAll<ContentReference>().Where(x => x.ContentType == ContentType.Potential).ToList();
 
       Assert.IsTrue(targets.Count * 2 == cloud.Data.Count);
-      for (var i = 0; i < targets.Count; i++)
+      for(var i = 0; i < targets.Count; i++)
       {
         var t = targets[i];
         cloud.Data[i].Option = new ContentOption
         {
-          Stage = ResultStage.Potential, Id = t.ViewId, Name = t.ViewName
+          Stage = ContentType.Potential, Id = t.ViewId, Name = t.ViewName
         };
         cloud.Data[i + targets.Count].Option = new ContentOption
         {
-          Stage = ResultStage.Existing, Id = t.ViewId, Name = t.ViewName
+          Stage = ContentType.Existing, Id = t.ViewId, Name = t.ViewName
         };
       }
 
       study.Objects.Add(cloud);
 
       var res = converter.ConvertToSpeckle(study);
-      var id = await Operations.Send(res, new List<ITransport> { _transport });
+      var id = await Operations.Send(res, new List<ITransport> {_transport});
 
       var commit = await _client.CommitCreate(new CommitCreateInput
       {
@@ -178,7 +183,7 @@ namespace ViewTo.Tests.Objects
 
       Assert.IsNotNull(obj);
 
-      var id = await Operations.Send(obj, new List<ITransport> { _transport });
+      var id = await Operations.Send(obj, new List<ITransport> {_transport});
 
       var commitCreated = await _client.CommitCreate(new CommitCreateInput
       {
@@ -191,4 +196,5 @@ namespace ViewTo.Tests.Objects
       Assert.IsNotNull(obj);
     }
   }
+
 }

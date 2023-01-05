@@ -3,26 +3,28 @@ using Speckle.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using ViewObjects.Contents;
+
 namespace ViewObjects.Speckle
 {
+
   /// <summary>
   ///   View Content Object adapted to <see cref="Base" />
   /// </summary>
-  public class ContentReference : ViewObjectReference<ViewObjects.ContentReference>, IContent
+  public class ContentReference : ViewObjectReference<References.ContentReference>, IContent
   {
 
-    private const string TYPE = "Content_Type";
+    private const string CONTENT_TYPE = "Content_Type";
 
     /// <summary>
     /// 
     /// </summary>
     public ContentReference()
-    {
-    }
+    { }
 
     /// <inheritdoc />
     [SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObject.Schema.Category, "Objects")]
-    public ContentReference(ViewObjects.ContentReference obj) : base(obj)
+    public ContentReference(References.ContentReference obj) : base(obj)
     {
       Type = obj.Type;
       References = obj.References;
@@ -38,8 +40,8 @@ namespace ViewObjects.Speckle
     /// <inheritdoc />
     [JsonIgnore] public ContentType ContentType
     {
-      get => (ContentType)Enum.Parse(typeof(ContentType), (string)this[TYPE]);
-      set => this[TYPE] = value.ToString();
+      get => (ContentType)Enum.Parse(typeof(ContentType), (string)this[CONTENT_TYPE]);
+      set => this[CONTENT_TYPE] = value.ToString();
     }
 
     /// <inheritdoc />
@@ -56,4 +58,5 @@ namespace ViewObjects.Speckle
     }
 
   }
+
 }

@@ -1,5 +1,7 @@
 ﻿using Grasshopper.Kernel.Types;
 using ViewObjects;
+using ViewObjects.Common;
+
 namespace ViewTo.RhinoGh.Goo
 {
 
@@ -46,7 +48,7 @@ namespace ViewTo.RhinoGh.Goo
     // REVIEW how this works with GOO
     public override bool CastTo<Q>(ref Q target)
     {
-      if (!(target is GH_ViewObj))
+      if(!(target is GH_ViewObj))
       {
         return false;
       }
@@ -68,7 +70,7 @@ namespace ViewTo.RhinoGh.Goo
         _ => default(IViewObject)
       };
 
-      if (obj != null)
+      if(obj != null)
       {
         Value = obj;
       }
@@ -99,4 +101,5 @@ namespace ViewTo.RhinoGh.Goo
     //   }
     // }
   }
+
 }

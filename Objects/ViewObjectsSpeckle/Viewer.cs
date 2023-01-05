@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using ViewObjects.Systems;
+
 namespace ViewObjects.Speckle
 {
 
@@ -10,8 +12,7 @@ namespace ViewObjects.Speckle
     /// <summary>
     /// </summary>
     public Viewer()
-    {
-    }
+    { }
 
     /// <summary>
     /// </summary>
@@ -24,4 +25,5 @@ namespace ViewObjects.Speckle
     /// <inheritdoc />
     public List<Layout> Layouts { get; set; } = new List<Layout>();
   }
+
 }

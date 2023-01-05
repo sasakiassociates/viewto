@@ -1,11 +1,17 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using ViewObjects;
+using ViewObjects.Common;
+using ViewObjects.Contents;
 using ViewObjects.Converter;
+using ViewObjects.References;
+using ViewObjects.Studies;
+using ViewObjects.Systems;
 using VS = ViewObjects.Speckle;
 
 namespace ViewTo.Tests.Objects
 {
+
   [TestFixture]
   [Category(Categories.UNITS)]
   public class ConversionTests
@@ -21,13 +27,12 @@ namespace ViewTo.Tests.Objects
 
     [OneTimeTearDown]
     public void BreakDown()
-    {
-    }
+    { }
 
     [Test]
     public void Convert_Content()
     {
-      var obj = new ContentReference(new Content(ContentType.Target), new List<string>() { "123443q312" });
+      var obj = new ContentReference(new Content(ContentType.Potential), new List<string>() {"123443q312"});
       var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
       Assert.IsTrue(res.ViewId.Equals(obj.ViewId));
     }
@@ -37,8 +42,8 @@ namespace ViewTo.Tests.Objects
     {
       var objs = new List<IViewObject>
       {
-        new ContentReference(new Content(ContentType.Target), new List<string>() { "123443q312" }),
-        new ViewCloudReference(new List<string> { "256ff84cf7" }, ObjUtils.InitGuid),
+        new ContentReference(new Content(ContentType.Potential), new List<string>() {"123443q312"}),
+        new ViewCloudReference(new List<string> {"256ff84cf7"}, ObjUtils.InitGuid),
         new Viewer()
       };
 
@@ -56,4 +61,5 @@ namespace ViewTo.Tests.Objects
       Assert.IsTrue(obj.Objects.Count.Equals(studyBase.Objects.Count));
     }
   }
+
 }

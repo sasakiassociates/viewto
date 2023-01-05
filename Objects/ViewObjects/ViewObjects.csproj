@@ -1,42 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<Authors>Sasaki</Authors>
-		<RootNamespace>ViewObjects</RootNamespace>
-		<AssemblyName>ViewObjects</AssemblyName>
-		<LangVersion>latestmajor</LangVersion>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PropertyGroup>
+        <Authors>Sasaki</Authors>
+        <RootNamespace>ViewObjects</RootNamespace>
+        <AssemblyName>ViewObjects</AssemblyName>
+        <LangVersion>latestmajor</LangVersion>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
 
-	</PropertyGroup>
+    <PropertyGroup>
+        <IsDesktopBuild Condition="'$(IsDesktopBuild)' == ''">true</IsDesktopBuild>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DefineConstants>TRACE;</DefineConstants>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<IsDesktopBuild Condition="'$(IsDesktopBuild)' == ''">true</IsDesktopBuild>
-	</PropertyGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(IsDesktopBuild)' == true">
+        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;"/>
+        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;..\ViewObjectsUnity\Libs\&quot;"/>
+    </Target>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DefineConstants>TRACE;</DefineConstants>
-		<DocumentationFile>bin\Debug\ViewObjects.xml</DocumentationFile>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.59.4">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Vsxmd" Version="1.4.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="docs"/>
-	</ItemGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(IsDesktopBuild)' == true">
-		<Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;"/>
-		<Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;..\ViewObjectsUnity\Libs\&quot;"/>
-	</Target>
 
 </Project>

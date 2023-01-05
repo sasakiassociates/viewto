@@ -1,18 +1,20 @@
 ﻿using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
-using ViewObjects;
+using ViewObjects.Common;
+using ViewObjects.Contents;
+
 namespace ViewTo.RhinoGh.Setup
 {
+
   public class CreateContentOption : ViewToComponentBase
   {
 
-    private (int Names, int Ids) _input;
+    private(int Names, int Ids) _input;
 
     public CreateContentOption() : base("Create View Content Option", "CCO", "Simple node for creating a view content option for exploring results",
       ConnectorInfo.Nodes.RESULTS)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("B9AE10FF-B47C-4F71-9A46-7288A5B16624");
 
@@ -40,15 +42,15 @@ namespace ViewTo.RhinoGh.Setup
 
       var options = new List<ContentInfo>();
 
-      if (ids.Valid() && names.Valid() && names.Count == ids.Count)
+      if(ids.Valid() && names.Valid() && names.Count == ids.Count)
       {
-        for (var i = 0; i < ids.Count; i++)
+        for(var i = 0; i < ids.Count; i++)
         {
           options.Add(new ContentInfo(ids[i], names[i]));
         }
       }
 
-      if (!options.Valid())
+      if(!options.Valid())
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "The content options are not valid");
       }
@@ -56,4 +58,5 @@ namespace ViewTo.RhinoGh.Setup
       DA.SetDataList(0, options);
     }
   }
+
 }

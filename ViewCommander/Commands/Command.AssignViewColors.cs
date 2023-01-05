@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ViewObjects;
+using ViewObjects.Contents;
+
 namespace ViewTo.Cmd
 {
 
@@ -18,7 +19,7 @@ namespace ViewTo.Cmd
 
     public void Execute()
     {
-      if (_contents == null || _contents.Count == 0)
+      if(_contents == null || _contents.Count == 0)
       {
         return;
       }
@@ -26,7 +27,7 @@ namespace ViewTo.Cmd
       var colorSet = new HashSet<ViewColor>();
       var r = new Random();
 
-      while (colorSet.Count < _contents.Count)
+      while(colorSet.Count < _contents.Count)
       {
         var b = new byte[3];
         r.NextBytes(b);
@@ -35,7 +36,7 @@ namespace ViewTo.Cmd
       }
 
       var index = 0;
-      foreach (var c in colorSet)
+      foreach(var c in colorSet)
       {
         _contents[index++].Color = c;
       }

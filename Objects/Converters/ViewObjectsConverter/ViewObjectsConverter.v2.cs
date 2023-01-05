@@ -1,11 +1,19 @@
 ﻿using Speckle.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+using ViewObjects.References;
+using ViewObjects.Results;
+using ViewObjects.Studies;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
 namespace ViewObjects.Converter
 {
+
   /// <inheritdoc />
   public partial class ViewObjectsConverter
   {
@@ -20,19 +28,19 @@ namespace ViewObjects.Converter
       );
     }
 
-    private IViewObject LayoutToNative(IViewerLayout obj)
+    private IViewObject LayoutToNative(ILayout obj)
     {
       return new Layout(obj.Viewers);
     }
 
     private IViewObject ViewerToNative(IViewer<VS.Layout> o)
     {
-      return new Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList());
+      return new Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<ILayout>().ToList());
     }
 
     private IViewObject ViewerToNative(IViewerLinked<VS.Layout> o)
     {
-      return new ViewerLinked(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<IViewerLayout>().ToList(), o.Clouds);
+      return new ViewerLinked(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<ILayout>().ToList(), o.Clouds);
     }
 
     private IViewObject ResultCloudToNative(VS.ResultCloud obj)
@@ -89,12 +97,12 @@ namespace ViewObjects.Converter
       return new VS.ViewObjectReference(obj.References, obj.ViewId, obj.ViewId) { };
     }
 
-    private VS.Layout LayoutToSpeckle(IViewerLayout obj)
+    private VS.Layout LayoutToSpeckle(ILayout obj)
     {
       return new VS.Layout(obj.Viewers);
     }
 
-    private VS.Viewer ViewerToSpeckle(IViewer<IViewerLayout> o)
+    private VS.Viewer ViewerToSpeckle(IViewer<ILayout> o)
     {
       return new VS.Viewer(
         o.Layouts.Where(x => x != null).Select(LayoutToSpeckle).ToList());
@@ -127,4 +135,5 @@ namespace ViewObjects.Converter
     }
 
   }
+
 }

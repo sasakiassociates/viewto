@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Clouds;
+
 namespace ViewTo.Cmd
 {
+
   /// <summary>
   ///   <para>Searches through a list of <see cref="IResultCloudData" /> to find a given object with a matching id and stage</para>
   /// </summary>
@@ -21,14 +24,14 @@ namespace ViewTo.Cmd
     /// <summary>
     ///   stage the data is linked with
     /// </summary>
-    private readonly ResultStage stage;
+    private readonly ContentType stage;
 
     /// <summary>
     /// </summary>
     /// <param name="data">data to search through</param>
     /// <param name="contentId">id of the content to find</param>
     /// <param name="stage">the analysis stage to find</param>
-    public TryGetValues(IReadOnlyCollection<IResultCloudData> data, string contentId, ResultStage stage)
+    public TryGetValues(IReadOnlyCollection<IResultCloudData> data, string contentId, ContentType stage)
     {
       this.data = data;
       this.stage = stage;
@@ -39,13 +42,13 @@ namespace ViewTo.Cmd
 
     public void Execute()
     {
-      if (string.IsNullOrEmpty(contentId))
+      if(string.IsNullOrEmpty(contentId))
       {
         args = new ValuesRawForExplorerArgs("Content ID does is not valid");
         return;
       }
 
-      if (data == null || !data.Any())
+      if(data == null || !data.Any())
       {
         args = new ValuesRawForExplorerArgs("No data found to use");
         return;
@@ -53,16 +56,16 @@ namespace ViewTo.Cmd
 
       IResultCloudData dataFound = default;
 
-      foreach (var d in data)
+      foreach(var d in data)
       {
-        if (d.Option.Id.Equals(contentId) && d.Option.Stage == stage)
+        if(d.Option.Id.Equals(contentId) && d.Option.Stage == stage)
         {
           dataFound = d;
           break;
         }
       }
 
-      if (dataFound == default(object))
+      if(dataFound == default(object))
       {
         args = new ValuesRawForExplorerArgs($"No id found in the data set. Input id={contentId}");
         return;
@@ -71,4 +74,5 @@ namespace ViewTo.Cmd
       args = new ValuesRawForExplorerArgs(dataFound.Values, $"Data found for {contentId} with {dataFound.Values.Count} ");
     }
   }
+
 }

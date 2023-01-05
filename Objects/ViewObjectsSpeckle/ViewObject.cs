@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 namespace ViewObjects.Speckle
 {
 
@@ -41,7 +42,7 @@ namespace ViewObjects.Speckle
 
     /// <summary>
     ///   Returns a list of supported kit types.
-    ///   Currently this contains <see cref="ViewObjectBase" />, <see cref="Container" />
+    ///   Currently this contains <see cref="ViewObjectBase" />
     /// </summary>
     public IEnumerable<Type> Types
     {
@@ -54,23 +55,19 @@ namespace ViewObjects.Speckle
         var asm = Assembly.Load(typeof(IViewObject).GetTypeInfo().Assembly.GetName());
 
         var exported = asm.GetExportedTypes();
-        foreach (var t in exported)
+        foreach(var t in exported)
         {
-          if (t.IsAbstract)
+          if(t.IsAbstract)
           {
             continue;
           }
 
-          if (t.IsInterface)
+          if(t.IsInterface)
           {
             continue;
           }
 
-          if (t.IsSubclassOf(typeof(Container)))
-          {
-            types.Add(t);
-          }
-          else if (typeof(IViewObject).IsAssignableFrom(t))
+          if(typeof(IViewObject).IsAssignableFrom(t))
           {
             types.Add(t);
           }
@@ -83,7 +80,7 @@ namespace ViewObjects.Speckle
     /// <inheritdoc />
     public ISpeckleConverter LoadConverter(string app)
     {
-      if (_loadedConverters.ContainsKey(app) && _loadedConverters[app] != null)
+      if(_loadedConverters.ContainsKey(app) && _loadedConverters[app] != null)
       {
         return Activator.CreateInstance(_loadedConverters[app]) as ISpeckleConverter;
       }
@@ -93,14 +90,14 @@ namespace ViewObjects.Speckle
       try
       {
         var path = Path.Combine(KitLocations.Desktop, CONVERTER_BASE_NAME + "." + $"{app}.dll");
-        if (File.Exists(path))
+        if(File.Exists(path))
         {
-          foreach (var t in Assembly.LoadFrom(path).GetTypes())
-            foreach (var i in t.GetInterfaces())
+          foreach(var t in Assembly.LoadFrom(path).GetTypes())
+            foreach(var i in t.GetInterfaces())
             {
-              if (i.Name == nameof(ISpeckleConverter)
-                  && Activator.CreateInstance(t) is ISpeckleConverter c
-                  && c.GetServicedApplications().Contains(app))
+              if(i.Name == nameof(ISpeckleConverter)
+                 && Activator.CreateInstance(t) is ISpeckleConverter c
+                 && c.GetServicedApplications().Contains(app))
               {
                 _loadedConverters[app] = t;
                 return c;
@@ -108,7 +105,7 @@ namespace ViewObjects.Speckle
             }
         }
       }
-      catch (Exception e)
+      catch(Exception e)
       {
         Console.WriteLine(e.Message);
         return null;
@@ -148,4 +145,5 @@ namespace ViewObjects.Speckle
       internal const string Category = "ViewObjects";
     }
   }
+
 }

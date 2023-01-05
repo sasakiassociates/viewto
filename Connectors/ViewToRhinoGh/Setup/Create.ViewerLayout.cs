@@ -3,7 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.References;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
 using ViewTo.RhinoGh.Goo;
+
 namespace ViewTo.RhinoGh.Setup
 {
 
@@ -14,8 +18,7 @@ namespace ViewTo.RhinoGh.Setup
       "CVL",
       "Simple node for setting up different parameters for building a Viewer Rig",
       ConnectorInfo.Nodes.VIEWER)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("1A51EF3A-A5CB-4F58-B509-B98203003861");
 
@@ -48,14 +51,15 @@ namespace ViewTo.RhinoGh.Setup
         ViewDirection.Down
       });
 
-      if (!clouds.Any())
+      if(!clouds.Any())
       {
-        DA.SetData(0, new Viewer(new List<IViewerLayout> { layout }));
+        DA.SetData(0, new Viewer(new List<ILayout> {layout}));
       }
       else
       {
-        DA.SetData(0, new ViewerLinked(new List<IViewerLayout> { layout }, clouds.Where(x => x != null).Select(x => x.ViewId).ToList()));
+        DA.SetData(0, new ViewerLinked(new List<ILayout> {layout}, clouds.Where(x => x != null).Select(x => x.ViewId).ToList()));
       }
     }
   }
+
 }

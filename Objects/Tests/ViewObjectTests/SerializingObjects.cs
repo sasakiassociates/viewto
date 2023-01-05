@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ViewObjects.Clouds;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
 
 namespace ViewTo.Tests.Objects
 {
+
   [TestFixture]
   [Category(Categories.UNITS)]
   public class SerializingObjects
@@ -17,7 +19,7 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Serialize_ViewObjectType()
     {
-      foreach (var vtype in GetSubclassTypes(typeof(VS.ViewObjectBase)))
+      foreach(var vtype in GetSubclassTypes(typeof(VS.ViewObjectBase)))
       {
         var vo = Activator.CreateInstance(vtype) as VS.ViewObjectBase;
 
@@ -43,13 +45,13 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Serialize_ResultCloud()
     {
-      var obj = VO.ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(100, 2);
+      var obj = ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(100, 2);
       var result = Serialize_Process(obj);
       Assert.IsTrue(obj != default(object) && result != default(object));
       Assert.IsTrue(obj.MetaData.Count == result.MetaData.Count);
       Assert.IsTrue(obj.Data.Count == result.Data.Count);
 
-      for (var i = 0; i < obj.Data.Count; i++)
+      for(var i = 0; i < obj.Data.Count; i++)
       {
         Check(obj.Data[i], result.Data[i]);
       }
@@ -58,7 +60,7 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Serialize_ResultCloudData()
     {
-      var obj = VO.ViewObjectFaker.Result<VS.ResultCloudData>(100, VO.ResultStage.Existing);
+      var obj = ViewObjectFaker.Result<VS.ResultCloudData>(100, VO.ContentType.Existing);
       Check(obj, Serialize_Process(obj));
     }
 
@@ -75,7 +77,7 @@ namespace ViewTo.Tests.Objects
       return res as TObj;
     }
 
-    private static void Check(VO.IResultCloudData dataA, VO.IResultCloudData dataB)
+    private static void Check(IResultCloudData dataA, IResultCloudData dataB)
     {
       Assert.IsTrue(dataA != default(object) && dataB != default(object));
       Assert.IsTrue(dataA.Layout.Equals(dataB.Layout));
@@ -92,4 +94,5 @@ namespace ViewTo.Tests.Objects
         .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(parentType)).ToList();
     }
   }
+
 }

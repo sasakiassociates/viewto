@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
-using ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.Contents;
+using ViewObjects.Systems;
 using ViewTo.Receivers;
+
 namespace ViewTo.Cmd
 {
+
   internal class CanStudyRun : ICmdWithArgs<SimpleResultArgs>
   {
     private IReadOnlyList<IViewCloud> _clouds;
@@ -24,15 +28,15 @@ namespace ViewTo.Cmd
     public void Execute()
     {
       // check all lists are populated correctly
-      if (!_receiver.DataIsValid(_contents, out var message)
-          || !_receiver.DataIsValid(_clouds, out message)
-          || !_receiver.DataIsValid(_viewers, out message))
+      if(!_receiver.DataIsValid(_contents, out var message)
+         || !_receiver.DataIsValid(_clouds, out message)
+         || !_receiver.DataIsValid(_viewers, out message))
       {
         args = new SimpleResultArgs(false, message);
       }
 
       // check if all the correct clouds are there
-      if (_receiver.CompareClouds(_viewers, _clouds, out message))
+      if(_receiver.CompareClouds(_viewers, _clouds, out message))
       {
         args = new SimpleResultArgs(false, message);
       }
@@ -41,4 +45,5 @@ namespace ViewTo.Cmd
       args = new SimpleResultArgs(_receiver.CheckData(_contents, _clouds, _viewers, out message), message);
     }
   }
+
 }

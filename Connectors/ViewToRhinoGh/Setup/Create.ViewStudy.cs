@@ -4,23 +4,24 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using ViewObjects;
+using ViewObjects.Studies;
 using ViewTo.RhinoGh.Goo;
 using ViewTo.RhinoGh.Properties;
+
 namespace ViewTo.RhinoGh.Setup
 {
 
   public class CreateStudy : ViewToComponentBase
   {
 
-    private (int Name, int Cloud, int Content, int Params) _input;
+    private(int Name, int Cloud, int Content, int Params) _input;
 
     public CreateStudy() : base(
       "Create View Study",
       "CS",
       "Create a View Study for a View Project",
       ConnectorInfo.Nodes.STUDY)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("328e44a9-91ba-450d-a40c-9da3bb7e0afc");
 
@@ -72,4 +73,5 @@ namespace ViewTo.RhinoGh.Setup
       DA.SetData(0, viewObj);
     }
   }
+
 }

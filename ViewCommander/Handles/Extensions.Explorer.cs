@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
-using ViewObjects.Explorer;
+using ViewObjects.Results;
 using ViewTo.Cmd;
+
 namespace ViewTo
 {
 
@@ -20,7 +21,7 @@ namespace ViewTo
       var cmd = new FindPointWithValue(values, value);
       cmd.Execute();
 
-      if (cmd.args.IsValid())
+      if(cmd.args.IsValid())
       {
         var cp = obj.Cloud.Points[cmd.args.index];
         var v = values[cmd.args.index];
@@ -55,7 +56,7 @@ namespace ViewTo
       getValueCmdA.Execute();
       getValueCmdB.Execute();
 
-      if (!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
+      if(!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
       {
         // TODO: return issue
         return false;
@@ -64,7 +65,7 @@ namespace ViewTo
       var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
       normalizeCmd.Execute();
 
-      if (!normalizeCmd.args.IsValid())
+      if(!normalizeCmd.args.IsValid())
       {
         // TODO: report
         return false;
@@ -85,7 +86,7 @@ namespace ViewTo
     /// <returns></returns>
     public static bool TryGetValues(this IExplorer exp, ExplorerValueType valueType, string target, ref double[] results)
     {
-      if (!exp.SetTarget(target))
+      if(!exp.SetTarget(target))
       {
         return false;
       }
@@ -98,7 +99,7 @@ namespace ViewTo
       getValueCmdA.Execute();
       getValueCmdB.Execute();
 
-      if (!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
+      if(!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
       {
         // TODO: return issue
         return false;
@@ -107,7 +108,7 @@ namespace ViewTo
       var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
       normalizeCmd.Execute();
 
-      if (!normalizeCmd.args.IsValid())
+      if(!normalizeCmd.args.IsValid())
       {
         // TODO: report
         return false;
@@ -118,34 +119,34 @@ namespace ViewTo
       return results.Any();
     }
 
-    public static void GetStages(this ExplorerValueType type, out ResultStage stageA, out ResultStage stageB)
+    public static void GetStages(this ExplorerValueType type, out ContentType stageA, out ContentType stageB)
     {
-      switch (type)
+      switch(type)
       {
         case ExplorerValueType.ExistingOverPotential:
-          stageA = ResultStage.Existing;
-          stageB = ResultStage.Potential;
+          stageA = ContentType.Existing;
+          stageB = ContentType.Potential;
           break;
         case ExplorerValueType.ProposedOverExisting:
-          stageA = ResultStage.Proposed;
-          stageB = ResultStage.Existing;
+          stageA = ContentType.Proposed;
+          stageB = ContentType.Existing;
           break;
         case ExplorerValueType.ProposedOverPotential:
-          stageA = ResultStage.Proposed;
-          stageB = ResultStage.Potential;
+          stageA = ContentType.Proposed;
+          stageB = ContentType.Potential;
           break;
         default:
-          stageA = ResultStage.Potential;
-          stageB = ResultStage.Potential;
+          stageA = ContentType.Potential;
+          stageB = ContentType.Potential;
           break;
       }
     }
 
-    public static bool SetTarget(this IExplorer obj, string targetByIdOrName, ResultStage stage)
+    public static bool SetTarget(this IExplorer obj, string targetByIdOrName, ContentType stage)
     {
       var opt = obj.Cloud.GetTarget(targetByIdOrName, stage);
 
-      if (opt != null)
+      if(opt != null)
       {
         obj.ActiveContent = opt;
       }
@@ -157,7 +158,7 @@ namespace ViewTo
     {
       var opt = obj.Cloud.GetTarget(targetByIdOrName);
 
-      if (opt == null)
+      if(opt == null)
       {
         return false;
       }

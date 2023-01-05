@@ -5,9 +5,11 @@ using Rhino.Geometry.Intersect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ViewObjects;
+using ViewObjects.Clouds;
+
 namespace ViewTo.RhinoGh.Points
 {
+
   public static class Helpers
   {
 
@@ -27,7 +29,7 @@ namespace ViewTo.RhinoGh.Points
     {
       var pointsToProject = new List<Point3d>(); // XY grid of points projected onto ground mesh
 
-      if (region == null)
+      if(region == null)
       {
         return pointsToProject;
       }
@@ -50,8 +52,8 @@ namespace ViewTo.RhinoGh.Points
       var widthSteps = (int)(Math.Abs(regionBox.X.Length) / stepSizeX);
       var depthStepCount = (int)(Math.Abs(regionBox.Y.Length) / stepSizeY);
 
-      for (var i = 0; i < widthSteps; i++)
-      for (var j = 0; j < depthStepCount; j++)
+      for(var i = 0; i < widthSteps; i++)
+      for(var j = 0; j < depthStepCount; j++)
       {
         // set up base grid XY coordinates
         var x = regionWidthStart + i * stepSizeX;
@@ -60,7 +62,7 @@ namespace ViewTo.RhinoGh.Points
 
         // test for region inclusion
 
-        if (region.Contains(xyPt, Plane.WorldXY, RhinoDoc.ActiveDoc.ModelAbsoluteTolerance) == PointContainment.Inside)
+        if(region.Contains(xyPt, Plane.WorldXY, RhinoDoc.ActiveDoc.ModelAbsoluteTolerance) == PointContainment.Inside)
         {
           pointsToProject.Add(xyPt);
         }
@@ -86,32 +88,32 @@ namespace ViewTo.RhinoGh.Points
       var yCount = 1.0;
       var zCount = 1.0;
 
-      if (xSpacing < xSpan)
+      if(xSpacing < xSpan)
       {
         xCount = xSpan / xSpacing;
       }
 
-      if (ySpacing < ySpan)
+      if(ySpacing < ySpan)
       {
         yCount = ySpan / ySpacing;
       }
 
-      if (zSpacing < zSpan)
+      if(zSpacing < zSpan)
       {
         zCount = zSpan / zSpacing;
       }
 
       var cloud = new List<Point3d>();
 
-      for (var x = 0; x < xCount; x++)
+      for(var x = 0; x < xCount; x++)
       {
         var xPos = minX + x * xSpacing;
 
-        for (var y = 0; y < yCount; y++)
+        for(var y = 0; y < yCount; y++)
         {
           var yPos = minY + y * ySpacing;
 
-          for (var z = 0; z < zCount; z++)
+          for(var z = 0; z < zCount; z++)
           {
             var zPos = minZ + z * zSpacing;
 
@@ -143,7 +145,7 @@ namespace ViewTo.RhinoGh.Points
         var lineSize = dir.Length;
         dir.Unitize();
 
-        foreach (var ptn in CreateXYGrid(region, stepSizeX, stepSizeY))
+        foreach(var ptn in CreateXYGrid(region, stepSizeX, stepSizeY))
         {
           //var line = new Line(ptn, dir, lineSize);)
           //var hits = Rhino.Geometry.Intersect.Intersection.MeshLine(ground, line, out var faces);
@@ -156,14 +158,14 @@ namespace ViewTo.RhinoGh.Points
           {
             ptn
           }, Vector3d.ZAxis, 0.0001);
-          if (hits != null && hits.Length > 0)
+          if(hits != null && hits.Length > 0)
           {
             var projPt = hits.LastOrDefault();
             projectedPoints.Add(projPt);
           }
         }
       }
-      catch (Exception e)
+      catch(Exception e)
       {
         // TODO actually throw something 
         Console.WriteLine(e);
@@ -173,4 +175,5 @@ namespace ViewTo.RhinoGh.Points
       return projectedPoints;
     }
   }
+
 }
