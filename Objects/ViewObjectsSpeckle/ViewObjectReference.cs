@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using ViewObjects.Common;
+
 namespace ViewObjects.Speckle
 {
 
@@ -12,8 +14,7 @@ namespace ViewObjects.Speckle
     /// 
     /// </summary>
     public ViewObjectReference()
-    {
-    }
+    { }
 
     /// <summary>
     /// 
@@ -60,8 +61,7 @@ namespace ViewObjects.Speckle
     /// 
     /// </summary>
     public ViewObjectReference()
-    {
-    }
+    { }
 
     /// <summary>
     /// </summary>
@@ -70,12 +70,12 @@ namespace ViewObjects.Speckle
     {
       Type = typeof(TObj);
 
-      if (typeof(IId).IsAssignableFrom(Type) && obj is IId i)
+      if(typeof(IId).IsAssignableFrom(Type) && obj is IId i)
       {
         ViewId = ObjUtils.CheckIfValidId(i.ViewId);
       }
 
-      if (typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
+      if(typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
       {
         ViewName = n.ViewName;
       }
@@ -90,12 +90,12 @@ namespace ViewObjects.Speckle
     {
       Type = typeof(TObj);
 
-      if (typeof(IId).IsAssignableFrom(Type) && obj is IId i)
+      if(typeof(IId).IsAssignableFrom(Type) && obj is IId i)
       {
         ViewId = ObjUtils.CheckIfValidId(i.ViewId);
       }
 
-      if (typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
+      if(typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
       {
         ViewName = n.ViewName;
       }
@@ -113,4 +113,5 @@ namespace ViewObjects.Speckle
     }
 
   }
+
 }

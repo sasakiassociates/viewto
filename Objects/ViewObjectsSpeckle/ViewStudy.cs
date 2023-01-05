@@ -1,8 +1,12 @@
 ﻿using Speckle.Core.Api;
 using Speckle.Core.Kits;
 using System.Collections.Generic;
+using ViewObjects.Common;
+using ViewObjects.Studies;
+
 namespace ViewObjects.Speckle
 {
+
   /// <summary>
   ///   A simple view study as a speckle object
   /// </summary>
@@ -13,8 +17,7 @@ namespace ViewObjects.Speckle
     ///   Default constructor for converting
     /// </summary>
     public ViewStudy()
-    {
-    }
+    { }
 
     /// <summary>
     ///   Schema constructor for creating a view study
@@ -42,4 +45,5 @@ namespace ViewObjects.Speckle
     /// <inheritdoc />
     public List<ViewObjectBase> Objects { get; set; } = new List<ViewObjectBase>();
   }
+
 }

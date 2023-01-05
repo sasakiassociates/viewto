@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
+using ViewObjects.Common;
+using ViewObjects.Systems;
+
 namespace ViewObjects.Speckle
 {
+
   /// <summary>
   ///   A linked viewer
   /// </summary>
@@ -10,8 +14,7 @@ namespace ViewObjects.Speckle
     /// <summary>
     /// </summary>
     public ViewerLinked()
-    {
-    }
+    { }
 
     /// <summary>
     /// </summary>
@@ -29,4 +32,5 @@ namespace ViewObjects.Speckle
     /// <inheritdoc />
     public List<string> Clouds { get; set; } = new List<string>();
   }
+
 }

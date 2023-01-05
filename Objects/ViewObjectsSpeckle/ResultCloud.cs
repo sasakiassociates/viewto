@@ -3,8 +3,12 @@ using Speckle.Core.Logging;
 using Speckle.Core.Models;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+
 namespace ViewObjects.Speckle
 {
+
   /// <summary>
   /// </summary>
   public class ResultCloud : ViewObjectBase, IResultCloud<ResultCloudData>
@@ -13,8 +17,7 @@ namespace ViewObjects.Speckle
     /// <summary>
     /// </summary>
     public ResultCloud()
-    {
-    }
+    { }
 
     /// <summary>
     ///   Constructs a Result cloud
@@ -53,14 +56,14 @@ namespace ViewObjects.Speckle
     {
       get
       {
-        if (Positions.Count % 3 != 0)
+        if(Positions.Count % 3 != 0)
         {
           throw new SpeckleException($"{nameof(ResultCloud)}.{nameof(Positions)} list is malformed: expected length to be multiple of 3");
         }
 
         var points = new CloudPoint[Positions.Count / 3];
 
-        for (int i = 2, c = 0; i < Positions.Count; i += 3, c++)
+        for(int i = 2, c = 0; i < Positions.Count; i += 3, c++)
         {
           points[c] = new CloudPoint(Positions[i - 2], Positions[i - 1], Positions[i], 0, 0, 0, MetaData[c] ?? "empty");
         }
@@ -72,7 +75,7 @@ namespace ViewObjects.Speckle
         Positions = new List<double>();
         MetaData = new List<string>();
 
-        foreach (var point in value)
+        foreach(var point in value)
         {
           Positions.Add(point.x);
           Positions.Add(point.y);
@@ -82,4 +85,5 @@ namespace ViewObjects.Speckle
       }
     }
   }
+
 }

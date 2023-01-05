@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
+using ViewObjects.Systems.Layouts;
+
 namespace ViewObjects.Speckle
 {
 
   /// <summary>
   ///   Simple Viewer object
   /// </summary>
-  public class Layout : ViewObjectBase, IViewerLayout
+  public class Layout : ViewObjectBase, ILayout
   {
 
     /// <summary>
     /// </summary>
     public Layout()
-    {
-    }
+    { }
 
     /// <summary>
     /// </summary>
@@ -25,4 +26,5 @@ namespace ViewObjects.Speckle
     /// <inheritdoc />
     public List<ViewDirection> Viewers { get; set; } = new List<ViewDirection>();
   }
+
 }
