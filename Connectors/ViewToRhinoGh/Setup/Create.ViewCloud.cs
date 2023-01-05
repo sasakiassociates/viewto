@@ -1,10 +1,13 @@
 ﻿using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
-using ViewObjects;
+using ViewObjects.Common;
+using ViewObjects.References;
 using ViewTo.RhinoGh.Goo;
+
 namespace ViewTo.RhinoGh.Setup
 {
+
   public class CreateViewCloud : ViewToComponentBase
   {
     public CreateViewCloud() : base(
@@ -12,8 +15,7 @@ namespace ViewTo.RhinoGh.Setup
       "CVC",
       "Cast a list of points to a view cloud",
       ConnectorInfo.Nodes.CLOUD)
-    {
-    }
+    { }
 
     // protected override Bitmap Icon => new Bitmap(Icons.GeneratePointsCloud);
 
@@ -33,7 +35,8 @@ namespace ViewTo.RhinoGh.Setup
     {
       var reference = string.Empty;
       DA.GetData(0, ref reference);
-      DA.SetData(0, new ViewCloudReference(new List<string> { reference }, ObjUtils.InitGuid));
+      DA.SetData(0, new ViewCloudReference(new List<string> {reference}, ObjUtils.InitGuid));
     }
   }
+
 }

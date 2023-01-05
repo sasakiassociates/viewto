@@ -3,17 +3,22 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.References;
+using ViewObjects.Studies;
+using ViewObjects.Systems;
 using ViewTo.RhinoGh.Goo;
+
 namespace ViewTo.RhinoGh.Objects
 {
+
   public class DeconstructStudy : ViewToComponentBase
   {
-    private (int Clouds, int Targets, int Existing, int Proposals, int ResultClouds, int Viewers, int Options) _output;
+    private(int Clouds, int Targets, int Existing, int Proposals, int ResultClouds, int Viewers, int Options) _output;
 
     public DeconstructStudy() :
       base("Deconstruct Study", "DS", "Deconstruct a View Study", ConnectorInfo.Nodes.STUDY)
-    {
-    }
+    { }
 
     public override Guid ComponentGuid => new Guid("2A7AB720-A0B7-438E-9900-28B27119EEA7");
 
@@ -46,13 +51,13 @@ namespace ViewTo.RhinoGh.Objects
       GH_ObjectWrapper wrapper = null;
       DA.GetData(0, ref wrapper);
 
-      if (wrapper?.Value is ViewStudy obj)
+      if(wrapper?.Value is ViewStudy obj)
       {
         // TODO: Deal with the different types of view object types
         DA.SetDataList(_output.Clouds, obj.FindObjects<ViewCloudReference>());
         DA.SetDataList(_output.ResultClouds, obj.FindObjects<ResultCloud>());
 
-        DA.SetDataList(_output.Targets, obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Target));
+        DA.SetDataList(_output.Targets, obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Potential));
         DA.SetDataList(_output.Existing, obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Existing));
         DA.SetDataList(_output.Proposals, obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Proposed));
 
@@ -61,4 +66,5 @@ namespace ViewTo.RhinoGh.Objects
       }
     }
   }
+
 }
