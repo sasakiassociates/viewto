@@ -160,7 +160,7 @@ namespace ViewTo.Connector.Unity
     {
       Debug.Log("Starting Hacking Version of View To");
 
-      var client = new SpeckleUnityClient(streamObject.Account);
+      var client = new SpeckleClient(streamObject.baseAccount);
       client.token = this.GetCancellationTokenOnDestroy();
 
       var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
@@ -258,14 +258,14 @@ namespace ViewTo.Connector.Unity
     public static double ScaleToNative(double value, string units) => value * Units.GetConversionFactor(units, Units.Meters);
 
 
-    static async UniTask<Base> ReceiveCommitWithData(SpeckleUnityClient client, string stream, string refId)
+    static async UniTask<Base> ReceiveCommitWithData(SpeckleClient client, string stream, string refId)
     {
       var refCommit = await client.CommitGet(stream, refId);
       return await SpeckleOps.Receive(client, stream, refCommit.referencedObject);
     }
 
 
-    async UniTask GetContentData(ViewObjects.Unity.Content content, VO.Speckle.ContentReference contentBase, SpeckleUnityClient client, string stream)
+    async UniTask GetContentData(ViewObjects.Unity.Content content, VO.Speckle.ContentReference contentBase, SpeckleClient client, string stream)
     {
       content.ViewId = contentBase.ViewId;
       content.ViewName = contentBase.ViewName;
@@ -320,7 +320,7 @@ namespace ViewTo.Connector.Unity
 
       if(_createCommit)
       {
-        var client = new SpeckleUnityClient(AccountManager.GetDefaultAccount());
+        var client = new SpeckleClient(AccountManager.GetDefaultAccount());
         try
         {
           UniTask.Create(async () =>
@@ -452,7 +452,7 @@ namespace ViewTo.Connector.Unity
 
     SpeckleConnector GetConnector()
     {
-      var connector = SpeckleConnector.Instance;
+      var connector = SpeckleConnector.instance;
       if(connector == null)
       {
         connector = new GameObject("Speckle Connector").AddComponent<SpeckleConnector>();

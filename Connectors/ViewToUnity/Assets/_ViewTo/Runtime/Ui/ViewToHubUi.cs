@@ -59,7 +59,7 @@ namespace ViewTo.Connector.Unity
 
 
       _hub = ViewToHub.Instance;
-      _connector = SpeckleConnector.Instance;
+      _connector = SpeckleConnector.instance;
 
       if(_hub == null)
       {
@@ -74,8 +74,8 @@ namespace ViewTo.Connector.Unity
       }
 
       _hub.OnStudiesFound += SetStudies;
-      _connector.OnAccountSet += SetAccount;
-      _connector.OnStreamsLoaded += SetStreams;
+      _connector.OnInitialize += SetAccount;
+      // _connector.OnStreamsLoaded += SetStreams;
 
       SetAccount();
       SetStage();
@@ -155,7 +155,7 @@ namespace ViewTo.Connector.Unity
 
     void SetAccount()
     {
-      _account.value = SpeckleConnector.Instance.accounts.FirstOrDefault();
+      _account.value = SpeckleConnector.instance.accounts.FirstOrDefault();
     }
 
 
