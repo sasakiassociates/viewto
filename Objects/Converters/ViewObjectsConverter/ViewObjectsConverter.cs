@@ -27,9 +27,9 @@ namespace ViewObjects.Converter
 
     public virtual string WebsiteOrEmail => "https://sasaki.com";
 
-    public virtual ProgressReport Report { get; set; }
+    public virtual ProgressReport Report { get; set; } = new ProgressReport();
 
-    public virtual ReceiveMode ReceiveMode { get; set; }
+    public virtual ReceiveMode ReceiveMode { get; set; } = ReceiveMode.Ignore;
 
     public virtual IEnumerable<string> GetServicedApplications()
     {
@@ -56,7 +56,21 @@ namespace ViewObjects.Converter
 
     public List<Base> ConvertToSpeckle(List<object> objects)
     {
-      return objects.Select(ConvertToSpeckle).ToList();
+      var result = new List<Base>();
+      foreach(var o in objects)
+      {
+        var obj = ConvertToSpeckleViewObject(o);
+
+        if(o == null)
+        {
+          // throw 
+          continue;
+        }
+
+        result.Add(obj);
+      }
+
+      return result;
     }
 
     public Base ConvertToSpeckle(object @object)

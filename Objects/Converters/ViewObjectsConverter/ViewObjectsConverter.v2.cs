@@ -19,13 +19,20 @@ namespace ViewObjects.Converter
   {
     private IViewObject StudyToNative(VS.ViewStudy obj)
     {
-      return new ViewStudy
-      (
-        obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToNativeViewObject).ToList()
-          : new List<IViewObject>(),
-        obj.ViewName,
-        obj.ViewId
-      );
+      var result = new ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, Objects = new List<IViewObject>()};
+
+      foreach(var o in obj.Objects)
+      {
+        var res = ConvertToNativeViewObject(o);
+        if(res == null)
+        {
+          // throw 
+          continue;
+        }
+        result.Objects.Add(res);
+      }
+
+      return result;
     }
 
     private IViewObject LayoutToNative(ILayout obj)
@@ -70,12 +77,21 @@ namespace ViewObjects.Converter
 
     private VS.ViewStudy StudyToSpeckle(IViewStudy<IViewObject> obj)
     {
-      return new VS.ViewStudy
+
+      var result = new VS.ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, Objects = new List<VS.ViewObjectBase>()};
+
+      foreach(var o in obj.Objects)
       {
-        Objects = obj.Objects.Valid() ? obj.Objects.Where(x => x != null).Select(ConvertToSpeckleViewObject).ToList() : new List<VS.ViewObjectBase>(),
-        ViewName = obj.ViewName,
-        ViewId = obj.ViewId
-      };
+        var res = ConvertToSpeckleViewObject(o);
+        if(res == null)
+        {
+          // throw 
+          continue;
+        }
+        result.Objects.Add(res);
+      }
+
+      return result;
     }
 
     // VS.ContentReference ViewContentToSpeckle(Content obj) => new VS.ContentReference(obj, new List<string>());
