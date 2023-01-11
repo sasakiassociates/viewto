@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterRhino7"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectsConverterGrasshopper7", "Objects\Converters\ViewObjectsConverterRhinoGh\ViewObjectsConverterGrasshopper7\ViewObjectsConverterGrasshopper7.csproj", "{1D381456-0256-47AB-ABC3-774EBAA9B4EA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deps", "Deps", "{F5729DD9-93A9-48ED-8C7C-047CE5DEF5C8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{71F71E49-65C6-49C1-9ADB-5004EB293AD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewObjectTests", "Objects\Tests\ViewObjectTests\ViewObjectTests.csproj", "{7FDADDFF-8F72-45A2-9913-9DE7B5289828}"
@@ -39,10 +37,6 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ViewTestsShared", "Tests\ViewTestsShared\ViewTestsShared.shproj", "{884DA6C6-45AA-474A-A50A-0ED7F08A1209}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewCoreTests", "Tests\ViewCoreTests\ViewCoreTests.csproj", "{60D89A06-E392-4812-9F55-F252E3801F60}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\..\Speckle\speckle-sharp\Core\Core\Core.csproj", "{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Objects", "..\..\Speckle\speckle-sharp\Objects\Objects\Objects.csproj", "{560FA065-63C9-43F5-821C-6B06080FBEB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,14 +88,6 @@ Global
 		{60D89A06-E392-4812-9F55-F252E3801F60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60D89A06-E392-4812-9F55-F252E3801F60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60D89A06-E392-4812-9F55-F252E3801F60}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{560FA065-63C9-43F5-821C-6B06080FBEB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{560FA065-63C9-43F5-821C-6B06080FBEB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{560FA065-63C9-43F5-821C-6B06080FBEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{560FA065-63C9-43F5-821C-6B06080FBEB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AA039663-8443-47D8-AE7F-1F2A5A384777} = {4A4D420E-99EC-4FF2-9669-9DBD4B539B66}
@@ -119,7 +105,5 @@ Global
 		{605FC207-58A2-4CF0-ABFD-04F0D90C02EA} = {A6F3C883-C36B-4D83-94F7-ACEB2B9348D8}
 		{884DA6C6-45AA-474A-A50A-0ED7F08A1209} = {71F71E49-65C6-49C1-9ADB-5004EB293AD9}
 		{60D89A06-E392-4812-9F55-F252E3801F60} = {71F71E49-65C6-49C1-9ADB-5004EB293AD9}
-		{0A50EBFC-0D2F-4CB0-B8DB-579474067F0C} = {F5729DD9-93A9-48ED-8C7C-047CE5DEF5C8}
-		{560FA065-63C9-43F5-821C-6B06080FBEB9} = {F5729DD9-93A9-48ED-8C7C-047CE5DEF5C8}
 	EndGlobalSection
 EndGlobal
