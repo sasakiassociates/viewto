@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using ViewObjects;
+using ViewObjects.Contents;
 using ViewObjects.Unity;
 using Object = UnityEngine.Object;
 
@@ -83,7 +84,7 @@ namespace ViewTo.Connector.Unity.Commands
 		{
 			var nameWithColor = new List<ViewColorWithName>();
 
-			foreach (var content in ViewObject.TryFetchInScene(ContentType.Target))
+			foreach (var content in ViewObject.TryFetchInScene(ContentType.Potential))
 			{
 				if (content.transform.hideFlags != HideFlags.None)
 				{
@@ -109,25 +110,25 @@ namespace ViewTo.Connector.Unity.Commands
 			return nameWithColor;
 		}
 
-		public static ResultStage Convert(this RigStage value)
+		public static ContentType Convert(this RigStage value)
 		{
 			return value switch
 			{
-				RigStage.Target => ResultStage.Potential,
-				RigStage.Blocker => ResultStage.Existing,
-				RigStage.Design => ResultStage.Proposed,
-				RigStage.Complete => ResultStage.Proposed,
+				RigStage.Target => ContentType.Potential,
+				RigStage.Blocker => ContentType.Existing,
+				RigStage.Design => ContentType.Proposed,
+				RigStage.Complete => ContentType.Proposed,
 				_ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 			};
 		}
 
-		public static RigStage Convert(this ResultStage value)
+		public static RigStage Convert(this ContentType value)
 		{
 			return value switch
 			{
-				ResultStage.Potential => RigStage.Target,
-				ResultStage.Existing => RigStage.Blocker,
-				ResultStage.Proposed => RigStage.Design,
+				ContentType.Potential => RigStage.Target,
+				ContentType.Existing => RigStage.Blocker,
+				ContentType.Proposed => RigStage.Design,
 				_ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 			};
 		}

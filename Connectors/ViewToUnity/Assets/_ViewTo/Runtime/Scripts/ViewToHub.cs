@@ -17,6 +17,9 @@ using Speckle.Core.Models;
 using UnityEngine;
 using UnityEngine.Events;
 using ViewObjects;
+using ViewObjects.Clouds;
+using ViewObjects.Systems;
+using ViewObjects.Systems.Layouts;
 using ViewTo.Connector.Unity.Commands;
 using Debug = UnityEngine.Debug;
 using VU = ViewObjects.Unity;
@@ -160,6 +163,9 @@ namespace ViewTo.Connector.Unity
     {
       Debug.Log("Starting Hacking Version of View To");
 
+      streamObject = ScriptableObject.CreateInstance<SpeckleStreamObject>();
+      await streamObject.Initialize("https://speckle.xyz/streams/81c40b04df/commits/71e2be2557");
+      
       var client = new SpeckleClient(streamObject.baseAccount);
       client.token = this.GetCancellationTokenOnDestroy();
 
@@ -215,7 +221,7 @@ namespace ViewTo.Connector.Unity
           case VS.Viewer o:
             // TODO: Bypassing linked clouds and different layout types but should be fixed in the near future
             var bundle = go.AddComponent<VU.Viewer>();
-            bundle.Layouts = new List<IViewerLayout> {new LayoutHorizontal()};
+            bundle.Layouts = new List<ILayout> {new LayoutHorizontal()};
             objectsToConvert.Add(bundle);
             break;
           default:
@@ -504,7 +510,7 @@ namespace ViewTo.Connector.Unity
 
     public event UnityAction<ViewObjects.Unity.ViewStudy> OnStudyComplete;
 
-    public event UnityAction<ResultStage> OnRigStageChanged;
+    public event UnityAction<ContentType> OnRigStageChanged;
 
     public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 
@@ -512,7 +518,7 @@ namespace ViewTo.Connector.Unity
 
     public UnityEvent<Bounds> OnContentBoundsSet;
 
-    public UnityEvent<ResultStage> OnResultStageSet;
+    public UnityEvent<ContentType> OnResultStageSet;
 
     // public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 

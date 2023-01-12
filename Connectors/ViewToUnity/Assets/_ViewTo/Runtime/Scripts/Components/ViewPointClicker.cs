@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using ViewObjects;
+using ViewObjects.Common;
 
 #endregion
 

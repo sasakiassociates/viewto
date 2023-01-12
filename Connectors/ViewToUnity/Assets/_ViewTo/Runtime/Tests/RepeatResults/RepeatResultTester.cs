@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using ViewObjects;
+using ViewObjects.Common;
 using ViewObjects.Unity;
 
 #endregion
@@ -69,8 +70,8 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
-			var valuesA = new Dictionary<ResultStage, List<double>>();
-			var valuesB = new Dictionary<ResultStage, List<double>>();
+			var valuesA = new Dictionary<ContentType, List<double>>();
+			var valuesB = new Dictionary<ContentType, List<double>>();
 
 			// Test all data now
 			for (var dIndex = 0; dIndex < cloudA.data.Count; dIndex++)
@@ -239,17 +240,17 @@ namespace ViewTo.Connector.Unity
 
 			public void Set(string key, List<double> values)
 			{
-				var res = Enum.Parse<ResultStage>(key);
+				var res = Enum.Parse<ContentType>(key);
 
 				switch (res)
 				{
-					case ResultStage.Potential:
+					case ContentType.Potential:
 						potential = values;
 						break;
-					case ResultStage.Existing:
+					case ContentType.Existing:
 						existing = values;
 						break;
-					case ResultStage.Proposed:
+					case ContentType.Proposed:
 						proposed = values;
 						break;
 					default:

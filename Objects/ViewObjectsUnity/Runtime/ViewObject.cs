@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+using ViewObjects.Contents;
 using Object = UnityEngine.Object;
 
 namespace ViewObjects.Unity
@@ -31,7 +34,7 @@ namespace ViewObjects.Unity
 		{
 			return value switch
 			{
-				ContentType.Target => TargetLayer,
+				ContentType.Potential => TargetLayer,
 				ContentType.Existing => BlockerLayer,
 				ContentType.Proposed => ProposedLayer,
 				_ => 0

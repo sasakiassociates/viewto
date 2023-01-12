@@ -2,6 +2,7 @@
 
 using System;
 using ViewObjects;
+using ViewObjects.Contents;
 
 #endregion
 

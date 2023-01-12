@@ -2,6 +2,7 @@
 using Speckle.ConnectorUnity.Converter;
 using Speckle.Core.Models;
 using UnityEngine;
+using ViewObjects.Systems.Layouts;
 using VS = ViewObjects.Speckle;
 using VU = ViewObjects.Unity;
 
@@ -17,7 +18,7 @@ namespace ViewObjects.Converter.Unity
 
 		protected override void ConvertBase(VS.Viewer obj, ref VU.Viewer instance)
 		{
-			instance.Layouts = obj.Layouts.Select(x => (IViewerLayout)new Layout(x.Viewers)).ToList();
+			instance.Layouts = obj.Layouts.Select(x => (ILayout)new Layout(x.Viewers)).ToList();
 		}
 
 	}

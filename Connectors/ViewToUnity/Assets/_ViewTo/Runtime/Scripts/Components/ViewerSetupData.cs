@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ViewObjects.Systems;
 using ViewObjects.Unity;
 using ViewTo.Connector.Unity.Commands;
 using VO = ViewObjects;
+using ViewObjects.Systems.Layouts;
 
 namespace ViewTo.Connector.Unity
 {
@@ -12,7 +14,7 @@ namespace ViewTo.Connector.Unity
 	public class ViewerSetupData
 	{
 
-		public List<VO.IViewerLayout> Layouts { get; private set; }
+		public List<ILayout> Layouts { get; private set; }
 
 		public List<Content> ProposedContent { get; private set; }
 
@@ -20,7 +22,7 @@ namespace ViewTo.Connector.Unity
 
 		public List<ViewColorWithName> Colors { get; private set; }
 
-		public ViewerSetupData(VO.RigParameters data)
+		public ViewerSetupData(RigParameters data)
 		{
 			Layouts = data.Viewer;
 			Clouds = ViewObject.GetCloudsByKey(data.Clouds);

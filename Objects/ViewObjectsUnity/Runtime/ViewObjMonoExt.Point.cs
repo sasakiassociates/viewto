@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
 
 namespace ViewObjects.Unity
 {

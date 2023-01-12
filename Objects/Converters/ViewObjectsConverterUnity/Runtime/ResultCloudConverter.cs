@@ -2,6 +2,8 @@
 using Speckle.ConnectorUnity.Converter;
 using Speckle.Core.Models;
 using UnityEngine;
+using ViewObjects.Clouds;
+using ViewObjects.Results;
 using VS = ViewObjects.Speckle;
 using VU = ViewObjects.Unity;
 

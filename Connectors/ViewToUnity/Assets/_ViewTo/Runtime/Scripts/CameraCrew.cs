@@ -25,7 +25,7 @@ namespace ViewTo.Connector.Unity
 			SetCams();
 		}
 
-		public void ContentMaskUpdated(ResultStage res)
+		public void ContentMaskUpdated(ContentType res)
 		{
 			if (firstPerson != null && firstPerson.viewer != null)
 				firstPerson.viewer.cullingMask = res.GetCullingMask();

@@ -7,6 +7,10 @@ using Sasaki.Unity;
 using Speckle.ConnectorUnity;
 using UnityEngine;
 using UnityEngine.Events;
+using ViewObjects.Clouds;
+using ViewObjects.Contents;
+using ViewObjects.Results;
+using ViewObjects.Systems.Layouts;
 using VO = ViewObjects;
 using ViewObjects.Unity;
 
@@ -20,30 +24,30 @@ namespace ViewTo.Connector.Unity
 
 		(int cloud, int design) _active;
 
-		List<VO.IResultCloudData> _bundleDataForCloud;
+		List<IResultCloudData> _bundleDataForCloud;
 
 		ViewerSetupData _data;
 
-		VO.ResultStage _stage;
+		VO.ContentType _stage;
 
-		List<Content> designs
+		List<ViewObjects.Unity.Content> designs
 		{
 			get => _data.ProposedContent;
 		}
 
-		ViewCloud activeCloud
+		ViewObjects.Unity.ViewCloud activeCloud
 		{
 			get => clouds[_active.cloud];
 		}
 
-		List<ViewCloud> clouds
+		List<ViewObjects.Unity.ViewCloud> clouds
 		{
 			get => _data.Clouds;
 		}
 
 		bool checkIfDesignStage
 		{
-			get => stage == VO.ResultStage.Proposed && hasValidProposedOptions;
+			get => stage == VO.ContentType.Proposed && hasValidProposedOptions;
 		}
 
 		bool hasValidProposedOptions
@@ -57,7 +61,7 @@ namespace ViewTo.Connector.Unity
 			set => _isGlobal = value;
 		}
 
-		public VO.ResultStage stage
+		public VO.ContentType stage
 		{
 			get => _stage;
 			set
@@ -75,9 +79,9 @@ namespace ViewTo.Connector.Unity
 		{
 			var values = new Dictionary<string, int>();
 
-			foreach (VO.ResultStage v in Enum.GetValues(typeof(VO.ResultStage)))
+			foreach (VO.ContentType v in Enum.GetValues(typeof(VO.ContentType)))
 			{
-				if (v == VO.ResultStage.Proposed && !designs.Valid())
+				if (v == VO.ContentType.Proposed && !designs.Valid())
 					continue;
 
 				values.Add(v.ToString(), v.GetCullingMask());
@@ -100,22 +104,22 @@ namespace ViewTo.Connector.Unity
 			foreach (var layout in data.Layouts)
 				switch (layout)
 				{
-					case VO.LayoutCube:
+					case LayoutCube:
 						converted.Add(new GameObject().AddComponent<PixelLayoutCube>());
 						break;
-					case VO.LayoutHorizontal:
+					case LayoutHorizontal:
 						converted.Add(new GameObject().AddComponent<PixelLayoutHorizontal>());
 						break;
-					case VO.LayoutOrtho o:
+					case LayoutOrtho o:
 						var res = new GameObject().AddComponent<PixelLayoutOrtho>();
 						res.orthoSize = (float)o.Size;
 						converted.Add(res);
 						break;
-					case VO.LayoutFocus o:
+					case LayoutFocus o:
 						Debug.LogWarning($"{o} is not supported yet");
 						// converted.Add(new GameObject().AddComponent<>());
 						break;
-					case VO.LayoutNormal o:
+					case LayoutNormal o:
 						// TODO: handle relating the normal cloud type
 						Debug.LogWarning($"{o} is not supported yet");
 						// converted.Add(new GameObject().AddComponent<>());
@@ -129,22 +133,22 @@ namespace ViewTo.Connector.Unity
 			Init(systemPoints, data.Colors.ToUnity().ToArray(), converted);
 
 			// Note: important to do this here!
-			stage = VO.ResultStage.Potential;
+			stage = VO.ContentType.Potential;
 		}
 
 		bool hasMoreStagesToDo
 		{
 			get
 			{
-				if (stage == VO.ResultStage.Potential)
+				if (stage == VO.ContentType.Potential)
 					_active.design++;
 
 				stage = GetNextStage(stage);
 
-				if (stage != VO.ResultStage.Proposed)
+				if (stage != VO.ContentType.Proposed)
 					return true;
 
-				if (stage == VO.ResultStage.Proposed && hasValidProposedOptions)
+				if (stage == VO.ContentType.Proposed && hasValidProposedOptions)
 				{
 					foreach (var d in designs)
 						d.Show = false;
@@ -158,13 +162,13 @@ namespace ViewTo.Connector.Unity
 			}
 		}
 
-		VO.ResultStage GetNextStage(VO.ResultStage s)
+		VO.ContentType GetNextStage(VO.ContentType s)
 		{
 			return s switch
 			{
-				VO.ResultStage.Potential => VO.ResultStage.Existing,
-				VO.ResultStage.Existing => VO.ResultStage.Proposed,
-				_ => VO.ResultStage.Proposed
+				VO.ContentType.Potential => VO.ContentType.Existing,
+				VO.ContentType.Existing => VO.ContentType.Proposed,
+				_ => VO.ContentType.Proposed
 			};
 		}
 
@@ -172,7 +176,7 @@ namespace ViewTo.Connector.Unity
 		{
 			_active.cloud = 0;
 			_active.design = 0;
-			_stage = VO.ResultStage.Potential;
+			_stage = VO.ContentType.Potential;
 			base.ResetSystem();
 		}
 
@@ -208,7 +212,7 @@ namespace ViewTo.Connector.Unity
 				// store points
 				Points = clouds[_active.cloud].GetPointsAsVectors();
 
-				stage = VO.ResultStage.Potential;
+				stage = VO.ContentType.Potential;
 
 				// reset all views  
 				foreach (var d in designs)
@@ -224,7 +228,7 @@ namespace ViewTo.Connector.Unity
 
 		protected override IPixelSystemDataContainer GatherSystemData()
 		{
-			_bundleDataForCloud ??= new List<VO.IResultCloudData>();
+			_bundleDataForCloud ??= new List<IResultCloudData>();
 
 			// gather all data
 			var container = new PixelSystemData(this);
@@ -249,11 +253,11 @@ namespace ViewTo.Connector.Unity
 					}
 
 					_bundleDataForCloud.Add(
-						new VO.ResultCloudData()
+						new ResultCloudData()
 						{
 							Values = layoutValues.ToList(),
 							Layout = layoutName,
-							Option = new VO.ContentOption()
+							Option = new ContentOption()
 							{
 								Id = vc.id, Name = vc.name, Stage = stage
 							}
@@ -268,7 +272,7 @@ namespace ViewTo.Connector.Unity
 			return container;
 		}
 
-		public event UnityAction<VO.ResultStage> OnStageChange;
+		public event UnityAction<VO.ContentType> OnStageChange;
 
 		public event UnityAction<ResultsForCloud> OnDataReadyForCloud;
 

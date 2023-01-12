@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using ViewObjects.Common;
+using ViewObjects.Contents;
 using Object = UnityEngine.Object;
 
 namespace ViewObjects.Unity

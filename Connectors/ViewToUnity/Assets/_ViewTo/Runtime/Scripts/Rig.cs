@@ -6,6 +6,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using ViewObjects;
+using ViewObjects.Common;
+using ViewObjects.Systems;
 using ViewObjects.Unity;
 using ViewTo.Connector.Unity.Commands;
 using VU = ViewObjects.Unity;
@@ -16,168 +18,162 @@ using VO = ViewObjects;
 namespace ViewTo.Connector.Unity
 {
 
-	public interface IRigSystem : IRig
-	{
-		public ViewerSystem ActiveViewer { get; }
+  public interface IRigSystem : IRig
+  {
+    public ViewerSystem ActiveViewer { get; }
 
-		public bool IsReady { get; }
-	}
+    public bool IsReady { get; }
+  }
 
-	public class Rig : MonoBehaviour, IRigSystem
-	{
+  public class Rig : MonoBehaviour, IRigSystem
+  {
 
-		#region unity fields
+  #region unity fields
 
-		[SerializeField] ResultStage _stage;
+    Stopwatch _timer;
 
-		[SerializeField] List<RigParameters> _parameters;
+  #endregion
 
-		Stopwatch _timer;
+    [field: SerializeField] public List<RigParameters> RigParams
+    {
+      get;
+      protected set;
+    }
 
-		#endregion
+    [field: SerializeField] public ContentType Stage
+    {
+      get;
+      private set;
+    }
 
-		public List<RigParameters> RigParams
-		{
-			get => _parameters;
-			protected set => _parameters = value;
-		}
+    public ViewerSystem ActiveViewer { get; protected set; }
 
-		public ResultStage Stage
-		{
-			get => _stage;
-			private set => _stage = value;
-		}
+    public bool IsReady => Application.isPlaying && ActiveViewer != null;
 
-		public ViewerSystem ActiveViewer { get; protected set; }
+    /// <inheritdoc />
+    public void Initialize(List<RigParameters> parameters)
+    {
+      RigParams = parameters;
+    }
 
-		public bool IsReady
-		{
-			get => Application.isPlaying && ActiveViewer != null;
-		}
+    /// <inheritdoc />
+    public void Build()
+    {
+      name = "Rig";
 
-		/// <inheritdoc />
-		public void Initialize(List<RigParameters> parameters)
-		{
-			RigParams = parameters;
-		}
+      if(TryCreateNewViewer())
+      {
+        OnReady?.Invoke();
+      }
+    }
 
-		/// <inheritdoc />
-		public void Build()
-		{
-			name = "Rig";
+    bool TryCreateNewViewer()
+    {
+      if(!RigParams.Valid())
+      {
+        return false;
+      }
 
-			if (TryCreateNewViewer())
-			{
-				OnReady?.Invoke();
-			}
-		}
+      if(ActiveViewer == null)
+      {
+        ActiveViewer = new GameObject().AddComponent<ViewerSystem>();
+      }
 
-		bool TryCreateNewViewer()
-		{
-			if (!RigParams.Valid())
-			{
-				return false;
-			}
+      ActiveViewer.Init(new ViewerSetupData(RigParams[0]));
 
-			if (ActiveViewer == null)
-			{
-				ActiveViewer = new GameObject().AddComponent<ViewerSystem>();
-			}
+      ViewConsole.Log($"Active Viewer: {ActiveViewer.name}");
+      OnActiveViewerSystem?.Invoke(ActiveViewer);
 
-			ActiveViewer.Init(new ViewerSetupData(RigParams[0]));
+      if(RigParams.Count <= 1)
+      {
+        RigParams.Clear();
+      }
+      else
+      {
+        var rigParams = new RigParameters[RigParams.Count - 1];
+        RigParams.CopyTo(rigParams, 1);
+        RigParams = rigParams.ToList();
+      }
 
-			ViewConsole.Log($"Active Viewer: {ActiveViewer.name}");
-			OnActiveViewerSystem?.Invoke(ActiveViewer);
+      return true;
+    }
 
-			if (RigParams.Count <= 1)
-			{
-				RigParams.Clear();
-			}
-			else
-			{
-				var rigParams = new RigParameters[RigParams.Count - 1];
-				RigParams.CopyTo(rigParams, 1);
-				RigParams = rigParams.ToList();
-			}
+    public void Run(int startPoint = 0, bool autoRun = true)
+    {
+      if(!IsReady)
+      {
+        ViewConsole.Log("Not Ready");
+        return;
+      }
 
-			return true;
-		}
+      ActiveViewer.OnStageChange += SetStageChange;
+      ActiveViewer.OnComplete += CompileViewerSystem;
+      ActiveViewer.OnDataReadyForCloud += ResultDataCompleted;
 
-		public void Run(int startPoint = 0, bool autoRun = true)
-		{
-			if (!IsReady)
-			{
-				ViewConsole.Log("Not Ready");
-				return;
-			}
+      _timer ??= new Stopwatch();
+      _timer.Start();
 
-			ActiveViewer.OnStageChange += SetStageChange;
-			ActiveViewer.OnComplete += CompileViewerSystem;
-			ActiveViewer.OnDataReadyForCloud += ResultDataCompleted;
+      if(autoRun)
+        ActiveViewer.Run();
+      else
+        ActiveViewer.Capture(startPoint);
+    }
 
-			_timer ??= new Stopwatch();
-			_timer.Start();
+    public void TrySetPoint(int index)
+    {
+      if(ActiveViewer != null)
+        ActiveViewer.Capture(index);
+    }
 
-			if (autoRun)
-				ActiveViewer.Run();
-			else
-				ActiveViewer.Capture(startPoint);
-		}
+    void CompileViewerSystem()
+    {
+      _timer.Stop();
+      ViewConsole.Log($"Total Time for {ActiveViewer.name}-{_timer.Elapsed}");
 
-		public void TrySetPoint(int index)
-		{
-			if (ActiveViewer != null)
-				ActiveViewer.Capture(index);
-		}
+      ActiveViewer.OnStageChange -= SetStageChange;
+      ActiveViewer.OnComplete -= CompileViewerSystem;
+      ActiveViewer.OnDataReadyForCloud -= ResultDataCompleted;
 
-		void CompileViewerSystem()
-		{
-			_timer.Stop();
-			ViewConsole.Log($"Total Time for {ActiveViewer.name}-{_timer.Elapsed}");
+      if(TryCreateNewViewer())
+      {
+        Run();
+        return;
+      }
 
-			ActiveViewer.OnStageChange -= SetStageChange;
-			ActiveViewer.OnComplete -= CompileViewerSystem;
-			ActiveViewer.OnDataReadyForCloud -= ResultDataCompleted;
+      ViewConsole.Log("Rig Complete");
+      OnComplete?.Invoke();
+    }
 
-			if (TryCreateNewViewer())
-			{
-				Run();
-				return;
-			}
+    void SetStageChange(ContentType arg)
+    {
+      Stage = arg;
+      OnStageChange?.Invoke(Stage);
+    }
 
-			ViewConsole.Log("Rig Complete");
-			OnComplete?.Invoke();
-		}
+    void ResultDataCompleted(ResultsForCloud data)
+    {
+      // let any other subscriptions know of the data being completed 
+      OnDataReadyForCloud?.Invoke(data);
+    }
 
-		void SetStageChange(ResultStage arg)
-		{
-			Stage = arg;
-			OnStageChange?.Invoke(Stage);
-		}
+  #region events
 
-		void ResultDataCompleted(ResultsForCloud data)
-		{
-			// let any other subscriptions know of the data being completed 
-			OnDataReadyForCloud?.Invoke(data);
-		}
+    public event UnityAction OnReady;
 
-		#region events
+    public event UnityAction OnComplete;
 
-		public event UnityAction OnReady;
+    public event UnityAction<ViewContentLoadedArgs> OnContentLoaded;
 
-		public event UnityAction OnComplete;
+    public event UnityAction<ContentType> OnStageChange;
 
-		public event UnityAction<ViewContentLoadedArgs> OnContentLoaded;
+    public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 
-		public event UnityAction<ResultStage> OnStageChange;
+    public event UnityAction<ResultsForCloud> OnDataReadyForCloud;
 
-		public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
+    public event UnityAction<ViewerSystem> OnActiveViewerSystem;
 
-		public event UnityAction<ResultsForCloud> OnDataReadyForCloud;
+  #endregion
 
-		public event UnityAction<ViewerSystem> OnActiveViewerSystem;
+  }
 
-		#endregion
-
-	}
 }

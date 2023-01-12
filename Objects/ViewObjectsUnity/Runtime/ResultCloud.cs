@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using ViewObjects.Clouds;
+using ViewObjects.Common;
+using ViewObjects.Results;
 
 namespace ViewObjects.Unity
 {

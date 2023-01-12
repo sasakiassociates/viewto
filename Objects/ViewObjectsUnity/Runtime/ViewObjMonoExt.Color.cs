@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
+using ViewObjects.Common;
+using ViewObjects.Contents;
 using Random = System.Random;
 
 namespace ViewObjects.Unity

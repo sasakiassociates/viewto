@@ -18,7 +18,7 @@ namespace ViewTo.Connector.Unity
     async UniTaskVoid RunClient()
     {
       const string streamId = "81c40b04df";
-      const string commitId = "c13e25ca60";
+      const string commitId = "35ae83c973";
 
       var client = new SpeckleClient(SpeckleAccountManager.GetDefaultAccount());
 
