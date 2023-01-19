@@ -12,13 +12,12 @@ namespace ViewObjects.Converter.Unity
 	{
 		public override Base ConvertComponent(VU.ViewStudy component)
 		{
-			
 			throw new System.NotImplementedException();
 		}
 
 		protected override void ConvertBase(VS.ViewStudy obj, ref VU.ViewStudy instance)
 		{
-			throw new System.NotImplementedException();
+		
 		}
 
 

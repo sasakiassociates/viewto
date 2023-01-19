@@ -5,19 +5,18 @@
 // using System.Linq;
 // using UnityEngine;
 // using UnityEngine.Events;
-// using ViewObjects;
-// using ViewObjects.Rig;
-// using ViewObjects.Unity;
-// using ViewObjects.Viewer;
+// using ViewObjects.Clouds;
+// using ViewObjects.Contents;
+// using ViewObjects.Results;
+// using ViewObjects.Studies;
 // using ViewTo.Connector.Unity.Commands;
-// using ViewTo.Events.Report;
 //
 // #endregion
 //
 // namespace ViewTo.Connector.Unity
 // {
 //
-// 	public class ResultExplorerMono : MonoBehaviour, IResultExplorer
+// 	public class ResultExplorerMono : MonoBehaviour, IExplorer
 // 	{
 //
 // 		#region fields
@@ -450,6 +449,17 @@
 //
 // 		#endregion
 //
+// 			public bool IsValid { get; }
+// 			public void Load(IViewStudy viewObj)
+// 			{
+// 				throw new NotImplementedException();
+// 			}
+//
+// 			public IViewStudy Source { get; }
+// 			public IResultCloud Cloud { get; }
+// 			public ExplorerSettings Settings { get; set; }
+// 			public List<IResultCloudData> Data { get; }
+// 			public ContentInfo ActiveContent { get; set; }
 // 	}
 //
 // }

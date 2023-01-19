@@ -20,7 +20,7 @@ public static class ObjUtils
   }
 
   /// <summary>
-  ///   Shorthand for checking list object
+  ///  Shorthand for checking list object
   /// </summary>
   /// <param name="list"></param>
   /// <returns>returns true if list contains at least one item</returns>

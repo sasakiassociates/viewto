@@ -1,10 +1,6 @@
-﻿#region
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Pcx;
 using UnityEngine;
-
-#endregion
 
 namespace ViewTo.Connector.Unity
 {

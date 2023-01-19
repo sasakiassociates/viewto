@@ -1,12 +1,10 @@
-﻿:root {
+:root {
     --viewto-icon-size: 20px;
     --viewto-border-width: 2px;
     --viewto-border-width--hover: 3px;
     --viewto-border-radius: 5px;
-    
     --viewto-icons-chevron_down: url('project://database/Assets/_ViewTo/Gui/Assets/chevron-down.svg?fileID=7388822144124034973&guid=c8a091da75caa8a46ab5f264bb5ae6ca&type=3#chevron-down');
     --viewto-icons-play: url('project://database/Assets/_ViewTo/Gui/Assets/play.svg?fileID=7388822144124034973&guid=455ad82da7406834c838d1e1cf5fcfaa&type=3#play');
-    
     --viewto-font-bold: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20SDF.asset?fileID=11400000&guid=c4e6c1059cc6f6c498a85ae2fefca497&type=2#KOROLEV BOLD SDF');
     --viewto-font-bold-italic: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20BOLD%20ITALIC%20SDF.asset?fileID=11400000&guid=1d2e8e05697423a49b5d226c89001d01&type=2#KOROLEV BOLD ITALIC SDF');
     --viewto-font-light: url('project://database/Assets/_ViewTo/Gui/Fonts/KOROLEV%20LIGHT%20SDF.asset?fileID=11400000&guid=0afc86d1c5ce66141ab544e208278cde&type=2#KOROLEV LIGHT SDF');
@@ -17,7 +15,6 @@
     --viewto-font-size-subtitle: 18px;
     --viewto-font-size-body: 12px;
     --viewto-font-size-header_2: 18px;
-    
     --viewto-colors-dark-purple: rgb(5, 0, 56);
     --viewto-colors-light-purple: rgb(187, 189, 252);
     --viewto-colors-purple: rgb(102, 102, 255);
@@ -25,8 +22,8 @@
     --viewto-colors-gray: rgb(218, 218, 218);
     --viewto-colors-background-purple: rgb(237, 235, 255);
     --viewto-colors-background-gray: rgb(246, 246, 246);
+    color: rgb(102, 102, 255);
 }
-
 
 .viewto-button {
     flex-shrink: 1;
@@ -38,7 +35,6 @@
     max-height: 100%;
     border-width: 0;
 }
-
 
 .viewto-button-icon {
     -unity-background-scale-mode: scale-to-fit;
@@ -67,20 +63,17 @@
     -unity-background-image-tint-color: var(--viewto-colors-purple);
 }
 
-
 .viewto-tabs > .viewto-button:hover {
     padding: 1px;
-    
     border-width: var(--viewto-border-width);
     border-left-color: var(--viewto-colors-purple);
     border-right-color: var(--viewto-colors-purple);
     border-bottom-color: var(--viewto-colors-purple);
     border-top-color: rgba(0, 0, 0, 0);
-    
     background-color: var(--viewto-colors-background-purple);
 }
 
-.viewto-tabs viewto-button-icon:hover {
+.viewto-tabs viewtobuttonicon:hover {
     -unity-background-image-tint-color: var(--viewto-colors-dark-purple);
 }
 
@@ -89,17 +82,14 @@
     font-size: var(--viewto-font-size-title);
 }
 
-
 .viewto-label-subtitle {
     -unity-font-definition: var(--viewto-font-bold);
     font-size: var(--viewto-font-size-subtitle);
-    
 }
 
 .viewto-label-body {
     -unity-font-definition: var(--viewto-font-medium);
     font-size: var(--viewto-font-size-body);
-    
 }
 
 .viewto-label-header-2 {
@@ -107,7 +97,6 @@
     color: var(--viewto-colors-dark-purple);
     margin: 5px;
 }
-
 
 .viewto-popup {
     background-color: var(--viewto-colors-background-gray);
@@ -127,28 +116,21 @@
     min-height: 30px;
 }
 
-
 .viewto-popup .unity-base-popup-field__arrow {
     -unity-background-image-tint-color: var(--viewto-colors-purple);
     background-image: var(--viewto-icons-chevron_down);
     -unity-background-scale-mode: scale-to-fit;
 }
 
-
-/*stuff to clean up */
-
 .viewto-container {
     margin: 4px;
     padding: 5px;
 }
 
-
-
 .viewto-icon {
 }
 
 .viewto-ribbon {
-    
 }
 
 .viewto-ribbon-header {
@@ -158,7 +140,6 @@
     background-image: none;
 }
 
-
 Scroller RepeatButton#unity-low-button {
     background-image: var(--viewto-icons-chevron_down);
     background-color: var(--viewto-colors-background-gray);
@@ -166,7 +147,6 @@ Scroller RepeatButton#unity-low-button {
     -unity-background-scale-mode: scale-to-fit;
     rotate: 180deg;
     border-width: 0;
-    
 }
 
 Scroller RepeatButton#unity-high-button {
@@ -175,9 +155,7 @@ Scroller RepeatButton#unity-high-button {
     -unity-background-image-tint-color: var(--viewto-colors-purple);
     -unity-background-scale-mode: scale-to-fit;
     border-width: 0;
-    
 }
-
 
 Scroller #unity-tracker {
     background-color: var(--viewto-colors-background-gray);
@@ -198,4 +176,3 @@ Scroller #unity-dragger {
     border-width: 2px;
     border-radius: 4px;
 }
-

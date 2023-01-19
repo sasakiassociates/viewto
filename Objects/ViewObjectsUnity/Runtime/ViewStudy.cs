@@ -7,95 +7,95 @@ using ViewObjects.Studies;
 namespace ViewObjects.Unity
 {
 
-	public class ViewStudy : ViewObjectMono, IViewStudy
-	{
+  public class ViewStudy : ViewObjectMono, IViewStudy
+  {
 
-		[SerializeField] string _viewId;
+    [SerializeField] string viewId;
+    [SerializeField] List<ViewObjectMono> loadedObjs = new List<ViewObjectMono>();
+    
+    public string ViewId
+    {
+      get => viewId;
+      set => viewId = value;
+    }
 
-		[SerializeField] List<ViewObjectMono> loadedObjs;
+    public string ViewName
+    {
+      get => gameObject.name;
+      set => name = value;
+    }
 
-		public string ViewId
-		{
-			get => _viewId;
-			set => _viewId = value;
-		}
+    public bool IsValid
+    {
+      get => Objects.Valid() && ViewName.Valid();
+    }
 
-		public ResultCloud TrySetResults(ResultsForCloud results)
-		{
-			if (results == null || !results.id.Valid())
-			{
-				Debug.Log("Cannot set results to cloud");
-				return null;
-			}
+    public List<IViewObject> Objects
+    {
+      get
+      {
+        var res = new List<IViewObject>();
 
-			Debug.Log($"Trying to set new results to cloud {results.id}");
-			ResultCloud rc = null;
+        foreach(var obj in loadedObjs)
+        {
+          if(obj != null && obj is IViewObject casted)
+            res.Add(casted);
+        }
 
-			for (var i = 0; i < loadedObjs.Count; i++)
-			{
-				if (loadedObjs[i] is not ViewCloud cloud || !cloud.ViewId.Equals(results.id))
-					continue;
+        return res;
+      }
+      set
+      {
+        loadedObjs = new List<ViewObjectMono>();
 
-				// reference game object with view cloud attached
-				var go = cloud.gameObject;
+        foreach(var obj in value)
+          if(obj is ViewObjectMono mono)
+          {
+            mono.transform.SetParent(transform);
+            loadedObjs.Add(mono);
+          }
+          else
+          {
+            Debug.Log(obj.TypeName() + "- is not valid for mono");
+          }
+      }
+    }
 
-				rc = go.AddComponent<ResultCloud>();
-				rc.name = "Result Cloud";
-				rc.ViewId = cloud.ViewId;
-				rc.Points = cloud.Points;
-				rc.Data = results.data;
+    public ResultCloud TrySetResults(ResultsForCloud results)
+    {
+      if(results == null || !results.id.Valid())
+      {
+        Debug.Log("Cannot set results to cloud");
+        return null;
+      }
 
-				// Remove the view cloud component
-				Destroy(go.GetComponent<ViewCloud>());
+      Debug.Log($"Trying to set new results to cloud {results.id}");
+      ResultCloud rc = null;
 
-				// replace the view cloud with the result cloud
-				loadedObjs[i] = rc;
-			}
+      for(var i = 0; i < loadedObjs.Count; i++)
+      {
+        if(loadedObjs[i] is not ViewCloud cloud || !cloud.ViewId.Equals(results.id))
+          continue;
 
-			return rc;
-		}
+        // reference game object with view cloud attached
+        var go = cloud.gameObject;
 
-		public string ViewName
-		{
-			get => gameObject.name;
-			set => name = value;
-		}
+        rc = go.AddComponent<ResultCloud>();
+        rc.name = "Result Cloud";
+        rc.ViewId = cloud.ViewId;
+        rc.Points = cloud.Points;
+        rc.Data = results.data;
 
-		public bool IsValid
-		{
-			get => Objects.Valid() && ViewName.Valid();
-		}
+        // Remove the view cloud component
+        Destroy(go.GetComponent<ViewCloud>());
 
-		public List<IViewObject> Objects
-		{
-			get
-			{
-				var res = new List<IViewObject>();
+        // replace the view cloud with the result cloud
+        loadedObjs[i] = rc;
+      }
 
-				foreach (var obj in loadedObjs)
-				{
-					if (obj != null && obj is IViewObject casted)
-						res.Add(casted);
-				}
+      return rc;
+    }
 
-				return res;
-			}
-			set
-			{
-				loadedObjs = new List<ViewObjectMono>();
+  }
 
-				foreach (var obj in value)
-					if (obj is ViewObjectMono mono)
-					{
-						mono.transform.SetParent(transform);
-						loadedObjs.Add(mono);
-					}
-					else
-					{
-						Debug.Log(obj.TypeName() + "- is not valid for mono");
-					}
-			}
-		}
-		
-	}
 }

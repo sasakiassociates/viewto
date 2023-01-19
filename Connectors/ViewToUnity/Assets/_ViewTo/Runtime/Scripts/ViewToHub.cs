@@ -1,11 +1,11 @@
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using NaughtyAttributes;
 using Objects.Geometry;
+using Pcx;
 using Speckle.ConnectorUnity;
 using Speckle.ConnectorUnity.Converter;
 using Speckle.ConnectorUnity.Models;
@@ -14,6 +14,7 @@ using Speckle.Core.Api;
 using Speckle.Core.Credentials;
 using Speckle.Core.Kits;
 using Speckle.Core.Models;
+using System.Net;
 using UnityEngine;
 using UnityEngine.Events;
 using ViewObjects;
@@ -26,42 +27,43 @@ using VU = ViewObjects.Unity;
 using VO = ViewObjects;
 using VS = ViewObjects.Speckle;
 
-#endregion
-
 namespace ViewTo.Connector.Unity
 {
 
   public class ViewToHub : MonoBehaviour
   {
 
-    [SerializeField] Material _analysisMaterial;
-    [SerializeField] Material _renderedMat;
+    [SerializeField] Material analysisMaterial;
+    [SerializeField] Material renderedMat;
+    [SerializeField] string tempStreamId = "81c40b04df";
+    [SerializeField] string tempCommitId = "bab6b9a0a2";
+    [SerializeField, Range(60, 300)] int tempFrameRate = 200;
 
-    public SpeckleStream stream { get; set; }
+    [field: SerializeField] public ResultExplorer explorer { get; private set; }
+    [SerializeField] PointCloudRenderer renderer;
+
     [field: SerializeField] public SpeckleStreamObject streamObject { get; private set; }
 
-    [SerializeField] bool _loadResults = true;
-    [SerializeField] bool _createCommit = true;
-    [SerializeField] bool _runOnLoad = true;
-    [SerializeField] bool _autoRun = false;
+    [SerializeField] bool createCommit = true;
+    [SerializeField] bool runRepeatCommand;
 
-    [SerializeField] bool _runRepeatCommand;
-
-    [SerializeField] VU.ViewStudy _study;
+    [SerializeField] VU.ViewStudy study;
     VS.ViewStudy _speckleStudy;
 
-    [SerializeField][HideInInspector] Rig _rig;
+    [SerializeField][HideInInspector] Rig rig;
 
-    [SerializeField] ScriptableConverter _converterUnity;
+    [SerializeField] ScriptableConverter converterUnity;
 
 
     RepeatResultTester _tester;
 
     Stopwatch _timer;
 
+    public SpeckleStream stream { get; set; }
+
     public bool canRun
     {
-      get => _study != null && _study.IsValid && _rig != null && _rig.IsReady;
+      get => study != null && study.IsValid && rig != null && rig.IsReady;
     }
 
     public bool inProcess { get; private set; }
@@ -82,31 +84,37 @@ namespace ViewTo.Connector.Unity
 
   #endregion
 
+    [Button]
+    public void LoadResults() => AutoLoadResults().Forget();
+
+    [Button]
+    public void LoadStudy() => AutoLoadStudy().Forget();
+
     public void TryLoadStudy(ViewObjects.Unity.ViewStudy obj)
     {
       if(!IsInit)
         Init();
 
       ViewConsole.Log($"{name} is loading View Study {obj.ViewName} ");
-      _study = obj;
+      study = obj;
 
-      if(_rig != null)
-        VU.ViewObject.SafeDestroy(_rig.gameObject);
+      if(this.rig != null)
+        VU.ViewObject.SafeDestroy(this.rig.gameObject);
 
-      _rig = new GameObject().AddComponent<Rig>();
+      this.rig = new GameObject().AddComponent<Rig>();
 
       // setup events
-      _rig.OnReady += RigReady;
-      _rig.OnComplete += RigComplete;
-      _rig.OnStudyLoaded += OnStudyLoaded;
-      _rig.OnStageChange += OnRigStageChanged;
-      _rig.OnContentLoaded += OnViewContentLoaded;
-      _rig.OnActiveViewerSystem += OnActiveViewerSystem;
-      _rig.OnDataReadyForCloud += (data) =>
+      this.rig.OnReady += RigReady;
+      this.rig.OnComplete += RigComplete;
+      this.rig.OnStudyLoaded += OnStudyLoaded;
+      this.rig.OnStageChange += OnRigStageChanged;
+      this.rig.OnContentLoaded += OnViewContentLoaded;
+      this.rig.OnActiveViewerSystem += OnActiveViewerSystem;
+      this.rig.OnDataReadyForCloud += (data) =>
       {
-        if(_study != null)
+        if(study != null)
         {
-          var rc = _study.TrySetResults(data);
+          var rc = study.TrySetResults(data);
           if(rc != null)
           {
             SendResultsToStream(rc);
@@ -114,58 +122,123 @@ namespace ViewTo.Connector.Unity
         }
       };
 
-      foreach(var c in _study.FindObjects<VU.Content>())
+      foreach(var c in study.FindObjects<VU.Content>())
       {
-        c.PrimeMeshData(_analysisMaterial);
+        c.PrimeMeshData(analysisMaterial);
       }
 
-      var rig = (IRig)_rig;
-      _study.LoadStudyToRig(ref rig);
+      var rig = (IRig)this.rig;
+      study.LoadStudyToRig(ref rig);
 
-      if(_runOnLoad)
-      {
-        StartRigSystemRun();
-      }
+      StartRigSystemRun();
     }
 
     public void StartRigSystemRun(int pointToStart = 0)
     {
       if(!canRun)
       {
-        ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {_study != null && _study.IsValid}\nRig Ready{_rig != null && _rig.IsReady}");
+        ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {study != null && study.IsValid}\nRig Ready{rig != null && rig.IsReady}");
         return;
       }
 
       Application.targetFrameRate = 200;
 
-      ViewConsole.Log($"Starting Run for {_study.ViewName}");
+      ViewConsole.Log($"Starting Run for {study.ViewName}");
 
       inProcess = true;
 
       _timer ??= new Stopwatch();
       _timer.Start();
 
-      _rig.Run(pointToStart, _autoRun);
+      rig.Run(pointToStart, true);
     }
 
     void Init()
     {
       Instance = this;
 
-      if(_analysisMaterial == null)
-        _analysisMaterial = new Material(Resources.Load<Shader>("UnlitDoubleSided"));
+      if(analysisMaterial == null)
+        analysisMaterial = new Material(Resources.Load<Shader>("UnlitDoubleSided"));
 
-      if(_renderedMat == null)
-        _renderedMat = new Material(Shader.Find(@"Standard"));
+      if(renderedMat == null)
+        renderedMat = new Material(Shader.Find(@"Standard"));
     }
 
-    async UniTask AutoStart()
+
+    async UniTask AutoLoadResults()
+    {
+      streamObject = ScriptableObject.CreateInstance<SpeckleStreamObject>();
+      await streamObject.Initialize("https://speckle.xyz/streams/" + tempStreamId + "/commits/" + tempCommitId);
+
+      var client = new SpeckleClient(streamObject.baseAccount);
+      client.token = this.GetCancellationTokenOnDestroy();
+
+
+      var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
+
+      if(commit == null) return;
+
+      var @base = await SpeckleOps.Receive(client, streamObject.Id, commit.referencedObject);
+
+      if(@base == null) return;
+
+      _speckleStudy = await @base.SearchForType<VS.ViewStudy>(true, client.token);
+
+      if(_speckleStudy == null) return;
+
+      Debug.Log($"Found Study {_speckleStudy.ViewName} with {_speckleStudy.Objects.Count} objects\n({_speckleStudy.ViewId})");
+      study = new GameObject("Study").AddComponent<VU.ViewStudy>();
+      study.transform.position = Vector3.zero;
+      study.ViewId = _speckleStudy.ViewId;
+      study.ViewName = _speckleStudy.ViewName;
+      study.Objects = new List<IViewObject>();
+
+      var monos = new List<IViewObject>();
+
+      foreach(var o in _speckleStudy.Objects)
+      {
+        if(o is VS.ResultCloud cloud)
+        {
+          Debug.Log("Found Cloud");
+          var rc = new GameObject("ResultCloud").AddComponent<VU.ResultCloud>();
+          rc.transform.position = Vector3.zero;
+          rc.Points = cloud.Points;
+          cloud.Data.ForEach(x => rc.AddResultData(x));
+          rc.transform.SetParent(study.transform);
+          monos.Add(rc);
+
+          var colors = new List<Color32>(rc.count);
+          for(int i = 0; i < rc.count; i++)
+          {
+            colors.Add(Color.white);
+          }
+
+        #if UNITY_EDITOR
+          var data = ScriptableObject.CreateInstance<PointCloudData>();
+          data.Initialize(rc.pointsAsVector.ToList(), colors);
+          renderer.gameObject.transform.SetParent(rc.transform);
+          renderer.sourceData = data;
+        #endif
+          break;
+        }
+      }
+
+      study.Objects = monos;
+
+
+      if(explorer != null)
+      {
+        explorer.Load(study);
+      }
+    }
+
+    async UniTask AutoLoadStudy()
     {
       Debug.Log("Starting Hacking Version of View To");
 
       streamObject = ScriptableObject.CreateInstance<SpeckleStreamObject>();
-      await streamObject.Initialize("https://speckle.xyz/streams/81c40b04df/commits/71e2be2557");
-      
+      await streamObject.Initialize("https://speckle.xyz/streams/" + tempStreamId + "/commits/" + tempCommitId);
+
       var client = new SpeckleClient(streamObject.baseAccount);
       client.token = this.GetCancellationTokenOnDestroy();
 
@@ -281,7 +354,7 @@ namespace ViewTo.Connector.Unity
       foreach(var refId in content.References)
       {
         var referenceBase = await ReceiveCommitWithData(client, stream, refId);
-        var hierarchy = await SpeckleOps.ConvertToScene(content.transform, referenceBase, _converterUnity, client.token);
+        var hierarchy = await SpeckleOps.ConvertToScene(content.transform, referenceBase, converterUnity, client.token);
         await UniTask.SwitchToMainThread();
         hierarchy.ParentAllObjects();
       }
@@ -324,7 +397,7 @@ namespace ViewTo.Connector.Unity
       var resultCloud = new VS.ResultCloud() {Data = data, Points = mono.Points};
       _speckleStudy.Objects.Add(resultCloud);
 
-      if(_createCommit)
+      if(createCommit)
       {
         var client = new SpeckleClient(AccountManager.GetDefaultAccount());
         try
@@ -341,7 +414,7 @@ namespace ViewTo.Connector.Unity
             await client.CommitCreate(new CommitCreateInput
             {
               objectId = res,
-              message = $"{_study.ViewName} is complete! {mono.count}",
+              message = $"{study.ViewName} is complete! {mono.count}",
               branchName = streamObject.IsValid() && streamObject.Branch.Valid() ? streamObject.Branch.name : "main",
               sourceApplication = SpeckleUnity.APP,
               streamId = streamObject.Id
@@ -357,7 +430,7 @@ namespace ViewTo.Connector.Unity
 
     void RigReady()
     {
-      OnRigBuilt?.Invoke(_rig);
+      OnRigBuilt?.Invoke(rig);
     }
 
     void RigComplete()
@@ -368,22 +441,24 @@ namespace ViewTo.Connector.Unity
       var ts = _timer.Elapsed;
       ViewConsole.Log("Runtime-" + $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00}");
 
-      if(_runRepeatCommand)
+      if(runRepeatCommand)
       {
         ViewConsole.Log("Running Second Pass");
 
-        _runRepeatCommand = false;
-        _runOnLoad = false;
+        runRepeatCommand = false;
 
-        TryLoadStudy(_study);
-        _rig.Run();
+        TryLoadStudy(study);
+        rig.Run();
         return;
       }
 
       inProcess = false;
 
-      OnStudyComplete?.Invoke(_study);
+      OnStudyComplete?.Invoke(study);
     }
+
+    int _cachedFrameRate;
+
 
     void TryLoadResultCloud(ViewObjects.Unity.ResultCloud cloud)
     {
@@ -437,12 +512,12 @@ namespace ViewTo.Connector.Unity
 
     public static Material AnalysisMat
     {
-      get => Instance._analysisMaterial;
+      get => Instance.analysisMaterial;
     }
 
     public static Material RenderedMat
     {
-      get => Instance._renderedMat;
+      get => Instance.renderedMat;
     }
 
     public static ViewToHub Instance { get; set; }
@@ -471,27 +546,30 @@ namespace ViewTo.Connector.Unity
     {
       Instance = this;
 
+      _cachedFrameRate = tempFrameRate;
+      Application.targetFrameRate = tempFrameRate;
       if(!IsInit)
         Init();
     }
 
-    void Start()
+    void Update()
     {
+      if(_cachedFrameRate == tempFrameRate) return;
 
-      if(_autoRun)
-        AutoStart().Forget();
+      _cachedFrameRate = tempFrameRate;
+      Application.targetFrameRate = _cachedFrameRate;
     }
 
     void OnDisable()
     {
-      if(_rig != null)
+      if(rig != null)
       {
         // setup events
-        _rig.OnReady -= RigReady;
-        _rig.OnComplete -= RigComplete;
-        _rig.OnStudyLoaded -= OnStudyLoaded;
-        _rig.OnStageChange -= OnRigStageChanged;
-        _rig.OnContentLoaded -= OnViewContentLoaded;
+        rig.OnReady -= RigReady;
+        rig.OnComplete -= RigComplete;
+        rig.OnStudyLoaded -= OnStudyLoaded;
+        rig.OnStageChange -= OnRigStageChanged;
+        rig.OnContentLoaded -= OnViewContentLoaded;
       }
     }
 
@@ -516,9 +594,9 @@ namespace ViewTo.Connector.Unity
 
     public event UnityAction<ViewContentLoadedArgs> OnViewContentLoaded;
 
-    public UnityEvent<Bounds> OnContentBoundsSet;
-
-    public UnityEvent<ContentType> OnResultStageSet;
+    // public UnityEvent<Bounds> OnContentBoundsSet;
+    //
+    // public UnityEvent<ContentType> OnResultStageSet;
 
     // public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 

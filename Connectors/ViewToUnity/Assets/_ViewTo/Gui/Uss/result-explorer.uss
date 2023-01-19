@@ -1,0 +1,28 @@
+.unity-text-element {
+    color: rgba(13, 1, 79, 255);
+}
+
+.unity-base-field__input {
+    background-color: rgba(255, 255, 255, 255);
+    border-left-color: rgb(102, 102, 255);
+    border-right-color: rgb(102, 102, 255);
+    border-top-color: rgb(102, 102, 255);
+    border-bottom-color: rgb(102, 102, 255);
+}
+
+.unity-base-text-field__input {
+    color: rgb(13, 1, 79);
+}
+
+.unity-base-slider__tracker {
+    background-color: rgb(102, 102, 255);
+}
+
+.unity-base-slider__dragger {
+    background-color: rgb(25, 14, 102);
+}
+
+.unity-base-popup-field__arrow {
+    background-color: rgba(102, 102, 255, 0);
+    -unity-background-image-tint-color: rgb(31, 22, 115);
+}

@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="resultsample-container" style="flex-direction: row; justify-content: flex-start; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
+        <ui:Label text="Target Name" display-tooltip-when-elided="true" name="target-name" />
+        <ui:Label text="0" display-tooltip-when-elided="true" name="target-value" />
+    </ui:VisualElement>
+</ui:UXML>

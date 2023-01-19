@@ -42,5 +42,4 @@ public interface IExplorer : IValidate
   /// </summary>
   /// <param name="viewObj">The view study to load in</param>
   public void Load(IViewStudy viewObj);
-
 }
