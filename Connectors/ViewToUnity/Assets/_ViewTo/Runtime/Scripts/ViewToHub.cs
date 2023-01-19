@@ -254,6 +254,7 @@ namespace ViewTo.Connector.Unity
 
         UnityEngine.Debug.Log($"Object {obj.speckle_type}");
 
+
         switch(obj)
         {
           case VS.ContentReference o:

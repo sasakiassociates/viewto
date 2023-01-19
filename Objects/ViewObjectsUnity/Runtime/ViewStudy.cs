@@ -1,18 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using ViewObjects.Common;
 using ViewObjects.Studies;
 
 namespace ViewObjects.Unity
 {
 
+
   public class ViewStudy : ViewObjectMono, IViewStudy
   {
 
     [SerializeField] string viewId;
     [SerializeField] List<ViewObjectMono> loadedObjs = new List<ViewObjectMono>();
-    
+
+    public bool IsValid
+    {
+      get => Objects.Valid() && ViewName.Valid();
+    }
+
     public string ViewId
     {
       get => viewId;
@@ -23,11 +28,6 @@ namespace ViewObjects.Unity
     {
       get => gameObject.name;
       set => name = value;
-    }
-
-    public bool IsValid
-    {
-      get => Objects.Valid() && ViewName.Valid();
     }
 
     public List<IViewObject> Objects
@@ -95,7 +95,6 @@ namespace ViewObjects.Unity
 
       return rc;
     }
-
   }
 
 }

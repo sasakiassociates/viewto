@@ -7,21 +7,22 @@ using VU = ViewObjects.Unity;
 namespace ViewObjects.Converter.Unity
 {
 
-	[CreateAssetMenu(menuName = ViewObjectUnity.ASSET_MENU + "Create " + nameof(ContentConverter), fileName = nameof(ContentConverter), order = 0)]
-	public class ContentConverter : ComponentConverter<VS.ContentReference, VU.Content>
-	{
+  [CreateAssetMenu(menuName = ViewObjectUnity.ASSET_MENU + "Create " + nameof(ContentConverter), fileName = nameof(ContentConverter), order = 0)]
+  public class ContentConverter : ComponentConverter<VS.ContentReference, VU.Content>
+  {
 
-		public override Base ConvertComponent(VU.Content component)
-		{
-			return new VS.ContentReference(component.ContentType, component.References, component.ViewId, component.ViewName);
-		}
+    public override Base ConvertComponent(VU.Content component)
+    {
+      return new VS.ContentReference(component.ContentType, component.References, component.ViewId, component.ViewName);
+    }
 
-		protected override void ConvertBase(VS.ContentReference obj, ref VU.Content instance)
-		{
-			instance.References = obj.References;
-			instance.ContentType = obj.ContentType;
-			instance.ViewId = obj.ViewId;
-			instance.ViewName = obj.ViewName.Valid() ? obj.ViewName : obj.ContentType.ToString();
-		}
-	}
+    protected override void ConvertBase(VS.ContentReference obj, ref VU.Content instance)
+    {
+      instance.ViewId = obj.ViewId;
+      instance.ViewName = obj.ViewName.Valid() ? obj.ViewName : obj.ContentType.ToString();
+      instance.References = obj.References;
+      instance.ContentType = obj.ContentType;
+    }
+  }
+
 }
