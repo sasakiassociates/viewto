@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor="UnityEditor.UIElements"
+         noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
+	<ui:VisualElement name="container"
+	                  style="background-color: rgb(255, 255, 255); width: 80%; height: 80%; translate: 338px 198px; transform-origin: right bottom;">
+		<ui:VisualElement name="viewer-image"
+		                  style="background-image: url(&apos;project://database/Assets/_ViewTo/Runtime/FirstPersonViewerTxt.asset?fileID=8600000&amp;guid=c3e7c76c6c1c3224dbaeb6d099d6f2ff&amp;type=2#FirstPersonViewerTxt&apos;);"/>
+	</ui:VisualElement>
+</ui:UXML>

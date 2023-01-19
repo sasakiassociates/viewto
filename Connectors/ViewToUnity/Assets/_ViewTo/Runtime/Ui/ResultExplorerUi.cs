@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using ViewObjects.Results;
@@ -13,11 +12,13 @@ namespace ViewTo.Connector.Unity
 
     [SerializeField] ResultExplorer source;
     [SerializeField] UIDocument uiDoc;
+    Button _captureBut;
 
     DropdownField _contentOptions;
     SliderInt _pointSlider;
     VisualElement _resultPointContainer;
     Label _targetName, _targetValue;
+    Toggle _toggleRig;
 
     void Awake()
     {
@@ -37,8 +38,12 @@ namespace ViewTo.Connector.Unity
       _contentOptions = root.Q<DropdownField>();
       _pointSlider = root.Q<SliderInt>();
       _resultPointContainer = root.Q<VisualElement>("result-samples-container");
+      _captureBut = root.Q<Button>();
+      _toggleRig = root.Q<Toggle>();
       _targetName = _resultPointContainer.Q<Label>("target-name");
       _targetValue = _resultPointContainer.Q<Label>("target-value");
+
+      _toggleRig.RegisterValueChangedCallback(e => source.isRigged = e.newValue);
     }
 
     void Start()
@@ -50,8 +55,8 @@ namespace ViewTo.Connector.Unity
       }
 
       source.onStudyLoaded += HandleNewStudy;
-      source.onResultPointSet += HandleNewResultPoint;
-      _pointSlider.RegisterValueChangedCallback(e => source.activePoint = e.newValue);
+      source.onPointSet += () => HandleNewResultPoint(source.GetResultPoint());
+      _pointSlider.RegisterValueChangedCallback(e => source.index = e.newValue);
 
     }
 
@@ -79,8 +84,6 @@ namespace ViewTo.Connector.Unity
       }
 
     }
-
-
   }
 
 }

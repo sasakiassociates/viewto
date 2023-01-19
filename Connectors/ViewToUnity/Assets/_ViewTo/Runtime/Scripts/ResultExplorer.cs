@@ -1,6 +1,4 @@
-﻿using NaughtyAttributes;
-using Pcx;
-using System;
+﻿using Pcx;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,6 +9,7 @@ using ViewObjects.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
 using ViewObjects.Studies;
+using ViewObjects.Systems;
 using ViewObjects.Unity;
 using VU = ViewObjects.Unity;
 
@@ -24,27 +23,58 @@ namespace ViewTo.Connector.Unity
     [SerializeField] VU.ResultCloud result;
     [SerializeField] ExplorerValueType valueType = ExplorerValueType.ExistingOverPotential;
     [SerializeField] Gradient gradient;
-    int _activePoint;
-
-
+    int _index;
 
     PointCloudData _pcxData;
     PointCloudRenderer _renderer;
+    Rig _rig;
     double[] _values;
 
-    public int activePoint
-    {
-      get => _activePoint;
-      set
-      {
-        _activePoint = value;
-        SetResultPoint();
-      }
-    }
+    public UnityAction onPointSet;
 
     public UnityAction onStudyLoaded;
 
-    public UnityAction<ResultPoint> onResultPointSet;
+
+    public int index
+    {
+      get => _index;
+      set
+      {
+        _index = value;
+        point = Cloud.Points[value].ToUnity();
+        onPointSet?.Invoke();
+      }
+    }
+    public Vector3 point { get; private set; }
+
+    public List<ContentOption> Options { get; internal set; }
+
+    public bool isRigged
+    {
+      get => _rig != null;
+      set
+      {
+        switch(value)
+        {
+          case false when _rig != null:
+            Destroy(_rig.gameObject);
+            break;
+          case true when _rig == null:
+            _rig = new GameObject("Rig").AddComponent<Rig>();
+            IRig iRig = _rig;
+            Debug.Log("Loading study to new rig");
+            var args = study.LoadStudyToRig(ref iRig);
+
+            if(args.Valid()) args.ForEach(Debug.Log);
+
+            Debug.Log("Study Loaded to rig - Setting Rig to point");
+            _rig.Run(index, false);
+            break;
+        }
+
+      }
+    }
+
 
     public void Load(IViewStudy viewObj)
     {
@@ -85,86 +115,6 @@ namespace ViewTo.Connector.Unity
 
     }
 
-    public void Visualize(string targetName)
-    {
-
-      if(!Options.Valid())
-      {
-        Debug.Log("No content options are found in this explorer");
-        return;
-      }
-
-      foreach(var opt in Options)
-      {
-        if(opt.Name.Valid() && opt.Name.ToUpper().Equals(targetName.ToUpper()))
-        {
-          ActiveContent = new ContentInfo(opt);
-          ApplyNewValues();
-          break;
-        }
-      }
-    }
-
-
-    void Visualize(ContentOption content)
-    { }
-
-
-    void ApplyNewValues()
-    {
-
-      if(!this.TryGetValues(valueType, out var values))
-      {
-        Debug.Log("Values did not return properly");
-        return;
-      }
-
-      _values = values as double[] ?? values.ToArray();
-
-
-      // TODO: this should be swapped out at some point 
-      var colors = new List<Color32>();
-      var points = new List<Vector3>();
-
-      for(int i = 0; i < Cloud.GetCount(); i++)
-      {
-        var point = Cloud.Points[i];
-
-        colors.Add(Settings.GetColor(_values[i]).ToUnity());
-        points.Add(point.ToUnity());
-      }
-
-
-    #if UNITY_EDITOR
-          _pcxData = ScriptableObject.CreateInstance<PointCloudData>();
-          _pcxData.Initialize(points, colors);
-    #endif
-
-      if(_renderer == null)
-      {
-        _renderer = gameObject.GetComponent<PointCloudRenderer>();
-
-        if(_renderer == null) _renderer = gameObject.AddComponent<PointCloudRenderer>();
-      }
-
-      _renderer.sourceData = _pcxData;
-
-      if(activePoint >= points.Count) activePoint = 0;
-      SetResultPoint();
-    }
-
-    void SetResultPoint() => onResultPointSet?.Invoke(
-      new ResultPoint
-      {
-        Option = ActiveContent,
-        Value = _values[activePoint],
-        Index = activePoint,
-        X = Cloud.Points[activePoint].x,
-        Y = Cloud.Points[activePoint].y,
-        Z = Cloud.Points[activePoint].z
-      }
-    );
-
     public IViewStudy Source
     {
       get
@@ -190,7 +140,81 @@ namespace ViewTo.Connector.Unity
     /// <inheritdoc />
     public bool IsValid => study != null;
 
-    public List<ContentOption> Options { get; internal set; }
+    public void Visualize(string targetName)
+    {
+
+      if(!Options.Valid())
+      {
+        Debug.Log("No content options are found in this explorer");
+        return;
+      }
+
+      foreach(var opt in Options)
+      {
+        if(opt.Name.Valid() && opt.Name.ToUpper().Equals(targetName.ToUpper()))
+        {
+          ActiveContent = new ContentInfo(opt);
+          ApplyNewValues();
+          break;
+        }
+      }
+    }
+
+    public ResultPoint GetResultPoint() => new ResultPoint
+    {
+      Option = ActiveContent,
+      Value = _values[index],
+      Index = index,
+      X = Cloud.Points[index].x,
+      Y = Cloud.Points[index].y,
+      Z = Cloud.Points[index].z
+    };
+
+    void Visualize(ContentOption content)
+    { }
+
+
+    void ApplyNewValues()
+    {
+
+      if(!this.TryGetValues(valueType, out var values))
+      {
+        Debug.Log("Values did not return properly");
+        return;
+      }
+
+      _values = values as double[] ?? values.ToArray();
+
+
+      // TODO: this should be swapped out at some point 
+      var colors = new List<Color32>();
+      var points = new List<Vector3>();
+
+      for(int i = 0; i < Cloud.GetCount(); i++)
+      {
+        var pt = Cloud.Points[i];
+
+        colors.Add(Settings.GetColor(_values[i]).ToUnity());
+        points.Add(pt.ToUnity());
+      }
+
+
+    #if UNITY_EDITOR
+      _pcxData = ScriptableObject.CreateInstance<PointCloudData>();
+      _pcxData.Initialize(points, colors);
+    #endif
+
+      if(_renderer == null)
+      {
+        _renderer = gameObject.GetComponent<PointCloudRenderer>();
+
+        if(_renderer == null) _renderer = gameObject.AddComponent<PointCloudRenderer>();
+      }
+
+      _renderer.sourceData = _pcxData;
+
+      if(index >= points.Count) index = 0;
+    }
   }
 
 }

@@ -1,17 +1,39 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xsi="http://www.w3.org/2001/XMLSchema-instance"
+         engine="UnityEngine.UIElements"
+         editor="UnityEditor.UIElements"
+         noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="False">
     <ui:Template name="result-sample-card" src="project://database/Assets/_ViewTo/Gui/Uxml/result-sample-card.uxml?fileID=9197481963319205126&amp;guid=a8a723f3ef2840b4492752664083efbf&amp;type=3#result-sample-card" />
     <Style src="project://database/Assets/_ViewTo/Gui/Uss/result-explorer.uss?fileID=7433441132597879392&amp;guid=f77d0e8617c22134e8ac068daf099df0&amp;type=3#result-explorer" />
-    <ui:VisualElement name="container" style="width: 700px; background-color: rgb(255, 255, 255);">
-        <ui:VisualElement name="explorer-container">
-            <ui:SliderInt picking-mode="Ignore" label="Point" value="42" high-value="100" show-input-field="true" name="point-index" />
-            <ui:DropdownField label="Targets" index="-1" choices="test" name="target-options" />
-        </ui:VisualElement>
-        <ui:VisualElement name="result-samples-container" style="margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;">
-            <ui:Label text="Active Values" display-tooltip-when-elided="true" name="value-title" style="-unity-font-style: bold; font-size: 16px;" />
-            <ui:Instance template="result-sample-card" name="result-sample-card" />
-        </ui:VisualElement>
-        <ui:VisualElement name="controls-container">
-            <ui:Button text="Capture" display-tooltip-when-elided="true" name="capture-view" style="background-color: rgb(102, 102, 255); -unity-font-style: bold;" />
-        </ui:VisualElement>
+    <ui:VisualElement name="container"
+                      style="width: 700px; background-color: rgb(255, 255, 255);">
+	    <ui:VisualElement name="explorer-container">
+		    <ui:SliderInt picking-mode="Ignore"
+		                  label="Point"
+		                  value="42"
+		                  high-value="100"
+		                  show-input-field="true"
+		                  name="point-index"/>
+		    <ui:DropdownField label="Targets"
+		                      index="-1"
+		                      choices="test"
+		                      name="target-options"/>
+	    </ui:VisualElement>
+	    <ui:VisualElement name="result-samples-container"
+	                      style="margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;">
+		    <ui:Label text="Active Values"
+		              display-tooltip-when-elided="true"
+		              name="value-title"
+		              style="-unity-font-style: bold; font-size: 16px;"/>
+		    <ui:Instance template="result-sample-card" name="result-sample-card"/>
+	    </ui:VisualElement>
+	    <ui:VisualElement name="controls-container" style="flex-direction: row;">
+		    <ui:Toggle label="Use Rig" name="toggle-rig" value="false" focusable="false"/>
+		    <ui:Button text="Capture"
+		               display-tooltip-when-elided="true"
+		               name="capture-view"
+		               style="background-color: rgb(102, 102, 255); -unity-font-style: bold; flex-grow: 1;"/>
+	    </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
