@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using ViewObjects.Results;
 using ViewObjects.Unity;
 
 namespace ViewTo.Connector.Unity
@@ -15,7 +16,8 @@ namespace ViewTo.Connector.Unity
 
     DropdownField _contentOptions;
     SliderInt _pointSlider;
-
+    VisualElement _resultPointContainer;
+    Label _targetName, _targetValue;
 
     void Awake()
     {
@@ -34,6 +36,9 @@ namespace ViewTo.Connector.Unity
       // hacky way of setting the ui doc shit 
       _contentOptions = root.Q<DropdownField>();
       _pointSlider = root.Q<SliderInt>();
+      _resultPointContainer = root.Q<VisualElement>("result-samples-container");
+      _targetName = _resultPointContainer.Q<Label>("target-name");
+      _targetValue = _resultPointContainer.Q<Label>("target-value");
     }
 
     void Start()
@@ -45,8 +50,15 @@ namespace ViewTo.Connector.Unity
       }
 
       source.onStudyLoaded += HandleNewStudy;
+      source.onResultPointSet += HandleNewResultPoint;
       _pointSlider.RegisterValueChangedCallback(e => source.activePoint = e.newValue);
 
+    }
+
+    void HandleNewResultPoint(ResultPoint arg)
+    {
+      _targetName.text = arg.Option.ViewName;
+      _targetValue.text = arg.Value.ToString();
     }
 
     void HandleNewStudy()

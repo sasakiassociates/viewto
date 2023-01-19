@@ -1,9 +1,5 @@
-#region
-
 using UnityEngine;
 using ViewTo.Connector.Unity.Commands;
-
-#endregion
 
 namespace ViewTo.Connector.Unity
 {

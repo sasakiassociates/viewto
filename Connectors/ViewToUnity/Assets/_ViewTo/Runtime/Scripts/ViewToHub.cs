@@ -206,20 +206,6 @@ namespace ViewTo.Connector.Unity
           cloud.Data.ForEach(x => rc.AddResultData(x));
           rc.transform.SetParent(study.transform);
           monos.Add(rc);
-
-          var colors = new List<Color32>(rc.count);
-          for(int i = 0; i < rc.count; i++)
-          {
-            colors.Add(Color.white);
-          }
-
-        #if UNITY_EDITOR
-          var data = ScriptableObject.CreateInstance<PointCloudData>();
-          data.Initialize(rc.pointsAsVector.ToList(), colors);
-          renderer.gameObject.transform.SetParent(rc.transform);
-          renderer.sourceData = data;
-        #endif
-          break;
         }
       }
 
