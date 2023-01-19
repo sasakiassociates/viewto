@@ -17,7 +17,6 @@ namespace ViewTo.RhinoGh.Results
   {
     private GH_ValueList _activeList;
 
-    private(int Object, int Values ) _input;
 
     private bool _refresh;
     private List<ContentInfo> _storedValues;
@@ -33,13 +32,7 @@ namespace ViewTo.RhinoGh.Results
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
-      var index = 0;
       pManager.AddGenericParameter("View Study", "V", "View Study To get data from", GH_ParamAccess.item);
-      _input.Object = index++;
-      pManager.AddTextParameter("Results", "R", "Results of data", GH_ParamAccess.list);
-      _input.Values = index;
-
-      pManager[_input.Values].Optional = true;
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -110,7 +103,6 @@ namespace ViewTo.RhinoGh.Results
 
         var doc = OnPingDocument();
         doc?.AddObject(_activeList, true);
-        Params.Input[_input.Values].AddSource(_activeList);
       }
       else
       {
@@ -129,10 +121,7 @@ namespace ViewTo.RhinoGh.Results
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       GH_ObjectWrapper wrapper = null;
-      DA.GetData(_input.Object, ref wrapper);
-
-      var inputTargets = new List<string>();
-      DA.GetDataList(_input.Values, inputTargets);
+      DA.GetData(0, ref wrapper);
 
       if(wrapper?.Value is ViewStudy obj && obj.Has<IContentInfo>())
       {
@@ -141,17 +130,6 @@ namespace ViewTo.RhinoGh.Results
           .Select(x => new ContentInfo(x.ViewId, x.ViewName))
           .ToList();
 
-        if(!inputTargets.Any())
-        {
-          _refresh = true;
-        }
-        else
-        {
-          if(_storedValues.Count != inputTargets.Count)
-          {
-            _refresh = true;
-          }
-        }
       }
 
       DA.SetDataList(0, _storedValues);

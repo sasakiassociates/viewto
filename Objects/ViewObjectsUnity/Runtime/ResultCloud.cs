@@ -7,8 +7,7 @@ using ViewObjects.Results;
 
 namespace ViewObjects.Unity
 {
-
-	[ExecuteAlways]
+	
 	public class ResultCloud : ViewObjectMono, IResultCloud
 	{
 		[SerializeField] CloudPoint[] cloudPoints;
@@ -113,6 +112,7 @@ namespace ViewObjects.Unity
 
 		public void AddResultData(IResultCloudData value)
 		{
+			Debug.Log("Adding data");
 			cloudData ??= new List<ResultCloudData>();
 			cloudData.Add(new ResultCloudData()
 			{
@@ -122,6 +122,8 @@ namespace ViewObjects.Unity
 			});
 		}
 
+		
+		
 	}
 
 }
