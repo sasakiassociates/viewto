@@ -167,6 +167,13 @@ public static class Extensions
   }
 
   /// <summary>
+  ///   <para>Gets a list of objects of a specific type</para>
+  /// </summary>
+  /// <param name="study">study to check</param>
+  public static List<TObjectType> GetAll<TObj, TObjectType>(this IViewStudy<TObj> study)
+    where TObj : IViewObject => study.Objects.OfType<TObjectType>().ToList();
+
+  /// <summary>
   ///   <para>Gets a specific type of object to search for</para>
   /// </summary>
   /// <param name="study">study to check</param>
