@@ -12,13 +12,13 @@ namespace ViewObjects.Converter.Unity
   {
     public override Base ConvertComponent(VU.ViewCloud component)
     {
-      return new VS.ViewCloudReference(component.Reference, component.ViewId);
+      return new VS.ViewCloudReference(component.References, component.ViewId);
     }
 
     protected override void ConvertBase(VS.ViewCloudReference obj, ref VU.ViewCloud instance)
     {
       instance.ViewId = obj.ViewId;
-      instance.Reference = obj.References;
+      instance.References = obj.References;
     }
   }
 
