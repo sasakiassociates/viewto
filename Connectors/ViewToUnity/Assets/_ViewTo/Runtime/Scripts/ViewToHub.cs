@@ -1,25 +1,19 @@
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
-using Objects.Geometry;
-using Pcx;
 using Speckle.ConnectorUnity;
 using Speckle.ConnectorUnity.Converter;
 using Speckle.ConnectorUnity.Models;
 using Speckle.ConnectorUnity.Ops;
 using Speckle.Core.Api;
 using Speckle.Core.Credentials;
-using Speckle.Core.Kits;
 using Speckle.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using ViewObjects;
-using ViewObjects.Clouds;
 using ViewObjects.Systems;
-using ViewObjects.Systems.Layouts;
 using ViewTo.Connector.Unity.Commands;
 using VU = ViewObjects.Unity;
 using VO = ViewObjects;
@@ -31,42 +25,44 @@ namespace ViewTo.Connector.Unity
   public class ViewToHub : MonoBehaviour
   {
 
+    public bool autoRun = true;
+
     [SerializeField] Material analysisMaterial;
     [SerializeField] Material renderedMat;
     [SerializeField] string tempStreamId = "81c40b04df";
     [SerializeField] string tempCommitId = "bab6b9a0a2";
     [SerializeField, Range(60, 300)] int tempFrameRate = 200;
-    [SerializeField] PointCloudRenderer renderer;
 
     [SerializeField] bool createCommit = true;
     [SerializeField] bool runRepeatCommand;
 
     [SerializeField] VU.ViewStudy study;
+    [SerializeField] ResultExplorer explorer;
+    [SerializeField] Rig rig;
 
-    [SerializeField][HideInInspector] Rig rig;
-
+    [SerializeField] SpeckleStreamObject streamObject;
     [SerializeField] ScriptableConverter converterUnity;
 
     int _cachedFrameRate;
+    // TODO: remove this at some point so the conversions are handled properly
     VS.ViewStudy _speckleStudy;
-
-
     RepeatResultTester _tester;
 
-    Stopwatch _timer;
 
-    [field: SerializeField] public ResultExplorer explorer { get; private set; }
+    public SpeckleStream Stream { get; set; }
 
-    [field: SerializeField] public SpeckleStreamObject streamObject { get; private set; }
-
-    public SpeckleStream stream { get; set; }
-
-    public bool canRun
+    public bool CanRun
     {
       get => study != null && study.IsValid && rig != null && rig.IsReady;
     }
 
-    public bool inProcess { get; private set; }
+
+    public bool CanExplore
+    {
+      get => study != null && study.IsValid && study.CanExplore();
+    }
+
+
 
   #region static methods
 
@@ -85,41 +81,68 @@ namespace ViewTo.Connector.Unity
   #endregion
 
     [Button]
-    public void LoadResults() => AutoLoadResults().Forget();
+    public void LoadStudy()
+    {
+
+      ReceiveStream().Forget();
+    }
 
     [Button]
-    public void LoadStudy() => AutoLoadStudy().Forget();
+    public void ExploreAnalysis()
+    {
 
-    public void TryLoadStudy(ViewObjects.Unity.ViewStudy obj)
+      if(!CanExplore)
+      {
+        ViewConsole.Warn($"Hub not able to explore study\nStudy Valid? {study != null && study.IsValid}\nExplorer Ready{explorer != null}");
+        return;
+      }
+      explorer.Load(study);
+    }
+
+    [Button]
+    public void RunAnalysis()
+    {
+
+      if(!CanRun)
+      {
+        ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {study != null && study.IsValid}\nRig Ready{rig != null && rig.IsReady}");
+        return;
+      }
+
+      ViewConsole.Log($"Starting Run for {study.ViewName}");
+      rig.Activate(0, autoRun);
+    }
+
+    void HandleDataReady(VU.ResultsForCloud args)
+    {
+      if(study == null) return;
+
+      var rc = study.TrySetResults(args);
+      if(rc != null)
+      {
+        SendResultsToStream(rc);
+      }
+    }
+
+
+    void SetRigToStudy()
     {
       if(!IsInit) Init();
 
-      ViewConsole.Log($"{name} is loading View Study {obj.ViewName} ");
-      study = obj;
+      ViewConsole.Log($"{name} is loading View Study {study.ViewName} ");
 
-      if(this.rig != null)
-        VU.ViewObject.SafeDestroy(this.rig.gameObject);
+      if(this.rig != null) VU.ViewObject.SafeDestroy(this.rig.gameObject);
 
       this.rig = new GameObject().AddComponent<Rig>();
 
       // setup events
       this.rig.OnReady += RigReady;
       this.rig.OnComplete += RigComplete;
+      this.rig.OnDataReadyForCloud += HandleDataReady;
       this.rig.OnStudyLoaded += OnStudyLoaded;
       this.rig.OnStageChange += OnRigStageChanged;
       this.rig.OnContentLoaded += OnViewContentLoaded;
       this.rig.OnActiveViewerSystem += OnActiveViewerSystem;
-      this.rig.OnDataReadyForCloud += (data) =>
-      {
-        if(study != null)
-        {
-          var rc = study.TrySetResults(data);
-          if(rc != null)
-          {
-            SendResultsToStream(rc);
-          }
-        }
-      };
 
       foreach(var c in study.FindObjects<VU.Content>())
       {
@@ -128,28 +151,6 @@ namespace ViewTo.Connector.Unity
 
       IRig r = this.rig;
       study.LoadStudyToRig(ref r);
-
-      StartRigSystemRun();
-    }
-
-    public void StartRigSystemRun(int pointToStart = 0)
-    {
-      if(!canRun)
-      {
-        ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {study != null && study.IsValid}\nRig Ready{rig != null && rig.IsReady}");
-        return;
-      }
-
-      Application.targetFrameRate = 200;
-
-      ViewConsole.Log($"Starting Run for {study.ViewName}");
-
-      inProcess = true;
-
-      _timer ??= new Stopwatch();
-      _timer.Start();
-
-      rig.Run(pointToStart);
     }
 
     void Init()
@@ -163,11 +164,13 @@ namespace ViewTo.Connector.Unity
         renderedMat = new Material(Shader.Find(@"Standard"));
     }
 
-    async UniTask AutoLoadResults()
+    async UniTask ReceiveStream()
     {
+      // TODO: Fix the scriptable object so it stores that date properly in the editor
       streamObject = ScriptableObject.CreateInstance<SpeckleStreamObject>();
       await streamObject.Initialize("https://speckle.xyz/streams/" + tempStreamId + "/commits/" + tempCommitId);
 
+      // TODO: This should be completely handled by the receiver object and not controlled here
       var client = new SpeckleClient(streamObject.baseAccount);
       client.token = this.GetCancellationTokenOnDestroy();
 
@@ -179,119 +182,88 @@ namespace ViewTo.Connector.Unity
 
       if(@base == null) return;
 
+      // TODO: this should be data saved in the object and converted back after the study is complete 
       _speckleStudy = await @base.SearchForType<VS.ViewStudy>(true, client.token);
 
-      if(_speckleStudy == null) return;
+      // this should be a study 
+      var settings = new ScriptableConverterSettings() {style = ConverterStyle.Direct};
 
-      UnityEngine.Debug.Log($"Found Study {_speckleStudy.ViewName} with {_speckleStudy.Objects.Count} objects\n({_speckleStudy.ViewId})");
-      study = new GameObject("Study").AddComponent<VU.ViewStudy>();
-      study.transform.position = Vector3.zero;
-      study.ViewId = _speckleStudy.ViewId;
-      study.ViewName = _speckleStudy.ViewName;
-      study.Objects = new List<IViewObject>();
+      converterUnity.SetConverterSettings(settings);
 
-      var mono = new List<IViewObject>();
+      var hierarchy = await SpeckleOps.ConvertToScene(transform, @base, converterUnity, client.token);
 
-      foreach(var o in _speckleStudy.Objects)
+      foreach(var item in hierarchy.GetObjects())
       {
-        if(o is VS.ResultCloud cloud)
-        {
-          UnityEngine.Debug.Log("Found Cloud");
-          var rc = new GameObject("ResultCloud").AddComponent<VU.ResultCloud>();
-          rc.transform.position = Vector3.zero;
-          rc.Points = cloud.Points;
-          cloud.Data.ForEach(x => rc.AddResultData(x));
-          rc.transform.SetParent(study.transform);
-          mono.Add(rc);
-        }
+        var vs = item.GetComponent<VU.ViewStudy>();
+        if(vs == null) continue;
+
+        study = vs;
       }
 
-      study.Objects = mono;
-
-
-      if(explorer != null)
+      if(study == null)
       {
-        explorer.Load(study);
+        UnityEngine.Debug.Log("Did not load study correctly");
+        return;
       }
+
+      settings.style = ConverterStyle.Queue;
+      converterUnity.SetConverterSettings(settings);
+
+      var loader = gameObject.AddComponent<StudyLoader>();
+      loader.onLoadComplete += SetRigToStudy;
+
+      loader.Run(study, client, streamObject, converterUnity).Forget();
     }
 
-    async UniTask AutoLoadStudy()
-    {
-      UnityEngine.Debug.Log("Starting Hacking Version of View To");
 
-      streamObject = ScriptableObject.CreateInstance<SpeckleStreamObject>();
-      await streamObject.Initialize("https://speckle.xyz/streams/" + tempStreamId + "/commits/" + tempCommitId);
+    //
+    // async UniTask AutoLoadResults()
+    // {
 
-      var client = new SpeckleClient(streamObject.baseAccount);
-      client.token = this.GetCancellationTokenOnDestroy();
-
-      var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
-
-      if(commit == null)
-        return;
-
-      var @base = await SpeckleOps.Receive(client, streamObject.Id, commit.referencedObject);
-
-      if(@base == null)
-        return;
-
-      UnityEngine.Debug.Log($"Receive Done {@base.totalChildrenCount}");
-
-      UnityEngine.Debug.Log("Looking for object type");
-
-      _speckleStudy = await @base.SearchForType<VS.ViewStudy>(true, client.token);
-
-      if(_speckleStudy == null)
-        return;
-
-      UnityEngine.Debug.Log($"Found Study {_speckleStudy.ViewName} with {_speckleStudy.Objects.Count} objects\n({_speckleStudy.ViewId})");
-
-      var objectsToConvert = new List<IViewObject>();
-
-      foreach(var obj in _speckleStudy.Objects)
-      {
-        var go = new GameObject();
-
-        UnityEngine.Debug.Log($"Object {obj.speckle_type}");
-
-
-        switch(obj)
-        {
-          case VS.ContentReference o:
-            var content = go.AddComponent<VU.Content>();
-            content.ContentType = o.ContentType;
-            await GetContentData(content, o, client, streamObject.Id);
-            objectsToConvert.Add(content);
-            break;
-          case VS.ViewCloudReference o:
-            var cloud = go.AddComponent<ViewObjects.Unity.ViewCloud>();
-            cloud.ViewId = o.ViewId;
-            cloud.Reference = o.References;
-
-            var co = await ReceiveCommitWithData(client, streamObject.Id, cloud.Reference.FirstOrDefault());
-            var pc = await co.SearchForType<Pointcloud>(true, this.GetCancellationTokenOnDestroy());
-
-            cloud.Points = ArrayToCloudPoint(pc.points, pc.units).ToArray();
-            objectsToConvert.Add(cloud);
-
-            break;
-          case VS.Viewer o:
-            // TODO: Bypassing linked clouds and different layout types but should be fixed in the near future
-            var bundle = go.AddComponent<VU.Viewer>();
-            bundle.Layouts = new List<ILayout> {new LayoutHorizontal()};
-            objectsToConvert.Add(bundle);
-            break;
-          default:
-            UnityEngine.Debug.LogWarning($"Study object type {obj.speckle_type} was not converted");
-            break;
-        }
-      }
-
-      var studyToBuild = new GameObject().AddComponent<ViewObjects.Unity.ViewStudy>();
-      studyToBuild.Objects = objectsToConvert;
-
-      TryLoadStudy(studyToBuild);
-    }
+    //
+    //   var client = new SpeckleClient(streamObject.baseAccount);
+    //   client.token = this.GetCancellationTokenOnDestroy();
+    //
+    //   var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
+    //
+    //   if(commit == null) return;
+    //
+    //   var @base = await SpeckleOps.Receive(client, streamObject.Id, commit.referencedObject);
+    //
+    //   if(@base == null) return;
+    //
+    //   _speckleStudy = await @base.SearchForType<VS.ViewStudy>(true, client.token);
+    //
+    //   if(_speckleStudy == null) return;
+    //
+    //   UnityEngine.Debug.Log($"Found Study {_speckleStudy.ViewName} with {_speckleStudy.Objects.Count} objects\n({_speckleStudy.ViewId})");
+    //
+    //   study = new GameObject("Study").AddComponent<VU.ViewStudy>();
+    //   study.transform.position = Vector3.zero;
+    //   study.ViewId = _speckleStudy.ViewId;
+    //   study.ViewName = _speckleStudy.ViewName;
+    //   study.Objects = new List<IViewObject>();
+    //
+    //   var mono = new List<IViewObject>();
+    //
+    //   foreach(var o in _speckleStudy.Objects)
+    //   {
+    //     if(o is VS.ResultCloud cloud)
+    //     {
+    //       UnityEngine.Debug.Log("Found Cloud");
+    //       var rc = new GameObject("ResultCloud").AddComponent<VU.ResultCloud>();
+    //       rc.transform.position = Vector3.zero;
+    //       rc.Points = cloud.Points;
+    //       cloud.Data.ForEach(x => rc.AddResultData(x));
+    //       rc.transform.SetParent(study.transform);
+    //       mono.Add(rc);
+    //     }
+    //   }
+    //
+    //   study.Objects = mono;
+    //
+    //
+    // }
 
     void SendResultsToStream(VU.ResultCloud mono)
     {
@@ -349,9 +321,7 @@ namespace ViewTo.Connector.Unity
     {
       ViewConsole.Log("Rig Complete");
 
-      _timer.Stop();
-      var ts = _timer.Elapsed;
-      ViewConsole.Log("Runtime-" + $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00}");
+      // ViewConsole.Log("Runtime-" + $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00}");
 
       if(runRepeatCommand)
       {
@@ -359,136 +329,17 @@ namespace ViewTo.Connector.Unity
 
         runRepeatCommand = false;
 
-        TryLoadStudy(study);
-        rig.Run();
+        SetRigToStudy();
+        rig.Activate();
         return;
       }
-
-      inProcess = false;
 
       OnStudyComplete?.Invoke(study);
     }
 
 
-    void TryLoadResultCloud(ViewObjects.Unity.ResultCloud cloud)
-    {
-      if(cloud == null)
-      {
-        ViewConsole.Warn("Trying to load a null result cloud");
-        return;
-      }
-
-      ViewConsole.Log($"Loading Result Cloud to explorer {cloud.name}");
-
-      // OnContentBoundsSet?.Invoke(cloud.GetBounds());
-      // explorer.Attach(cloud);
-    }
-
-    void ProcessReceiver(Receiver r)
-    {
-      // r.OnStreamUpdated += s =>
-      // {
-      // 	ViewConsole.Log($"Stream Updated {s}");
-      // 	// _stream = s;
-      // };
-      r.OnNodeComplete += WhatIsThis;
-    }
-
-    void WhatIsThis(SpeckleObjectBehaviour node)
-    {
-      var data = node.hierarchy.GetObjects();
-
-      ViewConsole.Log($"{data.Count}");
-
-      foreach(var obj in data)
-      {
-        if(obj == null)
-          continue;
-
-        if(obj.GetComponent<ViewObjects.Unity.ViewStudy>() != null)
-          TryLoadStudy(obj.GetComponent<ViewObjects.Unity.ViewStudy>());
-
-        else if(obj.GetComponent<ViewObjects.Unity.ResultCloud>() != null)
-          TryLoadResultCloud(obj.GetComponent<ViewObjects.Unity.ResultCloud>());
-      }
-    }
-
-    void ProcessSender(Sender s)
-    {
-      ViewConsole.Log($"Nothing set for {nameof(ProcessSender)} function");
-    }
 
 
-  #region Converter shit that should be moved away
-
-    public static IEnumerable<CloudPoint> ArrayToCloudPoint(IReadOnlyCollection<double> arr, string units)
-    {
-      if(arr == null)
-        throw new Exception("point array is not valid ");
-
-      if(arr.Count % 3 != 0)
-        throw new Exception("Array malformed: length%3 != 0.");
-
-      var points = new CloudPoint[arr.Count / 3];
-      var asArray = arr.ToArray();
-
-      for(int i = 2, k = 0; i < arr.Count; i += 3)
-        points[k++] = CloudByCoordinates(asArray[i - 2], asArray[i - 1], asArray[i], units);
-
-      return points;
-    }
-
-
-    public static CloudPoint CloudByCoordinates(double x, double y, double z, string units) =>
-      new((float)ScaleToNative(x, units), (float)ScaleToNative(y, units), (float)ScaleToNative(z, units));
-
-
-    public static double ScaleToNative(double value, string units) => value * Units.GetConversionFactor(units, Units.Meters);
-
-
-    static async UniTask<Base> ReceiveCommitWithData(SpeckleClient client, string stream, string refId)
-    {
-      var refCommit = await client.CommitGet(stream, refId);
-      return await SpeckleOps.Receive(client, stream, refCommit.referencedObject);
-    }
-
-
-    async UniTask GetContentData(ViewObjects.Unity.Content content, VO.Speckle.ContentReference contentBase, SpeckleClient client, string stream)
-    {
-      content.ViewId = contentBase.ViewId;
-      content.ViewName = contentBase.ViewName;
-      content.ContentType = contentBase.ContentType;
-      content.References = contentBase.References;
-
-      foreach(var refId in content.References)
-      {
-        var referenceBase = await ReceiveCommitWithData(client, stream, refId);
-        var hierarchy = await SpeckleOps.ConvertToScene(content.transform, referenceBase, converterUnity, client.token);
-        await UniTask.SwitchToMainThread();
-        hierarchy.ParentAllObjects();
-      }
-
-      // gather objects for content to keep track
-      content.Objects = GetKids(content.transform).ToList();
-      UniTask.Yield();
-    }
-
-
-    static List<GameObject> GetKids(Transform parent)
-    {
-      var currentList = new List<GameObject>();
-
-      foreach(Transform child in parent)
-      {
-        currentList.Add(child.gameObject);
-        if(child.childCount > 0)
-          currentList.AddRange(GetKids(child));
-      }
-
-      return currentList;
-    }
-
-  #endregion
 
   #region static props
 
