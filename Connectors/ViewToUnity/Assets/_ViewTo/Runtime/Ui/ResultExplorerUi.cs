@@ -7,12 +7,10 @@ using ViewObjects.Unity;
 namespace ViewTo.Connector.Unity
 {
 
-  public class ResultExplorerUi : MonoBehaviour
+  public class ResultExplorerUi : MonoUiDoc<ResultExplorer>
   {
-
-    [SerializeField] ResultExplorer source;
-    [SerializeField] UIDocument uiDoc;
     Button _captureBut;
+
 
     DropdownField _contentOptions;
     SliderInt _pointSlider;
@@ -20,44 +18,26 @@ namespace ViewTo.Connector.Unity
     Label _targetName, _targetValue;
     Toggle _toggleRig;
 
-    void Awake()
+
+    protected override void HookSource()
     {
-      if(source == null)
-      {
-        source = GetComponent<ResultExplorer>();
-      }
-      if(uiDoc == null)
-      {
-        Debug.Log($"No UI Doc is found for {name}({nameof(ResultExplorerUi)}.\nSet a UI Doc in order to use the explorer ui");
-        return;
-      }
+      source.onStudyLoaded += HandleNewStudy;
+      source.onPointSet += () => HandleNewResultPoint(source.GetResultPoint());
+      _pointSlider.RegisterValueChangedCallback(e => source.Index = e.newValue);
+    }
 
-      var root = uiDoc.rootVisualElement;
-
+    protected override void BuildFromRoot(VisualElement root)
+    {
       // hacky way of setting the ui doc shit 
       _contentOptions = root.Q<DropdownField>();
       _pointSlider = root.Q<SliderInt>();
-      _resultPointContainer = root.Q<VisualElement>("result-samples-container");
       _captureBut = root.Q<Button>();
+      _resultPointContainer = root.Q<VisualElement>("result-samples-container");
       _toggleRig = root.Q<Toggle>();
       _targetName = _resultPointContainer.Q<Label>("target-name");
       _targetValue = _resultPointContainer.Q<Label>("target-value");
 
       _toggleRig.RegisterValueChangedCallback(e => source.IsRigged = e.newValue);
-    }
-
-    void Start()
-    {
-      if(source == null)
-      {
-        Debug.Log($"No source of {nameof(ResultExplorer)} was found. Please make sure to add this component so the ui can connect with it");
-        return;
-      }
-
-      source.onStudyLoaded += HandleNewStudy;
-      source.onPointSet += () => HandleNewResultPoint(source.GetResultPoint());
-      _pointSlider.RegisterValueChangedCallback(e => source.Index = e.newValue);
-
     }
 
     void HandleNewResultPoint(ResultPoint arg)
