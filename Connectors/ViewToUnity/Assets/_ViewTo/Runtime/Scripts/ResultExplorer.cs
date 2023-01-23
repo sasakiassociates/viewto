@@ -68,7 +68,7 @@ namespace ViewTo.Connector.Unity
             if(args.Valid()) args.ForEach(Debug.Log);
 
             Debug.Log("Study Loaded to rig - Setting Rig to point");
-            _rig.Activate(Index, false);
+            _rig.Activate(false);
             break;
         }
 
