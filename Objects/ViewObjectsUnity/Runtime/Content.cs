@@ -7,160 +7,166 @@ using ViewObjects.Contents;
 
 namespace ViewObjects.Unity
 {
-	public class Content : ViewObjectMono, IContent, IContentObjects<GameObject>
-	{
 
-		[HideInInspector] [SerializeField] int _layerMask;
 
-		[SerializeField] List<GameObject> _objects;
+  public class Content : ViewObjectMono,
+    IContent,
+    IContentObjects<GameObject>,
+    IStreamReference
+  {
 
-		[SerializeField] ContentType _contentType;
 
-		[SerializeField] Color32 _color;
+    [HideInInspector][SerializeField] int layerMask;
 
-		[SerializeField] string _viewId;
+    [SerializeField] List<GameObject> objects;
 
-		[SerializeField] string _viewName;
+    [SerializeField] ContentType contentType;
 
-		[SerializeField, HideInInspector] List<string> references;
+    [SerializeField] Color32 color;
 
-		public List<string> References
-		{
-			get => references;
-			set => references = value;
-		}
+    [SerializeField] string viewId;
 
-		public ViewColor Color
-		{
-			get => new(_color.r, _color.g, _color.b, _color.a);
-			set
-			{
-				if (value == null)
-					return;
+    [SerializeField] string viewName;
 
-				Debug.Log($"new assigned to {_viewName}:" + value.ToUnity());
+    [SerializeField, HideInInspector] List<string> references;
 
-				_color = value.ToUnity();
+    public int ContentLayerMask
+    {
+      get => layerMask;
+      set => layerMask = value;
+    }
 
-				ApplyColor();
-			}
-		}
+    public string FullName => $"Content {ContentType.ToString().Split('.').LastOrDefault()} - {ViewName}";
 
-		public string ViewId
-		{
-			get => _viewId;
-			set => _viewId = value;
-		}
+    static int DiffuseColor => Shader.PropertyToID("_diffuseColor");
 
-		public ContentType ContentType
-		{
-			get => _contentType;
-			set
-			{
-				_contentType = value;
-				ContentLayerMask = value.GetLayerMask();
-			}
-		}
+    public bool Show
+    {
+      set
+      {
+        if(!objects.Valid())
+          return;
 
-		public int ContentLayerMask
-		{
-			get => _layerMask;
-			set => _layerMask = value;
-		}
+        foreach(var obj in objects)
+          obj.gameObject.SetActive(value);
+      }
+    }
 
-		public string ViewName
-		{
-			get => _viewName;
-			set
-			{
-				_viewName = value;
-				gameObject.name = FullName;
-			}
-		}
+    public ViewColor Color
+    {
+      get => new(color.r, color.g, color.b, color.a);
+      set
+      {
+        if(value == null)
+          return;
 
-		public List<GameObject> Objects
-		{
-			get => _objects;
-			set { _objects = value; }
-		}
+        Debug.Log($"new assigned to {viewName}:" + value.ToUnity());
 
-		public string FullName => $"Content {ContentType.ToString().Split('.').LastOrDefault()} - {ViewName}";
+        color = value.ToUnity();
 
-		static int DiffuseColor => Shader.PropertyToID("_diffuseColor");
+        ApplyColor();
+      }
+    }
 
-		public bool Show
-		{
-			set
-			{
-				if (!_objects.Valid())
-					return;
+    public string ViewId
+    {
+      get => viewId;
+      set => viewId = value;
+    }
 
-				foreach (var obj in _objects)
-					obj.gameObject.SetActive(value);
-			}
-		}
+    public ContentType ContentType
+    {
+      get => contentType;
+      set
+      {
+        contentType = value;
+        ContentLayerMask = value.GetLayerMask();
+      }
+    }
 
-		void ApplyColor()
-		{
-			if (!_objects.Valid())
-			{
-				Debug.Log("No Objects to apply");
-				return;
-			}
+    public string ViewName
+    {
+      get => viewName;
+      set
+      {
+        viewName = value;
+        gameObject.name = FullName;
+      }
+    }
 
-			foreach (var contentObj in _objects)
-			{
-				var meshRend = contentObj.GetComponent<MeshRenderer>();
-				if (meshRend != null)
-				{
-					if (Application.isPlaying)
-					{
-						meshRend.material.SetColor(DiffuseColor, _color);
-					}
-					else
-					{
-						meshRend.sharedMaterial.SetColor(DiffuseColor, _color);
-					}
-				}
-			}
-		}
+    public List<GameObject> Objects
+    {
+      get => objects;
+      set { objects = value; }
+    }
 
-		/// <summary>
-		///   references the objects converted to the view content list and imports them
-		/// </summary>
-		public void PrimeMeshData(Material material, Action<GameObject> onAfterPrime = null)
-		{
-			if (!Objects.Valid())
-			{
-				Debug.Log($"No objects for {name} are ready to be primed ");
-				return;
-			}
+    public List<string> References
+    {
+      get => references;
+      set => references = value;
+    }
 
-			if (material == null)
-			{
-				Debug.LogError($"Material is needed to prime mesh data on {name}");
-				return;
-			}
+    void ApplyColor()
+    {
+      if(!objects.Valid())
+      {
+        Debug.Log("No Objects to apply");
+        return;
+      }
 
-			var c = _color;
+      foreach(var contentObj in objects)
+      {
+        var meshRend = contentObj.GetComponent<MeshRenderer>();
+        if(meshRend != null)
+        {
+          if(Application.isPlaying)
+          {
+            meshRend.material.SetColor(DiffuseColor, color);
+          }
+          else
+          {
+            meshRend.sharedMaterial.SetColor(DiffuseColor, color);
+          }
+        }
+      }
+    }
 
-			if (material.HasProperty(DiffuseColor))
-			{
-				material.SetColor(DiffuseColor, c);
-			}
-			else
-			{
-				Debug.Log($"No property {DiffuseColor} on shader");
-			}
+    /// <summary>
+    ///   references the objects converted to the view content list and imports them
+    /// </summary>
+    public void PrimeMeshData(Material material, Action<GameObject> onAfterPrime = null)
+    {
+      if(!Objects.Valid())
+      {
+        Debug.Log($"No objects for {name} are ready to be primed ");
+        return;
+      }
 
-			Debug.Log($"Combinding {_objects.Count} Mesh(es)");
-			_objects = new List<GameObject>() { gameObject.CombineMeshes(material) };
+      if(material == null)
+      {
+        Debug.LogError($"Material is needed to prime mesh data on {name}");
+        return;
+      }
 
-			gameObject.ApplyAll(material);
-			gameObject.SetLayerRecursively(ContentLayerMask);
+      var c = color;
 
-			Debug.Log($"{ViewName} is primed!\nview color {Color.ToUnity()}");
-		}
+      if(material.HasProperty(DiffuseColor))
+      {
+        material.SetColor(DiffuseColor, c);
+      }
+      else
+      {
+        Debug.Log($"No property {DiffuseColor} on shader");
+      }
 
-	}
+      Debug.Log($"Combinding {objects.Count} Mesh(es)");
+      objects = new List<GameObject>() {gameObject.CombineMeshes(material)};
+
+      gameObject.ApplyAll(material);
+      gameObject.SetLayerRecursively(ContentLayerMask);
+
+      Debug.Log($"{ViewName} is primed!\nview color {Color.ToUnity()}");
+    }
+  }
+
 }

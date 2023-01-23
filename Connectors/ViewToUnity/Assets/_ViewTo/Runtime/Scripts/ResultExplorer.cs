@@ -23,8 +23,8 @@ namespace ViewTo.Connector.Unity
     [SerializeField] VU.ResultCloud result;
     [SerializeField] ExplorerValueType valueType = ExplorerValueType.ExistingOverPotential;
     [SerializeField] Gradient gradient;
-    int _index;
 
+    int _index;
     PointCloudData _pcxData;
     PointCloudRenderer _renderer;
     Rig _rig;
@@ -34,22 +34,22 @@ namespace ViewTo.Connector.Unity
 
     public UnityAction onStudyLoaded;
 
-
-    public int index
+    public int Index
     {
       get => _index;
       set
       {
         _index = value;
-        point = Cloud.Points[value].ToUnity();
+        Point = Cloud.Points[value].ToUnity();
         onPointSet?.Invoke();
       }
     }
-    public Vector3 point { get; private set; }
+
+    public Vector3 Point { get; private set; }
 
     public List<ContentOption> Options { get; internal set; }
 
-    public bool isRigged
+    public bool IsRigged
     {
       get => _rig != null;
       set
@@ -68,13 +68,12 @@ namespace ViewTo.Connector.Unity
             if(args.Valid()) args.ForEach(Debug.Log);
 
             Debug.Log("Study Loaded to rig - Setting Rig to point");
-            _rig.Run(index, false);
+            _rig.Activate(Index, false);
             break;
         }
 
       }
     }
-
 
     public void Load(IViewStudy viewObj)
     {
@@ -163,11 +162,11 @@ namespace ViewTo.Connector.Unity
     public ResultPoint GetResultPoint() => new ResultPoint
     {
       Option = ActiveContent,
-      Value = _values[index],
-      Index = index,
-      X = Cloud.Points[index].x,
-      Y = Cloud.Points[index].y,
-      Z = Cloud.Points[index].z
+      Value = _values[Index],
+      Index = Index,
+      X = Cloud.Points[Index].x,
+      Y = Cloud.Points[Index].y,
+      Z = Cloud.Points[Index].z
     };
 
     void Visualize(ContentOption content)
@@ -213,7 +212,7 @@ namespace ViewTo.Connector.Unity
 
       _renderer.sourceData = _pcxData;
 
-      if(index >= points.Count) index = 0;
+      if(Index >= points.Count) Index = 0;
     }
   }
 

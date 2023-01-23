@@ -5,10 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using ViewObjects;
 using ViewObjects.Common;
 using ViewObjects.Systems;
-using ViewObjects.Unity;
 using ViewTo.Connector.Unity.Commands;
 using VU = ViewObjects.Unity;
 using VO = ViewObjects;
@@ -18,21 +16,17 @@ using VO = ViewObjects;
 namespace ViewTo.Connector.Unity
 {
 
-  public interface IRigSystem : IRig
+  public interface IRigSystem
   {
     public ViewerSystem ActiveViewer { get; }
 
     public bool IsReady { get; }
   }
 
-  public class Rig : MonoBehaviour, IRigSystem
+  public class Rig : MonoBehaviour, IRig, IRigSystem
   {
 
-  #region unity fields
-
     Stopwatch _timer;
-
-  #endregion
 
     [field: SerializeField] public List<RigParameters> RigParams
     {
@@ -40,32 +34,28 @@ namespace ViewTo.Connector.Unity
       protected set;
     }
 
-    [field: SerializeField] public ContentType Stage
+    [field: SerializeField] public VO.ContentType Stage
     {
       get;
       private set;
     }
 
-    public ViewerSystem ActiveViewer { get; protected set; }
-
-    public bool IsReady => Application.isPlaying && ActiveViewer != null;
-
     /// <inheritdoc />
     public void Initialize(List<RigParameters> parameters)
     {
+      name = "Rig";
       RigParams = parameters;
     }
 
     /// <inheritdoc />
     public void Build()
     {
-      name = "Rig";
-
-      if(TryCreateNewViewer())
-      {
-        OnReady?.Invoke();
-      }
+      if(TryCreateNewViewer()) OnReady?.Invoke();
     }
+
+    public ViewerSystem ActiveViewer { get; protected set; }
+
+    public bool IsReady => Application.isPlaying && ActiveViewer != null;
 
     bool TryCreateNewViewer()
     {
@@ -98,7 +88,7 @@ namespace ViewTo.Connector.Unity
       return true;
     }
 
-    public void Run(int startPoint = 0, bool autoRun = true)
+    public void Activate(int startPoint = 0, bool autoRun = true)
     {
       if(!IsReady)
       {
@@ -110,13 +100,16 @@ namespace ViewTo.Connector.Unity
       ActiveViewer.OnComplete += CompileViewerSystem;
       ActiveViewer.OnDataReadyForCloud += ResultDataCompleted;
 
-      _timer ??= new Stopwatch();
-      _timer.Start();
-
       if(autoRun)
+      {
+        _timer ??= new Stopwatch();
+        _timer.Start();
         ActiveViewer.Run();
+      }
       else
+      {
         ActiveViewer.Capture(startPoint);
+      }
     }
 
     public void TrySetPoint(int index)
@@ -136,7 +129,7 @@ namespace ViewTo.Connector.Unity
 
       if(TryCreateNewViewer())
       {
-        Run();
+        Activate();
         return;
       }
 
@@ -144,13 +137,13 @@ namespace ViewTo.Connector.Unity
       OnComplete?.Invoke();
     }
 
-    void SetStageChange(ContentType arg)
+    void SetStageChange(VO.ContentType arg)
     {
       Stage = arg;
       OnStageChange?.Invoke(Stage);
     }
 
-    void ResultDataCompleted(ResultsForCloud data)
+    void ResultDataCompleted(VU.ResultsForCloud data)
     {
       // let any other subscriptions know of the data being completed 
       OnDataReadyForCloud?.Invoke(data);
@@ -164,11 +157,11 @@ namespace ViewTo.Connector.Unity
 
     public event UnityAction<ViewContentLoadedArgs> OnContentLoaded;
 
-    public event UnityAction<ContentType> OnStageChange;
+    public event UnityAction<VO.ContentType> OnStageChange;
 
     public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 
-    public event UnityAction<ResultsForCloud> OnDataReadyForCloud;
+    public event UnityAction<VU.ResultsForCloud> OnDataReadyForCloud;
 
     public event UnityAction<ViewerSystem> OnActiveViewerSystem;
 

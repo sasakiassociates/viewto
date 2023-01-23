@@ -43,7 +43,7 @@ namespace ViewTo.Connector.Unity
       _targetName = _resultPointContainer.Q<Label>("target-name");
       _targetValue = _resultPointContainer.Q<Label>("target-value");
 
-      _toggleRig.RegisterValueChangedCallback(e => source.isRigged = e.newValue);
+      _toggleRig.RegisterValueChangedCallback(e => source.IsRigged = e.newValue);
     }
 
     void Start()
@@ -56,7 +56,7 @@ namespace ViewTo.Connector.Unity
 
       source.onStudyLoaded += HandleNewStudy;
       source.onPointSet += () => HandleNewResultPoint(source.GetResultPoint());
-      _pointSlider.RegisterValueChangedCallback(e => source.index = e.newValue);
+      _pointSlider.RegisterValueChangedCallback(e => source.Index = e.newValue);
 
     }
 

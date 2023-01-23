@@ -2,46 +2,47 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ViewObjects.Clouds;
+using ViewObjects.Common;
 
 namespace ViewObjects.Unity
 {
-	[ExecuteAlways]
-	public class ViewCloud : ViewObjectMono, IViewCloud
-	{
 
-		[SerializeField] string id;
+  public class ViewCloud : ViewObjectMono, IViewCloud, IStreamReference
+  {
 
-		[SerializeField] CloudPoint[] cloudPoints;
+    [SerializeField] string id;
 
-		[SerializeField, HideInInspector] List<string> _reference;
+    [SerializeField] CloudPoint[] cloudPoints;
 
-		public List<string> Reference
-		{
-			get => _reference;
-			set => _reference = value;
-		}
+    [SerializeField, HideInInspector] List<string> references;
 
-		void Awake()
-		{
-			id ??= Guid.NewGuid().ToString();
-		}
+    public int count
+    {
+      get => this.GetCount();
+    }
 
-		public string ViewId
-		{
-			get => id;
-			set => id = value;
-		}
+    void Awake()
+    {
+      id ??= Guid.NewGuid().ToString();
+    }
 
-		public CloudPoint[] Points
-		{
-			get => cloudPoints;
-			set => cloudPoints = value;
-		}
+    public List<string> References
+    {
+      get => references;
+      set => references = value;
+    }
 
-		public int count
-		{
-			get => this.GetCount();
-		}
-	}
+    public string ViewId
+    {
+      get => id;
+      set => id = value;
+    }
+
+    public CloudPoint[] Points
+    {
+      get => cloudPoints;
+      set => cloudPoints = value;
+    }
+  }
 
 }

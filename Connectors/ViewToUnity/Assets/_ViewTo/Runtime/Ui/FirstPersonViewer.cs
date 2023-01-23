@@ -36,7 +36,7 @@ namespace ViewTo.Connector.Unity
 
     void Start()
     {
-      source.onPointSet += () => SetViewerPos(source.point);
+      source.onPointSet += () => SetViewerPos(source.Point);
     }
 
     void Update()

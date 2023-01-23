@@ -15,21 +15,6 @@ namespace ViewTo.Connector.Unity
   public class ViewToHubUi : MonoBehaviour
   {
 
-    [SerializeField] HubStage stage;
-    [SerializeField] UIDocument ui;
-    [SerializeField] VisualTreeAsset streamListItem;
-
-    List<Account> _accounts;
-    ListView _accountList;
-    ViewToHub _hub;
-    SpeckleConnector _connector;
-    AccountElement _account;
-
-    List<SpeckleStream> _streams;
-    ListView _streamsList;
-    ListView _details;
-    DropdownField _branches, _commits, _studies;
-
 
     public enum HubStage
     {
@@ -39,6 +24,21 @@ namespace ViewTo.Connector.Unity
       RunStudy
 
     }
+
+    [SerializeField] HubStage stage;
+    [SerializeField] UIDocument ui;
+    [SerializeField] VisualTreeAsset streamListItem;
+    AccountElement _account;
+    ListView _accountList;
+
+    List<Account> _accounts;
+    DropdownField _branches, _commits, _studies;
+    SpeckleConnector _connector;
+    ListView _details;
+    ViewToHub _hub;
+
+    List<SpeckleStream> _streams;
+    ListView _streamsList;
 
     void Start()
     {
@@ -149,7 +149,7 @@ namespace ViewTo.Connector.Unity
 
       _streamsList.onSelectionChange += (objects) =>
       {
-        _hub.stream = _streams[_streamsList.selectedIndex];
+        _hub.Stream = _streams[_streamsList.selectedIndex];
       };
     }
 
@@ -157,8 +157,6 @@ namespace ViewTo.Connector.Unity
     {
       _account.value = SpeckleConnector.instance.accounts.FirstOrDefault();
     }
-
-
   }
 
 }
