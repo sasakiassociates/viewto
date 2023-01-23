@@ -107,7 +107,7 @@ namespace ViewTo.Connector.Unity
         items.Add(@base);
       }
 
-      UniTask.Yield();
+      await UniTask.Yield();
 
       return items;
     }
