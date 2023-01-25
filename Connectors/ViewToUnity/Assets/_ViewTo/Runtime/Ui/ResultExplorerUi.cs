@@ -49,6 +49,8 @@ namespace ViewTo.Connector.Unity
     void HandleNewStudy()
     {
       Debug.Log("New Study Loaded");
+      uiDoc.enabled = true;
+
 
       if(_contentOptions != null)
       {

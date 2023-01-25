@@ -12,6 +12,7 @@ namespace ViewTo.Connector.Unity
     Rig _rig;
 
     VU.ViewStudy _study;
+    public UnityAction onLoad;
 
     public UnityAction onPointSet;
 
@@ -46,6 +47,7 @@ namespace ViewTo.Connector.Unity
 
       _study = study;
 
+      onLoad?.Invoke();
       onPointSizeSet?.Invoke(_rig.ActiveViewer.CollectionSize);
 
     }
