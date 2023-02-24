@@ -1,21 +1,24 @@
 ﻿using System.Collections.Generic;
 using ViewObjects.Systems.Layouts;
 
-namespace ViewObjects.Systems;
-
-public class Viewer : IViewer, IViewObject
+namespace ViewObjects.Systems
 {
 
-  public Viewer()
+  public class Viewer : IViewer, IViewObject
   {
-    Layouts = new List<ILayout>();
+
+    public Viewer()
+    {
+      Layouts = new List<ILayout>();
+    }
+
+    public Viewer(List<ILayout> layouts)
+    {
+      Layouts = layouts;
+    }
+
+    /// <inheritdoc />
+    public List<ILayout> Layouts { get; set; }
   }
 
-  public Viewer(List<ILayout> layouts)
-  {
-    Layouts = layouts;
-  }
-
-  /// <inheritdoc />
-  public List<ILayout> Layouts { get; set; }
 }

@@ -1,20 +1,23 @@
 ﻿using ViewObjects.Common;
 
-namespace ViewObjects.Clouds;
-
-public class ViewCloud : IViewCloud, IViewObject
+namespace ViewObjects.Clouds
 {
 
-  /// <summary>
-  /// </summary>
-  public ViewCloud()
+  public class ViewCloud : IViewCloud, IViewObject
   {
-    ViewId = ObjUtils.InitGuid;
+
+    /// <summary>
+    /// </summary>
+    public ViewCloud()
+    {
+      ViewId = ObjUtils.InitGuid;
+    }
+
+    /// <inheritdoc />
+    public string ViewId { get; set; }
+
+    /// <inheritdoc />
+    public CloudPoint[] Points { get; set; }
   }
 
-  /// <inheritdoc />
-  public string ViewId { get; set; }
-
-  /// <inheritdoc />
-  public CloudPoint[] Points { get; set; }
 }

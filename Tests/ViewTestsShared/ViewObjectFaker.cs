@@ -22,7 +22,7 @@ namespace ViewTo.Tests
       List<IViewObject> objects = new();
       List<Content> content = new();
 
-      foreach(ContentType type in Enum.GetValues(typeof(ContentType)))
+      foreach(ViewContentType type in Enum.GetValues(typeof(ViewContentType)))
       {
         content.Add(Content(type, $"test-{type}"));
       }
@@ -35,9 +35,9 @@ namespace ViewTo.Tests
 
         foreach(var c in content)
         {
-          if(c.ContentType == ContentType.Potential)
+          if(c.type == ViewContentType.Potential)
           {
-            foreach(ContentType type in Enum.GetValues(typeof(ContentType)))
+            foreach(ViewContentType type in Enum.GetValues(typeof(ViewContentType)))
             {
               data.Add(Result<ResultCloudData>(
                   cloud.Points.Length,
@@ -62,7 +62,7 @@ namespace ViewTo.Tests
       return new ViewStudy(objects, name);
     }
 
-    public static Content Content(ContentType type, string name = "test")
+    public static Content Content(ViewContentType type, string name = "test")
     {
       return new(type, ObjUtils.InitGuid, name);
     }
@@ -101,7 +101,7 @@ namespace ViewTo.Tests
       for(var c = 0; c < colorCount; c++)
       {
         var id = ObjUtils.InitGuid;
-        foreach(ContentType stage in Enum.GetValues(typeof(ContentType)))
+        foreach(ViewContentType stage in Enum.GetValues(typeof(ViewContentType)))
         {
           values.Add(Result<TData>(pointCount, stage, id, nameof(Layout), $"Test{c}", random));
         }
@@ -112,7 +112,7 @@ namespace ViewTo.Tests
 
     public static TData Result<TData>(
       int pointCount,
-      ContentType stage,
+      ViewContentType stage,
       string id = null,
       string layout = null,
       string contentName = null,
@@ -121,21 +121,22 @@ namespace ViewTo.Tests
     {
       random ??= new Random();
       var obj = Activator.CreateInstance<TData>();
-      obj.Layout = string.IsNullOrEmpty(layout) ? nameof(Layout) : layout;
-      obj.Values = Values(pointCount, random);
-      obj.Option = ContentOption(
-        string.IsNullOrEmpty(contentName) ? "Test" : contentName,
-        ObjUtils.CheckIfValidId(id),
-        stage);
+      // obj.layout = string.IsNullOrEmpty(layout) ? nameof(Layout) : layout;
+      // obj.values = Values(pointCount, random);
+      // obj.Option = ContentOption(
+      //   string.IsNullOrEmpty(contentName) ? "Test" : contentName,
+      //   ObjUtils.CheckIfValidId(id),
+      //   stage);
       return obj;
     }
 
-    public static IContentOption ContentOption(string name = "test", string id = null, ContentType stage = ContentType.Existing)
+    public static IContentOption ContentOption(string name = "test", string id = null, ViewContentType stage = ViewContentType.Existing)
     {
-      return new ContentOption
-      {
-        Id = ObjUtils.CheckIfValidId(id), Stage = stage, Name = name
-      };
+      return null;
+      // return new ContentOption
+      // {
+      // Id = ObjUtils.CheckIfValidId(id), Stage = stage, Name = name
+      // };
     }
 
     public static CloudPoint[] CloudPoints(int count)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Clouds;
@@ -8,60 +9,168 @@ using ViewObjects.Contents;
 namespace ViewTo
 {
 
+
   public static partial class ViewCoreExtensions
   {
+    private static TObj Fabricate<TObj>() => Activator.CreateInstance<TObj>();
 
-    public static ContentInfo GetTarget(this IResultCloud obj, string targetByIdOrName, ContentType stage)
+    /// <summary>
+    /// Finds all <see cref="IContentOption"/> within a <see cref="IResultCloud"/>
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public static List<IContentOption> GetAllOpts(this IResultCloud obj)
     {
-      if(obj == default(object) || !obj.Data.Valid() || !targetByIdOrName.Valid())
+      List<IContentOption> result = new();
+
+      if(obj == default(object) || !obj.Data.Valid())
       {
-        return null;
+        return result;
+      }
+      result = obj.Data.Where(x => x?.info != null).Select(x => x.info).ToList();
+
+      return result;
+    }
+
+    /// <summary>
+    /// Finds all <see cref="IContentOption"/> within a <see cref="IResultCloud"/> with a specific <see cref="ViewContentType"/>
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="type">the type to filter by</param>
+    /// <returns></returns>
+    public static List<IContentOption> GetAllOpts(this IResultCloud obj, ViewContentType type)
+    {
+      return obj.GetAllOpts().Where(x => x.stage == type).ToList();
+    }
+
+    /// <summary>
+    /// Gets a single <see cref="IContentOption"/> that matches the ids of the <seealso cref="IContentOption.target"/> and <see cref="IContentOption.content"/> content 
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="targetId"></param>
+    /// <param name="contentId"></param>
+    /// <param name="stage"></param>
+    /// <returns></returns>
+    public static IContentOption GetOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
+    {
+      IContentOption result = Fabricate<IContentOption>();
+
+      if(obj == default(object) || !obj.Data.Valid() || !targetId.Valid() || !contentId.Valid())
+      {
+        return result;
       }
 
-      var guid = Guid.Parse(targetByIdOrName);
-
-      foreach(var data in obj.Data)
+      if(Guid.TryParse(targetId, out _) && Guid.TryParse(contentId, out _))
       {
-        if(data?.Option == null)
+        return result;
+      }
+
+      foreach(var d in obj.Data)
+      {
+        if(d?.info == null ||
+           d.info.stage != stage ||
+           !d.info.target.ViewId.Equals(targetId) ||
+           !d.info.content.ViewId.Equals(contentId))
+        {
+          continue;
+        }
+        result = d.info;
+        break;
+      }
+      return result;
+
+    }
+
+    /// <summary>
+    /// Grabs all of the targets as a list of <see cref="IContentInfo"/>
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public static List<IContentInfo> GetAllTargets(this IResultCloud obj)
+    {
+      List<IContentInfo> result = new();
+
+      if(obj == default(object) || !obj.Data.Valid())
+      {
+        return result;
+      }
+
+      foreach(var d in obj.Data)
+      {
+        if(d?.info == null || result.Any(x => x.ViewId.Equals(d.info.target.ViewId)))
         {
           continue;
         }
 
-        if(data.Option.Stage == stage && guid != default(Guid) ? data.Option.Id.Equals(targetByIdOrName) : data.Option.Name.Equals(targetByIdOrName))
-        {
-          return new ContentInfo(data.Option);
-        }
+        result.Add(d.info.target);
+        break;
       }
+      return result;
 
-      return null;
     }
 
-    public static ContentInfo GetTarget(this IResultCloud obj, string targetByIdOrName)
+    /// <summary>
+    /// Grabs a <see cref="IContentInfo"/> that is linked to a target type
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="targetId">the target id to search for</param>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    public static IContentInfo GetTarget(this IResultCloud obj, string targetId)
     {
-      if(obj == default(object) || !obj.Data.Valid() || !targetByIdOrName.Valid())
+      IContentInfo result = Fabricate<IContentInfo>();
+
+      if(obj == default(object) || !obj.Data.Valid() || !targetId.Valid())
       {
-        return null;
+        return result;
       }
 
-      var guid = Guid.Parse(targetByIdOrName);
-
-      foreach(var data in obj.Data)
+      if(Guid.TryParse(targetId, out _))
       {
-        if(data?.Option == null)
+        return result;
+      }
+
+      foreach(var d in obj.Data)
+      {
+        if(d?.info == null || !d.info.target.ViewId.Equals(targetId))
         {
           continue;
         }
 
-        if(guid != default(Guid) ? data.Option.Id.Equals(targetByIdOrName) : data.Option.Name.Equals(targetByIdOrName))
-        {
-          return new ContentInfo(data.Option);
-        }
+        result = d.info.target;
+        break;
       }
 
-      return null;
+      return result;
+
     }
 
-    public static bool HasTarget(this IResultCloud obj, string targetByIdOrName, ContentType stage)
+    /// <summary>
+    /// Searches for a <see cref="IContentOption"/> that has a similar target, content, and stage type
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="targetId"></param>
+    /// <param name="contentId"></param>
+    /// <param name="stage"></param>
+    /// <returns></returns>
+    public static bool HasOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
+    {
+      if(obj == default(object) || !obj.Data.Valid() || !Guid.TryParse(targetId, out _) || !Guid.TryParse(contentId, out _))
+      {
+        return false;
+      }
+
+      return obj.Data.Any(x => x.info.stage == stage && x.info.target.ViewId.Equals(targetId) && x.info.content.ViewId.Equals(contentId));
+    }
+
+    /// <summary>
+    /// Searches for a <see cref="IContentInfo"/> that has a similar target and stage type
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="targetByIdOrName"></param>
+    /// <param name="stage"></param>
+    /// <returns></returns>
+    public static bool HasTarget(this IResultCloud obj, string targetByIdOrName, ViewContentType stage)
     {
       if(obj == default(object) || !obj.Data.Valid() || !targetByIdOrName.Valid())
       {
@@ -70,10 +179,16 @@ namespace ViewTo
 
       // is an id so search for that
       return Guid.TryParse(targetByIdOrName, out _) ?
-        obj.Data.Any(x => x.Option.Id.Equals(targetByIdOrName) && x.Option.Stage == stage)
-        : obj.Data.Any(x => x.Option.Name.Equals(targetByIdOrName) && x.Option.Stage == stage);
+        obj.Data.Any(x => x.info.target.ViewId.Equals(targetByIdOrName) && x.info.stage == stage)
+        : obj.Data.Any(x => x.info.target.ViewName.Equals(targetByIdOrName) && x.info.stage == stage);
     }
 
+    /// <summary>
+    /// Searched for a ><see cref="IContentInfo"/> that has the same target name or id
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="targetByIdOrName"></param>
+    /// <returns></returns>
     public static bool HasTarget(this IResultCloud obj, string targetByIdOrName)
     {
       if(obj == default(object) || !obj.Data.Valid() || !targetByIdOrName.Valid())
@@ -82,14 +197,9 @@ namespace ViewTo
       }
 
       // is an id so search for that
-      if(Guid.TryParse(targetByIdOrName, out _))
-      {
-        return obj.Data.Any(x => x.Option.Id.Equals(targetByIdOrName));
-      }
-      else
-      {
-        return obj.Data.Any(x => x.Option.Name.Equals(targetByIdOrName));
-      }
+      return Guid.TryParse(targetByIdOrName, out _) ?
+        obj.Data.Any(x => x.info.target.ViewId.Equals(targetByIdOrName)) :
+        obj.Data.Any(x => x.info.target.ViewName.Equals(targetByIdOrName));
     }
   }
 

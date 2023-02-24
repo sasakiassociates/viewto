@@ -79,13 +79,14 @@ namespace ViewTo.Connector.Unity
     {
       get
       {
-        if(stage == VO.ContentType.Potential)
+        if(stage == VO.ContentType.Proposed)
+        {
           _active.design++;
+        }
 
         stage = GetNextStage(stage);
 
-        if(stage != VO.ContentType.Proposed)
-          return true;
+        if(stage != VO.ContentType.Proposed) return true;
 
         if(stage == VO.ContentType.Proposed && hasValidProposedOptions)
         {

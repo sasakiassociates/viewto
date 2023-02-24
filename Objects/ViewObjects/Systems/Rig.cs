@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ViewObjects.Systems;
-
-/// <summary>
-///   Simple Rig Object to use for constructing a study for analysis
-/// </summary>
-public class Rig : IRig, IViewObject
+namespace ViewObjects.Systems
 {
 
-  public Rig()
-  { }
-
-  public List<RigParameters> StoredObjs { get; protected set; }
-
-  /// <inheritdoc />
-  public void Build()
+  /// <summary>
+  ///   Simple Rig Object to use for constructing a study for analysis
+  /// </summary>
+  public class Rig : IRig, IViewObject
   {
-    Console.WriteLine("Building Rig");
+
+    public Rig()
+    { }
+
+    public List<RigParameters> StoredObjs { get; protected set; }
+
+    /// <inheritdoc />
+    public void Build()
+    {
+      Console.WriteLine("Building Rig");
+    }
+
+    /// <inheritdoc />
+    public void Initialize(List<RigParameters> parameters)
+    {
+      StoredObjs = parameters;
+    }
   }
 
-  /// <inheritdoc />
-  public void Initialize(List<RigParameters> parameters)
-  {
-    StoredObjs = parameters;
-  }
 }

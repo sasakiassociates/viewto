@@ -1,6 +1,9 @@
-﻿namespace ViewObjects.Results;
-
-public interface IExploreView
+﻿namespace ViewObjects.Results
 {
-  public int point { get; }
+
+  public interface IExploreView
+  {
+    public int point { get; }
+  }
+
 }

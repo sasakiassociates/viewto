@@ -60,7 +60,7 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Serialize_ResultCloudData()
     {
-      var obj = ViewObjectFaker.Result<VS.ResultCloudData>(100, VO.ContentType.Existing);
+      var obj = ViewObjectFaker.Result<VS.ResultCloudData>(100, VO.ViewContentType.Existing);
       Check(obj, Serialize_Process(obj));
     }
 
@@ -80,11 +80,11 @@ namespace ViewTo.Tests.Objects
     private static void Check(IResultCloudData dataA, IResultCloudData dataB)
     {
       Assert.IsTrue(dataA != default(object) && dataB != default(object));
-      Assert.IsTrue(dataA.Layout.Equals(dataB.Layout));
-      Assert.IsTrue(dataA.Values.Count == dataB.Values.Count);
-      Assert.IsTrue(dataA.Option.Stage.Equals(dataB.Option.Stage)
-                    && dataA.Option.Id.Equals(dataB.Option.Id)
-                    && dataA.Option.Name.Equals(dataB.Option.Name)
+      Assert.IsTrue(dataA.layout.Equals(dataB.layout));
+      Assert.IsTrue(dataA.values.Count == dataB.values.Count);
+      Assert.IsTrue(dataA.info.stage.Equals(dataB.info.stage)
+                    && dataA.info.target.ViewId.Equals(dataB.info.target.ViewId)
+                    && dataA.info.content.ViewId.Equals(dataB.info.content.ViewId)
       );
     }
 

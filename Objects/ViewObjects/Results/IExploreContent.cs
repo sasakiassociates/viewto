@@ -1,6 +1,9 @@
-﻿namespace ViewObjects.Results;
-
-public interface IExploreContent
+﻿namespace ViewObjects.Results
 {
-  public ExplorerValueType valueType { get; }
+
+  public interface IExploreContent
+  {
+    public ExplorerValueType valueType { get; }
+  }
+
 }

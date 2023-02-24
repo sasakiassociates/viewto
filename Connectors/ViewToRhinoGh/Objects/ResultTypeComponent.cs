@@ -10,7 +10,7 @@ namespace ViewTo.RhinoGh.Objects
   public class ResultTypeComponent : ViewToComponentBase
   {
 
-    private ContentType _contentType = ContentType.Proposed;
+    private ViewContentType _viewContentType = ViewContentType.Proposed;
 
     public ResultTypeComponent() : base("Result Type",
       "RT",
@@ -25,7 +25,7 @@ namespace ViewTo.RhinoGh.Objects
 
     public override bool Write(GH_IWriter writer)
     {
-      writer.SetString("resultTypeName", _contentType.ToString());
+      writer.SetString("resultTypeName", _viewContentType.ToString());
       return base.Write(writer);
     }
 
@@ -33,27 +33,27 @@ namespace ViewTo.RhinoGh.Objects
     {
       var value = "Undefined";
       reader.TryGetString("resultTypeName", ref value);
-      _contentType = (ContentType)Enum.Parse(typeof(ContentType), value);
+      _viewContentType = (ViewContentType)Enum.Parse(typeof(ViewContentType), value);
 
       return base.Read(reader);
     }
 
     protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
     {
-      foreach(ContentType rt in Enum.GetValues(typeof(ContentType)))
+      foreach(ViewContentType rt in Enum.GetValues(typeof(ViewContentType)))
       {
         Menu_AppendItem(
           menu,
           rt.ToString(), (s, e) =>
           {
-            if(s is ToolStripMenuItem item && item.Tag is ContentType tag)
+            if(s is ToolStripMenuItem item && item.Tag is ViewContentType tag)
             {
-              _contentType = tag;
+              _viewContentType = tag;
               ExpireSolution(true);
             }
           },
           true,
-          rt == _contentType
+          rt == _viewContentType
         ).Tag = rt;
       }
 
@@ -67,7 +67,7 @@ namespace ViewTo.RhinoGh.Objects
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
-      DA.SetData(0, _contentType.ToString());
+      DA.SetData(0, _viewContentType.ToString());
     }
   }
 

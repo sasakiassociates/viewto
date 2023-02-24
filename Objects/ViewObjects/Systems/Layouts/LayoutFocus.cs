@@ -1,20 +1,23 @@
 ﻿using System;
 
-namespace ViewObjects.Systems.Layouts;
-
-/// <summary>
-///   Bundle with singular camera and a point of focus. During analysis this will rotate the camera towards the focus point
-/// </summary>
-[Serializable]
-public class LayoutFocus : Layout
+namespace ViewObjects.Systems.Layouts
 {
 
-  public LayoutFocus()
-  { }
+  /// <summary>
+  ///   Bundle with singular camera and a point of focus. During analysis this will rotate the camera towards the focus point
+  /// </summary>
+  [Serializable]
+  public class LayoutFocus : Layout
+  {
 
-  public double x { get; set; }
+    public LayoutFocus()
+    { }
 
-  public double y { get; set; }
+    public double x { get; set; }
 
-  public double z { get; set; }
+    public double y { get; set; }
+
+    public double z { get; set; }
+  }
+
 }

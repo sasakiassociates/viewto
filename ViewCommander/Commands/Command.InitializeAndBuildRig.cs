@@ -94,7 +94,7 @@ namespace ViewTo.Cmd
     {
       return new RigParameters(
         clouds.ToList(),
-        contents.Where(x => x != null && x.ContentType == ContentType.Potential).Select(x => x.Color).ToList(),
+        contents.Where(x => x != null && x.type == ViewContentType.Potential).Select(x => x.Color).ToList(),
         viewers.ToList()
       );
     }

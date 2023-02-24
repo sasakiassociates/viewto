@@ -42,14 +42,14 @@ namespace ViewTo.Tests.Objects
     {
       var contents = new List<IViewObject>
       {
-        new ContentReference(new List<string> {"2e14d7936c"}, ContentType.Potential, ObjUtils.InitGuid, "Park"),
-        new ContentReference(new List<string> {"a7af04b287"}, ContentType.Potential, ObjUtils.InitGuid, "Water"),
-        new ContentReference(new List<string> {"afc4a766e5"}, ContentType.Potential, ObjUtils.InitGuid, "Landmark"),
-        new ContentReference(new List<string> {"e91a49c540"}, ContentType.Potential, ObjUtils.InitGuid, "Mountain"),
-        new ContentReference(new List<string> {"bc49a5e0b0"}, ContentType.Potential, ObjUtils.InitGuid, "Mountain-Top-View-Deck"),
-        new ContentReference(new List<string> {"813d4062e8"}, ContentType.Existing, ObjUtils.InitGuid, "Topo"),
-        new ContentReference(new List<string> {"b2fe722cb8"}, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Adjacent"),
-        new ContentReference(new List<string> {"bfe46788b8"}, ContentType.Existing, ObjUtils.InitGuid, "Buildings-Context"),
+        new ContentReference(new List<string> {"2e14d7936c"}, ViewContentType.Potential, ObjUtils.InitGuid, "Park"),
+        new ContentReference(new List<string> {"a7af04b287"}, ViewContentType.Potential, ObjUtils.InitGuid, "Water"),
+        new ContentReference(new List<string> {"afc4a766e5"}, ViewContentType.Potential, ObjUtils.InitGuid, "Landmark"),
+        new ContentReference(new List<string> {"e91a49c540"}, ViewContentType.Potential, ObjUtils.InitGuid, "Mountain"),
+        new ContentReference(new List<string> {"bc49a5e0b0"}, ViewContentType.Potential, ObjUtils.InitGuid, "Mountain-Top-View-Deck"),
+        new ContentReference(new List<string> {"813d4062e8"}, ViewContentType.Existing, ObjUtils.InitGuid, "Topo"),
+        new ContentReference(new List<string> {"b2fe722cb8"}, ViewContentType.Existing, ObjUtils.InitGuid, "Buildings-Adjacent"),
+        new ContentReference(new List<string> {"bfe46788b8"}, ViewContentType.Existing, ObjUtils.InitGuid, "Buildings-Context"),
         new ViewCloudReference(new List<string> {"e01e2058b2"}, ObjUtils.InitGuid),
         new Viewer(new List<ILayout> {new LayoutHorizontal()})
       };

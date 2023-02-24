@@ -1,21 +1,24 @@
-﻿namespace ViewObjects.Systems.Layouts;
-
-/// <summary>
-///   Layout with 6 cameras
-/// </summary>
-public class LayoutCube : Layout
+﻿namespace ViewObjects.Systems.Layouts
 {
 
-  public LayoutCube()
+  /// <summary>
+  ///   Layout with 6 cameras
+  /// </summary>
+  public class LayoutCube : Layout
   {
-    Viewers = new()
+
+    public LayoutCube()
     {
-      ViewDirection.Front,
-      ViewDirection.Right,
-      ViewDirection.Back,
-      ViewDirection.Left,
-      ViewDirection.Up,
-      ViewDirection.Down
-    };
+      Viewers = new()
+      {
+        ViewDirection.Front,
+        ViewDirection.Right,
+        ViewDirection.Back,
+        ViewDirection.Left,
+        ViewDirection.Up,
+        ViewDirection.Down
+      };
+    }
   }
+
 }

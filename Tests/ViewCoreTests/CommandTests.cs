@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using ViewObjects;
-using ViewObjects.Results;
+using ViewObjects.Clouds;
 using ViewObjects.Systems;
 using ViewTo;
 using ViewTo.Tests;
@@ -18,7 +18,7 @@ public class CommandTests
     Assert.IsTrue(study.CanExplore());
 
     var obj = new Explorer();
-    obj.Load(study);
+    obj.Load(study.Get<IResultCloud>());
 
     Assert.IsTrue(obj.TryGetValues(ExplorerValueType.ExistingOverPotential, out var values));
   }

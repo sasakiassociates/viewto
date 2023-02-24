@@ -2,25 +2,27 @@
 using System.Collections.Generic;
 using ViewObjects.Contents;
 
-namespace ViewObjects.References;
-
-[Serializable]
-public class ContentReference : ViewObjectReference<Content>, IContentInfo
+namespace ViewObjects.References
 {
 
-  /// <inheritdoc />
-  public ContentReference(Content obj, List<string> references) : base(obj, references)
+  [Serializable]
+  public class ContentReference : ViewObjectReference<Content>, IContentInfo
   {
-    ContentType = obj.ContentType;
+
+    /// <inheritdoc />
+    public ContentReference(Content obj, List<string> references) : base(obj, references)
+    {
+      type = obj.type;
+    }
+
+    /// <inheritdoc />
+    public ContentReference(List<string> references, ViewContentType type, string viewId, string viewName = null) : base(references, viewId, viewName)
+    {
+      type = type;
+    }
+
+    /// <inheritdoc />
+    public ViewContentType type { get; }
   }
 
-  /// <inheritdoc />
-  public ContentReference(List<string> references, ContentType type, string viewId, string viewName = null) : base(references, viewId, viewName)
-  {
-    ContentType = type;
-  }
-
-  /// <summary>
-  /// </summary>
-  public ContentType ContentType { get; }
 }

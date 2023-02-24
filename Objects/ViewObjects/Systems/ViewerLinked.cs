@@ -2,28 +2,31 @@
 using ViewObjects.Common;
 using ViewObjects.Systems.Layouts;
 
-namespace ViewObjects.Systems;
-
-public class ViewerLinked : IViewerLinked, IViewObject
+namespace ViewObjects.Systems
 {
-  public ViewerLinked()
+
+  public class ViewerLinked : IViewerLinked, IViewObject
   {
-    Layouts = new List<ILayout>();
-    Clouds = new List<string>();
+    public ViewerLinked()
+    {
+      Layouts = new List<ILayout>();
+      Clouds = new List<string>();
+    }
+
+    public ViewerLinked(List<ILayout> layouts, List<string> clouds = null)
+    {
+      Layouts = layouts;
+      Clouds = clouds.Valid() ? clouds : new List<string>();
+    }
+
+    /// <inheritdoc />
+    public bool IsGlobal { get; set; } = true;
+
+    /// <inheritdoc />
+    public List<string> Clouds { get; set; }
+
+    /// <inheritdoc />
+    public List<ILayout> Layouts { get; set; }
   }
 
-  public ViewerLinked(List<ILayout> layouts, List<string> clouds = null)
-  {
-    Layouts = layouts;
-    Clouds = clouds.Valid() ? clouds : new List<string>();
-  }
-
-  /// <inheritdoc />
-  public bool IsGlobal { get; set; } = true;
-
-  /// <inheritdoc />
-  public List<string> Clouds { get; set; }
-
-  /// <inheritdoc />
-  public List<ILayout> Layouts { get; set; }
 }

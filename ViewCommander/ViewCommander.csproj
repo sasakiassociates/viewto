@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>ViewTo</RootNamespace>
-        <LangVersion>8</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Configurations>Debug;Release;Objects;Base</Configurations>
         <Platforms>AnyCPU</Platforms>
         <PackageId>ViewCommander</PackageId>

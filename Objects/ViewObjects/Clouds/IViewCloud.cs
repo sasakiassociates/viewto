@@ -1,11 +1,14 @@
 ﻿using ViewObjects.Common;
 
-namespace ViewObjects.Clouds;
-
-public interface IViewCloud : IId
+namespace ViewObjects.Clouds
 {
-  /// <summary>
-  ///   The cloud of points to use
-  /// </summary>
-  public CloudPoint[] Points { get; set; }
+
+  public interface IViewCloud : IId
+  {
+    /// <summary>
+    ///   The cloud of points to use
+    /// </summary>
+    public CloudPoint[] Points { get; set; }
+  }
+
 }

@@ -1,14 +1,14 @@
 ﻿using System.Drawing;
-using ViewObjects.Contents;
 
-namespace ViewObjects.Results;
-
-public class ResultPoint
+namespace ViewObjects.Results
 {
-  public Color Color;
 
-  public int Index;
-  public ContentInfo Option;
-  public double Value;
-  public double X, Y, Z;
+  public class ResultPoint
+  {
+    public Color color;
+    public int index;
+    public double value;
+    public double x, y, z;
+  }
+
 }

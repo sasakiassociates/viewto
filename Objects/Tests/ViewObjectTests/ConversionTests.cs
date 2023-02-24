@@ -29,10 +29,13 @@ namespace ViewTo.Tests.Objects
     public void BreakDown()
     { }
 
+
+
+
     [Test]
     public void Convert_Content()
     {
-      var obj = new ContentReference(new Content(ContentType.Potential), new List<string>() {"123443q312"});
+      var obj = new ContentReference(new Content(ViewContentType.Potential), new List<string>() {"123443q312"});
       var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
       Assert.IsTrue(res.ViewId.Equals(obj.ViewId));
     }
@@ -42,7 +45,7 @@ namespace ViewTo.Tests.Objects
     {
       var objs = new List<IViewObject>
       {
-        new ContentReference(new Content(ContentType.Potential), new List<string>() {"123443q312"}),
+        new ContentReference(new Content(ViewContentType.Potential), new List<string>() {"123443q312"}),
         new ViewCloudReference(new List<string> {"256ff84cf7"}, ObjUtils.InitGuid),
         new Viewer()
       };

@@ -57,12 +57,12 @@ namespace ViewObjects.Converter
 
     private IResultCloudData ResultCloudDataToNative(IResultCloudData obj)
     {
-      return new ResultCloudData(obj.Values, obj.Option, obj.Layout);
+      return new ResultCloudData(obj.values, obj.info, obj.layout);
     }
 
     private IViewObject ContentReferenceToNative(VS.ContentReference obj)
     {
-      return new ContentReference(obj.References, obj.ContentType, obj.ViewId, obj.ViewName);
+      return new ContentReference(obj.References, obj.type, obj.ViewId, obj.ViewName);
     }
 
     private IViewObject ViewCloudReferenceToNative(IReferenceObject obj)
@@ -137,7 +137,7 @@ namespace ViewObjects.Converter
 
     private VS.ResultCloudData ResultCloudDataToSpeckle(IResultCloudData obj)
     {
-      return new VS.ResultCloudData(obj.Values, obj.Option, obj.Layout);
+      return new VS.ResultCloudData(obj.values, obj.info, obj.layout);
     }
 
     //TODO: Support getting list of objects from search

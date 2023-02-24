@@ -85,10 +85,9 @@ namespace ViewTo.RhinoGh.Setup
           values.Add(v.Value);
         }
 
-        if(treeOptions.Branches[bIndex].FirstOrDefault().Value is ContentOption co)
+        if(treeOptions.Branches[bIndex].FirstOrDefault().Value is IContentOption co)
         {
-          dataContainer.Add(new ResultCloudData
-            {Values = values, Option = co, Layout = nameof(Layout)});
+          dataContainer.Add(new ResultCloudData(values, co, nameof(Layout)));
         }
       }
 

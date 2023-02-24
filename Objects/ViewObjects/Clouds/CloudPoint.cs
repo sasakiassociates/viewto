@@ -1,22 +1,25 @@
 ﻿using System;
 
-namespace ViewObjects.Clouds;
-
-[Serializable]
-public struct CloudPoint
+namespace ViewObjects.Clouds
 {
-  public string meta;
 
-  public double x, y, z, xn, yn, zn;
-
-  public CloudPoint(double x, double y, double z, double xn = 0, double yn = 0, double zn = 0, string meta = "")
+  [Serializable]
+  public struct CloudPoint
   {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.xn = xn;
-    this.yn = yn;
-    this.zn = zn;
-    this.meta = meta;
+    public string meta;
+
+    public double x, y, z, xn, yn, zn;
+
+    public CloudPoint(double x, double y, double z, double xn = 0, double yn = 0, double zn = 0, string meta = "")
+    {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      this.xn = xn;
+      this.yn = yn;
+      this.zn = zn;
+      this.meta = meta;
+    }
   }
+
 }

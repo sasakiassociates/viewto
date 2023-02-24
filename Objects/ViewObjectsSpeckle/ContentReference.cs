@@ -28,19 +28,19 @@ namespace ViewObjects.Speckle
     {
       Type = obj.Type;
       References = obj.References;
-      ContentType = obj.ContentType;
+      type = obj.type;
     }
 
     /// <inheritdoc />
-    public ContentReference(ContentType type, List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
+    public ContentReference(ViewContentType type, List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
     {
-      ContentType = type;
+      this.type = type;
     }
 
     /// <inheritdoc />
-    [JsonIgnore] public ContentType ContentType
+    [JsonIgnore] public ViewContentType type
     {
-      get => (ContentType)Enum.Parse(typeof(ContentType), (string)this[CONTENT_TYPE]);
+      get => (ViewContentType)Enum.Parse(typeof(ViewContentType), (string)this[CONTENT_TYPE]);
       set => this[CONTENT_TYPE] = value.ToString();
     }
 
@@ -54,7 +54,7 @@ namespace ViewObjects.Speckle
     /// <returns></returns>
     public bool Equals(IContent obj)
     {
-      return obj != default(object) && ViewId.Equals(obj.ViewId) && ContentType == obj.ContentType;
+      return obj != default(object) && ViewId.Equals(obj.ViewId) && type == obj.type;
     }
 
   }

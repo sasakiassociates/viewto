@@ -57,9 +57,9 @@ namespace ViewTo.Receivers
 
     public bool CheckData(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers, out string message)
     {
-      var countTarget = contents.Count(x => x.ContentType == ContentType.Potential);
-      var countExisting = contents.Count(x => x.ContentType == ContentType.Existing);
-      var countProposed = contents.Count(x => x.ContentType == ContentType.Proposed);
+      var countTarget = contents.Count(x => x.type == ViewContentType.Potential);
+      var countExisting = contents.Count(x => x.type == ViewContentType.Existing);
+      var countProposed = contents.Count(x => x.type == ViewContentType.Proposed);
       var countViewerLinked = viewers.Count(x => x is IViewerLinked);
 
       var countTotalPoints = 0;
@@ -81,9 +81,9 @@ namespace ViewTo.Receivers
       }
 
       message = $"{nameof(IContent)}s: "
-                + $"{nameof(ContentType.Potential)}={countTarget}, "
-                + $"{nameof(ContentType.Existing)}={countExisting}, "
-                + $"{nameof(ContentType.Proposed)}={countProposed}\n"
+                + $"{nameof(ViewContentType.Potential)}={countTarget}, "
+                + $"{nameof(ViewContentType.Existing)}={countExisting}, "
+                + $"{nameof(ViewContentType.Proposed)}={countProposed}\n"
                 + $"{nameof(IViewCloud)}s: "
                 + $"Total={clouds.Count}, "
                 + $"Points={countTotalPoints}\n"

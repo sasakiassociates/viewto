@@ -1,9 +1,12 @@
-﻿namespace ViewObjects.Common;
-
-public interface INameable
+﻿namespace ViewObjects.Common
 {
-  /// <summary>
-  ///   Simple name for view objects
-  /// </summary>
-  string ViewName { get; set; }
+
+  public interface INameable
+  {
+    /// <summary>
+    ///   Simple name for view objects
+    /// </summary>
+    string ViewName { get; set; }
+  }
+
 }

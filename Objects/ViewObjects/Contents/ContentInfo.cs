@@ -1,44 +1,43 @@
 ﻿using System;
 using ViewObjects.Common;
 
-namespace ViewObjects.Contents;
-
-[Serializable]
-public class ContentInfo : IContentInfo
+namespace ViewObjects.Contents
 {
 
-  public ContentInfo(IContentOption obj)
+  [Serializable]
+  public class ContentInfo : IContentInfo
   {
-    ViewName = obj.Name;
-    ViewId = obj.Id;
-  }
 
-  public ContentInfo(string viewId, string viewName)
-  {
-    ViewName = viewName;
-    ViewId = viewId;
-  }
 
-  public ContentInfo(IContent obj)
-  {
-    ViewName = obj.ViewName;
-    ViewId = obj.ViewId;
-  }
+    public ContentInfo(string viewId, string viewName)
+    {
+      ViewName = viewName;
+      ViewId = viewId;
+    }
 
-  /// <inheritdoc />
-  public string ViewName { get; set; }
+    public ContentInfo(IContent obj)
+    {
+      ViewName = obj.ViewName;
+      ViewId = obj.ViewId;
+      type = obj.type;
+    }
 
-  /// <inheritdoc />
-  public string ViewId { get; set; }
 
-  public bool Equals(IContentInfo obj)
-  {
-    return obj != default(object) && ViewId.Valid() && ViewId.Equals(obj.ViewId);
-  }
+    /// <inheritdoc />
+    public string ViewName { get; set; }
 
-  public bool Equals(IContentOption obj)
-  {
-    return obj != default(object) && ViewId.Valid() && ViewId.Equals(obj.Id);
+    public ViewContentType type { get; set; }
+
+
+    /// <inheritdoc />
+    public string ViewId { get; set; }
+
+    public bool Equals(IContentInfo obj)
+    {
+      return obj != default(object) && ViewId.Valid() && ViewId.Equals(obj.ViewId);
+    }
+
+
   }
 
 }

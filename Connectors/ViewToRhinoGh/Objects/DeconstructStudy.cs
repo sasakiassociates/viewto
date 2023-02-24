@@ -53,13 +53,14 @@ namespace ViewTo.RhinoGh.Objects
 
       if(wrapper?.Value is ViewStudy obj)
       {
+        // var study = obj.Deconstruct();
         // TODO: Deal with the different types of view object types
         DA.SetDataList(_output.Clouds, obj.FindObjects<ViewCloudReference>());
         DA.SetDataList(_output.ResultClouds, obj.FindObjects<ResultCloud>());
 
-        DA.SetDataList(_output.Targets, obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Potential));
-        DA.SetDataList(_output.Existing, obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Existing));
-        DA.SetDataList(_output.Proposals, obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Proposed));
+        DA.SetDataList(_output.Targets, obj.FindObjects<ContentReference>().Where(x => x.type == ViewContentType.Potential));
+        DA.SetDataList(_output.Existing, obj.FindObjects<ContentReference>().Where(x => x.type == ViewContentType.Existing));
+        DA.SetDataList(_output.Proposals, obj.FindObjects<ContentReference>().Where(x => x.type == ViewContentType.Proposed));
 
         DA.SetDataList(_output.Viewers, obj.FindObjects<Viewer>());
         DA.SetDataList(_output.Options, obj.GetAllTargetContentInfo());

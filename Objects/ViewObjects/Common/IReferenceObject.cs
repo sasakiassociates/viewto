@@ -1,8 +1,11 @@
 ﻿using System;
 
-namespace ViewObjects.Common;
-
-public interface IReferenceObject : IId, INameable, IStreamReference
+namespace ViewObjects.Common
 {
-  public Type Type { get; }
+
+  public interface IReferenceObject : IId, INameable, IStreamReference
+  {
+    public Type Type { get; }
+  }
+
 }

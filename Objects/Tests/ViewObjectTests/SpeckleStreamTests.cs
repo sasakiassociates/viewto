@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
+using Objects.Organization;
 using Speckle.Core.Api;
 using Speckle.Core.Credentials;
+using Speckle.Core.Models;
 using Speckle.Core.Transports;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Contents;
 using ViewObjects.Converter;
 using ViewObjects.References;
 using ViewObjects.Studies;
@@ -35,6 +36,54 @@ namespace ViewTo.Tests.Objects
 
     private(string id, string branch, string commit) _stream;
 
+    [Test]
+    public async Task Convert_ReferenceObject()
+    {
+      const string commitObjectReferenceId = "fdfacc1fd63b1e633e06d31a2997267b";
+      // NOTE: using a commit id seems to upset the converter and ends up hashing the ID into a new reference ID 
+      // const string commitId = "9a2048729";
+
+      var reference = new ObjectReference()
+      {
+        referencedId = commitObjectReferenceId
+      };
+
+      Console.WriteLine("type=" + reference.speckle_type);
+      Console.WriteLine("id=" + reference.referencedId);
+
+      _client = new Client(AccountManager.GetDefaultAccount());
+
+      _stream.id = "6f3acfb477";
+      _stream.branch = "dev/dm";
+
+      _transport = new ServerTransport(_client.Account, _stream.id);
+
+      var wrapper = new Base
+      {
+        ["reference object"] = reference
+      };
+
+      var container = new Container("some container", new List<Base>() {wrapper});
+      // var container = new Base();
+      var id = await Operations.Send(wrapper, new List<ITransport> {_transport});
+
+      Assert.IsNotNull(id);
+
+      var commit = await _client.CommitCreate(new CommitCreateInput
+      {
+        streamId = _stream.id,
+        branchName = _stream.branch,
+        objectId = id,
+        message = "Test commit from Script"
+      });
+
+      Assert.IsNotNull(commit);
+      Console.WriteLine(commit);
+
+      var res = await Operations.Receive(id, _transport);
+
+      Assert.IsNotNull(res);
+    }
 
     [Test]
     public async Task SendTestResultCloud()
@@ -63,6 +112,8 @@ namespace ViewTo.Tests.Objects
       });
 
       Assert.IsNotNull(commit);
+
+
     }
 
     public static string TerminalURL(string caption, string url)
@@ -126,21 +177,21 @@ namespace ViewTo.Tests.Objects
       var study = converter.ConvertToNativeViewObject(studyBase.SearchForType<VS.ViewStudy>(true)) as ViewStudy;
       var cloud = converter.ConvertToNativeViewObject(cloudBase.SearchForType<VS.ResultCloud>(true)) as ResultCloud;
 
-      var targets = study.GetAll<ContentReference>().Where(x => x.ContentType == ContentType.Potential).ToList();
+      var targets = study.GetAll<ContentReference>().Where(x => x.type == ViewContentType.Potential).ToList();
 
       Assert.IsTrue(targets.Count * 2 == cloud.Data.Count);
-      for(var i = 0; i < targets.Count; i++)
-      {
-        var t = targets[i];
-        cloud.Data[i].Option = new ContentOption
-        {
-          Stage = ContentType.Potential, Id = t.ViewId, Name = t.ViewName
-        };
-        cloud.Data[i + targets.Count].Option = new ContentOption
-        {
-          Stage = ContentType.Existing, Id = t.ViewId, Name = t.ViewName
-        };
-      }
+      // for(var i = 0; i < targets.Count; i++)
+      // {
+      //   var t = targets[i];
+      //   cloud.Data[i].info = new ContentOption
+      //   {
+      //     Stage = ViewContentType.Potential, Id = t.ViewId, Name = t.ViewName
+      //   };
+      //   cloud.Data[i + targets.Count].Option = new ContentOption
+      //   {
+      //     Stage = ViewContentType.Existing, Id = t.ViewId, Name = t.ViewName
+      //   };
+      // }
 
       study.Objects.Add(cloud);
 

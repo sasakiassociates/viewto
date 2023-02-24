@@ -1,24 +1,26 @@
 ﻿using System;
-using ViewObjects.Common;
 
-namespace ViewObjects.Contents;
-
-[Serializable]
-public class ContentOption : IContentOption
+namespace ViewObjects.Contents
 {
 
-  /// <inheritdoc />
-  public string Id { get; set; }
-
-  /// <inheritdoc />
-  public string Name { get; set; }
-
-  /// <inheritdoc />
-  public ContentType Stage { get; set; }
-
-  public bool Equals(IContentOption obj)
+  [Serializable]
+  public class ContentOption : IContentOption
   {
-    return obj != default(object) && Id.Valid() && Id.Equals(obj.Id) && Stage == obj.Stage;
+
+    public ContentOption(IContentInfo target, IContentInfo value, ViewContentType stage)
+    {
+      this.target = target;
+      this.content = value;
+      this.stage = stage;
+
+    }
+
+    /// <inheritdoc />
+    public IContentInfo target { get; }
+    /// <inheritdoc />
+    public IContentInfo content { get; }
+    /// <inheritdoc />
+    public ViewContentType stage { get; }
   }
 
 }

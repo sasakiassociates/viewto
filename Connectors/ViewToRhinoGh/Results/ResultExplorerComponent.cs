@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Clouds;
 using ViewObjects.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
@@ -22,13 +23,14 @@ namespace ViewTo.RhinoGh.Results
     // TODO: Allow for remapping colors to a range of values 
     // TODO: Setting value type for exploring 
 
-    private const int MAX_ALPHA = 255;
+    const int MAX_ALPHA = 255;
 
-    private const int MIN_ALPHA = 100;
+    const int MIN_ALPHA = 100;
 
-    private IExplorer _explorer;
+    IExplorer _explorer;
+    IViewStudy _study;
 
-    private(int Obj, int Options, int ValueType, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
+    (int Obj, int Options, int Proposals, int ValueType, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
     private double _min = 1.0, _max;
 
     private(int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
@@ -54,8 +56,8 @@ namespace ViewTo.RhinoGh.Results
       pManager.AddGenericParameter("Content Option", "C", "Content Option to Explore", GH_ParamAccess.list);
       _input.Options = index++;
 
-      pManager.AddGenericParameter("Value Type", "T", "Value Type to Explore", GH_ParamAccess.item);
-      _input.ValueType = index++;
+      pManager.AddGenericParameter("Proposed Option", "P", "Proposed Option to Explore", GH_ParamAccess.list);
+      _input.Proposals = index++;
 
       pManager.AddGenericParameter("Explorer Settings", "S", "Explorer Input Settings", GH_ParamAccess.item);
       _input.Settings = index++;
@@ -72,7 +74,7 @@ namespace ViewTo.RhinoGh.Results
       pManager.AddIntegerParameter("Point Size", "P", "Size of Point in Cloud", GH_ParamAccess.item, 3);
       _input.Size = index;
 
-      pManager[_input.ValueType].Optional = true;
+      pManager[_input.Proposals].Optional = true;
       pManager[_input.NormalizeByMask].Optional = true;
       pManager[_input.MaskOnly].Optional = true;
       pManager[_input.Mask].Optional = true;
@@ -143,6 +145,7 @@ namespace ViewTo.RhinoGh.Results
       if(ghWrapper?.Value is ExplorerSettings settings)
       {
         _settings = settings;
+        _valueType = _settings.valueType;
       }
       else
       {
@@ -150,23 +153,37 @@ namespace ViewTo.RhinoGh.Results
         return;
       }
 
+
       GH_ObjectWrapper wrapper = null;
       DA.GetData(_input.Obj, ref wrapper);
 
       var options = new List<GH_ObjectWrapper>();
       DA.GetDataList(_input.Options, options);
-
       var opt = options.FirstOrDefault().Value;
-
       var optToUse = opt as ContentInfo;
+
+      var proposals = new List<GH_ObjectWrapper>();
+      DA.GetDataList(_input.Proposals, proposals);
+      var pro = proposals.FirstOrDefault().Value;
+      var proToUse = pro as ContentInfo;
+
 
       double[] explorerValues = null;
       // load cloud point
       if(wrapper?.Value is ViewStudy obj)
       {
-        if(_explorer.Source == default(object) || !_explorer.Source.ViewId.Equals(obj.ViewId))
+
+        if(_study == default(object) || !_study.ViewId.Equals(obj.ViewId))
         {
-          _explorer.Load(obj);
+          var rc = _study.FindObject<ResultCloud>();
+
+          if(rc == null)
+          {
+            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"No {nameof(ResultCloud)} found in this study");
+            return;
+          }
+
+          _explorer.Load(rc);
         }
 
         if(_explorer.TryGetValues(_valueType, optToUse?.ViewId, ref explorerValues))
@@ -181,12 +198,12 @@ namespace ViewTo.RhinoGh.Results
           + "Check the Result Cloud input and reload into the component");
         return;
       }
-
-      if(!_explorer.IsValid)
-      {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Explorer is not valid");
-        return;
-      }
+      //
+      // if(!_explorer.IsValid)
+      // {
+      //   AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Explorer is not valid");
+      //   return;
+      // }
 
       if(explorerValues == null || !explorerValues.Any())
       {
@@ -201,7 +218,7 @@ namespace ViewTo.RhinoGh.Results
       {
         for(var i = 0; i < explorerValues.Length; i++)
         {
-          var point = _explorer.Cloud.Points[i].ToGrass();
+          var point = _explorer.cloud.Points[i].ToGrass();
 
           for(var treeIndex = 0; treeIndex < maskTree.Branches.Count; treeIndex++)
           {
@@ -221,7 +238,7 @@ namespace ViewTo.RhinoGh.Results
       {
         for(var i = 0; i < explorerValues.Length; i++)
         {
-          points.Append(_explorer.Cloud.Points[i].ToGrass());
+          points.Append(_explorer.cloud.Points[i].ToGrass());
           values.Append(new GH_Number(explorerValues[i]));
         }
       }
@@ -303,7 +320,7 @@ namespace ViewTo.RhinoGh.Results
       DA.SetDataTree(_output.Colors, fColors);
       DA.SetDataTree(_output.Values, fValues);
 
-      DA.SetData(_output.ActivePoint, _explorer.Cloud.Points[_settings.point].ToRhino());
+      DA.SetData(_output.ActivePoint, _explorer.cloud.Points[_settings.point].ToRhino());
       DA.SetData(_output.ActiveValue, explorerValues[_settings.point]);
       DA.SetData(_output.ActiveColor, _settings.GetColor(explorerValues[_settings.point]));
     }

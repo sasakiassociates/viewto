@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ViewObjects;
 using ViewObjects.Clouds;
 using ViewObjects.Common;
@@ -12,43 +11,54 @@ using ViewTo.Cmd;
 namespace ViewTo
 {
 
+  public class DeconstructedStudy
+  {
+    public List<IViewer> viewers;
+    public List<IViewCloud> clouds;
+    public List<IResultCloud> results;
+    public List<IContent> proposed;
+    public List<IContent> existing;
+    public List<IContent> targets;
+
+  }
+
 
   public static partial class ViewCoreExtensions
   {
 
-    public static List<string> LoadStudyToRig<TObj>(this IViewStudy<TObj> study, ref IRig rig)
-      where TObj : IViewObject
-    {
-
-      IViewStudy sss = Activator.CreateInstance<IViewStudy>();
-      
-      // look for layouts as well since there could be a layout not attached to a 
-      study.GatherLooseLayouts();
-      var viewers = study.GetAll<IViewer>();
-      var clouds = study.GetAll<IViewCloud>();
-      var contents = study.GetAll<IContent>();
-
-      var reports = new List<string>();
-
-      var sequence = new List<ICmd>
-      {
-        new CanStudyRun(contents, clouds, viewers),
-        new AssignViewColors(contents),
-        new InitializeAndBuildRig(rig, contents, clouds, viewers)
-      };
-
-      foreach(var s in sequence)
-      {
-        s.Execute();
-
-        if(s is ICmdWithArgs<CommandArgs> cmdWithArgs)
-        {
-          reports.Add(cmdWithArgs.args.Message);
-        }
-      }
-
-      return reports;
-    }
+    // public static List<string> LoadStudyToRig<TObj>(this IViewStudy<TObj> study, ref IRig rig)
+    //   where TObj : IViewObject
+    // {
+    //
+    //   IViewStudy sss = Activator.CreateInstance<IViewStudy>();
+    //   
+    //   // look for layouts as well since there could be a layout not attached to a 
+    //   study.GatherLooseLayouts();
+    //   var viewers = study.GetAll<IViewer>();
+    //   var clouds = study.GetAll<IViewCloud>();
+    //   var contents = study.GetAll<IContent>();
+    //
+    //   var reports = new List<string>();
+    //
+    //   var sequence = new List<ICmd>
+    //   {
+    //     new CanStudyRun(contents, clouds, viewers),
+    //     new AssignViewColors(contents),
+    //     new InitializeAndBuildRig(rig, contents, clouds, viewers)
+    //   };
+    //
+    //   foreach(var s in sequence)
+    //   {
+    //     s.Execute();
+    //
+    //     if(s is ICmdWithArgs<CommandArgs> cmdWithArgs)
+    //     {
+    //       reports.Add(cmdWithArgs.args.Message);
+    //     }
+    //   }
+    //
+    //   return reports;
+    // }
 
     public static void GatherLooseLayouts<TObj>(this IViewStudy<TObj> study)
       where TObj : IViewObject
@@ -100,6 +110,18 @@ namespace ViewTo
         study.Objects.Add(new Viewer(layouts));
       }
     }
+
+
+    // public static void Deconstruct<TObj>(this IViewStudy<TObj> obj) where TObj : IViewObject
+    // {
+    //   return new DeconstructedStudy()
+    //   {
+    //     targets = obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Potential),
+    //     existing = obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Existing),
+    //     proposed= obj.FindObjects<ContentReference>().Where(x => x.ContentType == ContentType.Proposed),
+    //   };
+    //
+    // }
 
   }
 

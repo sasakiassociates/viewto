@@ -1,4 +1,7 @@
-﻿namespace ViewObjects;
+﻿namespace ViewObjects
+{
 
-public interface IViewObject
-{ }
+  public interface IViewObject
+  { }
+
+}

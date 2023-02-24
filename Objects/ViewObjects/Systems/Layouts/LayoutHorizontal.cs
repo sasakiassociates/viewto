@@ -1,18 +1,21 @@
-﻿namespace ViewObjects.Systems.Layouts;
-
-/// <summary>
-///   Layout with 4 cameras
-/// </summary>
-public class LayoutHorizontal : Layout
+﻿namespace ViewObjects.Systems.Layouts
 {
-  public LayoutHorizontal()
+
+  /// <summary>
+  ///   Layout with 4 cameras
+  /// </summary>
+  public class LayoutHorizontal : Layout
   {
-    Viewers = new()
+    public LayoutHorizontal()
     {
-      ViewDirection.Front,
-      ViewDirection.Right,
-      ViewDirection.Back,
-      ViewDirection.Left
-    };
+      Viewers = new()
+      {
+        ViewDirection.Front,
+        ViewDirection.Right,
+        ViewDirection.Back,
+        ViewDirection.Left
+      };
+    }
   }
+
 }

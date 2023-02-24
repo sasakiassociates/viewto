@@ -1,19 +1,25 @@
-﻿namespace ViewObjects.Contents;
-
-public interface IContentOption
+﻿namespace ViewObjects.Contents
 {
-  /// <summary>
-  ///   Id linked to <see cref="IContent" />
-  /// </summary>
-  public string Id { get; set; }
 
-  /// <summary>
-  ///   Name of the Target Content
-  /// </summary>
-  public string Name { get; set; }
 
-  /// <summary>
-  ///   the stage to use for
-  /// </summary>
-  public ContentType Stage { get; set; }
+
+
+  public interface IContentOption
+  {
+    /// <summary>
+    /// The <see cref="IContentInfo"/> target object that the analysis is related too
+    /// </summary>
+    public IContentInfo target { get; }
+
+    /// <summary>
+    /// The <see cref="IContentInfo"/> object that the view analysis is staged in
+    /// </summary>
+    public IContentInfo content { get; }
+
+    /// <summary>
+    /// A very poor way of keeping track of the content object stage completed
+    /// </summary>
+    public ViewContentType stage { get; }
+  }
+
 }

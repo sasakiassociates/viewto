@@ -4,9 +4,9 @@
         <Authors>Sasaki</Authors>
         <RootNamespace>ViewObjects</RootNamespace>
         <AssemblyName>ViewObjects</AssemblyName>
-        <LangVersion>latestmajor</LangVersion>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <Nullable>enable</Nullable>
+        <LangVersion>latestMajor</LangVersion>
+        <Nullable>disable</Nullable>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup>

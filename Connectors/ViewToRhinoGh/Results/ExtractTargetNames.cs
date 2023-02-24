@@ -3,7 +3,6 @@ using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Contents;
@@ -38,6 +37,7 @@ namespace ViewTo.RhinoGh.Results
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddGenericParameter("Targets", "T", "List of View Targets", GH_ParamAccess.list);
+      pManager.AddGenericParameter("Proposals", "P", "List of propsal content", GH_ParamAccess.list);
     }
 
     public static List<GH_ValueListItem> CreateValueListItems(List<string> values, List<string> expressions = null)
@@ -77,62 +77,69 @@ namespace ViewTo.RhinoGh.Results
 
       return valueList;
     }
-
-    protected override void AfterSolveInstance()
-    {
-      base.AfterSolveInstance();
-
-      if(!_refresh || _storedValues == null || !_storedValues.Any())
-      {
-        return;
-      }
-
-      var items = CreateValueListItems(_storedValues.Select(x => x.ViewName).ToList(), _storedValues.Select(x => x.ViewId).ToList());
-      if(_activeList == null)
-      {
-        _activeList = PopulateValueList(
-          items,
-          "Targets",
-          "T",
-          "A list of view targets"
-        );
-        var point = new PointF(Attributes.Bounds.Location.X - _activeList.Attributes.Bounds.Width,
-          Attributes.Bounds.Location.Y + (1 * 2 + 1) * Attributes.Bounds.Height / (Params.Input.Count * 2) - 12);
-        _activeList.Attributes.Pivot = point;
-        _activeList.SelectItem(0);
-
-        var doc = OnPingDocument();
-        doc?.AddObject(_activeList, true);
-      }
-      else
-      {
-        _activeList.ListItems.Clear();
-        foreach(var i in items)
-        {
-          _activeList.ListItems.Add(i);
-        }
-
-        _activeList.SelectItem(0);
-      }
-
-      _refresh = false;
-    }
+    //
+    // protected override void AfterSolveInstance()
+    // {
+    //   base.AfterSolveInstance();
+    //
+    //   if(!_refresh || _storedValues == null || !_storedValues.Any())
+    //   {
+    //     return;
+    //   }
+    //
+    //   var items = CreateValueListItems(_storedValues.Select(x => x.ViewName).ToList(), _storedValues.Select(x => x.ViewId).ToList());
+    //   if(_activeList == null)
+    //   {
+    //     _activeList = PopulateValueList(
+    //       items,
+    //       "Targets",
+    //       "T",
+    //       "A list of view targets"
+    //     );
+    //     var point = new PointF(Attributes.Bounds.Location.X - _activeList.Attributes.Bounds.Width,
+    //       Attributes.Bounds.Location.Y + (1 * 2 + 1) * Attributes.Bounds.Height / (Params.Input.Count * 2) - 12);
+    //     _activeList.Attributes.Pivot = point;
+    //     _activeList.SelectItem(0);
+    //
+    //     var doc = OnPingDocument();
+    //     doc?.AddObject(_activeList, true);
+    //   }
+    //   else
+    //   {
+    //     _activeList.ListItems.Clear();
+    //     foreach(var i in items)
+    //     {
+    //       _activeList.ListItems.Add(i);
+    //     }
+    //
+    //     _activeList.SelectItem(0);
+    //   }
+    //
+    //   _refresh = false;
+    // }
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
       GH_ObjectWrapper wrapper = null;
       DA.GetData(0, ref wrapper);
+      List<ContentInfo> optValues = new List<ContentInfo>();
 
       if(wrapper?.Value is ViewStudy obj && obj.Has<IContentInfo>())
       {
         _storedValues = obj.FindObjects<ContentReference>()
-          .Where(x => x != null && x.ContentType == ContentType.Potential)
+          .Where(x => x != null && x.type == ViewContentType.Potential)
+          .Select(x => new ContentInfo(x.ViewId, x.ViewName))
+          .ToList();
+
+        optValues = obj.FindObjects<ContentReference>()
+          .Where(x => x != null && x.type == ViewContentType.Proposed)
           .Select(x => new ContentInfo(x.ViewId, x.ViewName))
           .ToList();
 
       }
 
       DA.SetDataList(0, _storedValues);
+      DA.SetDataList(1, optValues);
     }
   }
 

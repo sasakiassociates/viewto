@@ -14,41 +14,41 @@ namespace ViewTo.Cmd
     /// <summary>
     ///   id from the content
     /// </summary>
-    private readonly string contentId;
+    readonly string _contentId;
 
     /// <summary>
     ///   the list of data to search through
     /// </summary>
-    private readonly IReadOnlyCollection<IResultCloudData> data;
+    readonly IReadOnlyCollection<IResultCloudData> _data;
 
     /// <summary>
     ///   stage the data is linked with
     /// </summary>
-    private readonly ContentType stage;
+    readonly ViewContentType _stage;
+
+    public ValuesRawForExplorerArgs args { get; private set; }
 
     /// <summary>
     /// </summary>
     /// <param name="data">data to search through</param>
     /// <param name="contentId">id of the content to find</param>
     /// <param name="stage">the analysis stage to find</param>
-    public TryGetValues(IReadOnlyCollection<IResultCloudData> data, string contentId, ContentType stage)
+    public TryGetValues(IReadOnlyCollection<IResultCloudData> data, string contentId, ViewContentType stage)
     {
-      this.data = data;
-      this.stage = stage;
-      this.contentId = contentId;
+      this._data = data;
+      this._stage = stage;
+      this._contentId = contentId;
     }
-
-    public ValuesRawForExplorerArgs args { get; private set; }
 
     public void Execute()
     {
-      if(string.IsNullOrEmpty(contentId))
+      if(string.IsNullOrEmpty(_contentId))
       {
         args = new ValuesRawForExplorerArgs("Content ID does is not valid");
         return;
       }
 
-      if(data == null || !data.Any())
+      if(_data == null || !_data.Any())
       {
         args = new ValuesRawForExplorerArgs("No data found to use");
         return;
@@ -56,9 +56,9 @@ namespace ViewTo.Cmd
 
       IResultCloudData dataFound = default;
 
-      foreach(var d in data)
+      foreach(var d in _data)
       {
-        if(d.Option.Id.Equals(contentId) && d.Option.Stage == stage)
+        if(d.info.target.ViewId.Equals(_contentId) && d.info.target.type == _stage)
         {
           dataFound = d;
           break;
@@ -67,11 +67,11 @@ namespace ViewTo.Cmd
 
       if(dataFound == default(object))
       {
-        args = new ValuesRawForExplorerArgs($"No id found in the data set. Input id={contentId}");
+        args = new ValuesRawForExplorerArgs($"No id found in the data set. Input id={_contentId}");
         return;
       }
 
-      args = new ValuesRawForExplorerArgs(dataFound.Values, $"Data found for {contentId} with {dataFound.Values.Count} ");
+      args = new ValuesRawForExplorerArgs(dataFound.values, $"Data found for {_contentId} with {dataFound.values.Count} ");
     }
   }
 

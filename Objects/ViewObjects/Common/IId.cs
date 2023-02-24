@@ -1,9 +1,12 @@
-﻿namespace ViewObjects.Common;
-
-public interface IId
+﻿namespace ViewObjects.Common
 {
-  /// <summary>
-  ///   View id in the format of <see cref="System.Guid" />
-  /// </summary>
-  string ViewId { get; }
+
+  public interface IId
+  {
+    /// <summary>
+    ///   View id in the format of <see cref="System.Guid" />
+    /// </summary>
+    string ViewId { get; }
+  }
+
 }

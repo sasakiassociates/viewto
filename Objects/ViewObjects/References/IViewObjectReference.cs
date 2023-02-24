@@ -1,8 +1,11 @@
 ﻿using ViewObjects.Common;
 
-namespace ViewObjects.References;
-
-public interface IViewObjectReference : IViewObject
+namespace ViewObjects.References
 {
-  public IReferenceObject Reference { get; set; }
+
+  public interface IViewObjectReference : IViewObject
+  {
+    public IReferenceObject Reference { get; set; }
+  }
+
 }

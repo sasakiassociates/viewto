@@ -1,6 +1,9 @@
-﻿namespace ViewObjects.Common;
-
-public interface IValidate
+﻿namespace ViewObjects.Common
 {
-  bool IsValid { get; }
+
+  public interface IValidate
+  {
+    bool IsValid { get; }
+  }
+
 }

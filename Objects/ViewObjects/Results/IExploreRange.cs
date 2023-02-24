@@ -1,17 +1,20 @@
 ﻿using System.Drawing;
 
-namespace ViewObjects.Results;
-
-public interface IExploreRange
+namespace ViewObjects.Results
 {
 
-  public double min { get; }
+  public interface IExploreRange
+  {
 
-  public double max { get; }
+    public double min { get; }
 
-  public bool normalize { get; }
+    public double max { get; }
 
-  public Color[] colorRamp { get; }
+    public bool normalize { get; }
 
-  public Color invalidColor { get; }
+    public Color[] colorRamp { get; }
+
+    public Color invalidColor { get; }
+  }
+
 }

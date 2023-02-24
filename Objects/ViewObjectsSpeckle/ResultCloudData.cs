@@ -14,9 +14,11 @@ namespace ViewObjects.Speckle
   public class ResultCloudData : ViewObjectBase, IResultCloudData
   {
 
-    private const string NAME = "ViewName";
-    private const string ID = "ViewId";
-    private const string STAGE = nameof(ContentType);
+    const string TARGET_NAME = "Target_Name";
+    const string TARGET_ID = "Target_Id";
+    const string CONTENT_ID = "Content_Id";
+    const string CONTENT_NAME = "Content_Name";
+    const string STAGE = nameof(ViewContentType);
 
     /// <summary>
     /// </summary>
@@ -27,17 +29,19 @@ namespace ViewObjects.Speckle
     ///   Schema constructor
     /// </summary>
     /// <param name="values">Pixel values connected to each point of a cloud</param>
-    /// <param name="contentId">GUID from the Content</param>
+    /// <param name="targetId">GUID from the Content</param>
+    /// <param name="targetName"></param>
+    /// <param name="contentId"></param>
+    /// <param name="contentName"></param>
     /// <param name="stage">Result stage flag</param>
     /// <param name="name"></param>
     /// <param name="layout">Viewer layout meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultCloudData(List<int> values, string contentId, ContentType stage, string name = null, string layout = null)
+    public ResultCloudData(List<int> values, string targetId, string targetName, string contentId, string contentName, ViewContentType stage, string name, string layout = null)
     {
-      Values = values;
-      Layout = layout;
-      Option = new ContentOption
-        {Id = contentId, Stage = stage, Name = name};
+      this.values = values;
+      this.layout = layout;
+      this.info = new ContentOption(new ContentInfo(targetId, targetName), new ContentInfo(contentId, contentName), stage);
     }
 
     /// <summary>
@@ -49,32 +53,33 @@ namespace ViewObjects.Speckle
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
     public ResultCloudData(List<int> values, IContentOption option, string layout = null)
     {
-      Values = values;
-      Layout = layout;
-      Option = option;
+      this.values = values;
+      this.layout = layout;
+      this.info = option;
     }
 
     /// <inheritdoc />
-    public string Layout { get; set; }
+    public string layout { get; set; }
 
     /// <inheritdoc />
-    [DetachProperty][Chunkable] public List<int> Values { get; set; } = new List<int>();
+    [DetachProperty][Chunkable] public List<int> values { get; set; } = new List<int>();
 
     /// <inheritdoc />
-    [JsonIgnore] public IContentOption Option
+    [JsonIgnore] public IContentOption info
     {
-      get =>
-        new ContentOption
-        {
-          Id = (string)this[ID],
-          Name = (string)this[NAME],
-          Stage = (ContentType)Enum.Parse(typeof(ContentType), (string)this[STAGE])
-        };
+      get => new ContentOption
+      (
+        new ContentInfo((string)this[TARGET_ID], (string)this[TARGET_NAME]),
+        new ContentInfo((string)this[CONTENT_ID], (string)this[CONTENT_NAME]),
+        (ViewContentType)Enum.Parse(typeof(ViewContentType), (string)this[STAGE])
+      );
       set
       {
-        this[NAME] = value.Name;
-        this[STAGE] = value.Stage.ToString();
-        this[ID] = value.Id;
+        this[STAGE] = value.stage.ToString();
+        this[TARGET_ID] = value.target.ViewName;
+        this[TARGET_NAME] = value.target.ViewId;
+        this[CONTENT_ID] = value.content.ViewName;
+        this[CONTENT_NAME] = value.content.ViewId;
       }
     }
   }
