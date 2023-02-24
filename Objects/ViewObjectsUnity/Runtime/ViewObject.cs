@@ -27,16 +27,16 @@ namespace ViewObjects.Unity
 
 		public static int GetLayerMask(this IContent value)
 		{
-			return value.ContentType.GetLayerMask();
+			return value.type.GetLayerMask();
 		}
 
-		public static int GetLayerMask(this ContentType value)
+		public static int GetLayerMask(this ViewContentType value)
 		{
 			return value switch
 			{
-				ContentType.Potential => TargetLayer,
-				ContentType.Existing => BlockerLayer,
-				ContentType.Proposed => ProposedLayer,
+				ViewContentType.Potential => TargetLayer,
+				ViewContentType.Existing => BlockerLayer,
+				ViewContentType.Proposed => ProposedLayer,
 				_ => 0
 			};
 		}
@@ -63,9 +63,9 @@ namespace ViewObjects.Unity
 			return null;
 		}
 
-		public static List<Content> TryFetchInScene(ContentType type)
+		public static List<Content> TryFetchInScene(ViewContentType type)
 		{
-			return Object.FindObjectsOfType<Content>().Where(x => x.ContentType == type).ToList();
+			return Object.FindObjectsOfType<Content>().Where(x => x.type == type).ToList();
 		}
 
 		public static AMono TryFetchInScene<AMono>(this IId idToFind) where AMono : ViewObjectMono => TryFetchInScene<AMono>(idToFind.ViewId);

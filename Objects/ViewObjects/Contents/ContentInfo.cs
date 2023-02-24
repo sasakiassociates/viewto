@@ -8,6 +8,9 @@ namespace ViewObjects.Contents
   public class ContentInfo : IContentInfo
   {
 
+    public ContentInfo()
+    { }
+
 
     public ContentInfo(string viewId, string viewName)
     {

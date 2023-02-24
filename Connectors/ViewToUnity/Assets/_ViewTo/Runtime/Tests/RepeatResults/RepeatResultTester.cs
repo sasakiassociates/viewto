@@ -70,8 +70,8 @@ namespace ViewTo.Connector.Unity
 				return;
 			}
 
-			var valuesA = new Dictionary<ContentType, List<double>>();
-			var valuesB = new Dictionary<ContentType, List<double>>();
+			var valuesA = new Dictionary<ViewContentType, List<double>>();
+			var valuesB = new Dictionary<ViewContentType, List<double>>();
 
 			// Test all data now
 			for (var dIndex = 0; dIndex < cloudA.data.Count; dIndex++)
@@ -84,30 +84,30 @@ namespace ViewTo.Connector.Unity
 				// valuesB.Add(Enum.Parse<ResultStage>(dataB.stage), dataB.values);
 
 				// Test compare target count
-				if (dataA.Values.Count != dataB.Values.Count)
+				if (dataA.values.Count != dataB.values.Count)
 				{
-					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.Values.Count} : B={dataB.Values.Count} ");
+					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.values.Count} : B={dataB.values.Count} ");
 					continue;
 				}
 
 				ViewConsole.Log($"Testing collection {dIndex}");
 				// collect any indexes that do not equal each other
-				var mismatchedValues = new List<int>();
+				var mismatch = new List<int>();
 
-				for (var rIndex = 0; rIndex < dataA.Values.Count; rIndex++)
+				for (var rIndex = 0; rIndex < dataA.values.Count; rIndex++)
 				{
-					var valueA = dataA.Values[rIndex];
-					var valueB = dataB.Values[rIndex];
+					var valueA = dataA.values[rIndex];
+					var valueB = dataB.values[rIndex];
 
 					// Test compare target count
 					if (!valueA.Equals(valueB))
 					{
-						mismatchedValues.Add(rIndex);
+						mismatch.Add(rIndex);
 						ViewConsole.Error($"Values at {rIndex} do not align. A={valueA} : B={valueB} ");
 					}
 				}
 
-				ViewConsole.Log(mismatchedValues.Valid() ? $"Incorrect values found {mismatchedValues.Count}" : "All values equal");
+				ViewConsole.Log(mismatch.Valid() ? $"Incorrect values found {mismatch.Count}" : "All values equal");
 			}
 
 			var setA = new TestResultContainer();
@@ -194,30 +194,30 @@ namespace ViewTo.Connector.Unity
 				var dataB = cloudB.Data[dIndex];
 
 				// Test compare target count
-				if (dataA.Values.Count != dataB.Values.Count)
+				if (dataA.values.Count != dataB.values.Count)
 				{
-					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.Values.Count} : B={dataB.Values.Count} ");
+					ViewConsole.Error($"Data sample {dIndex} does not have equal collections. A={dataA.values.Count} : B={dataB.values.Count} ");
 					continue;
 				}
 
 				ViewConsole.Log($"Testing collection {dIndex}");
 				// collect any indexes that do not equal each other
-				var mismatchedValues = new List<int>();
+				var mismatch = new List<int>();
 
-				for (var rIndex = 0; rIndex < dataA.Values.Count; rIndex++)
+				for (var rIndex = 0; rIndex < dataA.values.Count; rIndex++)
 				{
-					var valueA = dataA.Values[rIndex];
-					var valueB = dataB.Values[rIndex];
+					var valueA = dataA.values[rIndex];
+					var valueB = dataB.values[rIndex];
 
 					// Test compare target count
 					if (!valueA.Equals(valueB))
 					{
-						mismatchedValues.Add(rIndex);
+						mismatch.Add(rIndex);
 						ViewConsole.Error($"Values at {rIndex} do not align. A={valueA} : B={valueB} ");
 					}
 				}
 
-				ViewConsole.Log(mismatchedValues.Valid() ? $"Incorrect Values found {mismatchedValues.Count}" : "No Incorrect values found");
+				ViewConsole.Log(mismatch.Valid() ? $"Incorrect Values found {mismatch.Count}" : "No Incorrect values found");
 			}
 		}
 
@@ -240,17 +240,17 @@ namespace ViewTo.Connector.Unity
 
 			public void Set(string key, List<double> values)
 			{
-				var res = Enum.Parse<ContentType>(key);
+				var res = Enum.Parse<ViewContentType>(key);
 
 				switch (res)
 				{
-					case ContentType.Potential:
+					case ViewContentType.Potential:
 						potential = values;
 						break;
-					case ContentType.Existing:
+					case ViewContentType.Existing:
 						existing = values;
 						break;
-					case ContentType.Proposed:
+					case ViewContentType.Proposed:
 						proposed = values;
 						break;
 					default:

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
 using ViewTo.Cmd;
@@ -78,40 +79,6 @@ namespace ViewTo
     }
 
 
-
-    public static bool TryGetValues(this IExplorer exp, ContentInfo optA, ViewContentType valueA, ContentInfo optB, ViewContentType valueB, string target, ref double[] results)
-    {
-      if(!exp.cloud.HasTarget(target))
-      {
-        return false;
-      }
-
-
-      var getValueCmdA = new TryGetValues(exp.data, optA.ViewId, valueA);
-      var getValueCmdB = new TryGetValues(exp.data, optB.ViewId, valueB);
-
-      getValueCmdA.Execute();
-      getValueCmdB.Execute();
-
-      if(!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
-      {
-        // TODO: return issue
-        return false;
-      }
-
-      var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
-      normalizeCmd.Execute();
-
-      if(!normalizeCmd.args.IsValid())
-      {
-        // TODO: report
-        return false;
-      }
-
-      results = normalizeCmd.args.values.ToArray();
-
-      return results.Any();
-    }
 
 
     /// <summary>
@@ -194,9 +161,49 @@ namespace ViewTo
       {
         return;
       }
-      var opt = obj.cloud.GetOpt(targetId, contentId, stage);
+      obj.TrySetOption(obj.cloud.GetOpt(targetId, contentId, stage));
 
-      obj.meta.activeTarget = opt.target;
+    }
+
+    /// <summary>
+    /// Sets a current 
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="targetId"></param>
+    /// <param name="stage"></param>
+    public static void SetOption(this IExplorer obj, string targetId, ViewContentType stage)
+    {
+      obj.SetOption(targetId, targetId, stage);
+    }
+
+
+    /// <summary>
+    /// Check if this option is already being used and sets the <see cref="ExplorerMetaData.activeTarget"/>
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="option">the option to use</param>
+    /// <param name="addToList">if true it adds the option to the <see cref="ExplorerMetaData.activeOptions"/></param>
+    static void TrySetOption(this IExplorer obj, IContentOption option, bool addToList = false)
+    {
+      if(option?.target == null || !option.target.ViewId.Valid() || option.content == null || !option.content.ViewId.Valid())
+      {
+        return;
+      }
+
+      if(!addToList)
+      {
+        obj.meta.activeOptions = new List<IContentOption>();
+      }
+
+      if(!obj.meta.activeOptions.Any(x => x.stage == option.stage
+                                          && x.target.ViewId.Equals(option.target.ViewId)
+                                          && x.content.ViewId.Equals(option.content.ViewId)))
+      {
+        obj.meta.activeOptions.Add(option);
+      }
+
+      obj.meta.activeTarget = option.target;
+
     }
 
 

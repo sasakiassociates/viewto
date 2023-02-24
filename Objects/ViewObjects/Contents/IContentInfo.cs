@@ -8,6 +8,7 @@ namespace ViewObjects.Contents
   /// </summary>
   public interface IContentInfo : INameable, IId
   {
+
     public ViewContentType type { get; }
 
   }

@@ -185,7 +185,7 @@ namespace ViewTo.Connector.Unity
       await streamObject.Initialize("https://speckle.xyz/streams/" + tempStreamId + "/commits/" + tempCommitId);
 
       // TODO: This should be completely handled by the receiver object and not controlled here
-      var client = new SpeckleClient(streamObject.baseAccount);
+      var client = new SpeckleClient(streamObject.BaseAccount);
       client.token = this.GetCancellationTokenOnDestroy();
 
       var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
@@ -234,7 +234,7 @@ namespace ViewTo.Connector.Unity
       UnityEngine.Debug.Log("Auto Send");
 
       var data = mono.Data
-        .Select(x => new VS.ResultCloudData(x.Values, x.Option, x.Layout))
+        .Select(x => new VS.ResultCloudData(x.values, x.info, x.layout))
         .ToList();
 
       var resultCloud = new VS.ResultCloud() {Data = data, Points = mono.Points};
@@ -364,7 +364,7 @@ namespace ViewTo.Connector.Unity
 
     public event UnityAction<ViewObjects.Unity.ViewStudy> OnStudyComplete;
 
-    public event UnityAction<ContentType> OnRigStageChanged;
+    public event UnityAction<ViewContentType> OnRigStageChanged;
 
     public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 
@@ -372,7 +372,7 @@ namespace ViewTo.Connector.Unity
 
     // public UnityEvent<Bounds> OnContentBoundsSet;
     //
-    // public UnityEvent<ContentType> OnResultStageSet;
+    // public UnityEvent<ViewContentType> OnResultStageSet;
 
     // public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 

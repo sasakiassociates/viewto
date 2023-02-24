@@ -14,13 +14,13 @@ namespace ViewTo.Connector.Unity
   {
     public static bool Compare(this ViewColor a, Color32 b) => a.R == b.r && a.G == b.g && a.B == b.b;
 
-    public static int GetCullingMask(this ContentType value)
+    public static int GetCullingMask(this ViewContentType value)
     {
       return value switch
       {
-        ContentType.Potential => (1 << ViewObject.TargetLayer) | (1 << ViewObject.CloudLayer),
-        ContentType.Existing => (1 << ViewObject.TargetLayer) | (1 << ViewObject.BlockerLayer) | (1 << ViewObject.CloudLayer),
-        ContentType.Proposed => (1 << ViewObject.TargetLayer) | (1 << ViewObject.BlockerLayer) | (1 << ViewObject.ProposedLayer) | (1 << ViewObject.CloudLayer),
+        ViewContentType.Potential => (1 << ViewObject.TargetLayer) | (1 << ViewObject.CloudLayer),
+        ViewContentType.Existing => (1 << ViewObject.TargetLayer) | (1 << ViewObject.BlockerLayer) | (1 << ViewObject.CloudLayer),
+        ViewContentType.Proposed => (1 << ViewObject.TargetLayer) | (1 << ViewObject.BlockerLayer) | (1 << ViewObject.ProposedLayer) | (1 << ViewObject.CloudLayer),
         _ => -1
       };
     }

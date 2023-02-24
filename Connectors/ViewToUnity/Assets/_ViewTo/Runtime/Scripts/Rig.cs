@@ -35,7 +35,7 @@ namespace ViewTo.Connector.Unity
       protected set;
     }
 
-    [field: SerializeField] public VO.ContentType Stage
+    [field: SerializeField] public VO.ViewContentType Stage
     {
       get;
       private set;
@@ -135,7 +135,7 @@ namespace ViewTo.Connector.Unity
       OnComplete?.Invoke();
     }
 
-    void SetStageChange(VO.ContentType arg)
+    void SetStageChange(VO.ViewContentType arg)
     {
       Stage = arg;
       OnStageChange?.Invoke(Stage);
@@ -179,7 +179,7 @@ namespace ViewTo.Connector.Unity
 
     public event UnityAction<ViewContentLoadedArgs> OnContentLoaded;
 
-    public event UnityAction<VO.ContentType> OnStageChange;
+    public event UnityAction<VO.ViewContentType> OnStageChange;
 
     public event UnityAction<StudyLoadedArgs> OnStudyLoaded;
 

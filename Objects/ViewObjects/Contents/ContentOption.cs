@@ -7,6 +7,9 @@ namespace ViewObjects.Contents
   public class ContentOption : IContentOption
   {
 
+    public ContentOption()
+    { }
+
     public ContentOption(IContentInfo target, IContentInfo value, ViewContentType stage)
     {
       this.target = target;

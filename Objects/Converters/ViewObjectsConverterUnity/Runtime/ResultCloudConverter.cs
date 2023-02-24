@@ -16,7 +16,7 @@ namespace ViewObjects.Converter.Unity
     public override Base ConvertComponent(VU.ResultCloud component)
     {
       return new VS.ResultCloud(component.Points,
-        component.Data.Select(x => new VS.ResultCloudData(x.Values, x.Option, x.Layout)).ToList(),
+        component.Data.Select(x => new VS.ResultCloudData(x.values, x.info, x.layout)).ToList(),
         component.ViewId);
     }
 
@@ -25,7 +25,7 @@ namespace ViewObjects.Converter.Unity
       instance.name = "ResultCloud";
       instance.ViewId = obj.ViewId;
       instance.Points = obj.Points;
-      instance.Data = obj.Data.Select(x => new ResultCloudData(x.Values, x.Option, x.Layout)).Cast<IResultCloudData>().ToList();
+      instance.Data = obj.Data.Select(x => new ResultCloudData(x.values, x.info, x.layout)).Cast<IResultCloudData>().ToList();
     }
   }
 

@@ -84,7 +84,7 @@ namespace ViewTo.Connector.Unity.Commands
 		{
 			var nameWithColor = new List<ViewColorWithName>();
 
-			foreach (var content in ViewObject.TryFetchInScene(ContentType.Potential))
+			foreach (var content in ViewObject.TryFetchInScene(ViewContentType.Potential))
 			{
 				if (content.transform.hideFlags != HideFlags.None)
 				{
@@ -110,25 +110,25 @@ namespace ViewTo.Connector.Unity.Commands
 			return nameWithColor;
 		}
 
-		public static ContentType Convert(this RigStage value)
+		public static ViewContentType Convert(this RigStage value)
 		{
 			return value switch
 			{
-				RigStage.Target => ContentType.Potential,
-				RigStage.Blocker => ContentType.Existing,
-				RigStage.Design => ContentType.Proposed,
-				RigStage.Complete => ContentType.Proposed,
+				RigStage.Target => ViewContentType.Potential,
+				RigStage.Blocker => ViewContentType.Existing,
+				RigStage.Design => ViewContentType.Proposed,
+				RigStage.Complete => ViewContentType.Proposed,
 				_ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 			};
 		}
 
-		public static RigStage Convert(this ContentType value)
+		public static RigStage Convert(this ViewContentType value)
 		{
 			return value switch
 			{
-				ContentType.Potential => RigStage.Target,
-				ContentType.Existing => RigStage.Blocker,
-				ContentType.Proposed => RigStage.Design,
+				ViewContentType.Potential => RigStage.Target,
+				ViewContentType.Existing => RigStage.Blocker,
+				ViewContentType.Proposed => RigStage.Design,
 				_ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 			};
 		}

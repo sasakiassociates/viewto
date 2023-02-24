@@ -53,14 +53,14 @@ namespace ViewTo
     /// <returns></returns>
     public static IContentOption GetOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
     {
-      IContentOption result = Fabricate<IContentOption>();
+      IContentOption result = Fabricate<ContentOption>();
 
       if(obj == default(object) || !obj.Data.Valid() || !targetId.Valid() || !contentId.Valid())
       {
         return result;
       }
 
-      if(Guid.TryParse(targetId, out _) && Guid.TryParse(contentId, out _))
+      if(!Guid.TryParse(targetId, out _) && !Guid.TryParse(contentId, out _))
       {
         return result;
       }
@@ -118,7 +118,7 @@ namespace ViewTo
     /// <returns></returns>
     public static IContentInfo GetTarget(this IResultCloud obj, string targetId)
     {
-      IContentInfo result = Fabricate<IContentInfo>();
+      IContentInfo result = Fabricate<ContentInfo>();
 
       if(obj == default(object) || !obj.Data.Valid() || !targetId.Valid())
       {
@@ -161,6 +161,28 @@ namespace ViewTo
       }
 
       return obj.Data.Any(x => x.info.stage == stage && x.info.target.ViewId.Equals(targetId) && x.info.content.ViewId.Equals(contentId));
+    }
+
+    /// <summary>
+    /// <para>Searches for a <see cref="IContentOption"/> that has a similar target and stage type. This will select the target by id
+    /// and the stage it was captured. Any content options that are not set as a <see cref="ViewContentType.Proposed"/> will have the
+    /// same target and content id value, with the stage being the only thing needed to separate them</para>
+    /// 
+    /// <para>Use <see cref="HasOpt(ViewObjects.Clouds.IResultCloud,string,string,ViewObjects.ViewContentType)"/>
+    /// to look for options with <see cref="ViewContentType.Proposed"/></para>
+    /// </summary>
+    /// <param name="obj">cloud being used</param>
+    /// <param name="targetId">the target id to search for</param>
+    /// <param name="stage">the stage to make sure it has</param>
+    /// <returns></returns>
+    public static bool HasOpt(this IResultCloud obj, string targetId, ViewContentType stage)
+    {
+      if(obj == default(object) || !obj.Data.Valid() || !Guid.TryParse(targetId, out _))
+      {
+        return false;
+      }
+
+      return obj.Data.Any(x => x.info.stage == stage && x.info.target.ViewId.Equals(targetId) && x.info.content.ViewId.Equals(targetId));
     }
 
     /// <summary>

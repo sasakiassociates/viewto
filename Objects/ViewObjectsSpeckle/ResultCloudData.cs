@@ -62,7 +62,7 @@ namespace ViewObjects.Speckle
     public string layout { get; set; }
 
     /// <inheritdoc />
-    [DetachProperty][Chunkable] public List<int> values { get; set; } = new List<int>();
+    [Chunkable] public List<int> values { get; set; } = new List<int>();
 
     /// <inheritdoc />
     [JsonIgnore] public IContentOption info
@@ -76,10 +76,10 @@ namespace ViewObjects.Speckle
       set
       {
         this[STAGE] = value.stage.ToString();
-        this[TARGET_ID] = value.target.ViewName;
-        this[TARGET_NAME] = value.target.ViewId;
-        this[CONTENT_ID] = value.content.ViewName;
-        this[CONTENT_NAME] = value.content.ViewId;
+        this[TARGET_ID] = value.target.ViewId;
+        this[TARGET_NAME] = value.target.ViewName;
+        this[CONTENT_ID] = value.content.ViewId;
+        this[CONTENT_NAME] = value.content.ViewName;
       }
     }
   }

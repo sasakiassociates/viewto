@@ -20,7 +20,7 @@ namespace ViewObjects.Unity
 
     [SerializeField] List<GameObject> objects;
 
-    [SerializeField] ContentType contentType;
+    [SerializeField] ViewContentType contentType;
 
     [SerializeField] Color32 color;
 
@@ -36,7 +36,7 @@ namespace ViewObjects.Unity
       set => layerMask = value;
     }
 
-    public string FullName => $"Content {ContentType.ToString().Split('.').LastOrDefault()} - {ViewName}";
+    public string FullName => $"Content {type.ToString().Split('.').LastOrDefault()} - {ViewName}";
 
     static int DiffuseColor => Shader.PropertyToID("_diffuseColor");
 
@@ -74,7 +74,7 @@ namespace ViewObjects.Unity
       set => viewId = value;
     }
 
-    public ContentType ContentType
+    public ViewContentType type
     {
       get => contentType;
       set

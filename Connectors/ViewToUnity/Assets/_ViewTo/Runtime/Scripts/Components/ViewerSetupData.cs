@@ -26,7 +26,7 @@ namespace ViewTo.Connector.Unity
 		{
 			Layouts = data.Viewer;
 			Clouds = ViewObject.GetCloudsByKey(data.Clouds);
-			ProposedContent = ViewObject.TryFetchInScene(VO.ContentType.Proposed);
+			ProposedContent = ViewObject.TryFetchInScene(VO.ViewContentType.Proposed);
 			Colors = data.Colors.GetViewColorsFromScene().ToList();
 		}
 

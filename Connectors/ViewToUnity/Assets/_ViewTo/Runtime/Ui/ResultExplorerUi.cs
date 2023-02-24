@@ -21,9 +21,9 @@ namespace ViewTo.Connector.Unity
 
     protected override void HookSource()
     {
-      source.onStudyLoaded += HandleNewStudy;
-      source.onPointSet += () => HandleNewResultPoint(source.GetResultPoint());
-      _pointSlider.RegisterValueChangedCallback(e => source.Index = e.newValue);
+      // source.onStudyLoaded += HandleNewStudy;
+      // source.onPointSet += () => HandleNewResultPoint(source.GetResultPoint());
+      // _pointSlider.RegisterValueChangedCallback(e => source.Index = e.newValue);
     }
 
     protected override void BuildFromRoot(VisualElement root)
@@ -42,8 +42,8 @@ namespace ViewTo.Connector.Unity
 
     void HandleNewResultPoint(ResultPoint arg)
     {
-      _targetName.text = arg.Option.ViewName;
-      _targetValue.text = arg.Value.ToString();
+      // _targetName.text = arg.ViewName;
+      // _targetValue.text = arg.Value.ToString();
     }
 
     void HandleNewStudy()
@@ -52,18 +52,18 @@ namespace ViewTo.Connector.Unity
       uiDoc.enabled = true;
 
 
-      if(_contentOptions != null)
-      {
-        _contentOptions.choices = source.Options.Select(x => x == null ? "null" : x.Name).ToList();
-        _contentOptions.index = 0;
-      }
-
-      if(_pointSlider != null)
-      {
-        _pointSlider.lowValue = 0;
-        _pointSlider.highValue = source.Cloud.GetCount();
-        _pointSlider.value = 0;
-      }
+      // if(_contentOptions != null)
+      // {
+      //   _contentOptions.choices = source..Select(x => x == null ? "null" : x.Name).ToList();
+      //   _contentOptions.index = 0;
+      // }
+      //
+      // if(_pointSlider != null)
+      // {
+      //   _pointSlider.lowValue = 0;
+      //   _pointSlider.highValue = source.Cloud.GetCount();
+      //   _pointSlider.value = 0;
+      // }
 
     }
   }

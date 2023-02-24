@@ -40,14 +40,13 @@ namespace ViewTo.Connector.Unity
       set
       {
         _index = value;
-        Point = Cloud.Points[value].ToUnity();
+        Point = cloud.Points[value].ToUnity();
         onPointSet?.Invoke();
       }
     }
 
     public Vector3 Point { get; private set; }
 
-    public List<ContentOption> Options { get; internal set; }
 
     public bool IsRigged
     {
@@ -89,85 +88,31 @@ namespace ViewTo.Connector.Unity
 
       result = viewObj.FindObject<VU.ResultCloud>();
 
-      if(Cloud == null)
+      if(cloud == null)
       {
         return;
       }
+      
+      Load(result);
 
-      Settings ??= new ExplorerSettings();
-      Settings.colorRamp = gradient.GetColors();
 
-      Options = Cloud.Data.Where(x => x != null).Select(x => x.Option).Cast<ContentOption>().ToList();
-      var opt = Options.FirstOrDefault();
-
-      if(opt != null)
-      {
-        ActiveContent = new ContentInfo(opt);
-        ApplyNewValues();
-      }
-      else
-      {
-        Debug.Log("No active options found");
-      }
-
+    }
+    
+    
+    public void Load(IResultCloud obj)
+    {
+      settings ??= new ExplorerSettings();
+      settings.colorRamp = gradient.GetColors();
+      meta = new ExplorerMetaData(obj);
+      ApplyNewValues();
       onStudyLoaded?.Invoke();
-
     }
 
-    public IViewStudy Source
-    {
-      get
-      {
-        if(study == null)
-        {
-          Debug.Log($"No study found in {nameof(ResultExplorer)}-{name} ");
-          return null;
-        }
+    public List<IResultCloudData> data => cloud?.Data ?? new List<IResultCloudData>();
+    public IResultCloud cloud { get; internal set; }
+    public ExplorerMetaData meta { get; internal set; }
+    public ExplorerSettings settings { get; set; }
 
-        return study;
-      }
-    }
-
-    public IResultCloud Cloud => result;
-
-    public List<IResultCloudData> Data => Cloud?.Data ?? new List<IResultCloudData>();
-
-    public ExplorerSettings Settings { get; set; }
-
-    public ContentInfo ActiveContent { get; set; }
-
-    /// <inheritdoc />
-    public bool IsValid => study != null;
-
-    public void Visualize(string targetName)
-    {
-
-      if(!Options.Valid())
-      {
-        Debug.Log("No content options are found in this explorer");
-        return;
-      }
-
-      foreach(var opt in Options)
-      {
-        if(opt.Name.Valid() && opt.Name.ToUpper().Equals(targetName.ToUpper()))
-        {
-          ActiveContent = new ContentInfo(opt);
-          ApplyNewValues();
-          break;
-        }
-      }
-    }
-
-    public ResultPoint GetResultPoint() => new ResultPoint
-    {
-      Option = ActiveContent,
-      Value = _values[Index],
-      Index = Index,
-      X = Cloud.Points[Index].x,
-      Y = Cloud.Points[Index].y,
-      Z = Cloud.Points[Index].z
-    };
 
     void Visualize(ContentOption content)
     { }
@@ -189,11 +134,11 @@ namespace ViewTo.Connector.Unity
       var colors = new List<Color32>();
       var points = new List<Vector3>();
 
-      for(int i = 0; i < Cloud.GetCount(); i++)
+      for(int i = 0; i < cloud.GetCount(); i++)
       {
-        var pt = Cloud.Points[i];
+        var pt = cloud.Points[i];
 
-        colors.Add(Settings.GetColor(_values[i]).ToUnity());
+        colors.Add(settings.GetColor(_values[i]).ToUnity());
         points.Add(pt.ToUnity());
       }
 
@@ -214,6 +159,7 @@ namespace ViewTo.Connector.Unity
 
       if(Index >= points.Count) Index = 0;
     }
+
   }
 
 }
