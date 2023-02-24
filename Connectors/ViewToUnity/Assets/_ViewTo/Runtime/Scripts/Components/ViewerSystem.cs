@@ -1,6 +1,4 @@
-﻿#region
-
-using Sasaki.Unity;
+﻿using Sasaki.Unity;
 using Speckle.ConnectorUnity;
 using System;
 using System.Collections.Generic;
@@ -13,14 +11,11 @@ using ViewObjects.Results;
 using ViewObjects.Unity;
 using VO = ViewObjects;
 
-#endregion
-
 namespace ViewTo.Connector.Unity
 {
 
   public class ViewerSystem : PixelSystem
   {
-    [SerializeField] bool _isGlobal;
 
     (int cloud, int design) _active;
 
@@ -28,7 +23,8 @@ namespace ViewTo.Connector.Unity
 
     ViewerSetupData _data;
 
-    VO.ContentType _stage;
+    VO.ViewContentType _stage;
+
 
     List<ViewObjects.Unity.Content> designs
     {
@@ -47,7 +43,7 @@ namespace ViewTo.Connector.Unity
 
     bool checkIfDesignStage
     {
-      get => stage == VO.ContentType.Proposed && hasValidProposedOptions;
+      get => stage == VO.ViewContentType.Proposed && hasValidProposedOptions;
     }
 
     bool hasValidProposedOptions
@@ -55,13 +51,9 @@ namespace ViewTo.Connector.Unity
       get => designs.Valid(_active.design);
     }
 
-    public bool isGlobal
-    {
-      get => _isGlobal;
-      set => _isGlobal = value;
-    }
+    public bool isGlobal { get; set; }
 
-    public VO.ContentType stage
+    public VO.ViewContentType stage
     {
       get => _stage;
       set
@@ -79,16 +71,16 @@ namespace ViewTo.Connector.Unity
     {
       get
       {
-        if(stage == VO.ContentType.Proposed)
+        if(stage == VO.ViewContentType.Proposed)
         {
           _active.design++;
         }
 
         stage = GetNextStage(stage);
 
-        if(stage != VO.ContentType.Proposed) return true;
+        if(stage != VO.ViewContentType.Proposed) return true;
 
-        if(stage == VO.ContentType.Proposed && hasValidProposedOptions)
+        if(stage == VO.ViewContentType.Proposed && hasValidProposedOptions)
         {
           foreach(var d in designs)
             d.Show = false;
@@ -106,9 +98,9 @@ namespace ViewTo.Connector.Unity
     {
       var values = new Dictionary<string, int>();
 
-      foreach(VO.ContentType v in Enum.GetValues(typeof(VO.ContentType)))
+      foreach(VO.ViewContentType v in Enum.GetValues(typeof(VO.ViewContentType)))
       {
-        if(v == VO.ContentType.Proposed && !designs.Valid())
+        if(v == VO.ViewContentType.Proposed && !designs.Valid())
           continue;
 
         values.Add(v.ToString(), v.GetCullingMask());
@@ -170,16 +162,16 @@ namespace ViewTo.Connector.Unity
       Init(systemPoints, data.Colors.ToUnity().ToArray(), converted);
 
       // Note: important to do this here!
-      stage = VO.ContentType.Potential;
+      stage = VO.ViewContentType.Potential;
     }
 
-    VO.ContentType GetNextStage(VO.ContentType s)
+    VO.ViewContentType GetNextStage(VO.ViewContentType s)
     {
       return s switch
       {
-        VO.ContentType.Potential => VO.ContentType.Existing,
-        VO.ContentType.Existing => VO.ContentType.Proposed,
-        _ => VO.ContentType.Proposed
+        VO.ViewContentType.Potential => VO.ViewContentType.Existing,
+        VO.ViewContentType.Existing => VO.ViewContentType.Proposed,
+        _ => VO.ViewContentType.Proposed
       };
     }
 
@@ -187,7 +179,7 @@ namespace ViewTo.Connector.Unity
     {
       _active.cloud = 0;
       _active.design = 0;
-      _stage = VO.ContentType.Potential;
+      _stage = VO.ViewContentType.Potential;
       base.ResetSystem();
     }
 
@@ -223,7 +215,7 @@ namespace ViewTo.Connector.Unity
         // store points
         Points = clouds[_active.cloud].GetPointsAsVectors();
 
-        stage = VO.ContentType.Potential;
+        stage = VO.ViewContentType.Potential;
 
         // reset all views  
         foreach(var d in designs)
@@ -243,6 +235,8 @@ namespace ViewTo.Connector.Unity
 
       // gather all data
       var container = new PixelSystemData(this);
+      // TODO: get current content info related to this 
+
 
       for(var layoutIndex = 0; layoutIndex < container.data.Length; layoutIndex++)
       {
@@ -263,17 +257,22 @@ namespace ViewTo.Connector.Unity
             layoutValues[pIndex] += raw1d[pIndex];
           }
 
-          _bundleDataForCloud.Add(
-            new ResultCloudData()
-            {
-              Values = layoutValues.ToList(),
-              Layout = layoutName,
-              Option = new ContentOption()
-              {
-                Id = vc.id, Name = vc.name, Stage = stage
-              }
-            }
-          );
+          /*
+           * If in Potential we set the content info to be the same as target
+           * If in Existing we set the content info to be the same as target (we could use the content info object but there are multiple of them so that might be an issue)
+           * If in Proposed we set the content info to be proposed object info 
+           */
+          var targetInfo = new ContentInfo(vc.id, vc.name);
+          var contentInfo = _stage switch
+          {
+
+            VO.ViewContentType.Potential => new ContentInfo(vc.id, vc.name + "-" + nameof(VO.ViewContentType.Potential)),
+            VO.ViewContentType.Existing => new ContentInfo(vc.id, vc.name + "-" + nameof(VO.ViewContentType.Existing)),
+            VO.ViewContentType.Proposed => new ContentInfo(_data.ProposedContent[_active.design]),
+            _ => throw new ArgumentOutOfRangeException()
+          };
+
+          _bundleDataForCloud.Add(new ResultCloudData(layoutValues.ToList(), new ContentOption(targetInfo, contentInfo, _stage), layoutName));
         }
       }
 
@@ -283,7 +282,7 @@ namespace ViewTo.Connector.Unity
       return container;
     }
 
-    public event UnityAction<VO.ContentType> OnStageChange;
+    public event UnityAction<VO.ViewContentType> OnStageChange;
 
     public event UnityAction<ResultsForCloud> OnDataReadyForCloud;
   }
