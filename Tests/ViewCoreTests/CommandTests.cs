@@ -8,7 +8,7 @@ using ViewTo.Tests;
 
 [TestFixture]
 [Category(Categories.INT)]
-public class CommandTests
+public partial class CommandTests
 {
 
   [Test]
@@ -34,4 +34,6 @@ public class CommandTests
 
     reports.ForEach(Console.WriteLine);
   }
+
+
 }
