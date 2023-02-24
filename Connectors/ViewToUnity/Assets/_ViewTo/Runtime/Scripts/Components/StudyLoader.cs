@@ -69,7 +69,7 @@ namespace ViewTo.Connector.Unity
             foreach(var i in items)
             {
               var hierarchy = await SpeckleOps.ConvertToScene(vo.transform, i, converter, _client.token);
-              UniTask.SwitchToMainThread();
+              await UniTask.SwitchToMainThread();
               hierarchy.ParentAllObjects();
             }
             vo.Objects = GetKids(vo.transform).ToList();
@@ -83,7 +83,7 @@ namespace ViewTo.Connector.Unity
         }
 
         Debug.Log("Object from study complete");
-        UniTask.Yield();
+        await UniTask.Yield();
 
       }
 
@@ -107,7 +107,7 @@ namespace ViewTo.Connector.Unity
         items.Add(@base);
       }
 
-      UniTask.Yield();
+      await UniTask.Yield();
 
       return items;
     }

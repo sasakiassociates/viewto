@@ -31,19 +31,18 @@ namespace ViewTo.Connector.Unity
     [SerializeField] Material renderedMat;
     [SerializeField] string tempStreamId = "81c40b04df";
     [SerializeField] string tempCommitId = "bab6b9a0a2";
-    [SerializeField, Range(60, 300)] int tempFrameRate = 200;
 
     [SerializeField] bool createCommit = true;
     [SerializeField] bool runRepeatCommand;
 
     [SerializeField] VU.ViewStudy study;
     [SerializeField] ResultExplorer explorer;
+    [SerializeField] DebugExplorer debugExplorer;
     [SerializeField] Rig rig;
 
     [SerializeField] SpeckleStreamObject streamObject;
     [SerializeField] ScriptableConverter converterUnity;
 
-    int _cachedFrameRate;
     // TODO: remove this at some point so the conversions are handled properly
     VS.ViewStudy _speckleStudy;
     RepeatResultTester _tester;
@@ -55,7 +54,6 @@ namespace ViewTo.Connector.Unity
     {
       get => study != null && study.IsValid && rig != null && rig.IsReady;
     }
-
 
     public bool CanExplore
     {
@@ -83,7 +81,6 @@ namespace ViewTo.Connector.Unity
     [Button]
     public void LoadStudy()
     {
-
       ReceiveStream().Forget();
     }
 
@@ -110,7 +107,36 @@ namespace ViewTo.Connector.Unity
       }
 
       ViewConsole.Log($"Starting Run for {study.ViewName}");
-      rig.Activate(0, autoRun);
+      rig.Activate(autoRun);
+    }
+
+    [Button]
+    public void DebugStudy()
+    {
+      if(!CanRun)
+      {
+        ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {study != null && study.IsValid}\nRig Ready{rig != null && rig.IsReady}");
+        return;
+      }
+
+      if(debugExplorer == null)
+      {
+        debugExplorer = new GameObject("Debugger").AddComponent<DebugExplorer>();
+      }
+
+      debugExplorer.Load(rig, study);
+
+    }
+
+    void Init()
+    {
+      Instance = this;
+
+      if(analysisMaterial == null)
+        analysisMaterial = new Material(Resources.Load<Shader>("UnlitDoubleSided"));
+
+      if(renderedMat == null)
+        renderedMat = new Material(Shader.Find(@"Standard"));
     }
 
     void HandleDataReady(VU.ResultsForCloud args)
@@ -123,7 +149,6 @@ namespace ViewTo.Connector.Unity
         SendResultsToStream(rc);
       }
     }
-
 
     void SetRigToStudy()
     {
@@ -151,17 +176,6 @@ namespace ViewTo.Connector.Unity
 
       IRig r = this.rig;
       study.LoadStudyToRig(ref r);
-    }
-
-    void Init()
-    {
-      Instance = this;
-
-      if(analysisMaterial == null)
-        analysisMaterial = new Material(Resources.Load<Shader>("UnlitDoubleSided"));
-
-      if(renderedMat == null)
-        renderedMat = new Material(Shader.Find(@"Standard"));
     }
 
     async UniTask ReceiveStream()
@@ -215,64 +229,9 @@ namespace ViewTo.Connector.Unity
       loader.Run(study, client, streamObject, converterUnity).Forget();
     }
 
-
-    //
-    // async UniTask AutoLoadResults()
-    // {
-
-    //
-    //   var client = new SpeckleClient(streamObject.baseAccount);
-    //   client.token = this.GetCancellationTokenOnDestroy();
-    //
-    //   var commit = await client.CommitGet(streamObject.Id, streamObject.Commit.id);
-    //
-    //   if(commit == null) return;
-    //
-    //   var @base = await SpeckleOps.Receive(client, streamObject.Id, commit.referencedObject);
-    //
-    //   if(@base == null) return;
-    //
-    //   _speckleStudy = await @base.SearchForType<VS.ViewStudy>(true, client.token);
-    //
-    //   if(_speckleStudy == null) return;
-    //
-    //   UnityEngine.Debug.Log($"Found Study {_speckleStudy.ViewName} with {_speckleStudy.Objects.Count} objects\n({_speckleStudy.ViewId})");
-    //
-    //   study = new GameObject("Study").AddComponent<VU.ViewStudy>();
-    //   study.transform.position = Vector3.zero;
-    //   study.ViewId = _speckleStudy.ViewId;
-    //   study.ViewName = _speckleStudy.ViewName;
-    //   study.Objects = new List<IViewObject>();
-    //
-    //   var mono = new List<IViewObject>();
-    //
-    //   foreach(var o in _speckleStudy.Objects)
-    //   {
-    //     if(o is VS.ResultCloud cloud)
-    //     {
-    //       UnityEngine.Debug.Log("Found Cloud");
-    //       var rc = new GameObject("ResultCloud").AddComponent<VU.ResultCloud>();
-    //       rc.transform.position = Vector3.zero;
-    //       rc.Points = cloud.Points;
-    //       cloud.Data.ForEach(x => rc.AddResultData(x));
-    //       rc.transform.SetParent(study.transform);
-    //       mono.Add(rc);
-    //     }
-    //   }
-    //
-    //   study.Objects = mono;
-    //
-    //
-    // }
-
     void SendResultsToStream(VU.ResultCloud mono)
     {
       UnityEngine.Debug.Log("Auto Send");
-
-      // var layer = new GameObject("Result Layer").AddComponent<SpeckleLayer>();
-      // layer.Add(mono.gameObject);
-      // var node = new GameObject("Node").AddComponent<SpeckleNode>();
-      // node.AddLayer(layer);
 
       var data = mono.Data
         .Select(x => new VS.ResultCloudData(x.Values, x.Option, x.Layout))
@@ -337,10 +296,6 @@ namespace ViewTo.Connector.Unity
       OnStudyComplete?.Invoke(study);
     }
 
-
-
-
-
   #region static props
 
     public static Material AnalysisMat
@@ -377,21 +332,9 @@ namespace ViewTo.Connector.Unity
 
     void Awake()
     {
-      Instance = this;
-
-      _cachedFrameRate = tempFrameRate;
-      Application.targetFrameRate = tempFrameRate;
-      if(!IsInit)
-        Init();
+      if(!IsInit) Init();
     }
 
-    void Update()
-    {
-      if(_cachedFrameRate == tempFrameRate) return;
-
-      _cachedFrameRate = tempFrameRate;
-      Application.targetFrameRate = _cachedFrameRate;
-    }
 
     void OnDisable()
     {

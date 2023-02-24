@@ -1,5 +1,6 @@
 ﻿#region
 
+using Sasaki.Unity;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -67,9 +68,11 @@ namespace ViewTo.Connector.Unity
       if(ActiveViewer == null)
       {
         ActiveViewer = new GameObject().AddComponent<ViewerSystem>();
+        ActiveViewer.transform.SetParent(transform);
       }
 
       ActiveViewer.Init(new ViewerSetupData(RigParams[0]));
+      ActiveViewerEvents(true);
 
       ViewConsole.Log($"Active Viewer: {ActiveViewer.name}");
       OnActiveViewerSystem?.Invoke(ActiveViewer);
@@ -88,7 +91,7 @@ namespace ViewTo.Connector.Unity
       return true;
     }
 
-    public void Activate(int startPoint = 0, bool autoRun = true)
+    public void Activate(bool autoRun = true)
     {
       if(!IsReady)
       {
@@ -96,36 +99,31 @@ namespace ViewTo.Connector.Unity
         return;
       }
 
-      ActiveViewer.OnStageChange += SetStageChange;
-      ActiveViewer.OnComplete += CompileViewerSystem;
-      ActiveViewer.OnDataReadyForCloud += ResultDataCompleted;
 
-      if(autoRun)
-      {
-        _timer ??= new Stopwatch();
-        _timer.Start();
-        ActiveViewer.Run();
-      }
-      else
-      {
-        ActiveViewer.Capture(startPoint);
-      }
+
+      if(!autoRun) return;
+
+      _timer ??= new Stopwatch();
+      _timer.Start();
+      ActiveViewer.Run();
     }
 
-    public void TrySetPoint(int index)
+    public void MoveTo(int index)
     {
-      if(ActiveViewer != null)
-        ActiveViewer.Capture(index);
+      if(ActiveViewer != null) ActiveViewer.MoveToPoint(index);
     }
 
-    void CompileViewerSystem()
+    public void ManualCapture(int index)
+    {
+      if(ActiveViewer != null) ActiveViewer.Capture(index);
+    }
+
+    void HandleViewerComplete()
     {
       _timer.Stop();
       ViewConsole.Log($"Total Time for {ActiveViewer.name}-{_timer.Elapsed}");
 
-      ActiveViewer.OnStageChange -= SetStageChange;
-      ActiveViewer.OnComplete -= CompileViewerSystem;
-      ActiveViewer.OnDataReadyForCloud -= ResultDataCompleted;
+      ActiveViewerEvents(false);
 
       if(TryCreateNewViewer())
       {
@@ -143,10 +141,32 @@ namespace ViewTo.Connector.Unity
       OnStageChange?.Invoke(Stage);
     }
 
-    void ResultDataCompleted(VU.ResultsForCloud data)
+    void ActiveViewerEvents(bool listen)
     {
-      // let any other subscriptions know of the data being completed 
-      OnDataReadyForCloud?.Invoke(data);
+      if(ActiveViewer == null) return;
+
+      if(listen)
+      {
+        ActiveViewer.OnStageChange += SetStageChange;
+        ActiveViewer.OnComplete += HandleViewerComplete;
+        ActiveViewer.OnDataReadyForCloud += OnDataReadyForCloud;
+        ActiveViewer.OnCapture += CheckCapture;
+      }
+      else
+      {
+        ActiveViewer.OnStageChange -= SetStageChange;
+        ActiveViewer.OnComplete -= HandleViewerComplete;
+        ActiveViewer.OnDataReadyForCloud -= OnDataReadyForCloud;
+        ActiveViewer.OnCapture -= CheckCapture;
+
+      }
+    }
+
+
+    void CheckCapture(SystemCaptureArgs args)
+    {
+      UnityEngine.Debug.Log("On Capture Called from Rig");
+      OnCapture?.Invoke(args);
     }
 
   #region events
@@ -154,6 +174,8 @@ namespace ViewTo.Connector.Unity
     public event UnityAction OnReady;
 
     public event UnityAction OnComplete;
+
+    public event UnityAction<SystemCaptureArgs> OnCapture;
 
     public event UnityAction<ViewContentLoadedArgs> OnContentLoaded;
 
