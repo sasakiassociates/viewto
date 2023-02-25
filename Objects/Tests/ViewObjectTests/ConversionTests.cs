@@ -61,7 +61,7 @@ namespace ViewTo.Tests.Objects
       var studyBase = res as ViewObjects.Speckle.ViewStudy;
       Assert.IsTrue(obj.ViewId.Equals(studyBase.ViewId));
       Assert.IsTrue(obj.ViewName.Equals(studyBase.ViewName));
-      Assert.IsTrue(obj.Objects.Count.Equals(studyBase.Objects.Count));
+      Assert.IsTrue(obj.objects.Count.Equals(studyBase.objects.Count));
     }
   }
 

@@ -20,12 +20,12 @@ namespace ViewObjects
     public static TObj FindObject<TObj>(this IViewStudy obj) where TObj : IViewObject
     {
       TObj viewObj = default;
-      if(!obj.Objects.Any())
+      if(!obj.objects.Any())
       {
         return viewObj;
       }
 
-      foreach(var o in obj.Objects)
+      foreach(var o in obj.objects)
       {
         if(o is TObj casted)
         {
@@ -41,9 +41,9 @@ namespace ViewObjects
     {
       List<TObj> viewObjs = new();
 
-      if(obj.Objects.Any())
+      if(obj.objects.Any())
       {
-        foreach(var o in obj.Objects)
+        foreach(var o in obj.objects)
         {
           if(o is TObj casted)
           {
@@ -92,7 +92,7 @@ namespace ViewObjects
     /// <returns></returns>
     public static bool Has(this IViewStudy study, ViewContentType type, string id = "")
     {
-      if(study?.Objects == null || !study.Objects.Any())
+      if(study?.objects == null || !study.objects.Any())
       {
         return false;
       }
@@ -126,12 +126,12 @@ namespace ViewObjects
     /// <param name="id">optional id to use</param>
     public static bool Has<TObjType>(this IViewStudy study, string id = "")
     {
-      if(study?.Objects == null || !study.Objects.Any())
+      if(study?.objects == null || !study.objects.Any())
       {
         return false;
       }
 
-      foreach(var obj in study.Objects.OfType<TObjType>())
+      foreach(var obj in study.objects.OfType<TObjType>())
       {
         // found at least one but no name was passed in 
         if(!id.Valid())
@@ -164,15 +164,15 @@ namespace ViewObjects
     /// <param name="study">study to check</param>
     public static List<TObjType> GetAll<TObjType>(this IViewStudy study)
     {
-      return study.Objects.OfType<TObjType>().ToList();
+      return study.objects.OfType<TObjType>().ToList();
     }
 
     /// <summary>
     ///   <para>Gets a list of objects of a specific type</para>
     /// </summary>
     /// <param name="study">study to check</param>
-    public static List<TObjectType> GetAll<TObj, TObjectType>(this IViewStudy<TObj> study)
-      where TObj : IViewObject => study.Objects.OfType<TObjectType>().ToList();
+    public static List<TObjectType> GetAll<TObj, TObjectType>(this ISasakiStudy<TObj> study)
+      where TObj : IViewObject => study.objects.OfType<TObjectType>().ToList();
 
     /// <summary>
     ///   <para>Gets a specific type of object to search for</para>
@@ -181,7 +181,7 @@ namespace ViewObjects
     /// <param name="id">optional id to use</param>
     public static TObjType Get<TObjType>(this IViewStudy study, string id = "")
     {
-      foreach(var obj in study.Objects.OfType<TObjType>())
+      foreach(var obj in study.objects.OfType<TObjType>())
       {
         // found at least one but no name was passed in 
         if(!id.Valid())

@@ -94,9 +94,9 @@ namespace ViewObjects.Converter
       {
         case IReferenceObject _:
           return true;
-        case IViewStudy<IViewObject> _:
+        case ISasakiStudy<IViewObject> _:
           return true;
-        case IViewStudy<IViewObjectReference> _:
+        case ISasakiStudy<IViewObjectReference> _:
           return true;
         case IResultCloud _:
           return true;
@@ -143,7 +143,7 @@ namespace ViewObjects.Converter
     {
       switch(@object)
       {
-        case IViewStudy<IViewObject> o:
+        case ISasakiStudy<IViewObject> o:
           return StudyToSpeckle(o);
         case ILayout o:
           return LayoutToSpeckle(o);

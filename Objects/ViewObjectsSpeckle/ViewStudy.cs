@@ -10,7 +10,7 @@ namespace ViewObjects.Speckle
   /// <summary>
   ///   A simple view study as a speckle object
   /// </summary>
-  public class ViewStudy : ViewObjectBase, IViewStudy<ViewObjectBase>
+  public class ViewStudy : ViewObjectBase, ISasakiStudy<ViewObjectBase>
   {
 
     /// <summary>
@@ -31,7 +31,7 @@ namespace ViewObjects.Speckle
     [SchemaInfo("View Study", "View Study Object for setting up a study in View To", ViewObject.Schema.Category, "Objects")]
     public ViewStudy(List<ViewObjectBase> objects, string viewName, string viewId = null)
     {
-      Objects = objects;
+      this.objects = objects;
       ViewName = viewName;
       ViewId = ObjUtils.CheckIfValidId(viewId);
     }
@@ -43,7 +43,7 @@ namespace ViewObjects.Speckle
     public string ViewId { get; set; }
 
     /// <inheritdoc />
-    public List<ViewObjectBase> Objects { get; set; } = new List<ViewObjectBase>();
+    public List<ViewObjectBase> objects { get; set; } = new List<ViewObjectBase>();
   }
 
 }

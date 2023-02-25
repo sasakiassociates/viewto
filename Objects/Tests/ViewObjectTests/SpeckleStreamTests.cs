@@ -193,7 +193,7 @@ namespace ViewTo.Tests.Objects
       //   };
       // }
 
-      study.Objects.Add(cloud);
+      study.objects.Add(cloud);
 
       var res = converter.ConvertToSpeckle(study);
       var id = await Operations.Send(res, new List<ITransport> {_transport});

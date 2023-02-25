@@ -11,16 +11,7 @@ using ViewTo.Cmd;
 namespace ViewTo
 {
 
-  public class DeconstructedStudy
-  {
-    public List<IViewer> viewers;
-    public List<IViewCloud> clouds;
-    public List<IResultCloud> results;
-    public List<IContent> proposed;
-    public List<IContent> existing;
-    public List<IContent> targets;
 
-  }
 
 
   public static partial class ViewCoreExtensions
@@ -60,7 +51,7 @@ namespace ViewTo
     //   return reports;
     // }
 
-    public static void GatherLooseLayouts<TObj>(this IViewStudy<TObj> study)
+    public static void GatherLooseLayouts<TObj>(this ISasakiStudy<TObj> study)
       where TObj : IViewObject
     {
       // var layouts = study.GetAll<ILayout>();
@@ -107,7 +98,7 @@ namespace ViewTo
       if(layouts.Valid())
       {
         // if layouts are loose we add them to a default viewer since they will run on a global viewer 
-        study.Objects.Add(new Viewer(layouts));
+        study.objects.Add(new Viewer(layouts));
       }
     }
 

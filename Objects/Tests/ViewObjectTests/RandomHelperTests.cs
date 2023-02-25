@@ -157,13 +157,13 @@ namespace ViewTo.Tests.Objects
       }
 
       var cloud = study.Get<ResultCloud>();
-      for(var i = 0; i < study.Objects.Count; i++)
+      for(var i = 0; i < study.objects.Count; i++)
       {
-        var o = study.Objects[i];
+        var o = study.objects[i];
         if(o is ResultCloud)
         {
-          study.Objects.RemoveAt(i);
-          study.Objects.Insert(i, new ResultCloud(
+          study.objects.RemoveAt(i);
+          study.objects.Insert(i, new ResultCloud(
             cloud.Points,
             cloud.Data,
             "39d20718-e961-47f3-8f26-fb4296c32228"));

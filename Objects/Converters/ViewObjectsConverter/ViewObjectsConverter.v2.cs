@@ -19,9 +19,9 @@ namespace ViewObjects.Converter
   {
     private IViewObject StudyToNative(VS.ViewStudy obj)
     {
-      var result = new ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, Objects = new List<IViewObject>()};
+      var result = new ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, objects = new List<IViewObject>()};
 
-      foreach(var o in obj.Objects)
+      foreach(var o in obj.objects)
       {
         var res = ConvertToNativeViewObject(o);
         if(res == null)
@@ -29,7 +29,7 @@ namespace ViewObjects.Converter
           // throw 
           continue;
         }
-        result.Objects.Add(res);
+        result.objects.Add(res);
       }
 
       return result;
@@ -75,12 +75,12 @@ namespace ViewObjects.Converter
       return new ViewObjectReference(obj.References, obj.Type, obj.ViewId, obj.ViewName);
     }
 
-    private VS.ViewStudy StudyToSpeckle(IViewStudy<IViewObject> obj)
+    private VS.ViewStudy StudyToSpeckle(ISasakiStudy<IViewObject> obj)
     {
 
-      var result = new VS.ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, Objects = new List<VS.ViewObjectBase>()};
+      var result = new VS.ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, objects = new List<VS.ViewObjectBase>()};
 
-      foreach(var o in obj.Objects)
+      foreach(var o in obj.objects)
       {
         var res = ConvertToSpeckleViewObject(o);
         if(res == null)
@@ -88,7 +88,7 @@ namespace ViewObjects.Converter
           // throw 
           continue;
         }
-        result.Objects.Add(res);
+        result.objects.Add(res);
       }
 
       return result;
