@@ -6,6 +6,8 @@ using ViewObjects.Clouds;
 namespace ViewTo.Cmd
 {
 
+
+
   /// <summary>
   ///   <para>Searches through a list of <see cref="IResultCloudData" /> to find a given object with a matching id and stage</para>
   /// </summary>

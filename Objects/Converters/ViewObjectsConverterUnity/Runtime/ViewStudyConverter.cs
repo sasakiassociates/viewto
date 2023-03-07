@@ -24,7 +24,7 @@ namespace ViewObjects.Converter.Unity
       // necessary since we cant just add a view object to this list like that
       var objs = new List<IViewObject>();
 
-      foreach(var o in obj.Objects)
+      foreach(var o in obj.objects)
       {
         VU.ViewObjectMono mono = null;
         var item = parent.ConvertToNative(o);
@@ -48,7 +48,7 @@ namespace ViewObjects.Converter.Unity
         mono.transform.SetParent(instance.transform);
 
       }
-      instance.Objects = objs;
+      instance.objects = objs;
 
 
     }

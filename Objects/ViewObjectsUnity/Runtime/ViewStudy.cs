@@ -15,7 +15,7 @@ namespace ViewObjects.Unity
 
     public bool IsValid
     {
-      get => Objects.Valid() && ViewName.Valid();
+      get => objects.Valid() && ViewName.Valid();
     }
 
     public string ViewId
@@ -30,7 +30,7 @@ namespace ViewObjects.Unity
       set => name = value;
     }
 
-    public List<IViewObject> Objects
+    public List<IViewObject> objects
     {
       get
       {

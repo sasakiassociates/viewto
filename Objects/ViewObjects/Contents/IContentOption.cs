@@ -1,9 +1,7 @@
 ﻿namespace ViewObjects.Contents
 {
 
-
-
-
+  
   public interface IContentOption
   {
     /// <summary>

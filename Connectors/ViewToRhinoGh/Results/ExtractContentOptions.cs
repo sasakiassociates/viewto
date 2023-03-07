@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Clouds;
 using ViewObjects.Contents;
 using ViewObjects.References;
 using ViewObjects.Studies;
@@ -12,18 +13,16 @@ using ViewObjects.Studies;
 namespace ViewTo.RhinoGh.Results
 {
 
-  public class ExtractTargetNames : ViewToComponentBase
+  public class ExtractContentOptions : ViewToComponentBase
   {
-    private GH_ValueList _activeList;
+    // private GH_ValueList _activeList;
 
 
-    private bool _refresh;
-    private List<ContentInfo> _storedValues;
 
-    public ExtractTargetNames() : base(
-      "Extract Targets",
-      "ET",
-      "Extract Targets from a result cloud into a value list",
+    public ExtractContentOptions() : base(
+      "Extract Options",
+      "EO",
+      "Extract all Content Options from a result cloud",
       ConnectorInfo.Nodes.RESULTS)
     { }
 
@@ -37,46 +36,46 @@ namespace ViewTo.RhinoGh.Results
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
     {
       pManager.AddGenericParameter("Targets", "T", "List of View Targets", GH_ParamAccess.list);
-      pManager.AddGenericParameter("Proposals", "P", "List of propsal content", GH_ParamAccess.list);
+      // pManager.AddGenericParameter("Proposals", "P", "List of propsal content", GH_ParamAccess.list);
     }
 
-    public static List<GH_ValueListItem> CreateValueListItems(List<string> values, List<string> expressions = null)
-    {
-      var items = new List<GH_ValueListItem>();
-      if(values != null && values.Any())
-      {
-        for(var i = 0; i < values.Count; i++)
-        {
-          items.Add(new GH_ValueListItem(values[i], expressions?[i] != null ? $"\"{expressions[i]}\"" : $"\"{values[i]}\""));
-        }
-      }
-
-      return items;
-    }
-
-    public static GH_ValueList PopulateValueList(List<GH_ValueListItem> values, string name, string nickName, string description)
-    {
-      GH_ValueList valueList = null;
-      //make dropdown box
-      if(values != null && values.Any())
-      {
-        valueList = new GH_ValueList();
-        valueList.CreateAttributes();
-        valueList.Name = name;
-        valueList.NickName = nickName;
-        valueList.Description = description;
-        valueList.ListMode = GH_ValueListMode.DropDown;
-
-        valueList.ListItems.Clear();
-
-        foreach(var t in values)
-        {
-          valueList.ListItems.Add(t);
-        }
-      }
-
-      return valueList;
-    }
+    // public static List<GH_ValueListItem> CreateValueListItems(List<string> values, List<string> expressions = null)
+    // {
+    //   var items = new List<GH_ValueListItem>();
+    //   if(values != null && values.Any())
+    //   {
+    //     for(var i = 0; i < values.Count; i++)
+    //     {
+    //       items.Add(new GH_ValueListItem(values[i], expressions?[i] != null ? $"\"{expressions[i]}\"" : $"\"{values[i]}\""));
+    //     }
+    //   }
+    //
+    //   return items;
+    // }
+    //
+    // public static GH_ValueList PopulateValueList(List<GH_ValueListItem> values, string name, string nickName, string description)
+    // {
+    //   GH_ValueList valueList = null;
+    //   //make dropdown box
+    //   if(values != null && values.Any())
+    //   {
+    //     valueList = new GH_ValueList();
+    //     valueList.CreateAttributes();
+    //     valueList.Name = name;
+    //     valueList.NickName = nickName;
+    //     valueList.Description = description;
+    //     valueList.ListMode = GH_ValueListMode.DropDown;
+    //
+    //     valueList.ListItems.Clear();
+    //
+    //     foreach(var t in values)
+    //     {
+    //       valueList.ListItems.Add(t);
+    //     }
+    //   }
+    //
+    //   return valueList;
+    // }
     //
     // protected override void AfterSolveInstance()
     // {
@@ -122,24 +121,17 @@ namespace ViewTo.RhinoGh.Results
     {
       GH_ObjectWrapper wrapper = null;
       DA.GetData(0, ref wrapper);
-      List<ContentInfo> optValues = new List<ContentInfo>();
 
-      if(wrapper?.Value is ViewStudy obj && obj.Has<IContentInfo>())
+      if(wrapper?.Value is ViewStudy obj && obj.Has<ResultCloud>())
       {
-        _storedValues = obj.FindObjects<ContentReference>()
-          .Where(x => x != null && x.type == ViewContentType.Potential)
-          .Select(x => new ContentInfo(x.ViewId, x.ViewName))
+        var options = obj.Get<ResultCloud>().GetAllOpts()
+          .Where(x => x != null)
+          .Select(x => new ContentOption(x.target, x.content, x.stage))
           .ToList();
 
-        optValues = obj.FindObjects<ContentReference>()
-          .Where(x => x != null && x.type == ViewContentType.Proposed)
-          .Select(x => new ContentInfo(x.ViewId, x.ViewName))
-          .ToList();
+        DA.SetDataList(0,options );
 
       }
-
-      DA.SetDataList(0, _storedValues);
-      DA.SetDataList(1, optValues);
     }
   }
 

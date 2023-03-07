@@ -2,6 +2,8 @@
 using Speckle.Core.Api;
 using Speckle.Core.Credentials;
 using Speckle.Core.Transports;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
@@ -31,7 +33,78 @@ public class ExplorerCommands
   (string id, string branch, string commit) _stream;
 
   [Test]
-  [Order(00)]
+  public void GetAccountInfo ()
+  {
+
+    var account = AccountManager.GetDefaultAccount();
+    Console.WriteLine(account.ToString());
+    Console.WriteLine(account.serverInfo.url);
+    _client = new Client(account);
+
+    Console.WriteLine($"Base Uri{ _client.GQLClient.HttpClient.BaseAddress}");
+    var sqLite = new SQLiteTransport();
+    var server = new ServerTransport(account, "628d9282f9");
+    Console.WriteLine("SQLite");
+    Console.WriteLine($"Root Path={sqLite.RootPath}");
+    Console.WriteLine($"Transport Name={sqLite.TransportName}");
+    Console.WriteLine("Server");
+    Console.WriteLine($"Base Uri={server.BaseUri}");
+    Console.WriteLine($"Api={server.Api}");
+
+  }
+  
+  [Test]
+  [Ignore("Used to change the values of a content item")]
+  public async Task ExplorerCommand_GetValues_WithOptions()
+  {
+
+    _stream.id = "628d9282f9";
+    _stream.branch = "main";
+    _stream.commit = "57f2b967ef";
+
+    _client = new Client(AccountManager.GetDefaultAccount());
+    var commit = await _client.CommitGet(_stream.id, _stream.commit);
+    Assert.IsNotNull(commit);
+
+    _transport = new ServerTransport(_client.Account, _stream.id);
+    var data = await Operations.Receive(commit.referencedObject, _transport);
+    Assert.IsNotNull(data);
+
+    var speckleStudy = data.SearchForType<ViewObjects.Speckle.ViewStudy>(true);
+    Assert.IsNotNull(speckleStudy);
+
+    var viewStudy = (IViewStudy)new ViewObjectsConverter().ConvertToNative(speckleStudy);
+    Assert.IsNotNull(viewStudy);
+
+    var rc = viewStudy.Get<IResultCloud>();
+    Assert.IsNotNull(rc);
+
+    _explorer = new Explorer();
+    _explorer.Load(rc);
+
+    Assert.IsNotNull(_explorer.cloud, $"{nameof(Explorer)} should have a {nameof(IResultCloud)} attached");
+    Assert.IsTrue(_explorer.cloud.ViewId.Equals(rc.ViewId), $"{nameof(Explorer)} should have the same ids");
+
+
+    Assert.IsTrue(_explorer.TryGetValues(ExplorerValueType.ExistingOverPotential, new List<IContentOption>()
+      {
+        new ContentOption(
+          new ContentInfo("551b4ded-5bb6-4398-955f-76f8063acffa", "ends"),
+          new ContentInfo("551b4ded-5bb6-4398-955f-76f8063acffa", "ends-Existing"),
+          ViewContentType.Existing
+        ),
+        new ContentOption(
+          new ContentInfo("c625bf76-4d35-4a80-a0ba-97c6f41f95b9", "third row"),
+          new ContentInfo("c625bf76-4d35-4a80-a0ba-97c6f41f95b9", "third row-Existing"),
+          ViewContentType.Existing
+        )
+      },
+      out var values));
+    
+    Assert.IsNotNull(values);
+  }
+
+  [Test]
   public async Task FetchStudy_LoadResult_ToExplorer()
   {
 

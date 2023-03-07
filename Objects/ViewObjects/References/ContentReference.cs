@@ -12,13 +12,13 @@ namespace ViewObjects.References
     /// <inheritdoc />
     public ContentReference(Content obj, List<string> references) : base(obj, references)
     {
-      type = obj.type;
+      this.type = obj.type;
     }
 
     /// <inheritdoc />
     public ContentReference(List<string> references, ViewContentType type, string viewId, string viewName = null) : base(references, viewId, viewName)
     {
-      type = type;
+      this.type = type;
     }
 
     /// <inheritdoc />

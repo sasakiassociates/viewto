@@ -44,7 +44,7 @@ namespace ViewTo.Connector.Unity
         return;
       }
 
-      if(obj == null || !ObjUtils.Valid(obj.Objects))
+      if(obj == null || !ObjUtils.Valid(obj.objects))
       {
         Debug.Log("View study is not valid to pull reference objects from");
         return;
@@ -54,7 +54,7 @@ namespace ViewTo.Connector.Unity
       _client = client;
 
       // start pulling objects one by one 
-      foreach(var viewObj in obj.Objects)
+      foreach(var viewObj in obj.objects)
       {
         if(viewObj is not IStreamReference)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
+using ViewObjects.Clouds;
 using ViewObjects.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
@@ -78,7 +79,74 @@ namespace ViewTo
       return results.Any();
     }
 
+    /// <summary>
+    /// Returns a list of normalized values. The selected values are directly related to the inputs from <paramref cref="options"/> and the <paramref name="valueType"/>
+    /// </summary>
+    /// <param name="obj">the explorer to use</param>
+    /// <param name="valueType">is used to select the values to normalize by</param>
+    /// <param name="options">the options to find</param>
+    /// <param name="results">normalized data</param>
+    /// <returns></returns>
+    public static bool TryGetValues<TOpt>(this IExplorer obj, ExplorerValueType valueType, List<TOpt> options, out IEnumerable<double> results) where TOpt : IContentOption
+    {
+      results = Array.Empty<double>();
 
+      int[] inputA = null;
+      int[] inputB = null;
+
+      // valueType.GetStages(out var stageA, out var stageB);
+
+      // get each value list from the option
+      foreach(var opt in options)
+      {
+        var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
+        var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
+        
+        // TODO: Figure out why I'm using the input value type for this
+        // var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageA));
+        // var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageB));
+
+        cmdA.Execute();
+        cmdB.Execute();
+
+        if(!cmdA.args.IsValid() || !cmdB.args.IsValid() || cmdA.args.values.Count() != cmdB.args.values.Count())
+        {
+          // TODO: return issue
+          continue;
+        }
+
+        var rawValuesA = cmdA.args.values.ToArray();
+        var rawValuesB = cmdB.args.values.ToArray();
+
+        inputA ??= new int[rawValuesA.Length];
+        inputB ??= new int[rawValuesB.Length];
+
+        for(int i = 0; i < rawValuesA.Length; i++)
+        {
+          inputA[i] += rawValuesA[i];
+          inputB[i] += rawValuesB[i];
+        }
+      }
+      
+      if(inputA == null || inputB == null || inputA.Length != inputB.Length)
+      {
+        // TODO: Report
+        return false;
+      }
+      
+      var normalizeCmd = new NormalizeValues(inputA, inputB);
+      normalizeCmd.Execute();
+
+      if(!normalizeCmd.args.IsValid())
+      {
+        // TODO: report
+        return false;
+      }
+
+      results = normalizeCmd.args.values.ToArray();
+      
+      return results.Any();
+    }
 
 
     /// <summary>

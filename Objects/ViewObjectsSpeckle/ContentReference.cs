@@ -26,15 +26,20 @@ namespace ViewObjects.Speckle
     [SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObject.Schema.Category, "Objects")]
     public ContentReference(References.ContentReference obj) : base(obj)
     {
-      Type = obj.Type;
-      References = obj.References;
-      type = obj.type;
+      this.Type = obj.Type;
+      this.type = obj.type;
+      this.ViewId = obj.ViewId;
+      this.ViewName = obj.ViewName;
+      this.References = obj.References;
     }
 
     /// <inheritdoc />
     public ContentReference(ViewContentType type, List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
     {
       this.type = type;
+      this.ViewId = viewId;
+      this.ViewName = viewName;
+      this.References = references;
     }
 
     /// <inheritdoc />

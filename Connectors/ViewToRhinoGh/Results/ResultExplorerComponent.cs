@@ -157,15 +157,30 @@ namespace ViewTo.RhinoGh.Results
       GH_ObjectWrapper wrapper = null;
       DA.GetData(_input.Obj, ref wrapper);
 
-      var options = new List<GH_ObjectWrapper>();
-      DA.GetDataList(_input.Options, options);
-      var opt = options.FirstOrDefault().Value;
-      var optToUse = opt as ContentInfo;
+      var wrapperOpts = new List<GH_ObjectWrapper>();
+      DA.GetDataList(_input.Options, wrapperOpts);
 
-      var proposals = new List<GH_ObjectWrapper>();
-      DA.GetDataList(_input.Proposals, proposals);
-      var pro = proposals.FirstOrDefault().Value;
-      var proToUse = pro as ContentInfo;
+      var options = new List<IContentOption>();
+      foreach(var w in wrapperOpts)
+      {
+        if(w.Value is IContentOption op)
+        {
+          options.Add(op);
+        }
+        else
+        {
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Not a valid IContent Opt");
+          continue;
+        }
+      }
+
+      // var opt = options.FirstOrDefault().Value;
+      // var optToUse = opt as ContentInfo;
+
+      // var proposals = new List<GH_ObjectWrapper>();
+      // DA.GetDataList(_input.Proposals, proposals);
+      // var pro = proposals.FirstOrDefault().Value;
+      // var proToUse = pro as ContentInfo;
 
 
       double[] explorerValues = null;
@@ -175,21 +190,23 @@ namespace ViewTo.RhinoGh.Results
 
         if(_study == default(object) || !_study.ViewId.Equals(obj.ViewId))
         {
-          var rc = _study.FindObject<ResultCloud>();
-
-          if(rc == null)
-          {
-            AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"No {nameof(ResultCloud)} found in this study");
-            return;
-          }
-
-          _explorer.Load(rc);
+          _study = obj;
         }
 
-        if(_explorer.TryGetValues(_valueType, optToUse?.ViewId, ref explorerValues))
+        var rc = _study.FindObject<ResultCloud>();
+        if(rc == null)
         {
-          SetMinMax(explorerValues);
+          AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"No {nameof(ResultCloud)} found in this study");
+          return;
         }
+
+        _explorer.Load(rc);
+      }
+
+      if(_explorer.TryGetValues(_valueType, options, out var normValues))
+      {
+        explorerValues = normValues.ToArray();
+        SetMinMax(explorerValues);
       }
       else
       {
@@ -198,14 +215,9 @@ namespace ViewTo.RhinoGh.Results
           + "Check the Result Cloud input and reload into the component");
         return;
       }
-      //
-      // if(!_explorer.IsValid)
-      // {
-      //   AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Explorer is not valid");
-      //   return;
-      // }
 
-      if(explorerValues == null || !explorerValues.Any())
+
+      if(!explorerValues.Any())
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Explorer did not load result cloud properly!");
         return;
@@ -323,7 +335,9 @@ namespace ViewTo.RhinoGh.Results
       DA.SetData(_output.ActivePoint, _explorer.cloud.Points[_settings.point].ToRhino());
       DA.SetData(_output.ActiveValue, explorerValues[_settings.point]);
       DA.SetData(_output.ActiveColor, _settings.GetColor(explorerValues[_settings.point]));
+
     }
+
   }
 
 }

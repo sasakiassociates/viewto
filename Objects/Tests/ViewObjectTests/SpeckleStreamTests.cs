@@ -122,8 +122,7 @@ namespace ViewTo.Tests.Objects
     }
 
 
-
-
+    
 
     [Test]
     public async Task Send_ViewStudy()

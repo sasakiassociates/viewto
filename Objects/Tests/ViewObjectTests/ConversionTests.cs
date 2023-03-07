@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using ViewObjects;
 using ViewObjects.Common;
@@ -35,9 +36,16 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Convert_Content()
     {
-      var obj = new ContentReference(new Content(ViewContentType.Potential), new List<string>() {"123443q312"});
-      var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
-      Assert.IsTrue(res.ViewId.Equals(obj.ViewId));
+      var values = Enum.GetValues<ViewContentType>();
+
+      foreach(var contentType in values)
+      {
+        var obj = new ContentReference(new Content(contentType), new List<string>() {"123443q312"});
+        var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
+        Assert.IsTrue(res.ViewId.Equals(obj.ViewId));
+        Assert.IsTrue(res.type == obj.type);  
+      }
+      
     }
 
     [Test]
