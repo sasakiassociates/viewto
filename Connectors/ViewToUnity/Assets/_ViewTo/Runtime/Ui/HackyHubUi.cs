@@ -28,10 +28,6 @@ namespace ViewTo
         Debug.LogWarning($"No Hub attached for {nameof(HackyHubUi)}");
         return;
       }
-
-      streamId.text = parent.tempStreamId;
-      commitId.text = parent.tempCommitId;
-
       runButton.interactable = parent.CanRun;
 
       parent.OnRigBuilt += HandleNewRigAction;

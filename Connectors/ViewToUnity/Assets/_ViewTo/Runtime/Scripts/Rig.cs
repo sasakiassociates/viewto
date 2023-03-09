@@ -99,6 +99,7 @@ namespace ViewTo.Connector.Unity
         return;
       }
 
+      UnityEngine.Debug.Log($"Starting {name}");
       _timer ??= new Stopwatch();
       _timer.Start();
       ActiveViewer.Run();
