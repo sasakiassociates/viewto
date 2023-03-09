@@ -22,24 +22,26 @@ using VS = ViewObjects.Speckle;
 namespace ViewTo.Connector.Unity
 {
 
-  public class ViewToHub : MonoBehaviour
+
+  public class ViewToHub_v1 : MonoBehaviour
   {
 
+    [Header("Will Trash Soon")]
     public bool autoRun = true;
+    public string tempStreamId = "81c40b04df";
+    public string tempCommitId = "bab6b9a0a2";
 
+    [Header("Setup")]
     [SerializeField] Material analysisMaterial;
     [SerializeField] Material renderedMat;
-    [SerializeField] string tempStreamId = "81c40b04df";
-    [SerializeField] string tempCommitId = "bab6b9a0a2";
-
     [SerializeField] bool createCommit = true;
     [SerializeField] bool runRepeatCommand;
 
+    [Header("Objects")]
     [SerializeField] VU.ViewStudy study;
-    [SerializeField] ResultExplorer explorer;
-    [SerializeField] DebugExplorer debugExplorer;
     [SerializeField] Rig rig;
-
+    [SerializeField, HideInInspector] ResultExplorer explorer;
+    [SerializeField, HideInInspector] DebugExplorer debugExplorer;
     [SerializeField] SpeckleStreamObject streamObject;
     [SerializeField] ScriptableConverter converterUnity;
 
@@ -62,71 +64,24 @@ namespace ViewTo.Connector.Unity
 
 
 
-  #region static methods
-
-    public static ViewToHub Initialize()
+    public void LoadStudy(string newStreamId, string newCommitId)
     {
-      var hub = FindObjectOfType<ViewToHub>();
-
-      if(hub == null)
-        hub = new GameObject("ViewToHub").AddComponent<ViewToHub>();
-
-      hub.Init();
-
-      return hub;
-    }
-
-  #endregion
-
-    [Button]
-    public void LoadStudy()
-    {
+      tempStreamId = newStreamId;
+      tempCommitId = newCommitId;
       ReceiveStream().Forget();
     }
 
     [Button]
-    public void ExploreAnalysis()
-    {
-
-      if(!CanExplore)
-      {
-        ViewConsole.Warn($"Hub not able to explore study\nStudy Valid? {study != null && study.IsValid}\nExplorer Ready{explorer != null}");
-        return;
-      }
-      explorer.Load(study);
-    }
+    public void LoadStudy() => ReceiveStream().Forget();
 
     [Button]
-    public void RunAnalysis()
-    {
-
-      if(!CanRun)
-      {
-        ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {study != null && study.IsValid}\nRig Ready{rig != null && rig.IsReady}");
-        return;
-      }
-
-      ViewConsole.Log($"Starting Run for {study.ViewName}");
-      rig.Activate(autoRun);
-    }
+    public void ExploreAnalysis() => explorer.Load(study);
 
     [Button]
-    public void DebugStudy()
-    {
-      if(!CanRun)
-      {
-        ViewConsole.Warn($"Hub not able to run study\nStudy Valid? {study != null && study.IsValid}\nRig Ready{rig != null && rig.IsReady}");
-        return;
-      }
+    public void RunAnalysis() => rig.Run();
 
-      if(debugExplorer == null)
-      {
-        debugExplorer = new GameObject("Debugger").AddComponent<DebugExplorer>();
-      }
-
-      debugExplorer.Load(rig, study);
-
-    }
+    [Button]
+    public void DebugStudy() => debugExplorer.Load(rig, study);
 
     void Init()
     {
@@ -137,6 +92,17 @@ namespace ViewTo.Connector.Unity
 
       if(renderedMat == null)
         renderedMat = new Material(Shader.Find(@"Standard"));
+    }
+
+    SpeckleConnector GetConnector()
+    {
+      var connector = SpeckleConnector.instance;
+      if(connector == null)
+      {
+        connector = new GameObject("Speckle Connector").AddComponent<SpeckleConnector>();
+      }
+
+      return connector;
     }
 
     void HandleDataReady(VU.ResultsForCloud args)
@@ -176,7 +142,17 @@ namespace ViewTo.Connector.Unity
 
       IRig r = this.rig;
       study.LoadStudyToRig(ref r);
+
+      rig.Activate(autoRun);
+      if(autoRun)
+      {
+        RunAnalysis();
+      }
     }
+
+    // TODO: move this into speckle object
+
+
 
     async UniTask ReceiveStream()
     {
@@ -238,7 +214,7 @@ namespace ViewTo.Connector.Unity
         .ToList();
 
       var resultCloud = new VS.ResultCloud() {Data = data, Points = mono.Points};
-      _speckleStudy.Objects.Add(resultCloud);
+      _speckleStudy.objects.Add(resultCloud);
 
       if(createCommit)
       {
@@ -296,6 +272,22 @@ namespace ViewTo.Connector.Unity
       OnStudyComplete?.Invoke(study);
     }
 
+  #region static methods
+
+    public static ViewToHub_v1 Initialize()
+    {
+      var hub = FindObjectOfType<ViewToHub_v1>();
+
+      if(hub == null)
+        hub = new GameObject("ViewToHub").AddComponent<ViewToHub_v1>();
+
+      hub.Init();
+
+      return hub;
+    }
+
+  #endregion
+
   #region static props
 
     public static Material AnalysisMat
@@ -308,7 +300,7 @@ namespace ViewTo.Connector.Unity
       get => Instance.renderedMat;
     }
 
-    public static ViewToHub Instance { get; set; }
+    public static ViewToHub_v1 Instance { get; set; }
 
     public static bool IsInit
     {
@@ -318,17 +310,6 @@ namespace ViewTo.Connector.Unity
   #endregion
 
   #region unity methods
-
-    SpeckleConnector GetConnector()
-    {
-      var connector = SpeckleConnector.instance;
-      if(connector == null)
-      {
-        connector = new GameObject("Speckle Connector").AddComponent<SpeckleConnector>();
-      }
-
-      return connector;
-    }
 
     void Awake()
     {
@@ -354,6 +335,7 @@ namespace ViewTo.Connector.Unity
   #region Events
 
     public event UnityAction<List<VU.ViewStudy>> OnStudiesFound;
+
     public event UnityAction OnRigReady;
 
     public event UnityAction OnRigComplete;
@@ -371,8 +353,11 @@ namespace ViewTo.Connector.Unity
     public event UnityAction<ViewContentLoadedArgs> OnViewContentLoaded;
 
     // public UnityEvent<Bounds> OnContentBoundsSet;
+
     //
+
     // public UnityEvent<ViewContentType> OnResultStageSet;
+
 
     // public event EventHandler<RenderCameraEventArgs> OnMapCameraSet;
 

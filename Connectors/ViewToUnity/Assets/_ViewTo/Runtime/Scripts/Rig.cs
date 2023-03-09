@@ -91,7 +91,7 @@ namespace ViewTo.Connector.Unity
       return true;
     }
 
-    public void Activate(bool autoRun = true)
+    public void Run()
     {
       if(!IsReady)
       {
@@ -99,7 +99,18 @@ namespace ViewTo.Connector.Unity
         return;
       }
 
+      _timer ??= new Stopwatch();
+      _timer.Start();
+      ActiveViewer.Run();
+    }
 
+    public void Activate(bool autoRun = true)
+    {
+      if(!IsReady)
+      {
+        ViewConsole.Log("Not Ready");
+        return;
+      }
 
       if(!autoRun) return;
 

@@ -11,7 +11,10 @@
         "Speckle.Connector",
         "UniTask",
         "NaughtyAttributes.Core",
-        "Pcx"
+        "Pcx",
+        "Unity.ResourceManager",
+        "Unity.Addressables",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

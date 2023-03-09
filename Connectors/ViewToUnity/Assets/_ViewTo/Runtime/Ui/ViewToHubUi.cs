@@ -35,7 +35,7 @@ namespace ViewTo.Connector.Unity
     DropdownField _branches, _commits, _studies;
     SpeckleConnector _connector;
     ListView _details;
-    ViewToHub _hub;
+    ViewToHub_v1 _hubV1;
 
     List<SpeckleStream> _streams;
     ListView _streamsList;
@@ -58,12 +58,12 @@ namespace ViewTo.Connector.Unity
       _details = ui.rootVisualElement.Q<ListView>();
 
 
-      _hub = ViewToHub.Instance;
+      _hubV1 = ViewToHub_v1.Instance;
       _connector = SpeckleConnector.instance;
 
-      if(_hub == null)
+      if(_hubV1 == null)
       {
-        Debug.Log($"{this} needs an instance of {nameof(ViewToHub)}");
+        Debug.Log($"{this} needs an instance of {nameof(ViewToHub_v1)}");
         return;
       }
 
@@ -73,7 +73,7 @@ namespace ViewTo.Connector.Unity
         return;
       }
 
-      _hub.OnStudiesFound += SetStudies;
+      _hubV1.OnStudiesFound += SetStudies;
       _connector.OnInitialize += SetAccount;
       // _connector.OnStreamsLoaded += SetStreams;
 
@@ -149,7 +149,7 @@ namespace ViewTo.Connector.Unity
 
       _streamsList.onSelectionChange += (objects) =>
       {
-        _hub.Stream = _streams[_streamsList.selectedIndex];
+        _hubV1.Stream = _streams[_streamsList.selectedIndex];
       };
     }
 
