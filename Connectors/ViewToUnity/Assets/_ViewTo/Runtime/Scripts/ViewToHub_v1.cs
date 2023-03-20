@@ -176,7 +176,7 @@ namespace ViewTo.Connector.Unity
       _speckleStudy = await @base.SearchForType<VS.ViewStudy>(true, client.token);
 
       // this should be a study 
-      var settings = new ScriptableConverterSettings() {style = ConverterStyle.Direct};
+      var settings = new ConverterSettings() {style = ConverterSettings.ConversionStyle.Sync};
 
       converterUnity.SetConverterSettings(settings);
 
@@ -196,7 +196,7 @@ namespace ViewTo.Connector.Unity
         return;
       }
 
-      settings.style = ConverterStyle.Queue;
+      settings.style = ConverterSettings.ConversionStyle.Queue;
       converterUnity.SetConverterSettings(settings);
 
       var loader = gameObject.AddComponent<StudyLoader>();
@@ -210,7 +210,7 @@ namespace ViewTo.Connector.Unity
       UnityEngine.Debug.Log("Auto Send");
 
       var data = mono.Data
-        .Select(x => new VS.ResultCloudData(x.values, x.info, x.layout))
+        .Select(x => new VS.ResultCloudData(x.values, x.info, x.count))
         .ToList();
 
       var resultCloud = new VS.ResultCloud() {Data = data, Points = mono.Points};

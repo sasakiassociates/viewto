@@ -6,6 +6,7 @@ using ViewObjects.Clouds;
 using ViewObjects.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
+using ViewObjects.Systems.Layouts;
 using ViewTo.Cmd;
 
 namespace ViewTo
@@ -13,6 +14,23 @@ namespace ViewTo
 
   public static partial class ViewCoreExtensions
   {
+    
+    /// <summary>
+    /// Short hand for safety convert
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static int ToBitForm(this uint value) =>
+      BitConverter.ToInt32(BitConverter.GetBytes(value), 0);
+
+     
+    /// <summary>
+    ///  Short hand for safety convert
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static uint ToBitForm(this int value) =>
+      BitConverter.ToUInt32(BitConverter.GetBytes(value), 0);
 
     /// <summary>
     ///   Retrieves the active point result data
@@ -94,17 +112,17 @@ namespace ViewTo
       int[] inputA = null;
       int[] inputB = null;
 
-      // valueType.GetStages(out var stageA, out var stageB);
+      valueType.GetStages(out var stageA, out var stageB);
 
       // get each value list from the option
       foreach(var opt in options)
       {
-        var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
-        var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
-        
+        // var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
+        // var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
+
         // TODO: Figure out why I'm using the input value type for this
-        // var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageA));
-        // var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageB));
+        var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageA));
+        var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageB));
 
         cmdA.Execute();
         cmdB.Execute();
@@ -127,13 +145,13 @@ namespace ViewTo
           inputB[i] += rawValuesB[i];
         }
       }
-      
+
       if(inputA == null || inputB == null || inputA.Length != inputB.Length)
       {
         // TODO: Report
         return false;
       }
-      
+
       var normalizeCmd = new NormalizeValues(inputA, inputB);
       normalizeCmd.Execute();
 
@@ -144,7 +162,7 @@ namespace ViewTo
       }
 
       results = normalizeCmd.args.values.ToArray();
-      
+
       return results.Any();
     }
 

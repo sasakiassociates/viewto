@@ -11,7 +11,7 @@ namespace ViewObjects.Converter.Unity
     /// this does not work correctly or should not be returning the serialized list. 
     /// </summary>
     /// <returns></returns>
-    protected override List<ComponentConverter> StandardConverters()
+    protected override List<ComponentConverter> GetDefaultConverters()
     {
       var items = new List<ComponentConverter>
       {

@@ -10,5 +10,5 @@ namespace ViewObjects.Systems.Layouts
     /// </summary>
     public List<ViewDirection> Viewers { get; }
   }
-
+  
 }

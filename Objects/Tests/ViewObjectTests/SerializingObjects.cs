@@ -80,7 +80,7 @@ namespace ViewTo.Tests.Objects
     private static void Check(IResultCloudData dataA, IResultCloudData dataB)
     {
       Assert.IsTrue(dataA != default(object) && dataB != default(object));
-      Assert.IsTrue(dataA.layout.Equals(dataB.layout));
+      Assert.IsTrue(dataA.count.Equals(dataB.count));
       Assert.IsTrue(dataA.values.Count == dataB.values.Count);
       Assert.IsTrue(dataA.info.stage.Equals(dataB.info.stage)
                     && dataA.info.target.ViewId.Equals(dataB.info.target.ViewId)

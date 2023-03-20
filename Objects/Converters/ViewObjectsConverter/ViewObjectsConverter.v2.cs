@@ -57,7 +57,7 @@ namespace ViewObjects.Converter
 
     private IResultCloudData ResultCloudDataToNative(IResultCloudData obj)
     {
-      return new ResultCloudData(obj.values, obj.info, obj.layout);
+      return new ResultCloudData(obj.values, obj.info, obj.count);
     }
 
     private IViewObject ContentReferenceToNative(VS.ContentReference obj)
@@ -137,7 +137,7 @@ namespace ViewObjects.Converter
 
     private VS.ResultCloudData ResultCloudDataToSpeckle(IResultCloudData obj)
     {
-      return new VS.ResultCloudData(obj.values, obj.info, obj.layout);
+      return new VS.ResultCloudData(obj.values, obj.info, obj.count);
     }
 
     //TODO: Support getting list of objects from search

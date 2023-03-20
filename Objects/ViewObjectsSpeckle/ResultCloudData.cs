@@ -35,12 +35,12 @@ namespace ViewObjects.Speckle
     /// <param name="contentName"></param>
     /// <param name="stage">Result stage flag</param>
     /// <param name="name"></param>
-    /// <param name="layout">Viewer layout meta data</param>
+    /// <param name="count">Viewer count meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultCloudData(List<int> values, string targetId, string targetName, string contentId, string contentName, ViewContentType stage, string name, string layout = null)
+    public ResultCloudData(List<int> values, string targetId, string targetName, string contentId, string contentName, ViewContentType stage, int count)
     {
       this.values = values;
-      this.layout = layout;
+      this.count = count;
       this.info = new ContentOption(new ContentInfo(targetId, targetName), new ContentInfo(contentId, contentName), stage);
     }
 
@@ -49,17 +49,17 @@ namespace ViewObjects.Speckle
     /// </summary>
     /// <param name="values">Pixel values connected to each point of a cloud</param>
     /// <param name="option"></param>
-    /// <param name="layout">Viewer layout meta data</param>
+    /// <param name="count">Viewer count meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultCloudData(List<int> values, IContentOption option, string layout = null)
+    public ResultCloudData(List<int> values, IContentOption option, int count )
     {
       this.values = values;
-      this.layout = layout;
+      this.count = count;
       this.info = option;
     }
 
     /// <inheritdoc />
-    public string layout { get; set; }
+    public int count { get; set; }
 
     /// <inheritdoc />
     [Chunkable] public List<int> values { get; set; } = new List<int>();

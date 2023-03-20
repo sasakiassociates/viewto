@@ -28,9 +28,9 @@ namespace ViewObjects.Clouds
     public IContentOption info { get; }
 
     /// <summary>
-    ///   The <see cref="ILayout" /> used to gather the data
+    ///   The total count of <see cref="ILayout.Viewers"/> used during the analysis
     /// </summary>
-    public string layout { get; }
+    public int count { get; }
   }
 
 }

@@ -161,6 +161,9 @@ namespace ViewTo.Connector.Unity
 
       Init(systemPoints, data.Colors.ToUnity().ToArray(), converted);
 
+      // TODO: this should be set from bounds of the study 
+      // TODO: converters should report an overall bounding box of completed object
+      Layouts.ForEach(x => x.Finders.ForEach(finder => finder.MaxClipping = 30000));
       // Note: important to do this here!
       stage = VO.ViewContentType.Potential;
     }
@@ -238,30 +241,42 @@ namespace ViewTo.Connector.Unity
       // TODO: get current content info related to this 
 
 
-      for(var layoutIndex = 0; layoutIndex < container.data.Length; layoutIndex++)
+      for(var layoutIndex = 0; layoutIndex < container.Data.Length; layoutIndex++)
       {
-        var layout = container.data[layoutIndex];
-        var layoutName = container.layoutNames[layoutIndex];
+        var layout = container.Data[layoutIndex];
+        var layoutName = container.ItemName[layoutIndex];
 
         // each view color is associated with the second array (double[pointIndex][colorIndex])
         for(var colorIndex = 0; colorIndex < _data.Colors.Count; colorIndex++)
         {
           // go through each finder and compile each point for that color
-          var layoutValues = new int[CollectionSize];
+          var valuesFromTarget = new int[CollectionSize];
           var vc = _data.Colors[colorIndex];
 
-          var raw1d = layout.data.Get1d(colorIndex);
+          var raw1d = layout.Data.Get1d(colorIndex);
 
           for(var pIndex = 0; pIndex < raw1d.Length; pIndex++)
           {
-            layoutValues[pIndex] += raw1d[pIndex];
+            valuesFromTarget[pIndex] += raw1d[pIndex];
           }
+
+
+          for(var index = 0; index < valuesFromTarget.Length; index++)
+          {
+            var v = valuesFromTarget[index];
+            if(v >= int.MaxValue)
+            {
+              Debug.LogWarning($"({index}) is too big for int: {v}");
+            }
+          }
+
 
           /*
            * If in Potential we set the content info to be the same as target
            * If in Existing we set the content info to be the same as target (we could use the content info object but there are multiple of them so that might be an issue)
            * If in Proposed we set the content info to be proposed object info 
            */
+
           var targetInfo = new ContentInfo(vc.id, vc.name);
           var contentInfo = _stage switch
           {
@@ -272,7 +287,7 @@ namespace ViewTo.Connector.Unity
             _ => throw new ArgumentOutOfRangeException()
           };
 
-          _bundleDataForCloud.Add(new ResultCloudData(layoutValues.ToList(), new ContentOption(targetInfo, contentInfo, _stage), layoutName));
+          _bundleDataForCloud.Add(new ResultCloudData(valuesFromTarget.ToList(), new ContentOption(targetInfo, contentInfo, _stage), layout.FinderNames.Length));
         }
       }
 
