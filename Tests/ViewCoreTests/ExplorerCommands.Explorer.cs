@@ -33,7 +33,7 @@ public class ExplorerCommands
   (string id, string branch, string commit) _stream;
 
   [Test]
-  public void GetAccountInfo ()
+  public void GetAccountInfo()
   {
 
     var account = AccountManager.GetDefaultAccount();
@@ -41,7 +41,7 @@ public class ExplorerCommands
     Console.WriteLine(account.serverInfo.url);
     _client = new Client(account);
 
-    Console.WriteLine($"Base Uri{ _client.GQLClient.HttpClient.BaseAddress}");
+    Console.WriteLine($"Base Uri{_client.GQLClient.HttpClient.BaseAddress}");
     var sqLite = new SQLiteTransport();
     var server = new ServerTransport(account, "628d9282f9");
     Console.WriteLine("SQLite");
@@ -52,7 +52,7 @@ public class ExplorerCommands
     Console.WriteLine($"Api={server.Api}");
 
   }
-  
+
   [Test]
   [Ignore("Used to change the values of a content item")]
   public async Task ExplorerCommand_GetValues_WithOptions()
@@ -86,7 +86,7 @@ public class ExplorerCommands
     Assert.IsTrue(_explorer.cloud.ViewId.Equals(rc.ViewId), $"{nameof(Explorer)} should have the same ids");
 
 
-    Assert.IsTrue(_explorer.TryGetValues(ExplorerValueType.ExistingOverPotential, new List<IContentOption>()
+    Assert.IsTrue(_explorer.GetSols(ExplorerValueType.ExistingOverPotential, new List<IContentOption>()
       {
         new ContentOption(
           new ContentInfo("551b4ded-5bb6-4398-955f-76f8063acffa", "ends"),
@@ -100,7 +100,7 @@ public class ExplorerCommands
         )
       },
       out var values));
-    
+
     Assert.IsNotNull(values);
   }
 
