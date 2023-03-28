@@ -114,7 +114,6 @@ namespace ViewTo
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetId">the target id to search for</param>
-    /// <param name="result"></param>
     /// <returns></returns>
     public static IContentInfo GetTarget(this IResultCloud obj, string targetId)
     {
