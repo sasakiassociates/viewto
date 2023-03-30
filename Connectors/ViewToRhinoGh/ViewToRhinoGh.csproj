@@ -93,6 +93,7 @@
         <Compile Include="Points\PointGenGround.cs" />
         <Compile Include="Results\ExplorerSettingsComponent.cs" />
         <Compile Include="Results\ExtractContentOptions.cs" />
+        <Compile Include="Results\GetCloudDataRaw.cs"/>
         <Compile Include="Results\GetViewFromValue.cs" />
         <Compile Include="Results\ResultExplorerComponent.cs" />
         <Compile Include="Setup\Create.ResultCloud.cs" />

@@ -83,8 +83,6 @@ namespace ViewTo.Tests.Objects
     }
 
 
-
-
     [Test]
     public async Task Create_ViewCloud_FromGrasshopperObjectNode()
     {
@@ -129,7 +127,6 @@ namespace ViewTo.Tests.Objects
 
 
     }
-
 
 
     [Test]
