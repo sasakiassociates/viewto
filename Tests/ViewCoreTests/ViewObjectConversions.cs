@@ -1,23 +1,14 @@
 ﻿using NUnit.Framework;
 using Speckle.Core.Api;
 using Speckle.Core.Credentials;
-using Speckle.Core.Kits;
-using Speckle.Core.Models;
 using Speckle.Core.Transports;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Contents;
 using ViewObjects.Converter;
-using ViewObjects.References;
-using ViewObjects.Results;
 using ViewObjects.Studies;
-using ViewObjects.Systems;
-using ViewObjects.Systems.Layouts;
-using ViewTo;
 using ViewTo.Tests;
 
 namespace ViewCoreTests
@@ -42,13 +33,13 @@ namespace ViewCoreTests
     (string id, string branch, string commit) _stream;
 
     [Test]
-    [Order(00)]
-    [Ignore("A hack for modifying a view content type")]
-    public async Task CreateStudy_ContentType()
+    public async Task CreateCsv()
     {
-      _stream.id = "628d9282f9";
-      _stream.branch = "studies/facade";
-      _stream.commit = "8e14951f11";
+      _stream.id = "3ec95efa2d";
+      _stream.branch = "main";
+      _stream.commit = "bdc5c1fd6e";
+      // bdc5c1fd6e
+      // e900657494
 
       _client = new Client(AccountManager.GetDefaultAccount());
       var commit = await _client.CommitGet(_stream.id, _stream.commit);
@@ -64,56 +55,38 @@ namespace ViewCoreTests
       var converter = new ViewObjectsConverter();
       var viewStudy = (IViewStudy)converter.ConvertToNative(speckleStudy);
       Assert.IsNotNull(viewStudy);
+      var cloud = viewStudy.FindObject<ResultCloud>();
+      Assert.IsNotNull(cloud);
 
-      var items = new List<IViewObject>();
-      var vcs = viewStudy.GetAll<ContentReference>();
-      Assert.IsNotNull(vcs);
 
-      foreach(var co in vcs)
+      var lines = new string[cloud.Points.Length + 1];
+
+      lines[0] = "x,y,z,";
+      foreach(var d in cloud.Data)
       {
-        var item = co.ViewName == null ?
-          new ContentReference(co.References, ViewContentType.Existing, co.ViewId, co.ViewName) :
-          co;
-
-        items.Add(item);
+        lines[0] += $"{d.info.target}-{d.info.content}-{d.info.stage},";
       }
 
+      lines[0] = lines[0].TrimEnd(',');
 
-      var cloud = viewStudy.FindObject<ViewCloudReference>();
-      Assert.IsNotNull(cloud);
-      items.Add(cloud);
 
-      var viewer = viewStudy.FindObject<Viewer>();
-      Assert.IsNotNull(viewer);
-      items.Add(viewer);
-
-      Assert.IsTrue(items.Count == viewStudy.objects.Count);
-      viewStudy.objects = items;
-
-      var updatedStudy = (ViewObjects.Speckle.ViewStudy)converter.ConvertToSpeckle(viewStudy);
-      Assert.IsNotNull(updatedStudy);
-      Assert.IsTrue(updatedStudy.objects.Count == viewStudy.objects.Count);
-
-      var refObj = new Base()
+      for(var i = 0; i < cloud.Points.Length; i++)
       {
-        ["@Data"] = updatedStudy
-      };
+        var ptn = cloud.Points[i];
+        var line = $"{ptn.x},{ptn.y},{ptn.z}";
 
-      var result = await Operations.Send(refObj, new List<ITransport>() {_transport});
-      Assert.IsNotNull(result);
-      Console.WriteLine(result);
+        foreach(var d in cloud.Data)
+        {
+          line += $",{d.values[i]}";
+        }
 
-      var rId = await _client.CommitCreate(new CommitCreateInput()
-      {
-        branchName = _stream.branch,
-        message = "Corrected Types from Test",
-        sourceApplication = HostApplications.NET.Name,
-        streamId = _stream.id,
-        objectId = result
-      });
+        lines[i + 1] = line;
 
-      Assert.IsNotNull(rId);
-      Console.WriteLine(rId);
+      }
+
+      File.WriteAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"{viewStudy.ViewName}.csv"), lines);
+
+
 
 
     }

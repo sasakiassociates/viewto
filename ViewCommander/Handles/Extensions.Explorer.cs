@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
-using ViewObjects.Clouds;
 using ViewObjects.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
-using ViewObjects.Systems.Layouts;
 using ViewTo.Cmd;
 
 namespace ViewTo
@@ -14,23 +12,6 @@ namespace ViewTo
 
   public static partial class ViewCoreExtensions
   {
-    
-    /// <summary>
-    /// Short hand for safety convert
-    /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static int ToBitForm(this uint value) =>
-      BitConverter.ToInt32(BitConverter.GetBytes(value), 0);
-
-     
-    /// <summary>
-    ///  Short hand for safety convert
-    /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static uint ToBitForm(this int value) =>
-      BitConverter.ToUInt32(BitConverter.GetBytes(value), 0);
 
     /// <summary>
     ///   Retrieves the active point result data
@@ -66,7 +47,7 @@ namespace ViewTo
     /// <param name="valueType"></param>
     /// <param name="results"></param>
     /// <returns></returns>
-    public static bool TryGetValues(this IExplorer exp, ExplorerValueType valueType, out IEnumerable<double> results)
+    public static bool GetSols(this IExplorer exp, ExplorerValueType valueType, out IEnumerable<double> results)
     {
       results = Array.Empty<double>();
       valueType.GetStages(out var stageA, out var stageB);
@@ -98,74 +79,74 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Returns a list of normalized values. The selected values are directly related to the inputs from <paramref cref="options"/> and the <paramref name="valueType"/>
+    /// Returns a comparable sol object
     /// </summary>
     /// <param name="obj">the explorer to use</param>
     /// <param name="valueType">is used to select the values to normalize by</param>
-    /// <param name="options">the options to find</param>
-    /// <param name="results">normalized data</param>
+    /// <param name="optA"></param>
+    /// <param name="optB"></param>
     /// <returns></returns>
-    public static bool TryGetValues<TOpt>(this IExplorer obj, ExplorerValueType valueType, List<TOpt> options, out IEnumerable<double> results) where TOpt : IContentOption
+    public static ComparedSols GetSols<TOpt>(this IExplorer obj, ExplorerValueType valueType, TOpt optA, TOpt optB)
+      where TOpt : IContentOption
     {
-      results = Array.Empty<double>();
 
-      int[] inputA = null;
-      int[] inputB = null;
+      var solA = obj.GetSol(valueType, optA);
+      var solB = obj.GetSol(valueType, optB);
+
+      var delta = new double[solA.delta.Length];
+
+      for(int i = 0; i < solA.delta.Length; i++)
+      {
+        delta[i] = solA.delta[i] - solB.delta[i];
+      }
+
+      return new ComparedSols(solA, solB, delta);
+    }
+
+
+    public static Sol GetSol<TOpt>(this IExplorer obj, ExplorerValueType valueType, TOpt optA)
+      where TOpt : IContentOption
+    {
+      Sol res = new();
 
       valueType.GetStages(out var stageA, out var stageB);
 
-      // get each value list from the option
-      foreach(var opt in options)
+      // TODO: Figure out why I'm using the input value type for this
+      var cmdA = new ValueFromOption(obj.data, new ContentOption(optA.target, optA.content, stageA));
+      var cmdB = new ValueFromOption(obj.data, new ContentOption(optA.target, optA.content, stageB));
+
+      cmdA.Execute();
+      cmdB.Execute();
+
+      if(!cmdA.args.IsValid() || !cmdB.args.IsValid() || cmdA.args.values.Count() != cmdB.args.values.Count())
       {
-        // var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
-        // var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, opt.stage));
-
-        // TODO: Figure out why I'm using the input value type for this
-        var cmdA = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageA));
-        var cmdB = new ValueFromOption(obj.data, new ContentOption(opt.target, opt.content, stageB));
-
-        cmdA.Execute();
-        cmdB.Execute();
-
-        if(!cmdA.args.IsValid() || !cmdB.args.IsValid() || cmdA.args.values.Count() != cmdB.args.values.Count())
-        {
-          // TODO: return issue
-          continue;
-        }
-
-        var rawValuesA = cmdA.args.values.ToArray();
-        var rawValuesB = cmdB.args.values.ToArray();
-
-        inputA ??= new int[rawValuesA.Length];
-        inputB ??= new int[rawValuesB.Length];
-
-        for(int i = 0; i < rawValuesA.Length; i++)
-        {
-          inputA[i] += rawValuesA[i];
-          inputB[i] += rawValuesB[i];
-        }
+        // TODO: return issue
+        return res;
       }
 
-      if(inputA == null || inputB == null || inputA.Length != inputB.Length)
+
+      var rawA = cmdA.args.values.ToArray();
+      var rawB = cmdB.args.values.ToArray();
+
+      var delta = new NormalizeValues(rawA, rawB);
+      delta.Execute();
+
+      if(!delta.args.IsValid())
       {
-        // TODO: Report
-        return false;
+        // TODO: Throw
+        return res;
       }
+      res = new Sol(rawA, rawB, delta.args.values.ToArray());
 
-      var normalizeCmd = new NormalizeValues(inputA, inputB);
-      normalizeCmd.Execute();
-
-      if(!normalizeCmd.args.IsValid())
-      {
-        // TODO: report
-        return false;
-      }
-
-      results = normalizeCmd.args.values.ToArray();
-
-      return results.Any();
+      return res;
     }
 
+
+    // potential Value = raw int
+    // visible Value = raw int
+    // delta px = visibleB-visibleA
+    // % unobstructed = visible/potential
+    // delta % = unobstructedB / unobstructedA 
 
     /// <summary>
     ///   Get the values
@@ -175,7 +156,7 @@ namespace ViewTo
     /// <param name="target"></param>
     /// <param name="results"></param>
     /// <returns></returns>
-    public static bool TryGetValues(this IExplorer exp, ExplorerValueType valueType, string target, ref double[] results)
+    public static bool GetSols(this IExplorer exp, ExplorerValueType valueType, string target, ref double[] results)
     {
       if(!exp.cloud.HasTarget(target))
       {
@@ -297,6 +278,50 @@ namespace ViewTo
     {
       return value >= obj.min && value <= obj.max;
     }
+
   }
 
+}
+
+public class Sols
+{
+  public List<Sol> items;
+}
+
+
+public class ComparedSols
+{
+
+  public ComparedSols(Sol a, Sol b, double[] delta)
+  {
+    this.a = a;
+    this.b = b;
+    this.delta = delta;
+  }
+
+  public Sol a { get; }
+  public Sol b { get; }
+
+  /// <summary>
+  /// value of comparing = solA.delta - solB.delta 
+  /// </summary>
+  public double[] delta { get; }
+}
+
+public class Sol
+{
+  public Sol()
+  { }
+
+  public Sol(int[] a, int[] b, double[] delta)
+  {
+    this.a = a;
+    this.b = b;
+    this.delta = delta;
+  }
+
+  public int[] a { get; }
+  public int[] b { get; }
+
+  public double[] delta { get; }
 }

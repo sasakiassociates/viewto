@@ -13,7 +13,7 @@ internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
 
   readonly IContentOption _option;
   readonly IReadOnlyCollection<IResultCloudData> _data;
-  
+
   public ValueFromOption(IReadOnlyCollection<IResultCloudData> data, IContentOption option)
   {
     this._data = data;
@@ -62,7 +62,5 @@ internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
           $"{o.content.ViewName}({nameof(o.content)})={o.content.type} : {o.content.ViewId}\n" +
           $"({nameof(o.content)})={o.stage}\n";
   }
-
-
 
 }

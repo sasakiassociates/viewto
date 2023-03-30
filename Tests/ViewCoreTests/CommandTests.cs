@@ -20,7 +20,7 @@ public partial class CommandTests
     var obj = new Explorer();
     obj.Load(study.Get<IResultCloud>());
 
-    Assert.IsTrue(obj.TryGetValues(ExplorerValueType.ExistingOverPotential, out var values));
+    Assert.IsTrue(obj.GetSols(ExplorerValueType.ExistingOverPotential, out var values));
   }
 
   [Test]

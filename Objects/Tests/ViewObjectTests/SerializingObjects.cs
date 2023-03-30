@@ -64,6 +64,8 @@ namespace ViewTo.Tests.Objects
       Check(obj, Serialize_Process(obj));
     }
 
+
+
     private static TObj Serialize_Process<TObj>(TObj obj) where TObj : Base
     {
       var json = Operations.Serialize(obj);
