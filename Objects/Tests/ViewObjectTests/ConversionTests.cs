@@ -30,9 +30,6 @@ namespace ViewTo.Tests.Objects
     public void BreakDown()
     { }
 
-
-
-
     [Test]
     public void Convert_Content()
     {
@@ -43,9 +40,9 @@ namespace ViewTo.Tests.Objects
         var obj = new ContentReference(new Content(contentType), new List<string>() {"123443q312"});
         var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
         Assert.IsTrue(res.ViewId.Equals(obj.ViewId));
-        Assert.IsTrue(res.type == obj.type);  
+        Assert.IsTrue(res.type == obj.type);
       }
-      
+
     }
 
     [Test]

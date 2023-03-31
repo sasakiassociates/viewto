@@ -6,12 +6,10 @@ using Speckle.Core.Models;
 using Speckle.Core.Transports;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
 using ViewObjects.Clouds;
 using ViewObjects.Converter;
-using ViewObjects.References;
 using ViewObjects.Studies;
 using VS = ViewObjects.Speckle;
 using VO = ViewObjects;
@@ -121,9 +119,6 @@ namespace ViewTo.Tests.Objects
       return$"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
     }
 
-
-    
-
     [Test]
     public async Task Send_ViewStudy()
     {
@@ -155,57 +150,38 @@ namespace ViewTo.Tests.Objects
     }
 
     [Test]
-    [Ignore("Test for merging data")]
-    public async Task AddCloudToStudy()
+    public async Task CheckMaxMinValues()
     {
       _client = new Client(AccountManager.GetDefaultAccount());
 
       // test stream for view to 
       _stream.id = "a823053e07";
-      _stream.branch = "viewstudies/site";
+      _stream.branch = "main";
+      _stream.commit = "325b010fda";
 
+      var commit = await _client.CommitGet(_stream.id, _stream.commit);
       _transport = new ServerTransport(_client.Account, _stream.id);
 
-      var cloudCommit = await _client.CommitGet(_stream.id, "c65fb6fd85");
-      var studyCommit = await _client.CommitGet(_stream.id, "34a98434f1");
-
-      var studyBase = await Operations.Receive(studyCommit.referencedObject, _transport);
-      var cloudBase = await Operations.Receive(cloudCommit.referencedObject, _transport);
+      var studyBase = await Operations.Receive(commit.referencedObject, _transport);
 
       var converter = new ViewObjectsConverter();
       var study = converter.ConvertToNativeViewObject(studyBase.SearchForType<VS.ViewStudy>(true)) as ViewStudy;
-      var cloud = converter.ConvertToNativeViewObject(cloudBase.SearchForType<VS.ResultCloud>(true)) as ResultCloud;
 
-      var targets = study.GetAll<ContentReference>().Where(x => x.type == ViewContentType.Potential).ToList();
+      var cloud = study.FindObject<ResultCloud>();
 
-      Assert.IsTrue(targets.Count * 2 == cloud.Data.Count);
-      // for(var i = 0; i < targets.Count; i++)
-      // {
-      //   var t = targets[i];
-      //   cloud.Data[i].info = new ContentOption
-      //   {
-      //     Stage = ViewContentType.Potential, Id = t.ViewId, Name = t.ViewName
-      //   };
-      //   cloud.Data[i + targets.Count].Option = new ContentOption
-      //   {
-      //     Stage = ViewContentType.Existing, Id = t.ViewId, Name = t.ViewName
-      //   };
-      // }
-
-      study.objects.Add(cloud);
-
-      var res = converter.ConvertToSpeckle(study);
-      var id = await Operations.Send(res, new List<ITransport> {_transport});
-
-      var commit = await _client.CommitCreate(new CommitCreateInput
+      foreach(var data in cloud.Data)
       {
-        streamId = _stream.id,
-        branchName = _stream.branch,
-        objectId = id,
-        message = "Test for combinding objects"
-      });
+        var min = 1;
+        var max = 1;
 
-      Assert.IsNotNull(commit);
+        foreach(var v in data.values)
+        {
+          if(v < min) min = v;
+          else if(v > max) max = v;
+        }
+        Console.WriteLine($"min={min} : max={max}");
+      }
+
     }
 
     [Test]
