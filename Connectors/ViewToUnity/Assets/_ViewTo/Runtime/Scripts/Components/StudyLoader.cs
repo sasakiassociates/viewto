@@ -103,6 +103,13 @@ namespace ViewTo.Connector.Unity
         }
 
         var refCommit = await _client.CommitGet(_stream.Id, commitId);
+        // TODO: Report this issue properly
+        if(refCommit == null)
+        {
+          Debug.Log("Reference object is null");
+          return items;
+        }
+        
         var @base = await SpeckleOps.Receive(_client, _stream.Id, refCommit.referencedObject);
         items.Add(@base);
       }
