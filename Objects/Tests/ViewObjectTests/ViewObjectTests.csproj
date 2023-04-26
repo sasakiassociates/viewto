@@ -15,7 +15,7 @@
         <PackageReference Include="NUnit" Version="3.13.1"/>
         <PackageReference Include="NUnit3TestAdapter" Version="3.17.0"/>
         <PackageReference Include="coverlet.collector" Version="3.0.2"/>
-        <PackageReference Include="Speckle.Core" Version="2.11.0"/>
+        <PackageReference Include="Speckle.Core" Version="2.13.0"/>
         <PackageReference Include="Speckle.Objects" Version="2.10.3"/>
     </ItemGroup>
 

@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Speckle.Core" Version="2.11.0"/>
+        <PackageReference Include="Speckle.Core" Version="2.13.0"/>
     </ItemGroup>
 
     <PropertyGroup>
