@@ -6,6 +6,8 @@ using ViewObjects.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
 using ViewTo.Cmd;
+using ViewTo.Values;
+using static System.Int64;
 
 namespace ViewTo
 {
@@ -16,6 +18,8 @@ namespace ViewTo
   public static partial class ViewCoreExtensions
   {
 
+    public const int MAX_PIXEL_COUNT = 2147483647;
+    
     /// <summary>
     ///   Retrieves the active point result data
     /// </summary>
@@ -55,13 +59,13 @@ namespace ViewTo
     {
       results = Array.Empty<double>();
 
-      if(!exp.TryGetRawSols(optionA, out var resultsA) || !exp.TryGetRawSols(optionB, out var resultsB))
+      if(!exp.TryGetRawViews(optionA, out var resultsA) || !exp.TryGetRawViews(optionB, out var resultsB))
       {
         Console.WriteLine("Stopping Command");
         return false;
       }
 
-      var normalizeCmd = new NormalizeValues(resultsA, resultsB);
+      var normalizeCmd = new NormalizeValueByListCommand(resultsA, resultsB);
       normalizeCmd.Execute();
 
       if(!normalizeCmd.args.IsValid())
@@ -77,47 +81,205 @@ namespace ViewTo
     }
 
 
-    public static bool TryGetSols(this IExplorer exp, ContentOption optionA, ContentOption optionB, List<int> indexes, out IEnumerable<double> results)
+    /// <summary>
+    /// Retrieve all raw view data, the total count of pixels.
+    /// This will clamp the pixel values with <see cref="pixelRange"/> 
+    /// </summary>
+    /// <param name="exp"></param>
+    /// <param name="valueOption">the option to find</param>
+    /// <param name="pixelRange">by default this will be set with a min of 0 and max of 2147483647</param>
+    /// <returns></returns>
+    public static int[] GetViewsRaw(this IExplorer exp, ContentOption valueOption, IntRange pixelRange)
     {
-      results = Array.Empty<double>();
+      var results = Array.Empty<int>();
 
-      if(!exp.TryGetRawSols(optionA, out var resultsA) || !exp.TryGetRawSols(optionB, out var resultsB))
+      pixelRange ??= new IntRange {max = 2147483647, min = 0};
+
+      if(!exp.TryGetRawViews(optionA: valueOption, results: out var raw))
       {
         Console.WriteLine("Stopping Command");
-        return false;
+        return results;
       }
 
-      var filteredResultsA = new GetValuesFromPointListCommand(resultsA.ToList(), indexes);
-      filteredResultsA.Execute();
-      if(!filteredResultsA.args.IsValid())
+      var clampedCmd = new ClampValueListCommand<int>(provider: new IntMath(), data: raw, min: pixelRange.min, max: pixelRange.max);
+      clampedCmd.Execute();
+
+      if(!clampedCmd.args.IsValid())
       {
-        Console.WriteLine(filteredResultsA.args.Message);
-        return false;
+        Console.WriteLine(clampedCmd.args.Message);
+        return results;
       }
 
-      var filteredResultsB = new GetValuesFromPointListCommand(resultsB.ToList(), indexes);
-      filteredResultsB.Execute();
-      
-      if(!filteredResultsB.args.IsValid())
+      results = clampedCmd.args.values.ToArray();
+      return results;
+    }
+
+    /// <summary>
+    /// Retrieve all raw view data, the total count of pixels. This will also clamp the pixel values and filter them by index 
+    /// </summary>
+    /// <param name="exp"></param>
+    /// <param name="valueOption">the option to find</param>
+    /// <param name="pixelRange">by default this will be set with a min of 0 and max of 2147483647</param>
+    /// <param name="indexes">A list of indexes to filter by</param>
+    /// <returns></returns>
+    public static int[] GetViewsRaw(this IExplorer exp, ContentOption valueOption, IntRange pixelRange, int[] indexes)
+    {
+      var results = exp.GetViewsRaw(valueOption: valueOption, pixelRange: pixelRange);
+
+      if(!indexes.Valid()) return results;
+
+      var valuesFiltered = new GetValuesFromPointListCommand(data: results, index: indexes);
+      valuesFiltered.Execute();
+
+      if(!valuesFiltered.args.IsValid())
       {
-        Console.WriteLine(filteredResultsB.args.Message);
-        return false;
+        Console.WriteLine(valuesFiltered.args.Message);
+        return results;
       }
-      
 
-      var normalizeCmd = new NormalizeValues(filteredResultsA.args.values, filteredResultsB.args.values);
-      normalizeCmd.Execute();
+      return valuesFiltered.args.values.ToArray();
+    }
 
-      if(!normalizeCmd.args.IsValid())
+
+    public static IEnumerable<double> GetSols(this IExplorer exp, ContentOption valueOption, ContentOption maxOption, ExplorerFilterInput filter, bool normalizeByFilter = false)
+    {
+      var results = Array.Empty<double>();
+      filter ??= new ExplorerFilterInput();
+
+      var values = exp.GetViewsRaw(valueOption: valueOption, pixelRange: filter.pixelRange, indexes: filter.indexes);
+      var maxies = exp.GetViewsRaw(valueOption: maxOption, pixelRange: filter.pixelRange, indexes: filter.indexes);
+
+      if(values == null || maxies == null) return results;
+
+      if(normalizeByFilter)
       {
-        // TODO: report
-        Console.WriteLine("Normalized values is invalid");
-        return false;
+
+        var max = maxies.Max();
+        var min = values.Min();
+
+        var normalizeCmd = new NormalizeValues(value: values, max: max, min: min);
+        normalizeCmd.Execute();
+
+        if(!normalizeCmd.args.IsValid())
+        {
+          // TODO: report
+          Console.WriteLine("Normalized values is invalid");
+          return results;
+        }
+        results = normalizeCmd.args.values.ToArray();
+      }
+      else
+      {
+        var normalizeCmd = new NormalizeValueByListCommand(valueA: values, valueB: maxies);
+        normalizeCmd.Execute();
+
+        if(!normalizeCmd.args.IsValid())
+        {
+          // TODO: report
+          Console.WriteLine("Normalized values is invalid");
+          return results;
+        }
+
+        results = normalizeCmd.args.values.ToArray();
       }
 
-      results = normalizeCmd.args.values;
+      return results;
+    }
 
-      return results.Any();
+
+    /// <summary>
+    /// Creates a normalize list form  two sets of values from and filters out a given set of indexes.
+    /// </summary>
+    /// <param name="exp"></param>
+    /// <param name="valueOption">The value that will be normalize by</param>
+    /// <param name="maxOption">The option that will act as the max value to normalize by</param>
+    /// <param name="indexes">A list of point indexes to filter by</param>
+    /// <param name="normalizeByFilter">When false this will use the list provided by the <see cref="maxOption"/> as the normalizing value
+    /// If set to true it will find the max and min values from the list of values from <see cref="maxOption"/> after being filtered by <see cref="indexes"/></param>
+    /// <returns></returns>
+    public static IEnumerable<double> GetSols(this IExplorer exp, ContentOption valueOption, ContentOption maxOption, List<int> indexes, bool normalizeByFilter = true)
+    {
+      var results = Array.Empty<double>();
+
+      if(!exp.TryGetRawViews(valueOption, out var valueRaw) || !exp.TryGetRawViews(maxOption, out var maxRaw))
+      {
+        Console.WriteLine("Stopping Command");
+        return results;
+      }
+
+      int[] values = null;
+      int[] maxies = null;
+
+      if(indexes.Valid())
+      {
+
+        var valuesFiltered = new GetValuesFromPointListCommand(valueRaw.ToList(), indexes);
+        valuesFiltered.Execute();
+
+        if(!valuesFiltered.args.IsValid())
+        {
+          Console.WriteLine(valuesFiltered.args.Message);
+          return results;
+        }
+
+
+        var maxFiltered = new GetValuesFromPointListCommand(maxRaw.ToList(), indexes);
+        maxFiltered.Execute();
+
+        if(!maxFiltered.args.IsValid())
+        {
+          Console.WriteLine(maxFiltered.args.Message);
+          return results;
+        }
+
+        values = valuesFiltered.args.values.ToArray();
+        maxies = maxFiltered.args.values.ToArray();
+      }
+      else
+      {
+        values = valueRaw.ToArray();
+        maxies = maxRaw.ToArray();
+
+      }
+
+      if(normalizeByFilter)
+      {
+
+        var max = 0.0;
+        var min = 1.0;
+        foreach(var v in maxies)
+        {
+          if(v<0 || double.IsNaN(v)) continue;
+
+          if(v<min) min = v;
+          if(v>max) max = v;
+        }
+        var normalizeCmd = new NormalizeValues(value: values, max: max, min: min);
+        normalizeCmd.Execute();
+        if(!normalizeCmd.args.IsValid())
+        {
+          // TODO: report
+          Console.WriteLine("Normalized values is invalid");
+          return results;
+        }
+        results = normalizeCmd.args.values.ToArray();
+      }
+      else
+      {
+        var normalizeCmd = new NormalizeValueByListCommand(values, maxies);
+        normalizeCmd.Execute();
+
+        if(!normalizeCmd.args.IsValid())
+        {
+          // TODO: report
+          Console.WriteLine("Normalized values is invalid");
+          return results;
+        }
+
+        results = normalizeCmd.args.values.ToArray();
+      }
+
+      return results;
     }
 
     /// <summary>
@@ -127,7 +289,7 @@ namespace ViewTo
     /// <param name="results"></param>
     /// <param name="optionA"></param>
     /// <returns></returns>
-    public static bool TryGetRawSols(this IExplorer exp, ContentOption optionA, out IEnumerable<int> results)
+    public static bool TryGetRawViews(this IExplorer exp, ContentOption optionA, out IEnumerable<int> results)
     {
       results = Array.Empty<int>();
 

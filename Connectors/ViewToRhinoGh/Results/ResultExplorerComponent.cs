@@ -30,7 +30,7 @@ namespace ViewTo.RhinoGh.Results
     IExplorer _explorer;
     IViewStudy _study;
 
-    (int Obj, int OptionA, int OptionB, int ValueType, int Settings, int Mask, int NormalizeByMask, int Size) _input;
+    (int Obj, int OptionA, int OptionB, int ValueType, int Settings, int Mask, int NormalizeByMask, int Size, int PixelRange, int ValueRange) _input;
     // private double _min = 1.0, _max;
 
     private(int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
@@ -68,13 +68,21 @@ namespace ViewTo.RhinoGh.Results
       pManager.AddBooleanParameter("Normalize Mask", "NM", "Nomarlize the values by the masked point set", GH_ParamAccess.item, true);
       _input.NormalizeByMask = index++;
 
-      pManager.AddIntegerParameter("Point Size", "P", "Size of Point in Cloud", GH_ParamAccess.item, 3);
-      _input.Size = index;
+      pManager.AddIntegerParameter("Point Size", "S", "Size of Point in Cloud", GH_ParamAccess.item, 3);
+      _input.Size = index++;
+
+      pManager.AddIntervalParameter("Value", "V", "Min and Max normalized value to filter by", GH_ParamAccess.item, new Interval(0.0, 1.0));
+      _input.ValueRange = index++;
+
+      pManager.AddIntervalParameter("Pixel Range", "P", "Min and Max value clamp the values by", GH_ParamAccess.item, new Interval(0, ViewCoreExtensions.MAX_PIXEL_COUNT));
+      _input.PixelRange = index;
 
       pManager[_input.OptionB].Optional = true;
       pManager[_input.NormalizeByMask].Optional = true;
       pManager[_input.Mask].Optional = true;
       pManager[_input.Size].Optional = true;
+      pManager[_input.PixelRange].Optional = true;
+      pManager[_input.ValueRange].Optional = true;
     }
 
     protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -100,25 +108,6 @@ namespace ViewTo.RhinoGh.Results
       _output.ActiveColor = index;
     }
 
-    // private void SetMinMax(double[] value)
-    // {
-    //   _min = 1.0;
-    //   _max = 0.0;
-    //
-    //   if(value.Valid())
-    //     foreach(var t in value)
-    //       if(!double.IsNaN(t))
-    //         SetMinMax(t);
-    // }
-    //
-    // private void SetMinMax(double value)
-    // {
-    //   // values that have no view are set to -1
-    //   if(value<0 || double.IsNaN(value)) return;
-    //
-    //   if(value<_min) _min = value;
-    //   if(value>_max) _max = value;
-    // }
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
@@ -126,6 +115,13 @@ namespace ViewTo.RhinoGh.Results
 
       var normalizeMask = true;
       DA.GetData(_input.NormalizeByMask, ref normalizeMask);
+
+      var valueRange = new Interval();
+      DA.GetData(_input.ValueRange, ref valueRange);
+
+      var pixelRange = new Interval();
+      DA.GetData(_input.PixelRange, ref pixelRange);
+
 
       var maskTree = new List<GH_Mesh>();
       DA.GetDataList(_input.Mask, maskTree);
@@ -167,8 +163,6 @@ namespace ViewTo.RhinoGh.Results
       {
         return;
       }
-
-
 
       // load cloud point
       DA.GetData(_input.Obj, ref wrapper);
@@ -212,104 +206,49 @@ namespace ViewTo.RhinoGh.Results
               isIn = true;
               break;
             }
-            // remove points that not within the scope
-            if(!isIn) filteredPoints.Remove(index);
           }
+
+          // remove points that not within the scope
+          if(!isIn) filteredPoints.Remove(index);
+
         }
       }
 
-      if(!normalizeMask)
-      {
-        if(_explorer.TryGetSols(opA, opB, out var normValues))
-        {
-          explorerValues = normValues.ToArray();
-        }
-      }
-      else
-      {
-        if(_explorer.TryGetSols(opA, opB, filteredPoints.Keys.ToList(), out var maskedValues))
-        {
-          explorerValues = maskedValues.ToArray();
-        }
-      }
+      var filter = new ExplorerFilterInput(valueRange.Min, valueRange.Max, (int)pixelRange.Min, (int)pixelRange.Max, filteredPoints.Keys.ToArray());
 
+      explorerValues = _explorer.GetSols(opA, opB, filter, normalizeMask).ToArray();
 
-      if(explorerValues == null || !explorerValues.Any())
+      if(!explorerValues.Any())
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Explorer did not load result cloud properly!");
         return;
       }
 
-    #region shit to remove
-
-      // if(maskTree != null && !maskTree.IsEmpty)
-      // {
-      //   for(var i = 0; i<explorerValues.Length; i++)
-      //   {
-      //     var point = _explorer.cloud.Points[i].ToGrass();
-      //
-      //     for(var treeIndex = 0; treeIndex<maskTree.Branches.Count; treeIndex++)
-      //     {
-      //       var branch = maskTree.Branches[treeIndex];
-      //       var path = maskTree.Paths[treeIndex];
-      //
-      //       foreach(var t in branch)
-      //       {
-      //         if(!maskOnly || t.Value.IsPointInside(point.Value, double.MinValue, false))
-      //         {
-      //           indexes.Add(i);
-      //           points.Append(point, path);
-      //           values.Append(new GH_Number(explorerValues[i]), path);
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
-      // else
-      // {
-      //   for(var i = 0; i<explorerValues.Length; i++)
-      //   {
-      //     indexes.Add(i);
-      //     points.Append(_explorer.cloud.Points[i].ToGrass());
-      //     values.Append(new GH_Number(explorerValues[i]));
-      //   }
-      // }
-      //
-      // if(normalizeMask)
-      // {
-      //   _min = 1.0;
-      //   _max = 0.0;
-      //   // set the max and min values from the raw input 
-      //   foreach(var data in values.FlattenData())
-      //     SetMinMax(data.Value);
-      // }
-
-    #endregion
-
-
       var colors = new List<Color>();
       var values = new List<double>();
-      var points = filteredPoints.Values.ToList();
+      var points = new List<Point3d>();
 
-      for(var i = 0; i<points.Count; i++)
+      var flattenedPoints = filteredPoints.Values.ToList();
+      for(int i = flattenedPoints.Count-1; i>=0; i--)
       {
         var value = explorerValues[i];
-        var gradientColor = _settings.GetColor(value);
 
-        if(settings.showAll || _settings.InRange(value))
+        if(_settings.showAll || _settings.InRange(value))
         {
+          colors.Add(Color.FromArgb(MAX_ALPHA, _settings.GetColor(value)));
           values.Add(value);
-          colors.Add(Color.FromArgb(MAX_ALPHA, gradientColor));
+          points.Add(flattenedPoints[i]);
         }
+
       }
 
-      renderedCloud ??= new PointCloud();
+      renderedCloud = new PointCloud();
       renderedCloud.ClearColors();
 
       for(var i = 0; i<points.Count; i++)
         renderedCloud.Add(points[i], colors[i]);
 
-      DA.SetDataList(_output.Points, filteredPoints);
+      DA.SetDataList(_output.Points, points);
       DA.SetDataList(_output.Colors, colors);
       DA.SetDataList(_output.Values, values);
 

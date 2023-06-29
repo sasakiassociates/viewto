@@ -1,31 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 namespace ViewTo.Cmd
 {
+
   /// <summary>
   ///   <para>Normalizes two sets of a values</para>
   /// </summary>
-  internal class NormalizeValues : ICmdWithArgs<ValuesForExplorerArgs>
+  internal class NormalizeValueByListCommand : ICmdWithArgs<ValuesForExplorerArgs>
   {
 
     /// <summary>
     ///   optional value to use when normalized values would be invalid
     /// </summary>
-    private readonly double invalidValue;
+    readonly double _invalidValue;
 
     /// <summary>
     ///   Minimum value to apply during normalizing
     /// </summary>
-    private readonly double min;
+    readonly double _min;
     /// <summary>
     ///   Dividend values
     /// </summary>
-    private readonly IReadOnlyList<int> valueA;
+    readonly IReadOnlyList<int> _value;
 
     /// <summary>
     ///   Divisor values
     /// </summary>
-    private readonly IReadOnlyList<int> valueB;
+    readonly IReadOnlyList<int> _max;
 
     /// <summary>
     /// </summary>
@@ -33,31 +35,32 @@ namespace ViewTo.Cmd
     /// <param name="valueB">The divisor value to use</param>
     /// <param name="min">The minimum value to use when normalizing</param>
     /// <param name="invalidValue">optional value to use when <paramref name="valueB" /> is 0 </param>
-    public NormalizeValues(IEnumerable<int> valueA, IEnumerable<int> valueB, double min = 0.0, double invalidValue = -1)
+    public NormalizeValueByListCommand(IEnumerable<int> valueA, IEnumerable<int> valueB, double min = 0.0, double invalidValue = -1)
     {
-      this.valueA = valueA.ToArray();
-      this.valueB = valueB.ToArray();
-      this.invalidValue = invalidValue;
-      this.min = min;
+      this._value = valueA.ToArray();
+      this._max = valueB.ToArray();
+      this._min = min;
+      this._invalidValue = invalidValue;
     }
 
-    public ValuesForExplorerArgs args { get; private set; }
+    public ValuesForExplorerArgs args {get;private set;}
 
     public void Execute()
     {
-      if (valueA == null || valueB == null || valueA.Count != valueB.Count)
+      if(_value == null || _max == null || _value.Count != _max.Count)
       {
         return;
       }
 
-      var values = new double[valueA.Count];
+      var values = new double[_value.Count];
 
-      for (var i = 0; i < values.Length; i++)
+      for(var i = 0; i<values.Length; i++)
       {
-        values[i] = valueB[i] == 0 ? invalidValue : (valueA[i] - min) / (valueB[i] - min);
+        values[i] = _max[i] == 0 ? _invalidValue : (_value[i]-_min)/(_max[i]-_min);
       }
 
       args = new ValuesForExplorerArgs(values, $"Found values! {values.Length}");
     }
   }
+
 }

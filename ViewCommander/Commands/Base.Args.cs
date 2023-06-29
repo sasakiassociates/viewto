@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace ViewTo.Cmd
 {
-  internal abstract class CommandArgs : ICommandArgs
+
+  public abstract class CommandArgs : ICommandArgs
   {
     public CommandArgs(string message)
     {
       Message = message;
     }
 
-    public string Message { get; protected set; }
+    public string Message {get;protected set;}
 
     public abstract bool IsValid();
   }
@@ -36,8 +38,7 @@ namespace ViewTo.Cmd
     public readonly IEnumerable<double> values = Array.Empty<double>();
 
     public ValuesForExplorerArgs(string message) : base(message)
-    {
-    }
+    { }
 
     public ValuesForExplorerArgs(IEnumerable<double> values, string message) : base(message)
     {
@@ -56,8 +57,7 @@ namespace ViewTo.Cmd
     public readonly IEnumerable<int> values = Array.Empty<int>();
 
     public ValuesRawForExplorerArgs(string message) : base(message)
-    {
-    }
+    { }
 
     public ValuesRawForExplorerArgs(IEnumerable<int> values, string message) : base(message)
     {
@@ -70,13 +70,33 @@ namespace ViewTo.Cmd
     }
   }
 
+
+  public class ValuesRawExplorerArgs<T> : CommandArgs where T : IComparable<T>
+  {
+
+    public readonly IEnumerable<T> values = Array.Empty<T>();
+
+    public ValuesRawExplorerArgs(string message) : base(message)
+    { }
+
+    public ValuesRawExplorerArgs(IEnumerable<T> values, string message) : base(message)
+    {
+      this.values = values;
+    }
+
+    public override bool IsValid()
+    {
+      return values != null && values.Any();
+    }
+  }
+
+
   internal class PointWithValueArgs : CommandArgs
   {
     public readonly int index = -1;
 
     public PointWithValueArgs(string message) : base(message)
-    {
-    }
+    { }
 
     public PointWithValueArgs(int index, string message) : base(message)
     {
@@ -85,7 +105,7 @@ namespace ViewTo.Cmd
 
     public override bool IsValid()
     {
-      return index >= 0;
+      return index>=0;
     }
   }
 

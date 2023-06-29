@@ -3,12 +3,18 @@
 namespace ViewTo.Values
 {
 
-  public abstract class MathProvider<T>
+  public abstract class MathProvider<T> where T : IComparable<T>
   {
     public abstract T Divide(T a, T b);
     public abstract T Multiply(T a, T b);
     public abstract T Add(T a, T b);
     public abstract T Negate(T a);
+
+    public T Clamp(T val, T min, T max)
+    {
+      if(val.CompareTo(min)<0) return min;
+      return val.CompareTo(max)>0 ? max : val;
+    }
 
     public T Subtract(T a, T b)
     {
@@ -17,7 +23,6 @@ namespace ViewTo.Values
 
     // public virtual double Normalize(T value, T max, T min) => (double)Divide(Subtract(value, min), Subtract(max, min));
   }
-
 
   public class DoubleMath : MathProvider<double>
   {
@@ -90,7 +95,7 @@ namespace ViewTo.Values
 
   // https://stackoverflow.com/questions/63694/creating-a-math-library-using-generics-in-c-sharp
 
-  public class Fraction<T>
+  public class Fraction<T> where T : IComparable<T>
   {
     private static MathProvider<T> _math;
 
@@ -159,24 +164,26 @@ namespace ViewTo.Values
     public T min;
     public T max;
 
-    public abstract T Range();
+    public abstract T span {get;}
+
+    public override string ToString() => $"min:{min} max:{max} span:{span}";
   }
 
   public class FloatRange : ValueRangeProvider<float>
   {
-    public override float Range() => max-min;
+    public override float span => Math.Abs(max-min);
   }
 
   public class DoubleRange : ValueRangeProvider<double>
   {
 
-    public override double Range() => max-min;
+    public override double span => Math.Abs(max-min);
 
   }
 
   public class IntRange : ValueRangeProvider<int>
   {
-    public override int Range() => max-min;
+    public override int span => Math.Abs(max-min);
   }
 
 }
