@@ -8,7 +8,10 @@ namespace ViewObjects.Studies
   ///   An interface for organizing <typeparamref name="TObject" /> types processing view studies
   /// </summary>
   /// <typeparam name="TObject"></typeparam>
-  public interface ISasakiStudy<TObject> : INameable, IId where TObject : IViewObject
+  public interface ISasakiStudy<TObject> : 
+    INameable,
+    IId 
+    where TObject : IViewObject
   {
     /// <summary>
     ///   A list of <typeparamref name="TObject" /> objects to group in a study

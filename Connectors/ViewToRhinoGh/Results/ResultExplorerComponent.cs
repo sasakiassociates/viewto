@@ -30,8 +30,8 @@ namespace ViewTo.RhinoGh.Results
     IExplorer _explorer;
     IViewStudy _study;
 
-    (int Obj, int Options, int Proposals, int ValueType, int Settings, int Mask, int NormalizeByMask, int MaskOnly, int Size) _input;
-    private double _min = 1.0, _max;
+    (int Obj, int OptionA, int OptionB, int ValueType, int Settings, int Mask, int NormalizeByMask, int Size) _input;
+    // private double _min = 1.0, _max;
 
     private(int Points, int Colors, int Values, int ActivePoint, int ActiveValue, int ActiveColor) _output;
     private ExplorerSettings _settings;
@@ -53,30 +53,26 @@ namespace ViewTo.RhinoGh.Results
       pManager.AddGenericParameter("ViewStudy", "V", "View Study to Explore", GH_ParamAccess.item);
       _input.Obj = index++;
 
-      pManager.AddGenericParameter("Content Option", "C", "Content Option to Explore", GH_ParamAccess.list);
-      _input.Options = index++;
+      pManager.AddGenericParameter("Option A", "A", "Content Option to Explore", GH_ParamAccess.item);
+      _input.OptionA = index++;
 
-      pManager.AddGenericParameter("Proposed Option", "P", "Proposed Option to Explore", GH_ParamAccess.list);
-      _input.Proposals = index++;
+      pManager.AddGenericParameter("Option B", "B", "Content Option to Explore", GH_ParamAccess.item);
+      _input.OptionB = index++;
 
       pManager.AddGenericParameter("Explorer Settings", "S", "Explorer Input Settings", GH_ParamAccess.item);
       _input.Settings = index++;
 
-      pManager.AddMeshParameter("Mask", "M", "Masking area to filter points by form", GH_ParamAccess.tree);
+      pManager.AddMeshParameter("Mask", "M", "Masking area to filter points by form", GH_ParamAccess.list);
       _input.Mask = index++;
 
       pManager.AddBooleanParameter("Normalize Mask", "NM", "Nomarlize the values by the masked point set", GH_ParamAccess.item, true);
       _input.NormalizeByMask = index++;
 
-      pManager.AddBooleanParameter("Mask Only", "MO", "Show the values only within the mask", GH_ParamAccess.item, true);
-      _input.MaskOnly = index++;
-
       pManager.AddIntegerParameter("Point Size", "P", "Size of Point in Cloud", GH_ParamAccess.item, 3);
       _input.Size = index;
 
-      pManager[_input.Proposals].Optional = true;
+      pManager[_input.OptionB].Optional = true;
       pManager[_input.NormalizeByMask].Optional = true;
-      pManager[_input.MaskOnly].Optional = true;
       pManager[_input.Mask].Optional = true;
       pManager[_input.Size].Optional = true;
     }
@@ -104,28 +100,25 @@ namespace ViewTo.RhinoGh.Results
       _output.ActiveColor = index;
     }
 
-    private void SetMinMax(double[] value)
-    {
-      _min = 1.0;
-      _max = 0.0;
-
-      if(value.Valid())
-        foreach(var t in value)
-          if(!double.IsNaN(t))
-            SetMinMax(t);
-    }
-
-    private void SetMinMax(double value)
-    {
-      // values that have no view are set to -1
-      if(value < 0)
-        return;
-
-      if(value < _min)
-        _min = value;
-      if(value > _max)
-        _max = value;
-    }
+    // private void SetMinMax(double[] value)
+    // {
+    //   _min = 1.0;
+    //   _max = 0.0;
+    //
+    //   if(value.Valid())
+    //     foreach(var t in value)
+    //       if(!double.IsNaN(t))
+    //         SetMinMax(t);
+    // }
+    //
+    // private void SetMinMax(double value)
+    // {
+    //   // values that have no view are set to -1
+    //   if(value<0 || double.IsNaN(value)) return;
+    //
+    //   if(value<_min) _min = value;
+    //   if(value>_max) _max = value;
+    // }
 
     protected override void SolveInstance(IGH_DataAccess DA)
     {
@@ -134,10 +127,8 @@ namespace ViewTo.RhinoGh.Results
       var normalizeMask = true;
       DA.GetData(_input.NormalizeByMask, ref normalizeMask);
 
-      var maskOnly = true;
-      DA.GetData(_input.MaskOnly, ref maskOnly);
-
-      DA.GetDataTree(_input.Mask, out GH_Structure<GH_Mesh> maskTree);
+      var maskTree = new List<GH_Mesh>();
+      DA.GetDataList(_input.Mask, maskTree);
 
       GH_ObjectWrapper ghWrapper = default;
       DA.GetData(_input.Settings, ref ghWrapper);
@@ -154,37 +145,35 @@ namespace ViewTo.RhinoGh.Results
       }
 
 
+
       GH_ObjectWrapper wrapper = null;
-      DA.GetData(_input.Obj, ref wrapper);
-
-      var wrapperOpts = new List<GH_ObjectWrapper>();
-      DA.GetDataList(_input.Options, wrapperOpts);
-
-      var options = new List<IContentOption>();
-      foreach(var w in wrapperOpts)
+      ContentOption opA = default;
+      ContentOption opB = default;
+      DA.GetData(_input.OptionA, ref wrapper);
+      if(wrapper?.Value is ContentOption oa)
       {
-        if(w.Value is IContentOption op)
-        {
-          options.Add(op);
-        }
-        else
-        {
-          AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Not a valid IContent Opt");
-          continue;
-        }
+        opA = oa;
+      }
+      else
+      {
+        return;
+      }
+      DA.GetData(_input.OptionB, ref wrapper);
+      if(wrapper?.Value is ContentOption ob)
+      {
+        opB = ob;
+      }
+      else
+      {
+        return;
       }
 
-      // var opt = options.FirstOrDefault().Value;
-      // var optToUse = opt as ContentInfo;
 
-      // var proposals = new List<GH_ObjectWrapper>();
-      // DA.GetDataList(_input.Proposals, proposals);
-      // var pro = proposals.FirstOrDefault().Value;
-      // var proToUse = pro as ContentInfo;
 
+      // load cloud point
+      DA.GetData(_input.Obj, ref wrapper);
 
       double[] explorerValues = null;
-      // load cloud point
       if(wrapper?.Value is ViewStudy obj)
       {
 
@@ -203,137 +192,131 @@ namespace ViewTo.RhinoGh.Results
         _explorer.Load(rc);
       }
 
-      if(_explorer.TryGetValues(_valueType, options, out var normValues))
+      var filteredPoints = new Dictionary<int, Point3d>();
+
+      // cast all points 
+      for(var i = 0; i<_explorer.cloud.Points.Length; i++) filteredPoints.Add(i, _explorer.cloud.Points[i].ToRhino());
+
+      if(!settings.showAll && maskTree.Any())
       {
-        explorerValues = normValues.ToArray();
-        SetMinMax(explorerValues);
+
+        for(int index = filteredPoints.Keys.Count-1; index>=0; index--)
+        {
+          var isIn = false;
+
+          foreach(var mask in maskTree)
+          {
+
+            if(mask.Value.IsPointInside(filteredPoints[index], double.MinValue, false))
+            {
+              isIn = true;
+              break;
+            }
+            // remove points that not within the scope
+            if(!isIn) filteredPoints.Remove(index);
+          }
+        }
+      }
+
+      if(!normalizeMask)
+      {
+        if(_explorer.TryGetSols(opA, opB, out var normValues))
+        {
+          explorerValues = normValues.ToArray();
+        }
       }
       else
       {
-        AddRuntimeMessage(GH_RuntimeMessageLevel.Error,
-          "The object being loaded into the explorer in is no bueno!\n"
-          + "Check the Result Cloud input and reload into the component");
-        return;
+        if(_explorer.TryGetSols(opA, opB, filteredPoints.Keys.ToList(), out var maskedValues))
+        {
+          explorerValues = maskedValues.ToArray();
+        }
       }
 
 
-      if(!explorerValues.Any())
+      if(explorerValues == null || !explorerValues.Any())
       {
         AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Explorer did not load result cloud properly!");
         return;
       }
 
-      var points = new GH_Structure<GH_Point>();
-      var values = new GH_Structure<GH_Number>();
+    #region shit to remove
 
-      if(maskTree != null && !maskTree.IsEmpty)
+      // if(maskTree != null && !maskTree.IsEmpty)
+      // {
+      //   for(var i = 0; i<explorerValues.Length; i++)
+      //   {
+      //     var point = _explorer.cloud.Points[i].ToGrass();
+      //
+      //     for(var treeIndex = 0; treeIndex<maskTree.Branches.Count; treeIndex++)
+      //     {
+      //       var branch = maskTree.Branches[treeIndex];
+      //       var path = maskTree.Paths[treeIndex];
+      //
+      //       foreach(var t in branch)
+      //       {
+      //         if(!maskOnly || t.Value.IsPointInside(point.Value, double.MinValue, false))
+      //         {
+      //           indexes.Add(i);
+      //           points.Append(point, path);
+      //           values.Append(new GH_Number(explorerValues[i]), path);
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+      // else
+      // {
+      //   for(var i = 0; i<explorerValues.Length; i++)
+      //   {
+      //     indexes.Add(i);
+      //     points.Append(_explorer.cloud.Points[i].ToGrass());
+      //     values.Append(new GH_Number(explorerValues[i]));
+      //   }
+      // }
+      //
+      // if(normalizeMask)
+      // {
+      //   _min = 1.0;
+      //   _max = 0.0;
+      //   // set the max and min values from the raw input 
+      //   foreach(var data in values.FlattenData())
+      //     SetMinMax(data.Value);
+      // }
+
+    #endregion
+
+
+      var colors = new List<Color>();
+      var values = new List<double>();
+      var points = filteredPoints.Values.ToList();
+
+      for(var i = 0; i<points.Count; i++)
       {
-        for(var i = 0; i < explorerValues.Length; i++)
+        var value = explorerValues[i];
+        var gradientColor = _settings.GetColor(value);
+
+        if(settings.showAll || _settings.InRange(value))
         {
-          var point = _explorer.cloud.Points[i].ToGrass();
-
-          for(var treeIndex = 0; treeIndex < maskTree.Branches.Count; treeIndex++)
-          {
-            var branch = maskTree.Branches[treeIndex];
-            var path = maskTree.Paths[treeIndex];
-
-            foreach(var t in branch)
-              if(!maskOnly || t.Value.IsPointInside(point.Value, double.MinValue, false))
-              {
-                points.Append(point, path);
-                values.Append(new GH_Number(explorerValues[i]), path);
-              }
-          }
-        }
-      }
-      else
-      {
-        for(var i = 0; i < explorerValues.Length; i++)
-        {
-          points.Append(_explorer.cloud.Points[i].ToGrass());
-          values.Append(new GH_Number(explorerValues[i]));
-        }
-      }
-
-      if(normalizeMask)
-      {
-        _min = 1.0;
-        _max = 0.0;
-        // set the max and min values from the raw input 
-        foreach(var data in values.FlattenData())
-          SetMinMax(data.Value);
-      }
-
-      var fColors = new GH_Structure<GH_Colour>();
-      var fPoints = new GH_Structure<GH_Point>();
-      var fValues = new GH_Structure<GH_Number>();
-
-      for(var treeIndex = 0; treeIndex < values.Branches.Count; treeIndex++)
-      {
-        var path = values.Paths[treeIndex];
-        var pointB = points.Branches[treeIndex];
-        var valueB = values.Branches[treeIndex];
-
-        for(var leafIndex = 0; leafIndex < valueB.Count; leafIndex++)
-        {
-          var vIn = valueB[leafIndex].Value;
-          var pIn = pointB[leafIndex];
-
-          if(double.IsNaN(vIn))
-            vIn = -1;
-
-          // if the value is negative and we are not showing all points, we skip!
-          if(vIn <= 0)
-          {
-            if(!_settings.showAll)
-              continue;
-
-            fPoints.Append(pIn, path);
-            fColors.Append(new GH_Colour(_settings.invalidColor), path);
-            fValues.Append(new GH_Number(vIn), path);
-          }
-          else
-          {
-            // can now normalizing the value related to the masking
-            if(normalizeMask)
-            {
-              vIn = (vIn - _min) / (_max - _min);
-            }
-
-            // get the color
-            var co = _settings.GetColor(vIn);
-
-            if(_settings.InRange(vIn))
-            {
-              fPoints.Append(pIn, path);
-              fValues.Append(new GH_Number(vIn), path);
-              fColors.Append(new GH_Colour(Color.FromArgb(MAX_ALPHA, co)), path);
-            }
-            else if(_settings.showAll)
-            {
-              fPoints.Append(pIn, path);
-              fValues.Append(new GH_Number(vIn), path);
-              fColors.Append(new GH_Colour(Color.FromArgb(MIN_ALPHA, co)), path);
-            }
-          }
+          values.Add(value);
+          colors.Add(Color.FromArgb(MAX_ALPHA, gradientColor));
         }
       }
 
-      renderedCloud = new PointCloud();
+      renderedCloud ??= new PointCloud();
       renderedCloud.ClearColors();
 
-      var flattenPoints = fPoints.FlattenData();
-      var flattenColor = fColors.FlattenData();
+      for(var i = 0; i<points.Count; i++)
+        renderedCloud.Add(points[i], colors[i]);
 
-      for(var i = 0; i < flattenPoints.Count; i++)
-        renderedCloud.Add(flattenPoints[i].Value, flattenColor[i].Value);
+      DA.SetDataList(_output.Points, filteredPoints);
+      DA.SetDataList(_output.Colors, colors);
+      DA.SetDataList(_output.Values, values);
 
-      DA.SetDataTree(_output.Points, fPoints);
-      DA.SetDataTree(_output.Colors, fColors);
-      DA.SetDataTree(_output.Values, fValues);
+      var activePoint = Math.Min(_settings.point, points.Count-1);
 
-      DA.SetData(_output.ActivePoint, _explorer.cloud.Points[_settings.point].ToRhino());
-      DA.SetData(_output.ActiveValue, explorerValues[_settings.point]);
+      DA.SetData(_output.ActivePoint, _explorer.cloud.Points[activePoint].ToRhino());
+      DA.SetData(_output.ActiveValue, explorerValues[activePoint]);
       DA.SetData(_output.ActiveColor, _settings.GetColor(explorerValues[_settings.point]));
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
@@ -17,7 +18,7 @@ namespace ViewTo.Tests
   public static class ViewObjectFaker
   {
 
-    public static IViewStudy Study(string name = "test", bool hasResults = true)
+    public static IViewStudy ViewStudy(string name = "test")
     {
       List<IViewObject> objects = new();
       List<Content> content = new();
@@ -29,31 +30,25 @@ namespace ViewTo.Tests
 
       var cloud = Cloud<ViewCloud>(100);
 
-      if(hasResults)
+      objects.Add(new ViewCloudReference(cloud, new List<string>()));
+      objects.AddRange(content.Select(x => new ContentReference(x, new List<string>() { })).ToList());
+      objects.Add(new Viewer(new List<ILayout>
+        {new LayoutCube()}));
+      return new ViewStudy(objects, name);
+    }
+
+    [Obsolete("Use ViewStudy() instead")]
+    public static IViewStudy Study(string name = "test", bool hasResults = true)
+    {
+      List<IViewObject> objects = new();
+      List<Content> content = new();
+
+      foreach(ViewContentType type in Enum.GetValues(typeof(ViewContentType)))
       {
-        List<IResultCloudData> data = new();
-
-        foreach(var c in content)
-        {
-          if(c.type == ViewContentType.Potential)
-          {
-            foreach(ViewContentType type in Enum.GetValues(typeof(ViewContentType)))
-            {
-              data.Add(Result<ResultCloudData>(
-                  cloud.Points.Length,
-                  type,
-                  c.ViewId,
-                  nameof(Layout),
-                  c.ViewName
-                )
-              );
-            }
-          }
-        }
-
-        ResultCloud rc = new() {Points = cloud.Points, Data = data};
-        objects.Add(rc);
+        content.Add(Content(type, $"test-{type}"));
       }
+
+      var cloud = Cloud<ViewCloud>(100);
 
       objects.Add(new ViewCloudReference(cloud, new List<string>()));
       objects.AddRange(content.Select(x => new ContentReference(x, new List<string>() { })).ToList());
@@ -76,74 +71,47 @@ namespace ViewTo.Tests
     }
 
     public static TCloud ResultCloud<TCloud>(int pointCount, int colorCount)
-      where TCloud : IResultCloud
+      where TCloud : IResultCloud<IResultCloudData>
     {
       var obj = Activator.CreateInstance<TCloud>();
       obj.Points = CloudPoints(pointCount);
-      obj.Data = Results<ResultCloudData>(pointCount, colorCount).Cast<IResultCloudData>().ToList();
+      obj.Data = Results(pointCount, colorCount);
       return obj;
     }
 
-    public static TCloud ResultCloud<TCloud, TData>(int pointCount, int colorCount)
-      where TCloud : IResultCloud<TData> where TData : IResultCloudData
+    public static List<IResultCloudData> Results(int pointCount, int colorCount)
     {
-      var obj = Activator.CreateInstance<TCloud>();
-      obj.Points = CloudPoints(pointCount);
-      obj.Data = Results<TData>(pointCount, colorCount);
-      return obj;
-    }
-
-    public static List<TData> Results<TData>(int pointCount, int colorCount) where TData : IResultCloudData
-    {
-      var values = new List<TData>();
+      var values = new List<IResultCloudData>();
       var random = new Random();
+      var targets = new List<IContentInfo>();
 
-      for(var c = 0; c < colorCount; c++)
+      // setup the targets 
+      for(var c = 0; c<colorCount; c++) targets.Add(new ContentInfo(ObjUtils.InitGuid, c.ToString()));
+
+      // setup other data items
+      var existing = new Content(ViewContentType.Existing, ObjUtils.InitGuid);
+      var proposed = new Content(ViewContentType.Existing, ObjUtils.InitGuid);
+
+      // setup data for each target
+      foreach(var target in targets)
       {
-        var id = ObjUtils.InitGuid;
-        foreach(ViewContentType stage in Enum.GetValues(typeof(ViewContentType)))
-        {
-          values.Add(Result<TData>(pointCount, stage, id, nameof(Layout), $"Test{c}", random));
-        }
+        var potentialOption = new ContentOption(target, target, ViewContentType.Potential);
+        var existingOption = new ContentOption(target, existing, ViewContentType.Existing);
+        var proposedOption = new ContentOption(target, proposed, ViewContentType.Proposed);
+
+        values.Add(new ResultCloudData(Values(pointCount, random), potentialOption));
+        values.Add(new ResultCloudData(Values(pointCount, random), existingOption));
+        values.Add(new ResultCloudData(Values(pointCount, random), proposedOption));
       }
 
       return values;
-    }
-
-    public static TData Result<TData>(
-      int pointCount,
-      ViewContentType stage,
-      string id = null,
-      string layout = null,
-      string contentName = null,
-      Random random = null
-    ) where TData : IResultCloudData
-    {
-      random ??= new Random();
-      var obj = Activator.CreateInstance<TData>();
-      // obj.layout = string.IsNullOrEmpty(layout) ? nameof(Layout) : layout;
-      // obj.values = Values(pointCount, random);
-      // obj.Option = ContentOption(
-      //   string.IsNullOrEmpty(contentName) ? "Test" : contentName,
-      //   ObjUtils.CheckIfValidId(id),
-      //   stage);
-      return obj;
-    }
-
-    public static IContentOption ContentOption(string name = "test", string id = null, ViewContentType stage = ViewContentType.Existing)
-    {
-      return null;
-      // return new ContentOption
-      // {
-      // Id = ObjUtils.CheckIfValidId(id), Stage = stage, Name = name
-      // };
     }
 
     public static CloudPoint[] CloudPoints(int count)
     {
       var rnd = new Random();
       var points = new CloudPoint[count];
-      for(var i = 0; i < points.Length; i++)
+      for(var i = 0; i<points.Length; i++)
       {
         points[i] = new CloudPoint(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(),
           rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble(), "1234-567-890");
@@ -157,7 +125,7 @@ namespace ViewTo.Tests
       rnd ??= new Random();
 
       var values = new List<int>();
-      for(var j = 0; j < valueCount; j++)
+      for(var j = 0; j<valueCount; j++)
       {
         var bytes = new byte[4];
         rnd.NextBytes(bytes);
@@ -166,6 +134,20 @@ namespace ViewTo.Tests
 
       return values;
     }
+
+    public static void Similar(this IResultCloudData dataA, IResultCloudData dataB)
+    {
+      Assert.IsTrue(dataA != default(object) && dataB != default(object));
+      Assert.IsTrue(dataA.count.Equals(dataB.count));
+      Assert.IsTrue(dataA.values.Count == dataB.values.Count);
+      Assert.IsTrue(dataA.info.stage.Equals(dataB.info.stage)
+                    && dataA.info.target.ViewId.Equals(dataB.info.target.ViewId)
+                    && dataA.info.content.ViewId.Equals(dataB.info.content.ViewId)
+      );
+    }
+    
+
+
   }
 
 }

@@ -51,7 +51,7 @@ namespace ViewObjects.Speckle
     /// <param name="option"></param>
     /// <param name="count">Viewer count meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultCloudData(List<int> values, IContentOption option, int count )
+    public ResultCloudData(List<int> values, ContentOption option, int count )
     {
       this.values = values;
       this.count = count;
@@ -65,7 +65,7 @@ namespace ViewObjects.Speckle
     [Chunkable] public List<int> values { get; set; } = new List<int>();
 
     /// <inheritdoc />
-    [JsonIgnore] public IContentOption info
+    [JsonIgnore] public ContentOption info
     {
       get => new ContentOption
       (

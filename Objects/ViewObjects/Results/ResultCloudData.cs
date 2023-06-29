@@ -19,12 +19,11 @@ namespace ViewObjects.Results
     /// </summary>
     /// <param name="values"></param>
     /// <param name="content"></param>
-    /// <param name="count"></param>
-    public ResultCloudData(List<int> values, IContentOption content, int count)
+    public ResultCloudData(List<int> values, ContentOption content)
     {
       this.info = content;
       this.values = values;
-      this.count = count;
+      this.count = values.Count;
     }
 
     public ResultCloudData(List<int> values, IContentInfo target, IContentInfo content, ViewContentType type, int count)
@@ -35,11 +34,11 @@ namespace ViewObjects.Results
     }
 
     /// <inheritdoc />
-    public IContentOption info { get; }
+    public ContentOption info {get;}
     /// <inheritdoc />
-    public int count { get; }
+    public int count {get;}
     /// <inheritdoc />
-    public List<int> values { get; }
+    public List<int> values {get;}
   }
 
 

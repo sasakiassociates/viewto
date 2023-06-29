@@ -13,7 +13,7 @@ namespace ViewObjects.Clouds
     /// <summary>
     ///   the raw values gathered
     /// </summary>
-    List<int> values { get; }
+    List<int> values { get;}
   }
 
   /// <summary>
@@ -25,7 +25,7 @@ namespace ViewObjects.Clouds
     /// <para>The <see cref="IContentOption" /> associated with these results.</para>
     /// <para>This gives reference to the target content used along with the associated stage it ran</para> 
     /// </summary>
-    public IContentOption info { get; }
+    public ContentOption info { get;}
 
     /// <summary>
     ///   The total count of <see cref="ILayout.Viewers"/> used during the analysis

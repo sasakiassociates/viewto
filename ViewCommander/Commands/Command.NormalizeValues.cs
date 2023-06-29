@@ -37,8 +37,8 @@ namespace ViewTo.Cmd
     {
       this.valueA = valueA.ToArray();
       this.valueB = valueB.ToArray();
-      this.min = min;
       this.invalidValue = invalidValue;
+      this.min = min;
     }
 
     public ValuesForExplorerArgs args { get; private set; }

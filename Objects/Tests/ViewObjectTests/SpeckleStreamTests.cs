@@ -83,41 +83,37 @@ namespace ViewTo.Tests.Objects
       Assert.IsNotNull(res);
     }
 
-    [Test]
-    public async Task SendTestResultCloud()
-    {
-      _client = new Client(AccountManager.GetDefaultAccount());
+    // [Test]
+    // public async Task SendTestResultCloud()
+    // {
+    //   _client = new Client(AccountManager.GetDefaultAccount());
+    //
+    //   // test stream for view to 
+    //   _stream.id = "1da7b18b31";
+    //   _stream.branch = "conversions";
+    //
+    //   var cloud = ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
+    //
+    //   _transport = new ServerTransport(_client.Account, _stream.id);
+    //
+    //   var id = await Operations.Send(cloud, new List<ITransport>
+    //     {_transport});
+    //
+    //   Assert.IsNotNull(id);
+    //
+    //   var commit = await _client.CommitCreate(new CommitCreateInput
+    //   {
+    //     streamId = _stream.id,
+    //     branchName = _stream.branch,
+    //     objectId = id,
+    //     message = "Test commit from Script"
+    //   });
+    //
+    //   Assert.IsNotNull(commit);
+    //
+    //
+    // }
 
-      // test stream for view to 
-      _stream.id = "1da7b18b31";
-      _stream.branch = "conversions";
-
-      var cloud = ViewObjectFaker.ResultCloud<VS.ResultCloud, VS.ResultCloudData>(1000, 2);
-
-      _transport = new ServerTransport(_client.Account, _stream.id);
-
-      var id = await Operations.Send(cloud, new List<ITransport>
-        {_transport});
-
-      Assert.IsNotNull(id);
-
-      var commit = await _client.CommitCreate(new CommitCreateInput
-      {
-        streamId = _stream.id,
-        branchName = _stream.branch,
-        objectId = id,
-        message = "Test commit from Script"
-      });
-
-      Assert.IsNotNull(commit);
-
-
-    }
-
-    public static string TerminalURL(string caption, string url)
-    {
-      return$"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
-    }
 
     [Test]
     public async Task Send_ViewStudy()
@@ -157,7 +153,7 @@ namespace ViewTo.Tests.Objects
       // test stream for view to 
       _stream.id = "a823053e07";
       _stream.branch = "main";
-      _stream.commit = "325b010fda";
+      _stream.commit = "c8d6aaaab5";
 
       var commit = await _client.CommitGet(_stream.id, _stream.commit);
       _transport = new ServerTransport(_client.Account, _stream.id);
@@ -180,6 +176,26 @@ namespace ViewTo.Tests.Objects
           else if(v > max) max = v;
         }
         Console.WriteLine($"min={min} : max={max}");
+      }
+
+      var exp = new Explorer();
+      exp.Load(cloud);
+
+      var opts = cloud.GetAllOpts();
+      for(int i = 1; i < opts.Count; i++)
+      {
+        Assert.IsTrue(exp.TryGetSols(opts[i], opts[0], out var results));
+        Assert.IsNotNull(results);
+        var minD = 1.0;
+        var maxD = 0.0;
+
+        foreach(var d in results)
+        {
+          if(d < minD) minD = d;
+          else if(d > maxD) maxD = d;
+        }
+        Console.WriteLine($"Values for {opts[i].content.ViewName}-{opts[i].stage} min={minD} : max={maxD}");
+
       }
 
     }

@@ -5,6 +5,12 @@ namespace ViewTo.Tests
 {
   public static class ViewTests
   {
+    
+    public static string TerminalURL(string caption, string url)
+    {
+      return$"\u001B]8;;{url}\a{caption}\u001B]8;;\a";
+    }
+    
     public static void WriteSpeckleURL(StreamWrapperType type, string value, string streamId, string server)
     {
       var path = "";

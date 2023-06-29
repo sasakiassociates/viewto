@@ -241,11 +241,8 @@ namespace ViewTo.Connector.Unity
       // TODO: get current content info related to this 
 
 
-      for(var layoutIndex = 0; layoutIndex < container.Data.Length; layoutIndex++)
+      foreach(var layout in container.Data)
       {
-        var layout = container.Data[layoutIndex];
-        var layoutName = container.ItemName[layoutIndex];
-
         // each view color is associated with the second array (double[pointIndex][colorIndex])
         for(var colorIndex = 0; colorIndex < _data.Colors.Count; colorIndex++)
         {
@@ -259,17 +256,6 @@ namespace ViewTo.Connector.Unity
           {
             valuesFromTarget[pIndex] += raw1d[pIndex];
           }
-
-
-          for(var index = 0; index < valuesFromTarget.Length; index++)
-          {
-            var v = valuesFromTarget[index];
-            if(v >= int.MaxValue)
-            {
-              Debug.LogWarning($"({index}) is too big for int: {v}");
-            }
-          }
-
 
           /*
            * If in Potential we set the content info to be the same as target
@@ -287,7 +273,7 @@ namespace ViewTo.Connector.Unity
             _ => throw new ArgumentOutOfRangeException()
           };
 
-          _bundleDataForCloud.Add(new ResultCloudData(valuesFromTarget.ToList(), new ContentOption(targetInfo, contentInfo, _stage), layout.FinderNames.Length));
+          _bundleDataForCloud.Add(new ResultCloudData(valuesFromTarget.ToList(), new ContentOption(targetInfo, contentInfo, _stage)));
         }
       }
 

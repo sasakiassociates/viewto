@@ -10,6 +10,9 @@ using ViewTo.Cmd;
 namespace ViewTo
 {
 
+  public interface IExplorerCommand
+  { }
+
   public static partial class ViewCoreExtensions
   {
 
@@ -41,35 +44,74 @@ namespace ViewTo
     }
 
     /// <summary>
-    ///   Get the values
+    ///  Get the values
     /// </summary>
     /// <param name="exp"></param>
-    /// <param name="valueType"></param>
     /// <param name="results"></param>
+    /// <param name="optionA"></param>
+    /// <param name="optionB"></param>
     /// <returns></returns>
-    public static bool GetSols(this IExplorer exp, ExplorerValueType valueType, out IEnumerable<double> results)
+    public static bool TryGetSols(this IExplorer exp, ContentOption optionA, ContentOption optionB, out IEnumerable<double> results)
     {
       results = Array.Empty<double>();
-      valueType.GetStages(out var stageA, out var stageB);
 
-      var getValueCmdA = new TryGetValues(exp.data, exp.meta.activeTarget.ViewId, stageA);
-      var getValueCmdB = new TryGetValues(exp.data, exp.meta.activeTarget.ViewId, stageB);
-
-      getValueCmdA.Execute();
-      getValueCmdB.Execute();
-
-      if(!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
+      if(!exp.TryGetRawSols(optionA, out var resultsA) || !exp.TryGetRawSols(optionB, out var resultsB))
       {
-        // TODO: return issue
+        Console.WriteLine("Stopping Command");
         return false;
       }
 
-      var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
+      var normalizeCmd = new NormalizeValues(resultsA, resultsB);
       normalizeCmd.Execute();
 
       if(!normalizeCmd.args.IsValid())
       {
         // TODO: report
+        Console.WriteLine("Normalized values is invalid");
+        return false;
+      }
+
+      results = normalizeCmd.args.values;
+
+      return results.Any();
+    }
+
+
+    public static bool TryGetSols(this IExplorer exp, ContentOption optionA, ContentOption optionB, List<int> indexes, out IEnumerable<double> results)
+    {
+      results = Array.Empty<double>();
+
+      if(!exp.TryGetRawSols(optionA, out var resultsA) || !exp.TryGetRawSols(optionB, out var resultsB))
+      {
+        Console.WriteLine("Stopping Command");
+        return false;
+      }
+
+      var filteredResultsA = new GetValuesFromPointListCommand(resultsA.ToList(), indexes);
+      filteredResultsA.Execute();
+      if(!filteredResultsA.args.IsValid())
+      {
+        Console.WriteLine(filteredResultsA.args.Message);
+        return false;
+      }
+
+      var filteredResultsB = new GetValuesFromPointListCommand(resultsB.ToList(), indexes);
+      filteredResultsB.Execute();
+      
+      if(!filteredResultsB.args.IsValid())
+      {
+        Console.WriteLine(filteredResultsB.args.Message);
+        return false;
+      }
+      
+
+      var normalizeCmd = new NormalizeValues(filteredResultsA.args.values, filteredResultsB.args.values);
+      normalizeCmd.Execute();
+
+      if(!normalizeCmd.args.IsValid())
+      {
+        // TODO: report
+        Console.WriteLine("Normalized values is invalid");
         return false;
       }
 
@@ -79,117 +121,99 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Returns a comparable sol object
-    /// </summary>
-    /// <param name="obj">the explorer to use</param>
-    /// <param name="valueType">is used to select the values to normalize by</param>
-    /// <param name="optA"></param>
-    /// <param name="optB"></param>
-    /// <returns></returns>
-    public static ComparedSols GetSols<TOpt>(this IExplorer obj, ExplorerValueType valueType, TOpt optA, TOpt optB)
-      where TOpt : IContentOption
-    {
-
-      var solA = obj.GetSol(valueType, optA);
-      var solB = obj.GetSol(valueType, optB);
-
-      var delta = new double[solA.delta.Length];
-
-      for(int i = 0; i < solA.delta.Length; i++)
-      {
-        delta[i] = solA.delta[i] - solB.delta[i];
-      }
-
-      return new ComparedSols(solA, solB, delta);
-    }
-
-
-    public static Sol GetSol<TOpt>(this IExplorer obj, ExplorerValueType valueType, TOpt optA)
-      where TOpt : IContentOption
-    {
-      Sol res = new();
-
-      valueType.GetStages(out var stageA, out var stageB);
-
-      // TODO: Figure out why I'm using the input value type for this
-      var cmdA = new ValueFromOption(obj.data, new ContentOption(optA.target, optA.content, stageA));
-      var cmdB = new ValueFromOption(obj.data, new ContentOption(optA.target, optA.content, stageB));
-
-      cmdA.Execute();
-      cmdB.Execute();
-
-      if(!cmdA.args.IsValid() || !cmdB.args.IsValid() || cmdA.args.values.Count() != cmdB.args.values.Count())
-      {
-        // TODO: return issue
-        return res;
-      }
-
-
-      var rawA = cmdA.args.values.ToArray();
-      var rawB = cmdB.args.values.ToArray();
-
-      var delta = new NormalizeValues(rawA, rawB);
-      delta.Execute();
-
-      if(!delta.args.IsValid())
-      {
-        // TODO: Throw
-        return res;
-      }
-      res = new Sol(rawA, rawB, delta.args.values.ToArray());
-
-      return res;
-    }
-
-
-    // potential Value = raw int
-    // visible Value = raw int
-    // delta px = visibleB-visibleA
-    // % unobstructed = visible/potential
-    // delta % = unobstructedB / unobstructedA 
-
-    /// <summary>
-    ///   Get the values
+    ///  Get the values
     /// </summary>
     /// <param name="exp"></param>
-    /// <param name="valueType"></param>
-    /// <param name="target"></param>
     /// <param name="results"></param>
+    /// <param name="optionA"></param>
     /// <returns></returns>
-    public static bool GetSols(this IExplorer exp, ExplorerValueType valueType, string target, ref double[] results)
+    public static bool TryGetRawSols(this IExplorer exp, ContentOption optionA, out IEnumerable<int> results)
     {
-      if(!exp.cloud.HasTarget(target))
-      {
-        return false;
-      }
+      results = Array.Empty<int>();
 
-      valueType.GetStages(out var stageA, out var stageB);
-
-      var getValueCmdA = new TryGetValues(exp.data, exp.meta.activeTarget.ViewId, stageA);
-      var getValueCmdB = new TryGetValues(exp.data, exp.meta.activeTarget.ViewId, stageB);
+      // TODO: this needs to be cleaned up :(
+      var getValueCmdA = new GetValuesFromDataCommand(exp.data, optionA);
 
       getValueCmdA.Execute();
-      getValueCmdB.Execute();
 
-      if(!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
+      if(!getValueCmdA.args.IsValid())
       {
         // TODO: return issue
+        Console.WriteLine("Input was invalid\n"+$"Input A={getValueCmdA.args.Message}");
         return false;
       }
 
-      var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
-      normalizeCmd.Execute();
-
-      if(!normalizeCmd.args.IsValid())
-      {
-        // TODO: report
-        return false;
-      }
-
-      results = normalizeCmd.args.values.ToArray();
-
+      results = getValueCmdA.args.values;
       return results.Any();
     }
+
+    //
+    // public static bool TryCompareSols(this IExplorer exp, ContentOption optionA, ContentOption optionB, out IEnumerable<double> results)
+    // {
+    //   results = Array.Empty<double>();
+    //
+    //   // TODO: this needs to be cleaned up :(
+    //   var getValueCmdA = new GetValuesFromDataCommand(exp.data, optionA);
+    //   var getValueCmdB = new GetValuesFromDataCommand(exp.data, optionB);
+    //
+    //   getValueCmdA.Execute();
+    //   getValueCmdB.Execute();
+    //
+    //   if(!getValueCmdA.args.IsValid() || !getValueCmdB.args.IsValid())
+    //   {
+    //     // TODO: return issue
+    //     Console.WriteLine("Input was invalid\n" +
+    //                       $"Input A={getValueCmdA.args.Message}\n" +
+    //                       $"Input B={getValueCmdB.args.Message}\n");
+    //     return false;
+    //   }
+    //
+    //   var normalizeCmd = new NormalizeValues(getValueCmdA.args.values, getValueCmdB.args.values);
+    //   normalizeCmd.Execute();
+    //
+    //   if(!normalizeCmd.args.IsValid())
+    //   {
+    //     // TODO: report
+    //     Console.WriteLine("Normalized values is invalid");
+    //     return false;
+    //   }
+    //
+    //   results = normalizeCmd.args.values;
+    //
+    //   return results.Any();
+    // }
+    //
+
+
+    /// <summary>
+    /// Check if this option is already being used and sets the <see cref="ExplorerMetaData.activeTarget"/>
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="option">the option to use</param>
+    /// <param name="addToList">if true it adds the option to the <see cref="ExplorerMetaData.activeOptions"/></param>
+    static void TrySetOption(this IExplorer obj, ContentOption option, bool addToList = false)
+    {
+      if(option?.target == null || !option.target.ViewId.Valid() || option.content == null || !option.content.ViewId.Valid())
+      {
+        return;
+      }
+
+      if(!addToList)
+      {
+        obj.meta.activeOptions = new List<ContentOption>();
+      }
+
+      if(!obj.meta.activeOptions.Any(x => x.stage == option.stage
+                                          && x.target.ViewId.Equals(option.target.ViewId)
+                                          && x.content.ViewId.Equals(option.content.ViewId)))
+      {
+        obj.meta.activeOptions.Add(option);
+      }
+
+      obj.meta.activeTarget = option.target;
+
+    }
+
 
     public static void GetStages(this ExplorerValueType type, out ViewContentType stageA, out ViewContentType stageB)
     {
@@ -244,84 +268,12 @@ namespace ViewTo
     }
 
 
-    /// <summary>
-    /// Check if this option is already being used and sets the <see cref="ExplorerMetaData.activeTarget"/>
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <param name="option">the option to use</param>
-    /// <param name="addToList">if true it adds the option to the <see cref="ExplorerMetaData.activeOptions"/></param>
-    static void TrySetOption(this IExplorer obj, IContentOption option, bool addToList = false)
-    {
-      if(option?.target == null || !option.target.ViewId.Valid() || option.content == null || !option.content.ViewId.Valid())
-      {
-        return;
-      }
-
-      if(!addToList)
-      {
-        obj.meta.activeOptions = new List<IContentOption>();
-      }
-
-      if(!obj.meta.activeOptions.Any(x => x.stage == option.stage
-                                          && x.target.ViewId.Equals(option.target.ViewId)
-                                          && x.content.ViewId.Equals(option.content.ViewId)))
-      {
-        obj.meta.activeOptions.Add(option);
-      }
-
-      obj.meta.activeTarget = option.target;
-
-    }
-
 
     public static bool InRange(this IExploreRange obj, double value)
     {
-      return value >= obj.min && value <= obj.max;
+      return value>=obj.min && value<=obj.max;
     }
 
   }
 
-}
-
-public class Sols
-{
-  public List<Sol> items;
-}
-
-
-public class ComparedSols
-{
-
-  public ComparedSols(Sol a, Sol b, double[] delta)
-  {
-    this.a = a;
-    this.b = b;
-    this.delta = delta;
-  }
-
-  public Sol a { get; }
-  public Sol b { get; }
-
-  /// <summary>
-  /// value of comparing = solA.delta - solB.delta 
-  /// </summary>
-  public double[] delta { get; }
-}
-
-public class Sol
-{
-  public Sol()
-  { }
-
-  public Sol(int[] a, int[] b, double[] delta)
-  {
-    this.a = a;
-    this.b = b;
-    this.delta = delta;
-  }
-
-  public int[] a { get; }
-  public int[] b { get; }
-
-  public double[] delta { get; }
 }

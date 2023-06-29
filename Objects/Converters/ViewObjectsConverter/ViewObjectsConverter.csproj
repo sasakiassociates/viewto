@@ -8,8 +8,8 @@
 
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj"/>
-        <ProjectReference Include="..\..\ViewObjects\ViewObjects.csproj"/>
+        <ProjectReference Include="..\..\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj" />
+        <ProjectReference Include="..\..\ViewObjects\ViewObjects.csproj" />
     </ItemGroup>
 
 
@@ -28,8 +28,8 @@
     </PropertyGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(IsDesktopBuild)' == true">
-        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;"/>
-        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;..\ViewObjectsConverterUnity\Libs\&quot;"/>
+        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;" />
+        <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;..\ViewObjectsConverterUnity\Libs\&quot;" />
     </Target>
 
 </Project>

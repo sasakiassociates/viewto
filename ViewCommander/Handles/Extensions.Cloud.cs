@@ -19,9 +19,9 @@ namespace ViewTo
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    public static List<IContentOption> GetAllOpts(this IResultCloud obj)
+    public static List<ContentOption> GetAllOpts(this IResultCloud obj)
     {
-      List<IContentOption> result = new();
+      List<ContentOption> result = new();
 
       if(obj == default(object) || !obj.Data.Valid())
       {
@@ -38,22 +38,22 @@ namespace ViewTo
     /// <param name="obj"></param>
     /// <param name="type">the type to filter by</param>
     /// <returns></returns>
-    public static List<IContentOption> GetAllOpts(this IResultCloud obj, ViewContentType type)
+    public static List<ContentOption> GetAllOpts(this IResultCloud obj, ViewContentType type)
     {
       return obj.GetAllOpts().Where(x => x.stage == type).ToList();
     }
 
     /// <summary>
-    /// Gets a single <see cref="IContentOption"/> that matches the ids of the <seealso cref="IContentOption.target"/> and <see cref="IContentOption.content"/> content 
+    /// Gets a single <see cref="ContentOption"/> that matches the ids of the <seealso cref="ContentOption.target"/> and <see cref="ContentOption.content"/> content 
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetId"></param>
     /// <param name="contentId"></param>
     /// <param name="stage"></param>
     /// <returns></returns>
-    public static IContentOption GetOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
+    public static ContentOption GetOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
     {
-      IContentOption result = Fabricate<ContentOption>();
+      ContentOption result = Fabricate<ContentOption>();
 
       if(obj == default(object) || !obj.Data.Valid() || !targetId.Valid() || !contentId.Valid())
       {
@@ -145,7 +145,7 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Searches for a <see cref="IContentOption"/> that has a similar target, content, and stage type
+    /// Searches for a <see cref="ContentOption"/> that has a similar target, content, and stage type
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetId"></param>
@@ -163,7 +163,7 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// <para>Searches for a <see cref="IContentOption"/> that has a similar target and stage type. This will select the target by id
+    /// <para>Searches for a <see cref="ContentOption"/> that has a similar target and stage type. This will select the target by id
     /// and the stage it was captured. Any content options that are not set as a <see cref="ViewContentType.Proposed"/> will have the
     /// same target and content id value, with the stage being the only thing needed to separate them</para>
     /// 

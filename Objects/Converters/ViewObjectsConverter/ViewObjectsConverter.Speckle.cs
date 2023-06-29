@@ -17,63 +17,6 @@ namespace ViewObjects.Converter
   /// <inheritdoc />
   public partial class ViewObjectsConverter
   {
-    private IViewObject StudyToNative(VS.ViewStudy obj)
-    {
-      var result = new ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, objects = new List<IViewObject>()};
-
-      foreach(var o in obj.objects)
-      {
-        var res = ConvertToNativeViewObject(o);
-        if(res == null)
-        {
-          // throw 
-          continue;
-        }
-        result.objects.Add(res);
-      }
-
-      return result;
-    }
-
-    private IViewObject LayoutToNative(ILayout obj)
-    {
-      return new Layout(obj.Viewers);
-    }
-
-    private IViewObject ViewerToNative(IViewer<VS.Layout> o)
-    {
-      return new Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<ILayout>().ToList());
-    }
-
-    private IViewObject ViewerToNative(IViewerLinked<VS.Layout> o)
-    {
-      return new ViewerLinked(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<ILayout>().ToList(), o.Clouds);
-    }
-
-    private IViewObject ResultCloudToNative(VS.ResultCloud obj)
-    {
-      return new ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);
-    }
-
-    private IResultCloudData ResultCloudDataToNative(IResultCloudData obj)
-    {
-      return new ResultCloudData(obj.values, obj.info, obj.count);
-    }
-
-    private IViewObject ContentReferenceToNative(VS.ContentReference obj)
-    {
-      return new ContentReference(obj.References, obj.type, obj.ViewId, obj.ViewName);
-    }
-
-    private IViewObject ViewCloudReferenceToNative(IReferenceObject obj)
-    {
-      return new ViewCloudReference(obj.References, obj.ViewId);
-    }
-
-    private ViewObjectReference ReferenceToNative(IReferenceObject obj)
-    {
-      return new ViewObjectReference(obj.References, obj.Type, obj.ViewId, obj.ViewName);
-    }
 
     private VS.ViewStudy StudyToSpeckle(ISasakiStudy<IViewObject> obj)
     {
@@ -139,8 +82,6 @@ namespace ViewObjects.Converter
     {
       return new VS.ResultCloudData(obj.values, obj.info, obj.count);
     }
-
-    //TODO: Support getting list of objects from search
 
     private IViewObject HandleDefault(Base @base)
     {

@@ -10,19 +10,7 @@ using ViewTo.Tests;
 [Category(Categories.INT)]
 public partial class CommandTests
 {
-
-  [Test]
-  public void Explorer_GetNormalizedValues()
-  {
-    var study = ViewObjectFaker.Study();
-    Assert.IsTrue(study.CanExplore());
-
-    var obj = new Explorer();
-    obj.Load(study.Get<IResultCloud>());
-
-    Assert.IsTrue(obj.GetSols(ExplorerValueType.ExistingOverPotential, out var values));
-  }
-
+  
   [Test]
   public void Study_CreateRig()
   {

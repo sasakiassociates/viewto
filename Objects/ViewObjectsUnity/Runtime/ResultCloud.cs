@@ -115,7 +115,7 @@ namespace ViewObjects.Unity
     {
       Debug.Log("Adding data");
       cloudData ??= new List<ResultCloudData>();
-      cloudData.Add(new ResultCloudData(data.values, data.info, data.count));
+      cloudData.Add(new ResultCloudData(data.values, data.info));
     }
 
 

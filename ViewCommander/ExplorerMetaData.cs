@@ -23,7 +23,7 @@ namespace ViewTo
       {
         activeTarget = options.FirstOrDefault().target;
         activeStage = options.FirstOrDefault().stage;
-        activeOptions = new List<IContentOption>() {options.FirstOrDefault()};
+        activeOptions = new List<ContentOption>() {options.FirstOrDefault()};
       }
     }
 
@@ -40,12 +40,12 @@ namespace ViewTo
     /// <summary>
     /// A cached list of the active options used in visualization of the explorer
     /// </summary>
-    public List<IContentOption> activeOptions { get; internal set; } = new List<IContentOption>();
+    public List<ContentOption> activeOptions { get; internal set; } = new List<ContentOption>();
 
     /// <summary>
     /// The cached list of all options from the result data 
     /// </summary>
-    public List<IContentOption> options { get; internal set; } = new List<IContentOption>();
+    public List<ContentOption> options { get; internal set; } = new List<ContentOption>();
 
   }
 

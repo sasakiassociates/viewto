@@ -121,13 +121,13 @@ namespace ViewTo.Connector.Unity
     void ApplyNewValues()
     {
 
-      if(!this.TryGetValues(valueType, out var values))
-      {
-        Debug.Log("Values did not return properly");
-        return;
-      }
-
-      _values = values as double[] ?? values.ToArray();
+      // if(!this.TryGetSols(, out var values))
+      // {
+      //   Debug.Log("Values did not return properly");
+      //   return;
+      // }
+      //
+      // _values = values as double[] ?? values.ToArray();
 
 
       // TODO: this should be swapped out at some point 

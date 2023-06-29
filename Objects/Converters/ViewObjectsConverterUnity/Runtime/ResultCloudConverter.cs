@@ -25,7 +25,7 @@ namespace ViewObjects.Converter.Unity
       instance.name = "ResultCloud";
       instance.ViewId = obj.ViewId;
       instance.Points = obj.Points;
-      instance.Data = obj.Data.Select(x => new ResultCloudData(x.values, x.info, x.count)).Cast<IResultCloudData>().ToList();
+      instance.Data = obj.Data.Select(x => new ResultCloudData(x.values, x.info)).Cast<IResultCloudData>().ToList();
     }
   }
 
