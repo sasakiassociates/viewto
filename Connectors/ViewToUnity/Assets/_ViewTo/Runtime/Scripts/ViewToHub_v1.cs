@@ -50,7 +50,7 @@ namespace ViewTo.Connector.Unity
     RepeatResultTester _tester;
 
 
-    public SpeckleStream Stream { get; set; }
+    public SpeckleStream Stream {get;set;}
 
     public bool CanRun
     {
@@ -158,7 +158,7 @@ namespace ViewTo.Connector.Unity
     {
       // TODO: Fix the scriptable object so it stores that date properly in the editor
       streamObject = ScriptableObject.CreateInstance<SpeckleStreamObject>();
-      await streamObject.Initialize("https://speckle.xyz/streams/" + tempStreamId + "/commits/" + tempCommitId);
+      await streamObject.Initialize("https://speckle.xyz/streams/"+tempStreamId+"/commits/"+tempCommitId);
 
       // TODO: This should be completely handled by the receiver object and not controlled here
       var client = new SpeckleClient(streamObject.BaseAccount);
@@ -213,7 +213,12 @@ namespace ViewTo.Connector.Unity
         .Select(x => new VS.ResultCloudData(x.values, x.info, x.count))
         .ToList();
 
-      var resultCloud = new VS.ResultCloud() {Data = data, Points = mono.Points};
+      var resultCloud = new VS.ResultCloud()
+      {
+        ViewId = Guid.NewGuid().ToString(),
+        Data = data, 
+        Points = mono.Points
+      };
       _speckleStudy.objects.Add(resultCloud);
 
       if(createCommit)
@@ -300,7 +305,7 @@ namespace ViewTo.Connector.Unity
       get => Instance.renderedMat;
     }
 
-    public static ViewToHub_v1 Instance { get; set; }
+    public static ViewToHub_v1 Instance {get;set;}
 
     public static bool IsInit
     {

@@ -3,9 +3,11 @@ using Speckle.Core.Api;
 using Speckle.Core.Credentials;
 using Speckle.Core.Kits;
 using Speckle.Core.Models;
+using Speckle.Core.Models.Extensions;
 using Speckle.Core.Transports;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
@@ -64,7 +66,7 @@ public class ExplorerCommands
     var options = rc.GetAllOpts();
     Assert.IsNotEmpty(options);
 
-    Assert.IsTrue(_explorer.TryGetSols(optionA: options[0], optionB: options[2], results: out var values));
+    Assert.IsTrue(_explorer.TryGetSols(options[0], options[2], out var values));
     Assert.IsNotEmpty(values);
 
   }
@@ -77,11 +79,11 @@ public class ExplorerCommands
     _stream.branch = "main";
     _stream.commit = "d5845812a3";
 
-    var commit = await _client.CommitGet(streamId: _stream.id, commitId: _stream.commit);
+    var commit = await _client.CommitGet(_stream.id, _stream.commit);
     Assert.IsNotNull(commit);
 
-    _transport = new ServerTransport(account: _client.Account, streamId: _stream.id);
-    var data = await Operations.Receive(objectId: commit.referencedObject, remoteTransport: _transport);
+    _transport = new ServerTransport(_client.Account, _stream.id);
+    var data = await Operations.Receive(commit.referencedObject, _transport);
     Assert.IsNotNull(data);
 
     var speckleStudy = data.SearchForType<ViewObjects.Speckle.ViewStudy>(true);
@@ -100,22 +102,22 @@ public class ExplorerCommands
 
     // Set commands 
     // NOTE: direct reference from the commit in stream 
-    var targetToSelect = new ContentInfo(viewId: "904caeed-54e7-4a76-a811-0187d33d1c43", viewName: "water");
-    var contentToSelect = new ContentInfo(viewId: "27288995-a549-4979-a0ab-8d973e0c9260", viewName: "ae-1");
-    var option = new ContentOption(target: targetToSelect, value: contentToSelect, stage: ViewContentType.Proposed);
+    var targetToSelect = new ContentInfo("904caeed-54e7-4a76-a811-0187d33d1c43", "water");
+    var contentToSelect = new ContentInfo("27288995-a549-4979-a0ab-8d973e0c9260", "ae-1");
+    var option = new ContentOption(targetToSelect, contentToSelect, ViewContentType.Proposed);
 
     // you only need to pass in a specific content if using the proposed type 
     Assert.IsTrue(_explorer.cloud.HasTarget(targetToSelect.ViewId));
-    Assert.IsTrue(_explorer.cloud.HasOpt(targetId: targetToSelect.ViewId, contentId: contentToSelect.ViewId, stage: option.stage));
+    Assert.IsTrue(_explorer.cloud.HasOpt(targetToSelect.ViewId, contentToSelect.ViewId, option.stage));
 
-    _explorer.SetOption(targetId: targetToSelect.ViewId, stage: ViewContentType.Existing);
-    Assert.IsTrue(condition: _explorer.meta.activeOptions.Count == 1, message: "This command should create a new list and add the option to it");
+    _explorer.SetOption(targetToSelect.ViewId, ViewContentType.Existing);
+    Assert.IsTrue(_explorer.meta.activeOptions.Count == 1, "This command should create a new list and add the option to it");
     Assert.IsTrue(_explorer.meta.activeOptions.First().stage == ViewContentType.Existing);
     Assert.IsTrue(_explorer.meta.activeOptions.First().target.ViewId.Equals(targetToSelect.ViewId));
     Assert.IsTrue(_explorer.meta.activeOptions.First().content.ViewId.Equals(targetToSelect.ViewId));
 
-    _explorer.SetOption(targetId: targetToSelect.ViewId, contentId: contentToSelect.ViewId, stage: option.stage);
-    Assert.IsTrue(condition: _explorer.meta.activeOptions.Count == 1, message: "This command should create a new list and add the option to it");
+    _explorer.SetOption(targetToSelect.ViewId, contentToSelect.ViewId, option.stage);
+    Assert.IsTrue(_explorer.meta.activeOptions.Count == 1, "This command should create a new list and add the option to it");
     Assert.IsTrue(_explorer.meta.activeOptions.First().stage == option.stage);
     Assert.IsTrue(_explorer.meta.activeOptions.First().target.ViewId.Equals(targetToSelect.ViewId));
     Assert.IsTrue(_explorer.meta.activeOptions.First().content.ViewId.Equals(contentToSelect.ViewId));
@@ -126,10 +128,10 @@ public class ExplorerCommands
   [Ignore("Only used for fixing a id problem from unity")]
   public async Task SetNewId()
   {
-    _transport = new ServerTransport(account: _client.Account, streamId: "a823053e07");
+    _transport = new ServerTransport(_client.Account, "a823053e07");
 
-    var commit = await _client.CommitGet(streamId: _transport.StreamId, commitId: "e10c55d81e");
-    var obj = await Operations.Receive(objectId: commit.referencedObject, remoteTransport: _transport);
+    var commit = await _client.CommitGet(_transport.StreamId, "e10c55d81e");
+    var obj = await Operations.Receive(commit.referencedObject, _transport);
 
     var study = obj.SearchForType<ViewObjects.Speckle.ViewStudy>(true);
     var isValid = false;
@@ -148,7 +150,7 @@ public class ExplorerCommands
     if(!isValid) return;
 
     var wrapper = new Base() {["@Data"] = study};
-    var sent = await Operations.Send(@object: wrapper, transports: new List<ITransport>() {_transport});
+    var sent = await Operations.Send(wrapper, new List<ITransport>() {_transport});
     var newCommit = await _client.CommitCreate(new CommitCreateInput()
     {
       branchName = "viewstudies/magpie-models",
@@ -160,19 +162,61 @@ public class ExplorerCommands
     Console.WriteLine(newCommit);
   }
 
+  static string commitId;
+
+  [Test]
+  public async Task TrySetChildren()
+  {
+    _stream.id = "9772de7d39";
+    var act = AccountManager.GetAccounts("https://sasaki.speckle.xyz").FirstOrDefault();
+    Assert.IsNotNull(act);
+    _client = new Client(act);
+
+    var topLevelObject = new Base();
+    _transport = new ServerTransport(act, _stream.id);
+    var obj = new Base() {["Name"] = "Something"};
+    topLevelObject.SetDetachedProp("NotViewTo", obj);
+
+
+    // var study = ViewObjectFaker.ViewStudy();
+    // study.objects.Add(ViewObjectFaker.ResultCloud<ResultCloud>(100, 2));
+    //
+    // var converter = new ViewObjectsConverter();
+    // var res = converter.ConvertToSpeckle(study);
+    //
+    // topLevelObject["Simple"] = res;
+    // topLevelObject.SetDetachedProp("res", res);;
+
+    var count = topLevelObject.GetTotalChildrenCount();
+    Console.WriteLine($"Total count={count}");
+
+    var objId = await Operations.Send(topLevelObject, new List<ITransport>() {_transport});
+    commitId = await _client.CommitCreate(new CommitCreateInput()
+    {
+      branchName = "main",
+      message = "Testing for child count",
+      objectId = objId,
+      sourceApplication = HostApplications.NET.Name,
+      streamId = _stream.id,
+      totalChildrenCount = (int)count
+    });
+
+
+  }
+
   /// <summary>
   /// This test is meant to validate the command for retrieving values from the explorer using the <see cref="ExplorerFilterInput"/> to modify the final result
   /// </summary>
   [Test]
   public async Task FilterRawViews()
   {
-    _transport = new ServerTransport(account: _client.Account, streamId: "a823053e07");
+    _transport = new ServerTransport(_client.Account, "a823053e07");
 
-    var commit = await _client.CommitGet(streamId: _transport.StreamId, commitId: "f75cb44d5f");
-    var obj = await Operations.Receive(objectId: commit.referencedObject, remoteTransport: _transport);
+    var commit = await _client.CommitGet(_transport.StreamId, "f75cb44d5f");
+    var obj = await Operations.Receive(commit.referencedObject, _transport);
 
     var data = new ViewObjectsConverter().ConvertToNative(obj.SearchForType<ViewObjects.Speckle.ViewStudy>(true));
-    Assert.IsAssignableFrom(expected: typeof(ViewObjects.Studies.ViewStudy), actual: data);
+    Assert.IsAssignableFrom(typeof(ViewObjects.Studies.ViewStudy), data);
 
     var study = data as ViewStudy;
     var cloud = study.Get<ResultCloud>();
@@ -206,17 +250,17 @@ public class ExplorerCommands
 
     Console.WriteLine($"Max value is {max}(modifier={modifier}");
 
-    var filter = new ExplorerFilterInput(minValue: 0, maxValue: 1, pixelMin: min, pixelMax: max, filteredIndexes: indexes);
+    var filter = new ExplorerFilterInput(0, 1, min, max, indexes);
     Console.WriteLine(filter.ToString());
 
-    var results = _explorer.GetSols(valueOption: valueOption, maxOption: maxOption, filter: filter).ToArray();
+    var results = _explorer.GetSols(valueOption, maxOption, filter).ToArray();
 
     Assert.IsNotEmpty(results);
     Assert.IsTrue(results.Max()<=filter.valueRange.max);
     Assert.IsTrue(results.Min()>=filter.valueRange.min);
     Assert.IsTrue(results.Length == indexes.Count);
 
-    results = _explorer.GetSols(valueOption: valueOption, maxOption: maxOption, filter: filter, normalizeByFilter: true).ToArray();
+    results = _explorer.GetSols(valueOption, maxOption, filter, true).ToArray();
 
     var maxCheck = results.Max();
     var minCheck = results.Min();
@@ -228,28 +272,28 @@ public class ExplorerCommands
 
   void CheckLoadingExplorer(string rc)
   {
-    Assert.IsNotNull(anObject: _explorer.cloud, message: $"{nameof(Explorer)} should have a {nameof(IResultCloud)} attached");
-    Assert.IsTrue(condition: _explorer.cloud.ViewId.Equals(rc), message: $"{nameof(Explorer)} should have the same ids");
+    Assert.IsNotNull(_explorer.cloud, $"{nameof(Explorer)} should have a {nameof(IResultCloud)} attached");
+    Assert.IsTrue(_explorer.cloud.ViewId.Equals(rc), $"{nameof(Explorer)} should have the same ids");
 
     // all of the basic data for loading
-    Assert.IsNotNull(anObject: _explorer.data, message: $"{nameof(Explorer)} should have a {nameof(IResultCloudData)} attached");
-    Assert.IsNotNull(anObject: _explorer.settings, message: $"{nameof(Explorer)} should have a {nameof(ExplorerSettings)} attached");
-    Assert.IsNotNull(anObject: _explorer.meta, message: $"{nameof(Explorer)} should have a {nameof(ExplorerMetaData)} attached");
+    Assert.IsNotNull(_explorer.data, $"{nameof(Explorer)} should have a {nameof(IResultCloudData)} attached");
+    Assert.IsNotNull(_explorer.settings, $"{nameof(Explorer)} should have a {nameof(ExplorerSettings)} attached");
+    Assert.IsNotNull(_explorer.meta, $"{nameof(Explorer)} should have a {nameof(ExplorerMetaData)} attached");
 
     // tests for for checking values match up 
-    Assert.IsNotNull(anObject: _explorer.meta.activeStage, message: $"{nameof(ExplorerMetaData)} should have {nameof(ViewContentType)} attached");
-    Assert.IsNotNull(anObject: _explorer.meta.activeTarget, message: $"{nameof(ExplorerMetaData)} should have a target {nameof(IContentInfo)} attached");
-    Assert.IsNotEmpty(collection: _explorer.meta.options, message: $"{nameof(ExplorerMetaData)} should contain {nameof(IContentOption)}");
-    Assert.IsNotEmpty(collection: _explorer.meta.activeOptions, message: $"{nameof(ExplorerMetaData)} should should contain the first {nameof(IContentOption)}");
+    Assert.IsNotNull(_explorer.meta.activeStage, $"{nameof(ExplorerMetaData)} should have {nameof(ViewContentType)} attached");
+    Assert.IsNotNull(_explorer.meta.activeTarget, $"{nameof(ExplorerMetaData)} should have a target {nameof(IContentInfo)} attached");
+    Assert.IsNotEmpty(_explorer.meta.options, $"{nameof(ExplorerMetaData)} should contain {nameof(IContentOption)}");
+    Assert.IsNotEmpty(_explorer.meta.activeOptions, $"{nameof(ExplorerMetaData)} should should contain the first {nameof(IContentOption)}");
   }
 
   async Task<IViewStudy> CheckStudyReceive()
   {
-    var commit = await _client.CommitGet(streamId: _stream.id, commitId: _stream.commit);
+    var commit = await _client.CommitGet(_stream.id, _stream.commit);
     Assert.IsNotNull(commit);
 
-    _transport = new ServerTransport(account: _client.Account, streamId: _stream.id);
-    var data = await Operations.Receive(objectId: commit.referencedObject, remoteTransport: _transport);
+    _transport = new ServerTransport(_client.Account, _stream.id);
+    var data = await Operations.Receive(commit.referencedObject, _transport);
     Assert.IsNotNull(data);
 
     var speckleStudy = data.SearchForType<ViewObjects.Speckle.ViewStudy>(true);

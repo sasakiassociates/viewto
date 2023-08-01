@@ -61,7 +61,7 @@ namespace ViewTo.Tests.Objects
         ["reference object"] = reference
       };
 
-      var container = new Container("some container", new List<Base>() {wrapper});
+      // var container = new Container("some container", new List<Base>() {wrapper});
       // var container = new Base();
       var id = await Operations.Send(wrapper, new List<ITransport> {_transport});
 

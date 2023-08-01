@@ -6,7 +6,7 @@
         <LangVersion>latest</LangVersion>
         <Configurations>Debug;Release;Objects;Base</Configurations>
         <Platforms>AnyCPU</Platforms>
-        <PackageId>ViewCommander</PackageId>
+        <PackageId>Explorer</PackageId>
     </PropertyGroup>
 
     <ItemGroup>

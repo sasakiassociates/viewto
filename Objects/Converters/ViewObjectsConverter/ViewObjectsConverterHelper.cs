@@ -7,7 +7,7 @@ using System.Linq;
 namespace ViewObjects.Converter
 {
 
-  public static class Utils
+  public static class ViewObjectsConverterHelper
   {
 
     public static TBase SearchForType<TBase>(this Base obj, bool recursive) where TBase : Base

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ViewObjects.Common;
 using ViewTo.Connector.Unity;
 
 namespace ViewTo
@@ -36,6 +37,12 @@ namespace ViewTo
       frameRateBar.onValueChanged.AddListener(arg => Application.targetFrameRate = (int)arg);
       loadButton.onClick.AddListener(HandleLoadAction);
       runButton.onClick.AddListener(HandleRunAction);
+
+      if(Application.isEditor)
+      {
+        if(streamId != null) streamId.text = parent.tempStreamId.Valid() ? parent.tempStreamId : "stream id";
+        if(commitId != null) commitId.text = parent.tempCommitId.Valid() ? parent.tempCommitId : "stream id";
+      } 
     }
 
     void HandleRigReadyAction()

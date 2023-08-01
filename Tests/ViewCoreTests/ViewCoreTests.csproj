@@ -16,7 +16,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Objects\Converters\ViewObjectsConverter\ViewObjectsConverter.csproj" />
         <ProjectReference Include="..\..\Objects\ViewObjectsSpeckle\ViewObjectsSpeckle.csproj" />
-        <ProjectReference Include="..\..\ViewCommander\ViewCommander.csproj" />
+        <ProjectReference Include="..\..\Explorer\Explorer.csproj" />
     </ItemGroup>
 
     <Import Project="..\ViewTestsShared\ViewTestsShared.projitems" Label="Shared" />

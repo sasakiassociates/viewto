@@ -72,9 +72,9 @@
             <Project>{aa039663-8443-47d8-ae7f-1f2a5a384777}</Project>
             <Name>ViewObjects</Name>
         </ProjectReference>
-        <ProjectReference Include="..\..\ViewCommander\ViewCommander.csproj">
+        <ProjectReference Include="..\..\Explorer\Explorer.csproj">
             <Project>{605fc207-58a2-4cf0-abfd-04f0d90c02ea}</Project>
-            <Name>ViewCommander</Name>
+            <Name>Explorer</Name>
         </ProjectReference>
     </ItemGroup>
     <ItemGroup>
@@ -93,7 +93,7 @@
         <Compile Include="Points\PointGenGround.cs" />
         <Compile Include="Results\ExplorerSettingsComponent.cs" />
         <Compile Include="Results\ExtractContentOptions.cs" />
-        <Compile Include="Results\GetCloudDataRaw.cs"/>
+        <Compile Include="Results\GetCloudDataRaw.cs" />
         <Compile Include="Results\GetViewFromValue.cs" />
         <Compile Include="Results\ResultExplorerComponent.cs" />
         <Compile Include="Setup\Create.ResultCloud.cs" />
