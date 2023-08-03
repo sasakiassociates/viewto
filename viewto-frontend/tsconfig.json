@@ -1,0 +1,13 @@
+{
+    "include": ["src"],
+    "references": [{ "path": "./tsconfig.node.json" }],
+    "compilerOptions": {
+      "target": "es5",
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "experimentalDecorators": true,
+      "allowSyntheticDefaultImports": true,
+      "jsx": "react-jsx"
+    }
+  }
+  
