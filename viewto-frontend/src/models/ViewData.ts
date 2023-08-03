@@ -1,5 +1,5 @@
 import { Model, model, prop } from 'mobx-keystone';
-import { FocusContext, ConditionContext } from './Context';
+import { FocusContext, ObstructingContext } from './Context';
 
 
 @model("viewto/ViewDataOption")
@@ -7,7 +7,7 @@ export class ViewDataCondition extends Model({
     // list of focus items linked to this view 
     focuses: prop<FocusContext[]>(() => []),
     // list of conditions items linked to this view 
-    condition: prop<ConditionContext[]>(() => []),
+    obstructors: prop<ObstructingContext[]>(() => []),
 }) {
 }
 
