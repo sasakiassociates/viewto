@@ -1,6 +1,6 @@
-
 import { computed } from 'mobx';
 import { Model, Ref, model, prop } from 'mobx-keystone';
+import { View } from './View';
 
 @model("viewto/Point")
 export class Point extends Model({
@@ -19,7 +19,7 @@ export class Point extends Model({
     }
 
     @computed
-    get views(): Ref<object>[] {
+    get views(): Ref<View>[] {
         return null;
     }
 
