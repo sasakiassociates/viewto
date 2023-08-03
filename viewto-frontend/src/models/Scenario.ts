@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import { Model, model, prop } from 'mobx-keystone';
 import { Project } from './Project';
 import { View } from './View';
@@ -38,8 +38,28 @@ export class Scenario extends Model({
     @observable
     data: any;
 
+
     @action
     setData(data: any) {
         this.data = data;
+    }
+
+    @observable
+    canLoad: boolean;
+
+    @action
+    setLoad(canLoad: boolean) {
+        this.canLoad = canLoad;
+    }
+
+    onInit() {
+        reaction(
+            () => [this.project],
+            () => {
+                if (this.project.id && this.project.model && this.project.version && this.data === undefined) {
+                    this.setLoad(true);
+                }
+            }
+        );
     }
 }
