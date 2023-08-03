@@ -1,5 +1,6 @@
 
-import { Model, Ref, computedTree, model, prop } from 'mobx-keystone';
+import { computed } from 'mobx';
+import { Model, Ref, model, prop } from 'mobx-keystone';
 
 @model("viewto/Point")
 export class Point extends Model({
@@ -9,15 +10,15 @@ export class Point extends Model({
     // location of the item from the cloud 
     index: prop<number>(),
     // indicates that it's been saved to the layout panel
-    saved: prop<boolean>(false),
+    saved: prop<boolean>(false)
 }) {
 
-    @computedTree
+    @computed
     get score(): number {
         return 0;
     }
 
-    @computedTree
+    @computed
     get views(): Ref<object>[] {
         return null;
     }

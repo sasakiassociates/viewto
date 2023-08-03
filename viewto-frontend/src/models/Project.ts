@@ -1,5 +1,4 @@
-
-import { Model, Ref, computedTree, model, prop } from 'mobx-keystone';
+import { Model, model, prop } from 'mobx-keystone';
 
 @model("viewto/Project")
 export class Project extends Model({
@@ -9,17 +8,5 @@ export class Project extends Model({
     model: prop<string>(),
     // the id to the speckle version(commit) 
     version: prop<string>()
-}) {
-
-    @computedTree
-    get score(): number {
-        return 0;
-    }
-
-    @computedTree
-    get views(): Ref<object>[] {
-        return null;
-    }
-
-}
+}) { }
 
