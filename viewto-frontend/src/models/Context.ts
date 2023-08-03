@@ -24,7 +24,7 @@ export class FocusContext extends Model({
 }) { }
 
 // similar to the context class but can be a toggle for the proposed context type
-export class ConditionContext extends Model({
+export class ObstructingContext extends Model({
     // name of the context object
     name: prop<string>(),
     // id of this sasaki object
