@@ -9,7 +9,10 @@ import { FocusContext, ObstructingContext } from './Context';
 
 import ObjectLoader, { SpeckleObject } from "@speckle/objectloader";
 import { ViewCondition } from './ViewCondition';
-import { ViewStudy } from './ViewStudy';
+import { ViewResult } from './ViewResult';
+import { ViewStudy, ViewObjectTypes } from './ViewStudy';
+import { ViewCloud } from './ViewCloud';
+
 
 @model("viewto/Scenario")
 export class Scenario extends Model({
@@ -83,16 +86,6 @@ export class Scenario extends Model({
     // comes from the commit selection 
     private static objectRef = "f4b16ebe7e93ea3ec653cd284d72ca05";
 
-    _focusContextToWeb(obj : any) : FocusContext{
-
-        return new FocusContext({
-            name : obj.ViewName,
-            sasakiId: obj.ViewId,
-            referenceId: obj.id,
-            
-        })
-        
-    }
     private _loadData() {
         console.log(`Loading new Project: ${this.project.id}`);
     
@@ -108,88 +101,74 @@ export class Scenario extends Model({
         });
     
         const getObjectAndManuallyConvert = async (): Promise<SpeckleObject | SpeckleObject[]> => {
-        const referenceObj = await loader.getAndConstructObject((e) => {
-            // console.log("Progress ", e.stage, ":", e.current / e.total);
+        
+            const referenceObj = await loader.getAndConstructObject((e) => {
+                // event loop for getting progress on the loading
+                console.log("Progress ", e.stage, ":", e.current / e.total);
         });
 
         
         // deconstructing the speckle object
         // @ts-ignore
-        const viewStudy = referenceObj.Data;
-        console.log(viewStudy.ViewName + "{" + viewStudy.objects.length + "}\n");
-        console.log(viewStudy);
+        const data = referenceObj.Data;
 
-                
-        // grabbing the view clouds
-        const cloud = viewStudy.objects.filter(x => x.speckle_type == "ViewObjects.Speckle.ViewCloudReference");
-        console.log("cloud count=", cloud.length);
-
-        // grabbing the context items for geometry
-        const context = viewStudy.objects.filter(x => x.speckle_type == "ViewObjects.Speckle.ContentReference")
-        console.log("context count=", context.length);
-
-
-        // const vs : ViewStudy = {
-        //     clouds: viewStudy.objects.filter(x => x.speckle_type == "ViewObjects.Speckle.ViewCloudReference"),
-        //     focuses: context.filter(x => x.Content_Type === "Potential").map(x => this._focusContextToWeb),
-        //     // const existing = context.filter(x => x.Content_Type === "Existing");
-        //     // const proposed = context.filter(x => x.Content_Type === "Proposed");
-        // }
-        
-
-
-        // filtering out the different context within the study
-        const targets = context.filter(x => x.Content_Type === "Potential");
-        const existing = context.filter(x => x.Content_Type === "Existing");
-        const proposed = context.filter(x => x.Content_Type === "Proposed");
-
-        console.log("targets=", targets.length);
-        console.log("existing=", existing.length);
-        console.log("proposed=", proposed.length);
-
-        /* 
-        the result cloud contains all of the data we need to do the analysis exploration
-        we just end up using the context pieces from the view study to load the geometry  
-         */
-
-        // grabbing the result cloud
-        const result = viewStudy.objects.filter(x => x.speckle_type === "ViewObjects.Speckle.ResultCloud");
-        console.log("result count=", result.length);
-
-        const resultCloud = result[0];
-        console.log("Result Cloud: ", resultCloud);
-
-        // grabbing the point data from the cloud
-        const points = resultCloud.Positions;
-        console.log('point count', points.length / 3);
-
-        // grabbing the view data from the cloud
-        const viewData = resultCloud.Data;
-        console.log('view data count:', viewData.length);
-
-
-
-        // reading through the view conditions of the data
-        const conditions= viewData.map(x => {
-            return new ViewCondition({
-                focus: x.Target_Id,
-                obstructor: x.Content_Id,
-                type: x.ViewContentType 
-            }) 
-
-            
+        // the conversions from speckle to keystone
+        const study = new ViewStudy({
+            id: data.id,
+            name: data.ViewName,
+            sasakiId : data.ViewId,
+            focuses : data.objects
+                .filter(x => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type == "Potential")
+                .map(x => this._focusContextToWeb(x)),
+            obstructors: data.objects
+                .filter(x => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type != "Potential")
+                .map(x => this._obstructorContextToWeb(x)),
+            clouds: data.objects
+                .filter(x => x.speckle_type == ViewObjectTypes.cloud.speckle_type )
+                .map(x => this._viewCloudToWeb(x)),
+            results: data.objects
+                .filter(x => x.speckle_type == ViewObjectTypes.result.speckle_type)
+                .map(x => this._viewResultsToWeb(x))
         })
-
-        conditions.map(x => {
-            console.log(
-            `View Data Condition\nType: ${x.type}\nTarget: ${x.focus}\nObstructor: ${x.obstructor}` );
-    })
-
 
         return referenceObj;
     };
     getObjectAndManuallyConvert();
+    }
     
+    // conversions for getting Focus Context from speckle to app
+    _focusContextToWeb(obj : any) : FocusContext{
+        return new FocusContext({
+            name : obj.ViewName,
+            sasakiId: obj.ViewId,
+            referenceId: obj.id,  
+        })    
+    }
+
+    // conversions for getting Obstructors from speckle to app
+    _obstructorContextToWeb(obj : any) : ObstructingContext{
+        return new ObstructingContext({
+            name : obj.ViewName,
+            sasakiId: obj.ViewId,
+            referenceId: obj.id,
+            proposed: (obj.Content_Type === "Proposed")  
+        })    
+    }
+
+    // conversions for getting View Cloud from speckle to app
+    _viewCloudToWeb(obj :any): ViewCloud{
+        return new ViewCloud({sasakiId: obj.ViewId, id:obj.id, points: obj.Positions});
+    }
+
+    // conversions for getting View Result DAta from speckle to app    
+    _viewResultsToWeb(obj : any) : ViewResult{
+        return new ViewResult({values: obj.values, 
+            condition: this._viewConditionToWeb(obj.Target_Id, obj.Content_Id, obj.ViewContentType) });
+    }
+
+    // conversions for getting View Condition from speckle to app
+    _viewConditionToWeb(focus: string, obstructor:string ,type:string ): ViewCondition{
+        return new ViewCondition({type: type, focus: focus, obstructor: obstructor})
     }
 }
 
