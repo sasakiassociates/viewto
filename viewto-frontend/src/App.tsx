@@ -10,7 +10,7 @@ function App() {
   const [count, setCount] = useState(0);
 
   // the function that is doing all the work
-  // ObjectConverter();
+  ObjectConverter();
 
   return (
     <>
