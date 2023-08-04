@@ -3,6 +3,7 @@ import { Point } from './Point';
 import { action, computed, observable } from 'mobx';
 import { ViewDataCondition, ViewDataFilter } from './ViewData';
 
+
 @model("viewto/View")
 export class View extends Model({
     // readable name of the view  
