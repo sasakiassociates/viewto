@@ -1,16 +1,12 @@
-import { useState } from "react";
+import { useState } from 'react'
 // @ts-ignore
-import reactLogo from "./assets/react.svg";
-// @ts-ignore
-import viteLogo from "/vite.svg";
-import "./App.scss";
-import { ObjectConverter } from "./converter/ObjectConverter";
+import reactLogo from './assets/react.svg'
+// @ts-ignore 
+import viteLogo from '/vite.svg'
+import './App.scss'
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  // the function that is doing all the work
-  ObjectConverter();
+  const [count, setCount] = useState(0)
 
   return (
     <>
@@ -35,7 +31,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

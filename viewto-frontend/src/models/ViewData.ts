@@ -2,7 +2,7 @@ import { Model, model, prop } from 'mobx-keystone';
 import { FocusContext, ObstructingContext } from './Context';
 
 
-@model("viewto/ViewDataOption")
+@model("viewto/ViewDataCondition")
 export class ViewDataCondition extends Model({
     // list of focus items linked to this view 
     focuses: prop<FocusContext[]>(() => []),
