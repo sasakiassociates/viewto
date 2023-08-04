@@ -29,6 +29,7 @@
     "react-dom": "^18.2.0",
     "sass": "^1.64.2",
     "three": "^0.155.0",
+    "tree-model": "^1.0.7",
     "typescript": "^5.1.6",
     "vite-plugin-tsc": "^0.1.1"
   },
