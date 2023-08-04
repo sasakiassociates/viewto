@@ -1,5 +1,7 @@
+import { Store } from '@strategies/stores';
 import { action, computed, observable, reaction } from 'mobx';
 import { Model, model, prop } from 'mobx-keystone';
+
 import { Project } from './Project';
 import { View } from './View';
 import { Point } from './Point';
@@ -8,14 +10,17 @@ import { FocusContext, ObstructingContext } from './Context';
 @model("viewto/Scenario")
 export class Scenario extends Model({
     // the information linked to the speckle project loaded
-    project: prop<Project>(),
+    project: prop<Project>(() => new Project({})),
     // the list of views stored to apply the settings 
     views: prop<View[]>(() => []),
-}) {
+}) implements Store {
+
+    onRegister() {}
+    onUpdateRegistration() {}
 
     // returns the list of points found in the views 
     @computed
-    get Points(): Point[] {
+    get points(): Point[] {
         return this.views.map((x) => x.point);
     }
 

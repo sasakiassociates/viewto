@@ -35,5 +35,13 @@ export default class UIStore extends Store {
     setMode(mode: UIMode) {
         this.mode = mode;
     }
+
+    @observable
+    camera: any = {};
+
+    @action
+    setCamera(camera: any) {
+        this.camera = camera;
+    }
     
 }
