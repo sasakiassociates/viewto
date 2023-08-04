@@ -1,5 +1,5 @@
 import { stores, Store } from '@strategies/stores';
-import { computed, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import Stores from './Stores';
 import { Point } from '../models/Point';
@@ -34,12 +34,23 @@ export default class PointsStore extends Store {
 
     @computed
     get sorted() {
-        return [...this.all].sort(this.sortFn);
+        return [...this.all].sort((a,b) => this.sortKey(a) >= this.sortKey(b) ? this.sortDirection : -this.sortDirection);
     }
 
     @observable
-    sortFn: (a: Point, b: Point) => number = (_,__) => 0;
+    sortDirection: number = 1;
 
-    
+    @action
+    setSortDirection(direction: number) {
+        this.sortDirection = direction > 0 ? 1 : -1;
+    }
+
+    @observable
+    sortKey: (p: Point) => number|string = _ => 0;
+
+    @action
+    setSortKey(fn: (p: Point) => number|string) {
+        this.sortKey= fn;
+    }
    
 }
