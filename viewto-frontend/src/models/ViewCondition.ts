@@ -5,15 +5,11 @@ import { Model, model,prop } from 'mobx-keystone';
 @model("viewto/Condition")
 export class ViewCondition extends Model({
     // id of this sasaki object
-    focus: prop<string>(),
+    focus: prop<string>(""),
     // reference id to the speckle object
-    obstructor: prop<string[]>(),
+    obstructor: prop<string>( ""),
     // an enum value that says what stage (potential, existing, or proposed) was captured in  
-    type: prop<string>()
+    type: prop<string>("")
 }) {}
 
 
-export type ViewResult = {
-    values : number[],
-    condition : ViewCondition 
-} 
