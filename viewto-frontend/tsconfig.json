@@ -3,6 +3,7 @@
     "references": [{ "path": "./tsconfig.node.json" }],
     "compilerOptions": {
       "target": "es5",
+      "lib": ["ES2015", "DOM"],
       "resolveJsonModule": true,
       "skipLibCheck": true,
       "experimentalDecorators": true,

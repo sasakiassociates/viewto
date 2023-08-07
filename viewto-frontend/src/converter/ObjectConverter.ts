@@ -1,4 +1,6 @@
 import ObjectLoader, { SpeckleObject } from "@speckle/objectloader";
+import { Speckle } from '@strategies/speckle';
+
 
 export function ObjectConverter() {
 
@@ -24,6 +26,58 @@ export function ObjectConverter() {
 
 
     const getObjectAndManuallyConvert = async (): Promise<SpeckleObject | SpeckleObject[]> => {
+
+        // this needs to be fetched in the authentaticaiton process
+        const token = "089149f2176eb6b5ba309f011ca24bcfc32376998e";
+        const url = "https://speckle.xyz";
+        const projectId = "a823053e07";
+        const modelId = "viewstudies/magpie-models";
+        const versionId = "154ab2f21e";
+        const objectId = "f4b16ebe7e93ea3ec653cd284d72ca05";
+
+
+        const connection = new Speckle({
+            server: url, token: token
+        })
+
+
+        console.log("-- Speckle API tests --");
+        
+        console.log("User Tests");
+        
+        console.log("   Get Active User Info");
+        const user = await connection.activeUser;
+        console.log("   Reporting Active User Info:", user)
+        // console.log("   Get Active User Streams");
+
+
+        console.log("Project Tests");
+        
+        console.log("   Get Project Info");
+        const project = await connection.Stream(projectId).get;
+        console.log("   Reporting Project Get:", project)
+        
+        console.log("Model Tests");
+        
+        console.log("   Get Model Info");
+        const model = await connection.Stream(projectId).branches;
+        console.log("   Reporting Model Get:", model)
+
+
+        console.log("Version Tests");
+
+        console.log("   Get Version Info");
+        const version = await connection.Stream(projectId).Commit(versionId).get;
+        console.log("   Reporting Version Get:", version)        
+
+
+        console.log("Object Tests");
+        
+        console.log("   Get single object")
+        const obj = await connection.Stream(projectId).Object(objectId).get;
+        console.log("   Result from single object:", obj);
+
+        // return;
         const referenceObj = await loader.getAndConstructObject((e) => {
             // console.log("Progress ", e.stage, ":", e.current / e.total);
         });
