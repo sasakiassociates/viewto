@@ -1,11 +1,11 @@
-import { Model, model, prop } from 'mobx-keystone';
 import { ViewCondition } from './ViewCondition';
 
+export class ViewResult {
+    values: number[];
+    condition: ViewCondition;
 
-
-@model("viewto/Results")
-export class ViewResult extends Model({
-    values: prop<number[]>(() => []),
-    condition: prop<ViewCondition>()
-}) {
+    constructor(values : number[], condition : ViewCondition){
+        this.values = values;
+        this.condition = condition;
+    }
 }
