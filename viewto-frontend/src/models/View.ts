@@ -1,7 +1,6 @@
 import { Model, model, prop } from 'mobx-keystone';
-import { Point } from './Point';
 import { action, computed, observable } from 'mobx';
-import { ViewDataCondition, ViewDataFilter } from './ViewData';
+// import { ViewDataCondition, ViewDataFilter } from './ViewData';
 
 
 @model("viewto/View")
@@ -15,10 +14,10 @@ export class View extends Model({
     // properties of the camerea details 
     // TODO: figure out what properties we need to store
     camera: prop<string>(''),
-    // pixel and value modifiers 
-    filter: prop<ViewDataFilter>(() => new ViewDataFilter({})),
-    // the information around the focuses and obstructors
-    condition: prop<ViewDataCondition>(() => new ViewDataCondition({}))
+    // // pixel and value modifiers 
+    // filter: prop<ViewDataFilter>(() => new ViewDataFilter({})),
+    // // the information around the focuses and obstructors
+    // condition: prop<ViewDataCondition>(() => new ViewDataCondition({}))
 }) {
 
     @computed
