@@ -1,44 +1,39 @@
-
-import { Model, computedTree, model, prop } from 'mobx-keystone';
-
 // a simple reference object used to keep track of the speckle reference id and the sasaki app id  
-@model("viewto/Context")
-export class Context extends Model({
+export class Context {
     // name of the context object
-    name: prop<string>(),
+    name: string;
     // id of this sasaki object
-    sasakiId: prop<string>(),
+    sasakiId: string;
     // reference id to the speckle object
-    referenceId: prop<string[]>()
-}) { }
+    references: string[];
+
+    /**
+     *
+     */
+    constructor(name: string, sasakiId: string, references: string[]) {
+        this.name = name;
+        this.sasakiId = sasakiId;
+        this.references = references;
+    }
+}
 
 
 // similar to the context class but with a specific type declared for view studies
-export class FocusContext extends Model({
-    // name of the context object
-    name: prop<string>(),
-    // id of this sasaki object
-    sasakiId: prop<string>(),
-    // reference id to the speckle object
-    referenceId: prop<string[]>()
-}) { }
+export class FocusContext extends Context { }
 
 // similar to the context class but can be a toggle for the proposed context type
-export class ObstructingContext extends Model({
-    // name of the context object
-    name: prop<string>(),
-    // id of this sasaki object
-    sasakiId: prop<string>(),
-    // reference id to the speckle object
-    referenceId: prop<string[]>(),
-    // toggle for declaring what group the obstructor is
-    proposed: prop<boolean>(false)
-}) {
+export class ObstructingContext extends Context {
+    // toggle for declaring what group the obstructor is 
+    proposed: boolean = false;
 
-    @computedTree
-    isProposed(proposed: boolean = true) {
+    /**
+     *
+     */
+    constructor(name: string, sasakiId: string, references: string[], proposed: boolean) {
+        super(name, sasakiId, references);
         this.proposed = proposed;
     }
+
 }
 
 

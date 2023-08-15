@@ -1,7 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
+
 import './index.scss'
+import App from './App'
+import { registerStores } from './stores/Stores';
+
+
+registerStores();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
