@@ -14,8 +14,8 @@ dist-ssr
 *.local
 
 #dotenv 
-.env
-.env.test
+*.env
+*.env.test
 
 # Editor directories and files
 .vscode/*
