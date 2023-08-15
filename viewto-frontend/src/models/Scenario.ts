@@ -48,21 +48,18 @@ export class Scenario extends Model({
 
 
 
-    // this needs to be fetched in the authentaticaiton process
-    private static token = "089149f2176eb6b5ba309f011ca24bcfc32376998e";
-    // this should come from the login process
-    private static url = "https://speckle.xyz";
-    // comes from the commit selection 
-    private static objectRef = "f4b16ebe7e93ea3ec653cd284d72ca05";
-
     private _loadStudy(fn: (data: ViewStudy) => void) {
         console.log(`Loading new Project: ${this.project.id}`);
 
+        const viewStudyExampleReference = "f4b16ebe7e93ea3ec653cd284d72ca05";
+
         const loader = new ObjectLoader({
-            token: Scenario.token,
-            serverUrl: Scenario.url,
+            // @ts-ignore
+            token: import.meta.env.SPECKLE_TOKEN,
+            // @ts-ignore
+            serverUrl: import.meta.env.SPECKLE_URL,
             streamId: this.project.id,
-            objectId: Scenario.objectRef,
+            objectId: this.project.version,
             // options: {
             //     fullyTraverseArrays: false, // Default: false. By default, if an array starts with a primitive type, it will not be traversed. Set it to true if you want to capture scenarios in which lists can have intersped objects and primitives, e.g. [ 1, 2, "a", { important object } ]
             //     excludeProps: ["displayValue", "displayMesh", "__closure"], // Default: []. Any prop names that you pass in here will be ignored from object construction traversal.
@@ -73,7 +70,7 @@ export class Scenario extends Model({
 
             const referenceObj = await loader.getAndConstructObject((e) => {
                 // event loop for getting progress on the loading
-                // console.log("Progress ", e.stage, ":", e.current / e.total);
+                console.log("Progress ", e.stage, ":", e.current / e.total);
             });
 
             // deconstructing the speckle object
@@ -90,8 +87,10 @@ export class Scenario extends Model({
         // we get every mesh from the reference objects and load them into the scene 
         this.study.getSpeckleMeshes.map(reference => {
             const loader = new ObjectLoader({
-                token: Scenario.token,
-                serverUrl: Scenario.url,
+                // @ts-ignore
+                token: import.meta.env.SPECKLE_TOKEN,
+                // @ts-ignore
+                serverUrl: import.meta.env.SPECKLE_URL,
                 streamId: this.project.id,
                 objectId: reference
             });
@@ -100,19 +99,13 @@ export class Scenario extends Model({
 
                 const referenceObj = await loader.getAndConstructObject((e) => {
                     // event loop for getting progress on the loading
-                    // console.log("Progress ", e.stage, ":", e.current / e.total);
+                    console.log("Progress ", e.stage, ":", e.current / e.total);
                 });
 
                 // this is now just rendering data that we want in the viewer
                 // return referenceObj.Data 
             };
         })
-
-
-
     }
 
 }
-
-
-
