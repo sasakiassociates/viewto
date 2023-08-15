@@ -1,4 +1,6 @@
+// import ObjectLoader, { SpeckleObject } from "@speckle/objectloader";
 import ObjectLoader, { SpeckleObject } from "@speckle/objectloader";
+
 
 export function ObjectConverter() {
 

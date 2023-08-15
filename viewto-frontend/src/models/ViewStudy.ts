@@ -1,7 +1,10 @@
 import { FocusContext, ObstructingContext } from './Context';
+import { Point } from './Point';
 import { ViewCloud } from './ViewCloud';
 import { ViewCondition, ConditionTypeLookUp } from './ViewCondition';
 import { ViewResult } from './ViewResult';
+
+import {computed, makeObservable, observable} from 'mobx';
 
 
 type easyName = {
@@ -25,6 +28,7 @@ export class ViewStudy {
     results: ViewResult[];
 
     constructor(data: any) {
+        makeObservable(this);
         this.id = data.id;
         this.name = data.ViewName;
         this.sasakiId = data.ViewId;
@@ -40,11 +44,15 @@ export class ViewStudy {
         this.results = data.objects
             .filter(x => x.speckle_type == ViewObjectTypes.result.speckle_type)
             .map(x => this._viewResultsToWeb(x))
-
     }
 
 
-    get getPointCloud(){
+    @observable
+    points: Point[] = [];
+
+    @computed
+    get getPointCloud()
+    {
         return this.clouds.map(cld => cld.id);
     }
     

@@ -73,7 +73,7 @@ export class Scenario extends Model({
 
             const referenceObj = await loader.getAndConstructObject((e) => {
                 // event loop for getting progress on the loading
-                console.log("Progress ", e.stage, ":", e.current / e.total);
+                // console.log("Progress ", e.stage, ":", e.current / e.total);
             });
 
             // deconstructing the speckle object
@@ -88,21 +88,21 @@ export class Scenario extends Model({
         console.log(`Loading new Study: ${this.study.name}`);
 
         // we get every mesh from the reference objects and load them into the scene 
-        this.study.getSpeckleMeshes.map(reference =>{
+        this.study.getSpeckleMeshes.map(reference => {
             const loader = new ObjectLoader({
                 token: Scenario.token,
                 serverUrl: Scenario.url,
                 streamId: this.project.id,
-                objectId: reference  
+                objectId: reference
             });
 
             const getObjectAndManuallyConvert = async (): Promise<void> => {
 
                 const referenceObj = await loader.getAndConstructObject((e) => {
                     // event loop for getting progress on the loading
-                    console.log("Progress ", e.stage, ":", e.current / e.total);
+                    // console.log("Progress ", e.stage, ":", e.current / e.total);
                 });
-    
+
                 // this is now just rendering data that we want in the viewer
                 // return referenceObj.Data 
             };
