@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react';
 import { Panel, Title, Body, Select } from '@strategies/ui';
-import { stores, useStores } from "@strategies/stores";
-import UIStore from "../../stores/UIStore";
+import { useStores } from "@strategies/stores";
 import Stores from "../../stores/Stores";
 import { FiInfo } from 'react-icons/fi';
 
