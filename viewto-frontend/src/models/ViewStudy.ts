@@ -53,7 +53,10 @@ export class ViewStudy {
 
     @computed
     get getCloudReferences() {
-        return this.clouds.map(cld => cld.references);
+        const references = [];
+        this.clouds.map(item => references.push(...item.references));
+        return references;
+
     }
 
     @computed

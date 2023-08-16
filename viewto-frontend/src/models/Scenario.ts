@@ -2,12 +2,11 @@ import { Store } from '@strategies/stores';
 import { reaction, observable, action } from 'mobx';
 import { Model, model, prop } from 'mobx-keystone';
 
-
 import { Project } from './Project';
 import { ViewStudy } from './ViewStudy';
 
-import ObjectLoader from "@speckle/objectloader";
 import { View } from './View';
+import { Speckle } from '@strategies/speckle'
 
 @model("viewto/Scenario")
 export class Scenario extends Model({
@@ -68,70 +67,66 @@ export class Scenario extends Model({
 
 
     private async _loadStudyFromProject(fn: (data: ViewStudy) => void) {
-        // the scenario model references the speckle project(stream) that we need to pull the referene object from the database
-        // the ui will give us the input for this project and object
-        // for now we have a hard coded test project in place
-        console.log(`Loading new Project: ${this.project.name}\n${this.project.id}\n${this.project.model}\n${this.project.version}`);
 
-        // NOTE: we can hard code the commit reference object for making sure we get all the view study data but we will need to find the reference object for each item in the study  
-
-        const loader = new ObjectLoader({
+        const speckle = new Speckle({
             // @ts-ignore
             token: import.meta.env.VITE_SPECKLE_TOKEN,
             // @ts-ignore
-            serverUrl: import.meta.env.VITE_SPECKLE_URL,
-            // @ts-ignore
-            streamId: import.meta.env.VITE_VIEWTO_TEST_PROJECT,
-            // @ts-ignore
-            objectId: import.meta.env.VITE_VIEWTO_TEST_STUDY,
-            // options: {
-            //     fullyTraverseArrays: false, // Default: false. By default, if an array starts with a primitive type, it will not be traversed. Set it to true if you want to capture scenarios in which lists can have intersped objects and primitives, e.g. [ 1, 2, "a", { important object } ]
-            //     excludeProps: ["displayValue", "displayMesh", "__closure"], // Default: []. Any prop names that you pass in here will be ignored from object construction traversal.
+            server: import.meta.env.VITE_SPECKLE_URL
         })
 
-        const referenceObj = await loader.getAndConstructObject((e) => {
-            // event loop for getting progress on the loading
-            // console.log("Progress ", e.stage, ":", e.current / e.total);
-        });
+        // not really necessary, but this is a simple way to make sure we have an authenticated
+        console.log(await speckle.activeUser);
 
+        /* 
+         the scenario model references the speckle project(stream) that we need to pull the referene object from the database
+         the ui will give us the input for this project and object
+         for now we have a hard coded test project in place
+        */
+
+        // console.log(`Loading new Project: ${this.project.name}\n${this.project.id}\n${this.project.model}\n${this.project.version}`);
+
+        // load the version (commit) data
+        // @ts-ignore
+        const version = await speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Version(import.meta.env.VITE_VIEWTO_TEST_VERSION).get;
+        console.log(version);
+
+        // load the reference object from the version (commit)
+        // @ts-ignore
+        const referenceObj = await speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Object(version.referencedObject).get;
+        console.log(referenceObj);
+
+        // deconstruct all the view study data
         // @ts-ignore
         const study = new ViewStudy(referenceObj.Data);
+        // call back for async function
         fn(study);
-
     };
 
     private async _loadStudyReferences(fn: (reference: string) => void) {
         console.log(`Loading new View Study: ${this.study.name}`);
-        // 1. load in all of the geometry references
 
-        // we get every mesh from the reference objects and load them into the scene 
-        this.study.getContextReferences.map(reference => {
-
-            console.log(`Loading new reference ${reference}`);
-            // TODO: Implement client for fetching id of commit object
-            return;
-            // create a new loader for each object 
-            const loader = new ObjectLoader({
-                // @ts-ignore
-                token: import.meta.env.VITE_SPECKLE_TOKEN,
-                // @ts-ignore
-                serverUrl: import.meta.env.SPECKLE_URL,
-
-                streamId: this.project.id,
-                objectId: reference
-            });
-
-            // TODO: implement batching for await during map 
-            const referenceObj = await loader.getAndConstructObject((e) => {
-                // event loop for getting progress on the loading
-                console.log("Progress ", e.stage, ":", e.current / e.total);
-            });
-
-            // let whatever called this function get a callback for the new reference being loaded
-            fn(reference);
-
-            // this is now just rendering data that we want in the viewer            
+        const speckle = new Speckle({
+            // @ts-ignore
+            token: import.meta.env.VITE_SPECKLE_TOKEN,
+            // @ts-ignore
+            server: import.meta.env.VITE_SPECKLE_URL
         })
+
+        const loadVersion = async (reference: string, type: string) => {
+            console.log(`Loading new ${type} : ${reference}`);
+            // @ts-ignore
+            const obj = await speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Version(reference).get;
+            //TODO: this is where we laod the viewer data into speckle
+            console.log(obj);
+
+        }
+
+
+        // 1. load in all of the geometry references
+        // we get every mesh from the reference objects and load them into the scene 
+        this.study.getContextReferences.map(ref => loadVersion(ref, "tbd"));
+        this.study.getCloudReferences.map(cld => loadVersion(cld, "tbd"));
 
         // 2. load the point cloud
         // 3. apply the results
