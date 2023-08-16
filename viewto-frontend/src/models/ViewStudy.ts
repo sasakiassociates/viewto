@@ -3,8 +3,9 @@ import { Point } from './Point';
 import { ViewCloud } from './ViewCloud';
 import { ViewCondition, ConditionTypeLookUp } from './ViewCondition';
 import { ViewResult } from './ViewResult';
+import { ResultCloud } from './ResultCloud';
 
-import {computed, makeObservable, observable} from 'mobx';
+import { computed, makeObservable, observable } from 'mobx';
 
 
 type easyName = {
@@ -25,7 +26,7 @@ export class ViewStudy {
     focuses: FocusContext[];
     obstructors: ObstructingContext[];
     clouds: ViewCloud[];
-    results: ViewResult[];
+    results: ResultCloud[];
 
     constructor(data: any) {
         makeObservable(this);
@@ -43,7 +44,7 @@ export class ViewStudy {
             .map(x => this._viewCloudToWeb(x));
         this.results = data.objects
             .filter(x => x.speckle_type == ViewObjectTypes.result.speckle_type)
-            .map(x => this._viewResultsToWeb(x))
+            .map(x => this._resultCloudToWeb(x))
     }
 
 
@@ -51,11 +52,10 @@ export class ViewStudy {
     points: Point[] = [];
 
     @computed
-    get getPointCloud()
-    {
+    get getPointCloud() {
         return this.clouds.map(cld => cld.id);
     }
-    
+
     // grabs all of the view context objects references 
     get getSpeckleMeshes() {
         return [...this.focuses, ...this.obstructors].map(ctx => ctx.references).reduce((a, b) => [...a, ...b])
@@ -73,16 +73,22 @@ export class ViewStudy {
 
     // conversions for getting View Cloud from speckle to app
     _viewCloudToWeb(obj: any): ViewCloud {
-        return new ViewCloud(obj.id, obj.Positions);
+        return new ViewCloud(obj.id);
     }
 
-    // conversions for getting View Result DAta from speckle to app    
-    _viewResultsToWeb(obj: any): ViewResult {
+    // conversions for getting all result cloud data     
+    _resultCloudToWeb(obj: any): ResultCloud {
+        return new ResultCloud(obj.id, obj.ViewId, obj.Positions, obj.Data.map(x => this._viewResultToWeb(x)));
+    }
+
+    // conversions for result cloud data structure
+    _viewResultToWeb(obj: any) {
         return new ViewResult(obj.values, this._viewConditionToWeb(obj.Target_Id, obj.Content_Id, obj.ViewContentType));
     }
+
     // conversions for getting View Condition from speckle to app
     _viewConditionToWeb(focus: string, obstructor: string, type: string): ViewCondition {
-        return new ViewCondition(focus, obstructor, ConditionTypeLookUp[type])
+        return new ViewCondition(focus, obstructor, ConditionTypeLookUp[type.toLowerCase()])
     }
 
 }

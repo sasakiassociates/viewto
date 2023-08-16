@@ -19,12 +19,13 @@ export class ViewCondition {
 }
 
 export enum ConditionType {
-    POTENTIAL, EXISTING, PROPOSED
+    POTENTIAL = "Potential", EXISTING = "Existing", PROPOSED = "Proposed"
 }
 
 export const ConditionTypeLookUp: { [key: string]: ConditionType } = {
-    Potential: ConditionType.POTENTIAL,
-    Existing: ConditionType.EXISTING,
-    Proposed: ConditionType.PROPOSED
+    potential: ConditionType.POTENTIAL,
+    existing: ConditionType.EXISTING,
+    proposed: ConditionType.PROPOSED
 }
+
 
