@@ -4,8 +4,9 @@ import { Model, model, prop } from 'mobx-keystone';
 
 
 import { Project } from './Project';
-import ObjectLoader from "@speckle/objectloader";
 import { ViewStudy } from './ViewStudy';
+
+import ObjectLoader from "@speckle/objectloader";
 import { View } from './View';
 
 @model("viewto/Scenario")
@@ -30,13 +31,15 @@ export class Scenario extends Model({
         reaction(
             () => [this.study?.id],
             () => {
+                console.log('study reaction');
                 this._loadStudyModel();
             }
         );
 
         reaction(
-            () => [this.project.id],
+            () => this.project?.id,
             () => {
+                console.log('project reaction');
                 this._loadStudy(study => this.setStudy(study));
             }
         );
@@ -44,23 +47,26 @@ export class Scenario extends Model({
 
 
     private _loadStudy(fn: (data: ViewStudy) => void) {
+        // the scenario model references the speckle project(stream) that we need to pull the referene object from the database
+        // the ui will give us the input for this project and object
+        // for now we have a hard coded test project in place
         console.log(`Loading new Project: ${this.project.id}`);
-
-        const viewStudyExampleReference = "f4b16ebe7e93ea3ec653cd284d72ca05";
 
         const loader = new ObjectLoader({
             // @ts-ignore
-            token: import.meta.env.SPECKLE_TOKEN,
+            token: import.meta.env.VITE_SPECKLE_TOKEN,
             // @ts-ignore
-            serverUrl: import.meta.env.SPECKLE_URL,
-            streamId: this.project.id,
-            objectId: this.project.version,
+            serverUrl: import.meta.env.VITE_SPECKLE_URL,
+            // @ts-ignore
+            streamId: import.meta.env.VITE_VIEWTO_TEST_PROJECT,
+            // @ts-ignore
+            objectId: import.meta.env.VITE_VIEWTO_TEST_STUDY,
             // options: {
             //     fullyTraverseArrays: false, // Default: false. By default, if an array starts with a primitive type, it will not be traversed. Set it to true if you want to capture scenarios in which lists can have intersped objects and primitives, e.g. [ 1, 2, "a", { important object } ]
             //     excludeProps: ["displayValue", "displayMesh", "__closure"], // Default: []. Any prop names that you pass in here will be ignored from object construction traversal.
         })
 
-        const referenceObj = await loader.getAndConstructObject((e) => {
+        const referenceObj = loader.getAndConstructObject((e) => {
             // event loop for getting progress on the loading
             console.log("Progress ", e.stage, ":", e.current / e.total);
         });
@@ -77,22 +83,22 @@ export class Scenario extends Model({
         this.study.getSpeckleMeshes.map(reference => {
             const loader = new ObjectLoader({
                 // @ts-ignore
-                token: import.meta.env.SPECKLE_TOKEN,
+                token: import.meta.env.VITE_SPECKLE_TOKEN,
                 // @ts-ignore
                 serverUrl: import.meta.env.SPECKLE_URL,
                 streamId: this.project.id,
                 objectId: reference
             });
 
-            const referenceObj = await loader.getAndConstructObject((e) => {
+            const referenceObj = loader.getAndConstructObject((e) => {
                 // event loop for getting progress on the loading
                 console.log("Progress ", e.stage, ":", e.current / e.total);
             });
 
             // this is now just rendering data that we want in the viewer
             // @ts-ignore
-            return referenceObj.Data 
-        }
+            return referenceObj.Data
+        })
     };
 }
 
