@@ -1,0 +1,9 @@
+{
+  "name": "speckle-loader",
+  "version": "0.1.0",
+  "private": true,
+  "description": "a package started back Kenny G for importing speckle meshes to r3f",
+  "dependencies": {
+    "@speckle/objectloader": "^2.15.1"
+  }
+}
