@@ -1,2 +1,25 @@
+@use '@strategies/tokens/color';
+@use '@strategies/tokens/font';
+@use '@strategies/tokens/layout';
+
+
 .Layers.Panel {
+  main {
+    display: flex;
+    padding: layout.$padding;
+
+    .ViewParamsWidget {
+      padding: layout.$padding--small;
+      background-color: $light-grey;
+
+      .Select {
+        width: 220px;
+      }
+
+      .ViewWidget{
+        padding-bottom: layout.$padding--small;
+      }
+    }
+  }
+
 }

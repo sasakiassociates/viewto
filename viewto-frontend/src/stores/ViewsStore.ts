@@ -23,5 +23,13 @@ export default class ViewsStore extends Store {
     }
     
     virtual = new View({});
+
+    @observable
+    viewFocus: string[] = [];
+
+    @action
+    setViewFocus(viewFocus: string[]) {
+        this.viewFocus = viewFocus;
+    }
    
 }
