@@ -52,28 +52,28 @@ export class ViewStudy {
     points: Point[] = [];
 
     @computed
-    get getPointCloud() {
-        return this.clouds.map(cld => cld.id);
+    get getCloudReferences() {
+        return this.clouds.map(cld => cld.references);
     }
 
-    // grabs all of the view context objects references 
-    get getSpeckleMeshes() {
+    @computed
+    get getContextReferences() {
         return [...this.focuses, ...this.obstructors].map(ctx => ctx.references).reduce((a, b) => [...a, ...b])
     }
 
     // conversions for getting Focus Context from speckle to app
     _focusContextToWeb(obj: any): FocusContext {
-        return new FocusContext(obj.ViewName, obj.ViewId, [obj.id])
+        return new FocusContext(obj.id, obj.ViewName, obj.ViewId, obj.References)
     }
 
     // conversions for getting Obstructors from speckle to app
     _obstructorContextToWeb(obj: any): ObstructingContext {
-        return new ObstructingContext(obj.ViewName, obj.ViewId, [obj.id], (obj.Content_Type === "Proposed"));
+        return new ObstructingContext(obj.id, obj.ViewName, obj.ViewId, obj.References, (obj.Content_Type === "Proposed"));
     }
 
     // conversions for getting View Cloud from speckle to app
     _viewCloudToWeb(obj: any): ViewCloud {
-        return new ViewCloud(obj.id);
+        return new ViewCloud(obj.id, obj.References);
     }
 
     // conversions for getting all result cloud data     
