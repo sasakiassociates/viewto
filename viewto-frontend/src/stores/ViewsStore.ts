@@ -31,5 +31,45 @@ export default class ViewsStore extends Store {
     setViewFocus(viewFocus: string[]) {
         this.viewFocus = viewFocus;
     }
+
+    @observable
+    viewCondition: string;
+
+    @action
+    setViewCondition(viewCondition: string) {
+        this.viewCondition = viewCondition;
+    }
+
+    @observable
+    totalPoints: number;
+
+    @action
+    setTotalPoints(totalPoints: number) {
+        this.totalPoints = totalPoints;
+    }
+
+    @observable
+    visiblePoints: number;
+
+    @action
+    setVisiblePoints(visiblePoints: number) {
+        this.visiblePoints = visiblePoints;
+    }
+
+    @observable
+    goodViewPoints: number;
+
+    @action
+    setGoodViewPoints(goodViewPoints: number) {
+        this.goodViewPoints = goodViewPoints;
+    }
+
+    @observable
+    noViewPoints: number;
+
+    @action
+    setNoViewPoints(noViewPoints: number) {
+        this.noViewPoints = noViewPoints;
+    }
    
 }

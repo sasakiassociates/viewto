@@ -8,18 +8,59 @@
     display: flex;
     padding: layout.$padding;
 
-    .ViewParamsWidget {
-      padding: layout.$padding--small;
-      background-color: $light-grey;
-
-      .Select {
-        width: 220px;
+    .Widget{
+      width: 50%;
+      display: flex;
+      ._View {
+        border-radius: layout.$border-radius--small;
+        padding: layout.$padding--small;
+        background-color: $light-grey;
+        .SelectContainer{
+          .Title{
+            text-transform: uppercase;
+            padding-bottom: 5px;
+            font-size: font.$size--xsmall;
+          }
+          .Select {
+            width: 240px;
+            .Select__placeholder{
+              color: color.$grey !important;
+            }
+          }
+        }
+        .SelectContainer:not(:last-child){
+          margin-bottom: layout.$padding;
+        }
       }
+      ._Points{
+        margin: 0 layout.$padding;
+        .InputContainer{
 
-      .ViewWidget{
-        padding-bottom: layout.$padding--small;
+          padding: layout.$padding--small;
+          background-color: $light-grey;
+          border-radius: layout.$border-radius--small;
+          .Title{
+            text-transform: uppercase;
+            padding-bottom: 5px;
+            font-size: font.$size--xsmall;
+          }
+          .ReactForm__Input-input{
+            background-color: white;
+            border-radius: layout.$border-radius;
+            height: 21px;
+            input{
+              text-align: center;
+            }
+
+          }
+        }
+        .InputContainer:not(:last-child){
+          margin-bottom: layout.$padding--small;
+        }
+
       }
     }
+
   }
 
 }
