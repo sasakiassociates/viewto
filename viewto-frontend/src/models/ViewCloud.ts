@@ -1,14 +1,13 @@
-
-export class ViewCloud 
-{
+export class ViewCloud {
     id: string;
-    points: number[];
-    
+    references: string[];
+
     /**
      *
      */
-    constructor(id: string, points : number[]) {
+    constructor(id: string, references: string[]) {
         this.id = id;
-        this.points = points;        
+        this.references = references;
     }
 }
+

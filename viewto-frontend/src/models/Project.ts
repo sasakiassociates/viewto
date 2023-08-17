@@ -2,6 +2,8 @@ import { Model, model, prop } from 'mobx-keystone';
 
 @model("viewto/Project")
 export class Project extends Model({
+    // the name of the proejct
+    name : prop<string>("some project"),
     // the id of the speckle project (stream)  
     id: prop<string>("a823053e07"),
     // the path to the speckle model(branch) 
