@@ -43,7 +43,7 @@ export class Scenario extends Model({
     }
 
 
-    private _loadStudy(fn: (data: ViewStudy) => void) {
+    private async _loadStudy(fn: (data: ViewStudy) => void) {
         console.log(`Loading new Project: ${this.project.id}`);
 
         const viewStudyExampleReference = "f4b16ebe7e93ea3ec653cd284d72ca05";
@@ -74,7 +74,7 @@ export class Scenario extends Model({
 
         // deconstructing the speckle object
         // we get every mesh from the reference objects and load them into the scene 
-        this.study.getSpeckleMeshes.map(reference => {
+        this.study.getSpeckleMeshes.map(async reference => {
             const loader = new ObjectLoader({
                 // @ts-ignore
                 token: import.meta.env.SPECKLE_TOKEN,
@@ -91,8 +91,8 @@ export class Scenario extends Model({
 
             // this is now just rendering data that we want in the viewer
             // @ts-ignore
-            return referenceObj.Data 
-        }
+            return referenceObj.Data
+        });
     };
 }
 
