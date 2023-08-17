@@ -1,8 +1,18 @@
+import { Panel, Title } from '@strategies/ui';
 import { observer } from 'mobx-react';
-
+import { Canvas } from '@react-three/fiber';
+import CameraControl from './CameraControl';
 
 export default observer(function Viewer() {
     return (
-        <div className="Viewer" />
+        <Panel className="Viewer" active={true}>
+            <Title>View</Title>
+            <Canvas>
+                <mesh>
+                    <torusKnotGeometry />
+                    <meshNormalMaterial />
+                </mesh>
+            </Canvas>
+        </Panel>
     );
 });
