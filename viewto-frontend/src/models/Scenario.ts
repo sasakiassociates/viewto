@@ -2,11 +2,11 @@ import { Store } from '@strategies/stores';
 import { reaction, observable, action } from 'mobx';
 import { Model, model, prop } from 'mobx-keystone';
 
-
 import { Project } from './Project';
-import ObjectLoader from "@speckle/objectloader";
 import { ViewStudy } from './ViewStudy';
+
 import { View } from './View';
+import { Speckle } from '@strategies/speckle'
 
 @model("viewto/Scenario")
 export class Scenario extends Model({
@@ -27,72 +27,112 @@ export class Scenario extends Model({
         this.study = data;
     }
     onInit() {
+        if (this.project) {
+            this._loadStudyFromProject(study => this.setStudy(study));
+        }
         reaction(
-            () => [this.study?.id],
+            () => [this.project?.id],
             () => {
-                this._loadStudyModel();
+                console.log('Project id change:', this.project);
+                // NOTE: if we get a new project id, is it safe to assume that models and versions have been selected as well? That info is needed to load the study
+                // for now I just broke it into separate parts for testing  
+            }
+        );
+        reaction(
+            () => [this.project?.model],
+            () => {
+                console.log('Project model change:', this.project);
+                // NOTE:  we still need to select a version from this model to find and load the commit from 
             }
         );
 
         reaction(
-            () => [this.project.id],
+            () => [this.project?.version],
             () => {
-                this._loadStudy(study => this.setStudy(study));
+                console.log('Project version change:', this.project);
+                // NOTE: this is where we could possibly load a study into the dashboard
+                // this._loadStudy(study => this.setStudy(study));
+            }
+        );
+
+
+        reaction(
+            () => [this.study?.id],
+            () => {
+                console.log('study id has been changed', this.study);
+                this._loadStudyReferences((reference) => { console.log(reference) });
             }
         );
     }
 
 
-    private async _loadStudy(fn: (data: ViewStudy) => void) {
-        console.log(`Loading new Project: ${this.project.id}`);
+    private async _loadStudyFromProject(fn: (data: ViewStudy) => void) {
 
-        const viewStudyExampleReference = "f4b16ebe7e93ea3ec653cd284d72ca05";
-
-        const loader = new ObjectLoader({
+        const speckle = new Speckle({
             // @ts-ignore
-            token: import.meta.env.SPECKLE_TOKEN,
+            token: import.meta.env.VITE_SPECKLE_TOKEN,
             // @ts-ignore
-            serverUrl: import.meta.env.SPECKLE_URL,
-            streamId: this.project.id,
-            objectId: this.project.version,
-            // options: {
-            //     fullyTraverseArrays: false, // Default: false. By default, if an array starts with a primitive type, it will not be traversed. Set it to true if you want to capture scenarios in which lists can have intersped objects and primitives, e.g. [ 1, 2, "a", { important object } ]
-            //     excludeProps: ["displayValue", "displayMesh", "__closure"], // Default: []. Any prop names that you pass in here will be ignored from object construction traversal.
+            server: import.meta.env.VITE_SPECKLE_URL
         })
 
-        const referenceObj = await loader.getAndConstructObject((e) => {
-            // event loop for getting progress on the loading
-            console.log("Progress ", e.stage, ":", e.current / e.total);
-        });
+        // not really necessary, but this is a simple way to make sure we have an authenticated
+        console.log(await speckle.activeUser);
 
+        /* 
+         the scenario model references the speckle project(stream) that we need to pull the referene object from the database
+         the ui will give us the input for this project and object
+         for now we have a hard coded test project in place
+        */
+
+        // console.log(`Loading new Project: ${this.project.name}\n${this.project.id}\n${this.project.model}\n${this.project.version}`);
+
+        // load the version (commit) data
         // @ts-ignore
-        fn(new ViewStudy(referenceObj.Data))
+        const version = await speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Version(import.meta.env.VITE_VIEWTO_TEST_VERSION).get;
+        console.log(version);
+
+        // load the reference object from the version (commit)
+        // @ts-ignore
+        const referenceObj = await speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Object(version.referencedObject).get;
+        console.log(referenceObj);
+
+        // deconstruct all the view study data
+        // @ts-ignore
+        const study = new ViewStudy(referenceObj.Data);
+        // call back for async function
+        fn(study);
     };
 
-    private _loadStudyModel() {
+    private async _loadStudyReferences(fn: (reference: string) => void) {
         console.log(`Loading new View Study: ${this.study.name}`);
 
-        // deconstructing the speckle object
-        // we get every mesh from the reference objects and load them into the scene 
-        this.study.getSpeckleMeshes.map(async reference => {
-            const loader = new ObjectLoader({
-                // @ts-ignore
-                token: import.meta.env.SPECKLE_TOKEN,
-                // @ts-ignore
-                serverUrl: import.meta.env.SPECKLE_URL,
-                streamId: this.project.id,
-                objectId: reference
-            });
-
-            const referenceObj = await loader.getAndConstructObject((e) => {
-                // event loop for getting progress on the loading
-                console.log("Progress ", e.stage, ":", e.current / e.total);
-            });
-
-            // this is now just rendering data that we want in the viewer
+        const speckle = new Speckle({
             // @ts-ignore
-            return referenceObj.Data
-        });
+            token: import.meta.env.VITE_SPECKLE_TOKEN,
+            // @ts-ignore
+            server: import.meta.env.VITE_SPECKLE_URL
+        })
+
+        const loadVersion = async (reference: string, type: string) => {
+            console.log(`Loading new ${type} : ${reference}`);
+            // @ts-ignore
+            const obj = await speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Version(reference).get;
+            //TODO: this is where we laod the viewer data into speckle
+            console.log(obj);
+
+        }
+
+
+        // 1. load in all of the geometry references
+        // we get every mesh from the reference objects and load them into the scene 
+        this.study.getContextReferences.map(ref => loadVersion(ref, "tbd"));
+        this.study.getCloudReferences.map(cld => loadVersion(cld, "tbd"));
+
+        // 2. load the point cloud
+        // 3. apply the results
+
+        // 4. end 
+
     };
 }
 

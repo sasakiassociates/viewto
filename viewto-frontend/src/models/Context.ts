@@ -2,6 +2,8 @@
 export class Context {
     // name of the context object
     name: string;
+    // the speckle id
+    id: string;
     // id of this sasaki object
     sasakiId: string;
     // reference id to the speckle object
@@ -10,7 +12,7 @@ export class Context {
     /**
      *
      */
-    constructor(name: string, sasakiId: string, references: string[]) {
+    constructor(id: string, name: string, sasakiId: string, references: string[]) {
         this.name = name;
         this.sasakiId = sasakiId;
         this.references = references;
@@ -29,8 +31,8 @@ export class ObstructingContext extends Context {
     /**
      *
      */
-    constructor(name: string, sasakiId: string, references: string[], proposed: boolean) {
-        super(name, sasakiId, references);
+    constructor(id: string, name: string, sasakiId: string, references: string[], proposed: boolean) {
+        super(name, id, sasakiId, references);
         this.proposed = proposed;
     }
 
