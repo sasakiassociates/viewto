@@ -1,4 +1,6 @@
-import { Model, model, prop } from 'mobx-keystone';
+import { computed } from 'mobx';
+import { Model, model, modelAction, prop } from 'mobx-keystone';
+
 
 @model("viewto/Project")
 export class Project extends Model({
@@ -9,6 +11,31 @@ export class Project extends Model({
     // the path to the speckle model(branch) 
     model: prop<string>("main"),
     // the id to the speckle version(commit) 
-    version: prop<string>("6d762c3c7a")
-}) { }
+    version: prop<string>("6d762c3c7a").withSetter(),
+}) { 
+
+    @computed
+    get key() {
+        return `${this.id}-${this.model}-${this.version}`;
+    }
+
+    @computed
+    get complete() {
+        return this.id && this.model && this.version;
+    }
+
+    @modelAction
+    setId(id: string) {
+        this.id = id;
+
+        this.setModel('');
+    }
+
+    @modelAction
+    setModel(model: string) {
+        this.model = model;
+
+        this.setVersion('');
+    }
+}
 
