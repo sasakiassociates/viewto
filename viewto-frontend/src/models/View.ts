@@ -19,12 +19,17 @@ export class View extends Model({
     // // pixel and value modifiers 
     // filter: prop<ViewDataFilter>(() => new ViewDataFilter({})),
     focusIds: prop<string[]>(() => []).withSetter(),
-    obstructorId: prop<string>('').withSetter(),
+    obstructorIds: prop<string[]>(() => []).withSetter(),
 }) {
 
     @computed
     get focuses() {
         return this.focusIds.map(id => (stores as Stores).focuses.byId[id]);
+    }
+
+    @computed
+    get obstructors() {
+        return this.obstructorIds.map(id => (stores as Stores).obstructors.byId[id]);
     }
 
     @computed

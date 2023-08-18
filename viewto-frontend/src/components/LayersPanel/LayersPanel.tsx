@@ -1,29 +1,26 @@
 import { observer } from 'mobx-react';
 import { Panel, Title, Body, Select } from '@strategies/ui';
 import { Input } from '@strategies/react-form';
-import { useStores } from "@strategies/stores";
+import { useStores } from '@strategies/stores';
 import { FiInfo } from 'react-icons/fi';
 
-import Stores from "../../stores/Stores";
+import Stores from '../../stores/Stores';
 
 const sampleData = ['data1', 'data2', 'data3', 'data4']; //todo: This needs to be replaced with the actual data
 
 export default observer(function LayersPanel() {
-    const { focuses, views } = useStores<Stores>();
+    const { focuses, views, obstructors } = useStores<Stores>();
     const view = views.active;
 
     return (
-        <Panel
-            className="Layers"
-            active={true}
-        >
+        <Panel className="Layers" active={true}>
             <Title>Layers</Title>
             <Body>
                 <div className="Widget">
                     <div className="_View">
                         <div className="SelectContainer">
                             <div className="Title">
-                                {"View Focus"} <FiInfo/>
+                                {'View Focus'} <FiInfo />
                             </div>
                             <Select
                                 placeholder={'Select view focus ...'}
@@ -31,7 +28,9 @@ export default observer(function LayersPanel() {
                                 options={focuses.all.map(focus => focus.name)}
                                 value={view.focuses.map(focus => focus.name)}
                                 onChange={(names: string[]) => {
-                                    view.setFocusIds(names.map(name => focuses.byName[name].sasakiId))
+                                    view.setFocusIds(
+                                        names.map(name => focuses.byName[name].sasakiId)
+                                    );
                                 }}
                                 menuPortalTarget={document.body}
                                 menuShouldScrollIntoView={false}
@@ -39,29 +38,31 @@ export default observer(function LayersPanel() {
                                 menuPlacement={'auto'}
                             />
                         </div>
-                        {/*
                         <div className="SelectContainer">
                             <div className="Title">
-                                {"View Condition"} <FiInfo/>
+                                {'View Condition'} <FiInfo />
                             </div>
                             <Select
                                 placeholder={'Select view condition ...'}
                                 isCreatable={true}
-                                options={sampleData}
-                                value={views.viewCondition}
-                                onChange={(value: string) => views.setViewCondition(value)}
+                                options={obstructors.all.map(obs => obs.name)}
+                                value={obstructors.all.map(obs => obs.name)}
+                                onChange={(names: string[]) => {
+                                    view.setObstructorIds(
+                                        names.map(name => obstructors.byName[name].sasakiId)
+                                    );
+                                }}
                                 menuPortalTarget={document.body}
                                 menuShouldScrollIntoView={false}
                                 styles={{
-                                    menuPortal: (base) => ({
+                                    menuPortal: base => ({
                                         ...base,
-                                    })
+                                    }),
                                 }}
                                 menuPosition={'absolute'}
                                 menuPlacement={'auto'}
                             />
                         </div>
-                          */}
                     </div>
                     {/*}
                     <div className="_Points">
