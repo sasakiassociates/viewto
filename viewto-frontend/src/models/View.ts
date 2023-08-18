@@ -1,6 +1,8 @@
 import { Model, model, prop } from 'mobx-keystone';
 import { action, computed, observable } from 'mobx';
+import { stores } from '@strategies/stores';
 // import { ViewDataCondition, ViewDataFilter } from './ViewData';
+import Stores from '../stores/Stores';
 
 
 @model("viewto/View")
@@ -16,9 +18,14 @@ export class View extends Model({
     camera: prop<string>(''),
     // // pixel and value modifiers 
     // filter: prop<ViewDataFilter>(() => new ViewDataFilter({})),
-    // // the information around the focuses and obstructors
-    // condition: prop<ViewDataCondition>(() => new ViewDataCondition({}))
+    focusIds: prop<string[]>(() => []).withSetter(),
+    obstructorId: prop<string>('').withSetter(),
 }) {
+
+    @computed
+    get focuses() {
+        return this.focusIds.map(id => (stores as Stores).focuses.byId[id]);
+    }
 
     @computed
     get point() {

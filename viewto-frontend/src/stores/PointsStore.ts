@@ -14,7 +14,7 @@ export default class PointsStore extends Store {
 
     @computed
     get all() {
-        return (stores as Stores).scenario.study.points;
+        return (stores as Stores).scenario.study?.points;
     }
 
     @computed
