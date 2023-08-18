@@ -7,6 +7,8 @@ import { View } from '../models/View';
 
 export default class ViewsStore extends Store {
 
+    private readonly virtual = new View({});
+
     constructor() {
         super();
         makeObservable(this);
@@ -19,11 +21,11 @@ export default class ViewsStore extends Store {
 
     @computed
     get active(): View {
-        return this.all.filter(v => v.active)[0];
+        return this.all.filter(v => v.active)[0] || this.virtual;
     }
     
-    virtual = new View({});
 
+    /*
     @observable
     viewFocus: string[] = [];
 
@@ -71,5 +73,6 @@ export default class ViewsStore extends Store {
     setNoViewPoints(noViewPoints: number) {
         this.noViewPoints = noViewPoints;
     }
+    */
    
 }
