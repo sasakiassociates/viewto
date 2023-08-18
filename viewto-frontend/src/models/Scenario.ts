@@ -87,6 +87,7 @@ export class Scenario extends Model({
         return study;
     };
 
+    /*
     private async _loadStudyReferences(fn: (reference: string) => void) {
         console.log(`Loading new View Study: ${this.study?.name}`);
 
@@ -94,17 +95,14 @@ export class Scenario extends Model({
             console.log(`Loading new ${type} : ${reference}`);
             const obj = await this.speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Version(reference).get;
             //TODO: this is where we laod the viewer data into speckle
-            console.log(obj);
 
         }
 
 
         // 1. load in all of the geometry references
         // we get every mesh from the reference objects and load them into the scene 
-        /*
         this.study.getContextReferences.map(ref => loadVersion(ref, "tbd"));
         this.study.getCloudReferences.map(cld => loadVersion(cld, "tbd"));
-        */
 
         // 2. load the point cloud
         // 3. apply the results
@@ -112,6 +110,7 @@ export class Scenario extends Model({
         // 4. end 
 
     };
+    */
 }
 
 
