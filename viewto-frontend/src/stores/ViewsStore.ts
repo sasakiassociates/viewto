@@ -33,7 +33,7 @@ export default class ViewsStore extends Store {
     }
 
     @observable
-    viewCondition: string;
+    viewCondition: string = '';
 
     @action
     setViewCondition(viewCondition: string) {
@@ -41,7 +41,7 @@ export default class ViewsStore extends Store {
     }
 
     @observable
-    totalPoints: number;
+    totalPoints: number = 0;
 
     @action
     setTotalPoints(totalPoints: number) {
@@ -49,7 +49,7 @@ export default class ViewsStore extends Store {
     }
 
     @observable
-    visiblePoints: number;
+    visiblePoints: number = 0;
 
     @action
     setVisiblePoints(visiblePoints: number) {
@@ -57,7 +57,7 @@ export default class ViewsStore extends Store {
     }
 
     @observable
-    goodViewPoints: number;
+    goodViewPoints: number = 0;
 
     @action
     setGoodViewPoints(goodViewPoints: number) {
@@ -65,7 +65,7 @@ export default class ViewsStore extends Store {
     }
 
     @observable
-    noViewPoints: number;
+    noViewPoints: number = 0;
 
     @action
     setNoViewPoints(noViewPoints: number) {

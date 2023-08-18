@@ -18,9 +18,7 @@ export class Scenario extends Model({
 }) implements Store {
 
     readonly speckle = new Speckle({
-        // @ts-ignore
         token: import.meta.env.VITE_SPECKLE_TOKEN,
-        // @ts-ignore
         server: import.meta.env.VITE_SPECKLE_URL
     });
 
@@ -28,7 +26,7 @@ export class Scenario extends Model({
     onUpdateRegistration() { }
 
     @observable
-    study: ViewStudy;
+    study?: ViewStudy;
 
     @action
     setStudy(data: any) {
@@ -76,12 +74,10 @@ export class Scenario extends Model({
         // console.log(`Loading new Project: ${this.project.name}\n${this.project.id}\n${this.project.model}\n${this.project.version}`);
 
         // load the version (commit) data
-        // @ts-ignore
         const version = await this.speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Version(import.meta.env.VITE_VIEWTO_TEST_VERSION).get;
         console.log(version);
 
         // load the reference object from the version (commit)
-        // @ts-ignore
         const referenceObj = await this.speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Object(version.referencedObject).get;
         console.log(referenceObj);
 
@@ -92,11 +88,10 @@ export class Scenario extends Model({
     };
 
     private async _loadStudyReferences(fn: (reference: string) => void) {
-        console.log(`Loading new View Study: ${this.study.name}`);
+        console.log(`Loading new View Study: ${this.study?.name}`);
 
         const loadVersion = async (reference: string, type: string) => {
             console.log(`Loading new ${type} : ${reference}`);
-            // @ts-ignore
             const obj = await this.speckle.Project(import.meta.env.VITE_VIEWTO_TEST_PROJECT).Version(reference).get;
             //TODO: this is where we laod the viewer data into speckle
             console.log(obj);

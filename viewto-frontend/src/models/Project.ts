@@ -7,11 +7,11 @@ export class Project extends Model({
     // the name of the proejct
     name : prop<string>("some project"),
     // the id of the speckle project (stream)  
-    id: prop<string>("a823053e07"),
+    id: prop<string>(import.meta.env.VITE_VIEWTO_TEST_PROJECT),
     // the path to the speckle model(branch) 
-    model: prop<string>("main"),
+    model: prop<string>(import.meta.env.VITE_VIEWTO_TEST_MODEL),
     // the id to the speckle version(commit) 
-    version: prop<string>("6d762c3c7a").withSetter(),
+    version: prop<string>(import.meta.env.VITE_VIEWTO_TEST_VERSION).withSetter(),
 }) { 
 
     @computed

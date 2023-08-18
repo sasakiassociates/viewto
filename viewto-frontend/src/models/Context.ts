@@ -15,6 +15,7 @@ export class Context {
      *
      */
     constructor(id: string, name: string, sasakiId: string, references: string[]) {
+        this.id = id;
         this.name = name;
         this.sasakiId = sasakiId;
         this.references = references.map(ref => new ReferenceObject(ref));

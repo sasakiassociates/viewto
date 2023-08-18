@@ -28,29 +28,30 @@ export class ViewStudy {
     clouds: ViewCloud[];
     results: ResultCloud[];
 
-    constructor(data: any) {
+    constructor(data?: any) {
         makeObservable(this);
         this.id = data.id;
         this.name = data.ViewName;
         this.sasakiId = data.ViewId;
         this.focuses = data.objects
-            .filter(x => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type == "Potential")
-            .map(x => this._focusContextToWeb(x));
+            .filter((x: any) => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type == "Potential")
+            .map((x: any) => this._focusContextToWeb(x));
         this.obstructors = data.objects
-            .filter(x => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type != "Potential")
-            .map(x => this._obstructorContextToWeb(x));
+            .filter((x: any) => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type != "Potential")
+            .map((x: any) => this._obstructorContextToWeb(x));
         this.clouds = data.objects
-            .filter(x => x.speckle_type == ViewObjectTypes.cloud.speckle_type)
-            .map(x => this._viewCloudToWeb(x));
+            .filter((x: any) => x.speckle_type == ViewObjectTypes.cloud.speckle_type)
+            .map((x: any) => this._viewCloudToWeb(x));
         this.results = data.objects
-            .filter(x => x.speckle_type == ViewObjectTypes.result.speckle_type)
-            .map(x => this._resultCloudToWeb(x))
+            .filter((x: any) => x.speckle_type == ViewObjectTypes.result.speckle_type)
+            .map((x: any) => this._resultCloudToWeb(x))
     }
 
 
     @observable
     points: Point[] = [];
 
+    /*
     @computed
     get getCloudReferences() {
         const references = [];
@@ -63,10 +64,11 @@ export class ViewStudy {
     get getContextReferences() {
         return [...this.focuses, ...this.obstructors].map(ctx => ctx.references).reduce((a, b) => [...a, ...b])
     }
+    */
 
     // conversions for getting Focus Context from speckle to app
     _focusContextToWeb(obj: any): FocusContext {
-        return new FocusContext(obj.id, obj.ViewName, obj.ViewId, obj.References)
+        return new FocusContext(obj.id, obj.ViewName, obj.ViewId, obj.References);
     }
 
     // conversions for getting Obstructors from speckle to app
@@ -81,7 +83,7 @@ export class ViewStudy {
 
     // conversions for getting all result cloud data     
     _resultCloudToWeb(obj: any): ResultCloud {
-        return new ResultCloud(obj.id, obj.ViewId, obj.Positions, obj.Data.map(x => this._viewResultToWeb(x)));
+        return new ResultCloud(obj.id, obj.ViewId, obj.Positions, obj.Data.map((x: any) => this._viewResultToWeb(x)));
     }
 
     // conversions for result cloud data structure

@@ -42,6 +42,7 @@ export default class ReferenceObject {
         if (!this.isLoading) {
             const { speckle, project } = (stores as Stores).scenario;
             this.setIsLoading();
+            console.info(project.id, this.id);
             const obj = await speckle.Project(project.id).Version(this.id).get;
             this.setData(obj);
             this.setIsLoading(false);
