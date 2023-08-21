@@ -6,15 +6,18 @@ import { Scenario } from '../models/Scenario';
 import Config from '../config';
 import ViewsStore from "./ViewsStore";
 import FocusesStore from "./FocusesStore";
+import ObstructorsStore from './ObstructorsStore';
+
 
 
 type Stores = {
-    config: Config; 
+    config: Config;
     focuses: FocusesStore;
     points: PointsStore;
     scenario: Scenario;
     ui: UIStore;
-    views:ViewsStore;
+    views: ViewsStore;
+    obstructors: ObstructorsStore;
 };
 
 
@@ -25,7 +28,8 @@ export function registerStores() {
         points: new PointsStore(),
         scenario: new Scenario({}),
         ui: new UIStore(),
-        views: new ViewsStore()
+        views: new ViewsStore(),
+        obstructors: new ObstructorsStore()
     });
 }
 
