@@ -27,17 +27,20 @@ export default class ReferenceObject {
         return this.data !== undefined;
     }
 
-    @computed
-    get reference() {
-        return this.data.referencedObject;
-    }
-
     @observable
     data: any = undefined;
 
     @action
     setData(data: any) {
         this.data = data;
+    }
+
+    @observable
+    referenceObject: string = "";
+
+    @action
+    setReference(data: string) {
+        this.referenceObject = data;
     }
 
     @action
@@ -47,6 +50,7 @@ export default class ReferenceObject {
             this.setIsLoading();
             const obj = await speckle.Project(project.id).Version(this.id).get;
             this.setData(obj);
+            this.setReference(obj.referencedObject);
             this.setIsLoading(false);
         }
     }

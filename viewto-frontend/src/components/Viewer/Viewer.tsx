@@ -51,10 +51,9 @@ export default observer(function Viewer() {
                 if (!versionRef.hasLoaded) {
                     await versionRef.load();
                 }
-                const referenceObj = versionRef.reference;
 
                 const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
-                const objUrl = `${url}/objects/${referenceObj}`;
+                const objUrl = `${url}/objects/${versionRef.referenceObject}`;
 
                 console.log(`getting object ${objUrl}`);
 
