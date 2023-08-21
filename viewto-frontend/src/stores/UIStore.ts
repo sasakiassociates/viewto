@@ -44,4 +44,12 @@ export default class UIStore extends Store {
         this.camera = camera;
     }
     
+    @observable
+    startupModalIsOpen: boolean = true;
+
+    @action
+    setStartupModalOpen(isOpen = true) {
+        this.startupModalIsOpen = isOpen;
+    }
+    
 }
