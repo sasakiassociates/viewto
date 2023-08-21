@@ -33,12 +33,13 @@ export class ViewStudy {
         this.id = data.id;
         this.name = data.ViewName;
         this.sasakiId = data.ViewId;
+        let hackyIndex = 0;
         this.focuses = data.objects
             .filter((x: any) => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type == "Potential")
             .map((x: any) => this._focusContextToWeb(x));
         this.obstructors = data.objects
             .filter((x: any) => x.speckle_type == ViewObjectTypes.context.speckle_type && x.Content_Type != "Potential")
-            .map((x: any) => this._obstructorContextToWeb(x));
+            .map((x: any) => this._obstructorContextToWeb(x, hackyIndex++));
         this.clouds = data.objects
             .filter((x: any) => x.speckle_type == ViewObjectTypes.cloud.speckle_type)
             .map((x: any) => this._viewCloudToWeb(x));
@@ -72,8 +73,13 @@ export class ViewStudy {
     }
 
     // conversions for getting Obstructors from speckle to app
-    _obstructorContextToWeb(obj: any): ObstructingContext {
-        return new ObstructingContext(obj.id, obj.ViewName, obj.ViewId, obj.References, (obj.Content_Type === "Proposed"));
+    _obstructorContextToWeb(obj: any, index: number): ObstructingContext {
+
+        const typeName = this._isProposed(obj) ? "Proposed" : "Existing";
+        const name = obj.ViewName != null ? obj.ViewName : `${typeName} ${index}`;
+        const item = new ObstructingContext(obj.id, name, obj.ViewId, obj.References, this._isProposed(obj));
+        console.log(item);
+        return item;
     }
 
     // conversions for getting View Cloud from speckle to app
@@ -94,6 +100,10 @@ export class ViewStudy {
     // conversions for getting View Condition from speckle to app
     _viewConditionToWeb(focus: string, obstructor: string, type: string): ViewCondition {
         return new ViewCondition(focus, obstructor, ConditionTypeLookUp[type.toLowerCase()])
+    }
+
+    _isProposed(obj: any): boolean {
+        return obj?.Content_Type == "Proposed"
     }
 
 }
