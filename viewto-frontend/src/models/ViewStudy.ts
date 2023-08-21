@@ -52,20 +52,10 @@ export class ViewStudy {
     @observable
     points: Point[] = [];
 
-    /*
-    @computed
-    get getCloudReferences() {
-        const references = [];
-        this.clouds.map(item => references.push(...item.references));
-        return references;
-
-    }
-
     @computed
     get getContextReferences() {
         return [...this.focuses, ...this.obstructors].map(ctx => ctx.references).reduce((a, b) => [...a, ...b])
     }
-    */
 
     // conversions for getting Focus Context from speckle to app
     _focusContextToWeb(obj: any): FocusContext {
