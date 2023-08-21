@@ -37,7 +37,7 @@ export class ObstructingContext extends Context {
      *
      */
     constructor(id: string, name: string, sasakiId: string, references: string[], proposed: boolean) {
-        super(name, id, sasakiId, references);
+        super(id, name, sasakiId, references);
         this.proposed = proposed;
     }
 
