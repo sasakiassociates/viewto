@@ -10,9 +10,7 @@ export default class ReferenceObject {
 
     constructor(id: string) {
         makeObservable(this);
-
         this.id = id;
-
         this.load();
     }
 
@@ -29,11 +27,16 @@ export default class ReferenceObject {
         return this.data !== undefined;
     }
 
+    @computed
+    get reference() {
+        return this.data.referencedObject;
+    }
+
     @observable
     data: any = undefined;
 
     @action
-    setData(data: any)  {
+    setData(data: any) {
         this.data = data;
     }
 
