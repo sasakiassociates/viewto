@@ -14,7 +14,7 @@ export default observer(function LayersPanel() {
 
     return (
         <Panel className="Layers" active={true}>
-            <Title>Layers</Title>
+            <Title>Conditions</Title>
             <Body>
                 <div className="Widget">
                     <div className="_View">
@@ -40,13 +40,13 @@ export default observer(function LayersPanel() {
                         </div>
                         <div className="SelectContainer">
                             <div className="Title">
-                                {'View Condition'} <FiInfo />
+                                {'View Obstructor'} <FiInfo />
                             </div>
                             <Select
                                 placeholder={'Select view condition ...'}
-                                isCreatable={true}
+                                isMulti={true}
                                 options={obstructors.all.map(obs => obs.name)}
-                                value={obstructors.all.map(obs => obs.name)}
+                                value={view.obstructors.map(obs => obs.name)}
                                 onChange={(names: string[]) => {
                                     view.setObstructorIds(
                                         names.map(name => obstructors.byName[name].sasakiId)
@@ -54,11 +54,6 @@ export default observer(function LayersPanel() {
                                 }}
                                 menuPortalTarget={document.body}
                                 menuShouldScrollIntoView={false}
-                                styles={{
-                                    menuPortal: base => ({
-                                        ...base,
-                                    }),
-                                }}
                                 menuPosition={'absolute'}
                                 menuPlacement={'auto'}
                             />
