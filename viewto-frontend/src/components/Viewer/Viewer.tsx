@@ -8,7 +8,7 @@ export default observer(function Viewer() {
         <Panel className="Viewer" active={true}>
             <Title>View</Title>
             <Canvas>
-                {/* <CameraControl /> */}
+                <CameraControl />
                 <mesh>
                     <torusKnotGeometry />
                     <meshNormalMaterial />

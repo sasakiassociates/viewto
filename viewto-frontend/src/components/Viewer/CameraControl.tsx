@@ -7,6 +7,5 @@ export default function CameraControl() {
     const { camera, gl } = useThree();
     console.log(camera);
 
-    // @ts-ignore
-    return <orbitControls arg={[camera, gl.domElement]} />;
+    return <orbitControls args={[camera, gl.domElement]} />;
 }
