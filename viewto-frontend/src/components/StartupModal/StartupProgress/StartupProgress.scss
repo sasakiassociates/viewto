@@ -1,3 +1,4 @@
+@use 'sass:math';
 @use '@strategies/tokens/animation';
 @use '@strategies/tokens/color';
 @use '@strategies/tokens/layout';
@@ -5,16 +6,24 @@
 
 .StartupProgress {
     display: flex;
-    gap: layout.$padding--small;
+    gap: layout.$padding--smallest;
 
     span {
-        width: 10px;
-        height: 10px;
+        $_size: 10px;
 
-        transition: width animation.$speed;
+        display: block;
+
+        width: $_size;
+        height: $_size;
+
+        background: color.$blue--light;
+        border-radius: math.div($_size, 2);
+        transition: width animation.$speed, background animation.$speed;
 
         &.current {
-            width: 20px;
+            width: $_size * 2;
+
+            background: color.$blue;
         }
     }
 }

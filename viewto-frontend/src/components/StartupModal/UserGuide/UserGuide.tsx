@@ -53,9 +53,9 @@ export default function UserGuide() {
                     )}
 
                     <StartupProgress 
-                        current={step+1}
+                        current={step}
                         steps={steps.length}
-                        onClick={step => setStep(step - 1)}
+                        onClick={setStep}
                     />
 
                     {isAtFinalStep || (

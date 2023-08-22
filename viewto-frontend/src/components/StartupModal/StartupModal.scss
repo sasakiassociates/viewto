@@ -4,22 +4,75 @@
 .Modal.StartupModal {
 
     .Modal--window {
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 auto;
+
+        min-height: 650px;
+        max-width: 1000px;
+        width: 90%;
+
+        header {
+            background: none;
+        }
+
         > header, > footer {
             display: none;
         }
 
         > main {
             display: flex;
+            flex: 1;
+            flex-direction: column;
+
+            height: 100%;
+            padding: 0;
+            max-height: unset;
+
+            > div {
+                flex: 1;
+                display: flex;
+                height: 100%;
+
+                main {
+                    padding: 0;
+                    max-height: unset;
+                }
+            }
         }
     }
 
     nav {
         flex: 1 1 25%;
         max-width: 250px;
+
+        text-align: center;
+
         background: color.$blue--lightest;
+
+        main {
+            text-align: left;
+        }
+
+        header, footer {
+            text-align: center;
+        }
     }
 
     .content {
         flex: 1 1 auto;
+    }
+
+    nav, .content {
+        display: flex;
+        flex-direction: column;
+
+        header, footer {
+            flex: 0;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
     }
 }
