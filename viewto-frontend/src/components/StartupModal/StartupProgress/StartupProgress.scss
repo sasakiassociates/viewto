@@ -1,0 +1,20 @@
+@use '@strategies/tokens/animation';
+@use '@strategies/tokens/color';
+@use '@strategies/tokens/layout';
+
+
+.StartupProgress {
+    display: flex;
+    gap: layout.$padding--small;
+
+    span {
+        width: 10px;
+        height: 10px;
+
+        transition: width animation.$speed;
+
+        &.current {
+            width: 20px;
+        }
+    }
+}

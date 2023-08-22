@@ -21,6 +21,14 @@ export default class UIStore extends Store {
     }
 
     @observable
+    appRef?: HTMLDivElement;
+
+    @action
+    setAppRef(appRef: HTMLDivElement) {
+        this.appRef = appRef;
+    }
+
+    @observable
     chart: Chart = Chart.VIEWY;
 
     @action
