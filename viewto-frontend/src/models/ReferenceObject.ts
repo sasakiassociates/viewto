@@ -14,17 +14,23 @@ export default class ReferenceObject {
         this.load();
     }
 
+    
+    @computed
+    get hasLoaded() {
+        return this.data !== undefined;
+    }
+
+    @computed
+    get referenceObject( ){
+        return this.data?.referencedObject
+    }
+
     @observable
     isLoading: boolean = false;
 
     @action
     setIsLoading(isLoading = true) {
         this.isLoading = isLoading;
-    }
-
-    @computed
-    get hasLoaded() {
-        return this.data !== undefined;
     }
 
     @observable
@@ -35,13 +41,6 @@ export default class ReferenceObject {
         this.data = data;
     }
 
-    @observable
-    referenceObject: string = "";
-
-    @action
-    setReference(data: string) {
-        this.referenceObject = data;
-    }
 
     @action
     async load() {
@@ -50,7 +49,6 @@ export default class ReferenceObject {
             this.setIsLoading();
             const obj = await speckle.Project(project.id).Version(this.id).get;
             this.setData(obj);
-            this.setReference(obj.referencedObject);
             this.setIsLoading(false);
         }
     }

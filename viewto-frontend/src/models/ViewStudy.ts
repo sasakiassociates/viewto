@@ -57,6 +57,11 @@ export class ViewStudy {
         return [...this.focuses, ...this.obstructors].map(ctx => ctx.references).reduce((a, b) => [...a, ...b])
     }
 
+    @computed
+    get contextRefKey() {
+        return this.getContextReferences.map(ref => ref.referenceObject).join('-');
+    }
+
     // conversions for getting Focus Context from speckle to app
     _focusContextToWeb(obj: any): FocusContext {
         return new FocusContext(obj.id, obj.ViewName, obj.ViewId, obj.References);

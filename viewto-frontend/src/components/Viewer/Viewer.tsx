@@ -52,6 +52,8 @@ export default observer(function Viewer() {
                     await versionRef.load();
                 }
 
+                console.log(versionRef.referenceObject);
+                
                 const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
                 const objUrl = `${url}/objects/${versionRef.referenceObject}`;
 
@@ -60,7 +62,7 @@ export default observer(function Viewer() {
                 await viewer.current?.loadObjectAsync(objUrl, import.meta.env.VITE_SPECKLE_TOKEN);
             }
         })();
-    }, [scenario.study]);
+    }, [scenario.study?.contextRefKey]);
 
     return <div className="Viewer" ref={viewerRef} />;
 });
