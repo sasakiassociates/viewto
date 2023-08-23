@@ -132,6 +132,33 @@
                 font-weight: font.$weight--medium;
             }
         }
+
+        footer {
+            display: flex;
+            align-items: center;
+
+            width: 100%;
+            padding: 0;
+
+            .Button {
+                z-index: 1;
+                margin-left: auto;
+
+                &.secondary {
+                    margin-left: 0;
+                }
+            }
+
+            .StartupProgress {
+                position: absolute;
+                left: 0%;
+                right: 0%;
+                z-index: 0;
+
+                width: min-content;
+                margin: auto;
+            }
+        }
     }
 
     nav, .content {
