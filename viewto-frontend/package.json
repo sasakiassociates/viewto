@@ -8,6 +8,7 @@
     "build": "vite build",
     "stage": "pnpm build && firebase deploy --only hosting:staging",
     "deploy-channel": "vite build && firebase hosting:channel:deploy sprint17 --expires 10d",
+    "production": "pnpm build && firebase deploy --only hosting:production",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
