@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react';
-import { Viewer as SpeckleViewer } from '@speckle/viewer';
 import { useRef, useEffect } from 'react';
 import { useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
@@ -9,19 +8,11 @@ import Stores from '../../stores/Stores';
 export default observer(function Viewer() {
     const { scenario } = useStores<Stores>();
 
-    // references for the component objects
     const viewerRef = useRef<HTMLDivElement>(null);
     const viewer = useRef<SpeckleViewer>();
 
-    // effect=something that happens when state changes for this component
-    // what they really mean= anything inside this effect, run whenever it's deps change
-    // use effect only runs after being rendered the first time
-
-    //  using an empty array means we have no deps, so we don't need to run it more than once
-
     useEffect(() => {
         if (viewer.current) return;
-
         viewer.current = new SpeckleViewer(viewerRef.current!);
         (async () => {
             await viewer.current?.init();
@@ -36,65 +27,57 @@ export default observer(function Viewer() {
         // the async call to load each item into the speckle viewer
         (async () => {
             try {
-                // this effect gets called before the study is set
-                if (!scenario.study) {
-                    console.log('Study has not been mounted to the scenario');
+                if (!scenario.study || scenario.study.isLoading || !scenario.study.hasLoaded) {
+                    console.log('study is not ready for the viewer');
                     return;
                 }
 
-                if(!scenario.study.hasLoaded){
-                    console.log('scenario has not loaded');
-                    if(scenario.study.isLoading){
-                        console.log('we are already loading this lil fella');
-                        
-                        return;
-                    }
-                    await scenario.study.load();
-                }
+                /* load the geometry into the viewer */
 
                 // get all of the objects we need to stream in
                 const references = scenario.study.getAllReferences;
                 console.log('refernces', references);
+
+                const enableCaching = true;
+                const priorty = 1;
+                const zoomFit = false;
+
                 // go through each one version ref to pull in
                 for await (const versionRef of references) {
-        
-                    // we cover this by checking the view study if its loaded
-                    // // load the version reference info
-                    // if (!versionRef.hasLoaded) {
-                    //     await versionRef.load();
-                    // }
-
-                    if (!versionRef.referenceObject) {
-                        console.log('No reference loaded yet');
-                        return;
-                    }
-
                     const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
                     const objUrl = `${url}/objects/${versionRef.referenceObject}`;
-                    console.log(`getting object ${objUrl}`);
 
                     await viewer.current?.loadObjectAsync(
                         objUrl,
-                        import.meta.env.VITE_SPECKLE_TOKEN
+                        import.meta.env.VITE_SPECKLE_TOKEN,
+                        enableCaching,
+                        priorty,
+                        zoomFit
                     );
                 }
 
-                // the tree contains a root with a list of children nodes that represent each version the study pulls in
+                console.log('study loaded into viewer');
+
+                /* adjust the camera view to focus on the point cloud */
+
+                // copy the tree from the viewer
                 const tree = viewer.current?.getDataTree();
-                const cloudVersionRef = '823cb85551e5f8c4c1bd74c1f675e8ff';
+                // serach for our point cloud object
+                const clouds = tree?.findAll((guid, obj) => {
+                    return obj.speckle_type === 'Objects.Geometry.Pointcloud';
+                });
 
-                scenario.study.getCloudReferneces;
-                viewer.current?.zoom([cloudVersionRef]);
+                // sad
+                if (clouds === undefined) return;
 
-                // TODO: lets adujst the camera to focus on the points
-                // find the cloud and zoom in on it
-
-                console.log('tree', tree);
+                // zoom into the our point cloud
+                const ids = clouds.filter(x => typeof x.id === 'string').map(o => o.id as string);
+                viewer.current?.zoom(ids);
             } catch (error) {
                 console.error(error);
             }
         })();
-    }, [scenario.study?.referenceKeys]);
+    }, [scenario.study?.hasLoaded]);
 
     return <div className="Viewer" ref={viewerRef} />;
 });
