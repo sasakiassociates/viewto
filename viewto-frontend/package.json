@@ -6,6 +6,9 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
+    "stage": "pnpm build && firebase deploy --only hosting:staging",
+    "deploy-channel": "vite build && firebase hosting:channel:deploy sprint17 --expires 10d",
+    "production": "pnpm build && firebase deploy --only hosting:production",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
@@ -14,6 +17,7 @@
     "@react-three/drei": "^9.80.4",
     "@react-three/fiber": "^8.13.6",
     "@speckle/objectloader": "^2.15.1",
+    "@speckle/viewer": "^2.15.1",
     "@strategies/react-form": "^1.4.7",
     "@strategies/speckle": "^3.0.1",
     "@strategies/stores": "^1.3.3",

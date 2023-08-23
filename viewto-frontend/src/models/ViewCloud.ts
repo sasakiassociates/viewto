@@ -1,13 +1,15 @@
+import ReferenceObject from "./ReferenceObject";
+
 export class ViewCloud {
     id: string;
-    references: string[];
+    references: ReferenceObject[];
 
     /**
      *
      */
     constructor(id: string, references: string[]) {
         this.id = id;
-        this.references = references;
+        this.references = references.map(ref => new ReferenceObject(ref));
     }
 }
 
