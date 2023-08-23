@@ -1,4 +1,4 @@
-import ReferenceObject from './ReferenceObject';
+import VersionReference from './VersionReference';
 // a simple reference object used to keep track of the speckle reference id and the sasaki app id  
 
 export class Context {
@@ -9,7 +9,7 @@ export class Context {
     // id of this sasaki object
     sasakiId: string;
     // reference id to the speckle object
-    references: ReferenceObject[];
+    references: VersionReference[];
 
     /**
      *
@@ -18,7 +18,7 @@ export class Context {
         this.id = id;
         this.name = name;
         this.sasakiId = sasakiId;
-        this.references = references.map(ref => new ReferenceObject(ref));
+        this.references = references.map(ref => new VersionReference(ref));
     }
 
 }

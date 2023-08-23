@@ -35,34 +35,66 @@ export default observer(function Viewer() {
 
         // the async call to load each item into the speckle viewer
         (async () => {
-            // this effect gets called before the study is set
-            if (!scenario.study) {
-                console.log('Study has not been mounted to the scenario');
-                return;
-            }
-
-            // get all of the objects we need to stream in
-            const references = scenario.study.getContextReferences;
-            console.log('references=', references);
-
-            // go through each one version ref to pull in
-            for await (const versionRef of references) {
-                // load the version reference info
-                if (!versionRef.hasLoaded) {
-                    await versionRef.load();
+            try {
+                // this effect gets called before the study is set
+                if (!scenario.study) {
+                    console.log('Study has not been mounted to the scenario');
+                    return;
                 }
 
-                console.log(versionRef.referenceObject);
-                
-                const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
-                const objUrl = `${url}/objects/${versionRef.referenceObject}`;
+                if(!scenario.study.hasLoaded){
+                    console.log('scenario has not loaded');
+                    if(scenario.study.isLoading){
+                        console.log('we are already loading this lil fella');
+                        
+                        return;
+                    }
+                    await scenario.study.load();
+                }
 
-                console.log(`getting object ${objUrl}`);
+                // get all of the objects we need to stream in
+                const references = scenario.study.getAllReferences;
+                console.log('refernces', references);
+                // go through each one version ref to pull in
+                for await (const versionRef of references) {
+        
+                    // we cover this by checking the view study if its loaded
+                    // // load the version reference info
+                    // if (!versionRef.hasLoaded) {
+                    //     await versionRef.load();
+                    // }
 
-                await viewer.current?.loadObjectAsync(objUrl, import.meta.env.VITE_SPECKLE_TOKEN);
+                    if (!versionRef.referenceObject) {
+                        console.log('No reference loaded yet');
+                        return;
+                    }
+
+                    const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
+                    const objUrl = `${url}/objects/${versionRef.referenceObject}`;
+                    console.log(`getting object ${objUrl}`);
+
+                    await viewer.current?.loadObjectAsync(
+                        objUrl,
+                        import.meta.env.VITE_SPECKLE_TOKEN
+                    );
+                }
+
+                // the tree contains a root with a list of children nodes that represent each version the study pulls in
+                const tree = viewer.current?.getDataTree();
+                const cloudVersionRef = '823cb85551e5f8c4c1bd74c1f675e8ff';
+
+                scenario.study.getCloudReferneces;
+                viewer.current?.zoom([cloudVersionRef]);
+
+                // TODO: lets adujst the camera to focus on the points
+                // find the cloud and zoom in on it
+
+                console.log('tree', tree);
+            } catch (error) {
+                console.error(error);
             }
         })();
-    }, [scenario.study?.contextRefKey]);
+    }, [scenario.study?.referenceKeys]);
 
     return <div className="Viewer" ref={viewerRef} />;
 });

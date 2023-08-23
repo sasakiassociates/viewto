@@ -4,7 +4,7 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import Stores from '../stores/Stores';
 
 
-export default class ReferenceObject {
+export default class VersionReference {
 
     readonly id: string;
 
@@ -14,14 +14,14 @@ export default class ReferenceObject {
         this.load();
     }
 
-    
+
     @computed
     get hasLoaded() {
         return this.data !== undefined;
     }
 
     @computed
-    get referenceObject( ){
+    get referenceObject() {
         return this.data?.referencedObject
     }
 
