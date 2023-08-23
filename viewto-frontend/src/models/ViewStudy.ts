@@ -53,8 +53,6 @@ export class ViewStudy {
         this.results = data.objects
             .filter((x: any) => x.speckle_type == ViewObjectTypes.result.speckle_type)
             .map((x: any) => this._resultCloudToWeb(x));
-
-        this._setReferenceKeys();
     }
 
     @observable
@@ -79,30 +77,17 @@ export class ViewStudy {
         return [...this.clouds].map(version => version.references).reduce((a, b) => [...a, ...b]);
     }
 
-    @computed
-    get referenceKeys() {
-        return this.getAllReferences.map(ref => ref.referenceObject).join('-');
-    }
-
-    @observable
-    referencesKey: string = '';
-
-    _setReferenceKeys() {
-        this.referencesKey = this.getAllReferences.map(ref => ref.referenceObject).join('-');
-    }
 
     @computed
     get hasLoaded() {
         return this.getAllReferences.filter(ref => !ref.hasLoaded).length == 0;
     }
 
-    @observable
-    isLoading: boolean = false;
-
-    @action
-    setIsLoading(isLoading = true) {
-        this.isLoading = isLoading;
+    @computed
+    get isLoading() {
+        return this.getAllReferences.filter(ref => !ref.isLoading).length == 0;
     }
+
 
     // conversions for getting Focus Context from speckle to app
     _focusContextToWeb(obj: any): FocusContext {
@@ -157,7 +142,6 @@ export class ViewStudy {
     }
 
     public async load() {
-        this.setIsLoading(true);
         console.log(`loading references: study ${this.name}`);
 
         // go through each one version ref to pull in
@@ -166,7 +150,5 @@ export class ViewStudy {
 
             await versionRef.load();
         }
-
-        this.setIsLoading(false);
     }
 }
