@@ -76,7 +76,7 @@ export class ViewStudy {
 
     @computed
     get getCloudReferneces() {
-        return [...this.clouds].map(version => version.references);
+        return [...this.clouds].map(version => version.references).reduce((a, b) => [...a, ...b]);
     }
 
     @computed
