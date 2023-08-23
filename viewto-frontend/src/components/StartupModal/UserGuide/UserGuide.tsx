@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@strategies/ui';
 import { FiArrowRight } from 'react-icons/fi';
+import { PiArrowCircleRight } from 'react-icons/pi';
 
 import Logo from '../../../assets/ViewTo.svg';
 import StartupProgress from '../StartupProgress/StartupProgress';
@@ -21,9 +22,14 @@ export default function UserGuide() {
                 <main>
                     <h3>Welcome</h3>
                     <ol>
-                        {steps.map((step, i) => (
-                            <li key={step.title} onClick={() => setStep(i)}>
-                                {step.title}
+                        {steps.map((_step, i) => (
+                            <li 
+                                key={_step.title} 
+                                className={i === step ? 'active' : ''}
+                                onClick={() => setStep(i)}
+                            >
+                                <PiArrowCircleRight />
+                                <span>{_step.title}</span>
                             </li>
                         ))}
                     </ol>
@@ -47,7 +53,7 @@ export default function UserGuide() {
 
                 <footer>
                     {step !== 0 && (
-                        <Button className="secondary">
+                        <Button className="secondary" onClick={() => setStep(step-1)}>
                             Previous
                         </Button>
                     )}
@@ -59,7 +65,7 @@ export default function UserGuide() {
                     />
 
                     {isAtFinalStep || (
-                        <Button>
+                        <Button onClick={() => setStep(step+1)}>
                             Next
                             <FiArrowRight />
                         </Button>

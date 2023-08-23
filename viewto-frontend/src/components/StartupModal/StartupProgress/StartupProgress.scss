@@ -18,6 +18,7 @@
 
         background: color.$blue--light;
         border-radius: math.div($_size, 2);
+        cursor: pointer;
         transition: width animation.$speed, background animation.$speed;
 
         &.current {

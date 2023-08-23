@@ -1,4 +1,7 @@
+@use '@strategies/tokens/animation';
 @use '@strategies/tokens/color';
+@use '@strategies/tokens/font';
+@use '@strategies/tokens/layout';
 
 
 .Modal.StartupModal {
@@ -8,9 +11,11 @@
         flex-direction: column;
         flex: 0 1 auto;
 
-        min-height: 650px;
-        max-width: 1000px;
         width: 90%;
+        max-width: 1000px;
+        min-height: 650px;
+
+        border-radius: layout.$border-radius--large * 2;
 
         header {
             background: none;
@@ -34,7 +39,7 @@
                 display: flex;
                 height: 100%;
 
-                main {
+                > main {
                     padding: 0;
                     max-height: unset;
                 }
@@ -43,24 +48,90 @@
     }
 
     nav {
-        flex: 1 1 25%;
-        max-width: 250px;
+        flex: 0 1 max-content;
+
+        min-width: 250px;
+        padding: layout.$padding--large;
 
         text-align: center;
 
         background: color.$blue--lightest;
 
+        img {
+            height: 20px;
+        }
+
         main {
             text-align: left;
+            padding: 0;
         }
 
         header, footer {
             text-align: center;
+            padding: 0;
+        }
+
+        header {
+            margin-bottom: layout.$padding;
+        }
+
+        h3 {
+            color: color.$blue;
+            font-size: font.$size--xsmall;
+            font-weight: font.$weight--medium;
+            text-transform: uppercase;
+        }
+
+        ol {
+            padding-left: 0;
+            margin: auto;
+
+            list-style: none;
+
+            li {
+                color: color.$grey;
+                font-size: font.$size--large;
+                font-weight: 400;
+
+                cursor: pointer;
+                transition: color animation.$speed;
+                display: flex;
+                align-items: center;
+
+                + li {
+                    margin-top: layout.$padding;
+                }
+
+                &.active {
+                    color: color.$black;
+                }
+
+                span {
+                    flex: 1 1 auto;
+                }
+
+                svg {
+                    flex: 0 1 font.$size--large;
+                    margin: auto;
+                    margin-right: layout.$padding--small;
+                }
+            }
         }
     }
 
     .content {
         flex: 1 1 auto;
+        padding: layout.$padding--large;
+
+        header {
+            padding: 0 0 layout.$padding;
+            border-bottom: 1px solid color.$black;
+
+            h2 {
+                font-size: font.$size--xsmall * 2;
+                font-weight: font.$weight--medium;
+            }
+        }
     }
 
     nav, .content {
