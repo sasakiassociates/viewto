@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react';
+import { Viewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
 import { useRef, useEffect } from 'react';
 import { useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
@@ -14,6 +15,24 @@ export default observer(function Viewer() {
     useEffect(() => {
         if (viewer.current) return;
         viewer.current = new SpeckleViewer(viewerRef.current!);
+
+        /* events that our ui might want to show */
+        viewer.current.on(ViewerEvent.DownloadComplete, arg => {
+            console.log('dowload complete', arg);
+        });
+        viewer.current.on(ViewerEvent.LoadComplete, arg => {
+            console.log('load complete', arg);
+        });
+        viewer.current.on(ViewerEvent.LoadProgress, arg => {
+            console.log('load progress', arg);
+        });
+        viewer.current.on(ViewerEvent.ObjectClicked, arg => {
+            console.log('object clicked', arg);
+        });
+        viewer.current.on(ViewerEvent.ObjectDoubleClicked, arg => {
+            console.log('object double clicked', arg);
+        });
+
         (async () => {
             await viewer.current?.init();
         })();
