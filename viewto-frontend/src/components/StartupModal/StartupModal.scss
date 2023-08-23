@@ -4,7 +4,11 @@
 @use '@strategies/tokens/layout';
 
 
-.Modal.StartupModal {
+.StartupModal.Modal {
+
+    .Modal--gutter {
+        pointer-events: none;
+    }
 
     .Modal--window {
         display: flex;
