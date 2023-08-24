@@ -6,12 +6,12 @@ import LayersPanel from './components/LayersPanel/LayersPanel';
 import SelectionPanel from './components/SelectionPanel/SelectionPanel';
 import PointViewPanel from './components/PointViewPanel/PointViewPanel';
 import Viewer from './components/Viewer/Viewer';
-
+import FiberViewer from './components/FiberViewer/FiberViewer';
 
 export default function App() {
     useEffect(() => {
         // @ts-ignore
-        window.stores = stores; 
+        window.stores = stores;
     }, []);
 
     return (
@@ -22,6 +22,7 @@ export default function App() {
                 <SelectionPanel />
                 <PointViewPanel />
                 <Viewer />
+                <FiberViewer />
             </div>
         </div>
     );
