@@ -4,6 +4,26 @@ import { useRef, useEffect } from 'react';
 import { useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
 
+enum SpeckleType {
+    View3D = 'View3D',
+    BlockInstance = 'BlockInstance',
+    Pointcloud = 'Pointcloud',
+    Brep = 'Brep',
+    Mesh = 'Mesh',
+    Point = 'Point',
+    Line = 'Line',
+    Polyline = 'Polyline',
+    Box = 'Box',
+    Polycurve = 'Polycurve',
+    Curve = 'Curve',
+    Circle = 'Circle',
+    Arc = 'Arc',
+    Ellipse = 'Ellipse',
+    RevitInstance = 'RevitInstance',
+    Text = 'Text',
+    Unknown = 'Unknown',
+}
+
 // api docs for viewer
 // https://speckle.notion.site/Viewer-API-Documentation-11f7bcbf3d2547c2985b0c988fb9889e
 export default observer(function Viewer() {
@@ -81,6 +101,14 @@ export default observer(function Viewer() {
 
                 // copy the tree from the viewer
                 const tree = viewer.current?.getDataTree();
+                console.log('tree', tree);
+
+                const world = viewer.current?.getWorldTree();
+                console.log('world', world);
+
+                const render = world?.getRenderTree();
+                console.log('render', render);
+
                 // serach for our point cloud object
                 const clouds = tree?.findAll((guid, obj) => {
                     return obj.speckle_type === 'Objects.Geometry.Pointcloud';
@@ -88,6 +116,28 @@ export default observer(function Viewer() {
 
                 // sad
                 if (clouds === undefined) return;
+
+                for (const cloud of clouds) {
+                    console.log('cloud', cloud);
+
+                    // currently not sure how to access the cloud object to modify it's color data
+                    // setting the color fill does not seem to be doing the trick
+
+                    // @ts-ignore
+                    const pointCount = cloud.points?.length / 3;
+                    console.log('point count', pointCount);
+
+                    cloud.colors = Array(pointCount).fill('rgb(255, 0, 0)');
+
+                    const id = cloud.id as string;
+                    console.log('id', id);
+
+                    // render nodes
+                    const renderNode = render?.getRenderableNodes(SpeckleType.Pointcloud);
+                    if (renderNode === undefined) break;
+
+                    console.log('render', renderNode[0].model.renderView);
+                }
 
                 // zoom into the our point cloud
                 const ids = clouds.filter(x => typeof x.id === 'string').map(o => o.id as string);
