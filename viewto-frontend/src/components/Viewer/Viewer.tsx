@@ -3,6 +3,7 @@ import { DebugViewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
 import { useRef, useEffect } from 'react';
 import { useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
+import * as THREE from 'three';
 
 enum SpeckleType {
     View3D = 'View3D',
@@ -71,16 +72,14 @@ export default observer(function Viewer() {
                     return;
                 }
 
-                /* load the geometry into the viewer */
+                //#region load the geometry into the viewer
 
                 // get all of the objects we need to stream in
                 const references = scenario.study.getAllReferences;
-                console.log('refernces', references);
-
+                // default values for loading with the viewert
                 const enableCaching = true;
                 const priorty = 1;
                 const zoomFit = false;
-
                 // go through each one version ref to pull in
                 for await (const versionRef of references) {
                     const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
@@ -97,73 +96,61 @@ export default observer(function Viewer() {
 
                 console.log('study loaded into viewer');
 
-                /* adjust the camera view to focus on the point cloud */
+                //#endregion
 
-                const worldTree = viewer.current?.getWorldTree();
+                //#region post viewer setup
 
-                const renderTree = worldTree?.getRenderTree();
-
-                // serach for our point cloud object
-                const renderViews = renderTree?.getRenderableRenderViews(SpeckleType.Pointcloud);
-
-                // sad
-                if (renderViews === undefined) return;
-
-                console.log('renderable nodes found', renderViews.length);
-
-                const pointCloud = renderViews[0];
-
-                if (!pointCloud) {
-                    console.log('point cloud is sad');
-                    return;
-                }
-
-                console.log('pointcloud', pointCloud);
-
-                console.log('vert start', pointCloud.vertStart);
-                console.log('vert end', pointCloud.vertEnd);
-                console.log('batch start', pointCloud.batchStart);
-                console.log('batch end', pointCloud.batchEnd);
-                console.log('batch count', pointCloud.batchCount);
-
-                const threeObj = viewer.current
-                    ?.getRenderer()
-                    .scene.getObjectByProperty('uuid', pointCloud.batchId);
-
-                if (!threeObj) {
-                    console.log('point cloud is sad');
-                    return;
-                }
-                console.log('three obj', threeObj);
-
-                // get the three.js geometry
-                // @ts-ignore
-                const geometry = threeObj.geometry;
-                console.log('geometry', geometry);
-
-                // point buffer
-                const pointCount = geometry.getAttribute('position').count;
-                console.log('point count', pointCount);
-
-                const colorAttr = geometry.getAttribute('color');
-                console.log('color attribute', colorAttr);
-
-                const newColors = new Float32Array(pointCount);
-                for (let i = 0; i < pointCount; i++) {
-                    newColors[i] = 0;
-                }
-
-                colorAttr.set(newColors);
-                colorAttr.needsUpdate = true;
-
+                // relocating the camera to the point cloud
                 const cloudIds = viewer.current
                     ?.getDataTree()
                     .findAll((guid, obj) => {
                         return obj.speckle_type === 'Objects.Geometry.Pointcloud';
                     })
                     .map(x => x.id as string);
-
                 viewer.current?.zoom(cloudIds);
+
+                // find the three point cloud and modify its colors
+                const worldTree = viewer.current?.getWorldTree();
+                const renderTree = worldTree?.getRenderTree();
+                const renderViews = renderTree?.getRenderableRenderViews(SpeckleType.Pointcloud);
+                if (renderViews === undefined) return;
+
+                /* 
+                NOTE: this is using the DebugViewer from the @speckle/viewer
+                post the explains the solution 
+                https://speckle.community/t/accessing-threejs-objects-through-viewer/6897/3?u=haitheredavid
+
+                there are some steps that we are assuming here in order to get three js geo 
+                this solution connects us to the point cloud object that we need to modify from the ui 
+                */
+
+                const pointCloud = renderViews[0];
+
+                // the three object we find from the scene with the batch id
+                const threeObj = viewer.current
+                    ?.getRenderer()
+                    .scene.getObjectByProperty('uuid', pointCloud.batchId);
+
+                // NOTE: necessary to do this or point cloud wont should different vertex colors
+                // @ts-ignore
+                threeObj.material[0].vertexColors = true;
+
+                // the geometry where all of the the point cloud data is stored
+                // @ts-ignore
+                const geometry = threeObj.geometry;
+
+                const bufferItemSize = 3;
+                const totalCount = scenario.study.getPointCount * bufferItemSize;
+                const colors = new Float32Array(totalCount);
+                for (let i = 0; i < totalCount; i++) {
+                    colors[i] = Math.random();
+                }
+
+                // appl the new color values to the geometry and trigger an update
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                geometry.attributes.color.needsUpdate = true;
+
+                //#endregion
             } catch (error) {
                 console.error(error);
             }
