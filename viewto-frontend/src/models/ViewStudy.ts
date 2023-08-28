@@ -77,6 +77,14 @@ export class ViewStudy {
         return [...this.clouds].map(version => version.references).reduce((a, b) => [...a, ...b]);
     }
 
+    @computed
+    get getPointCount() {
+        let count = 0;
+        // this is a bit hacky of a way for us to get point count from the reuslt cloud
+        this.results.map(x => count += (x.points.length / 3))
+        return count;
+    }
+
 
     @computed
     get hasLoaded() {
