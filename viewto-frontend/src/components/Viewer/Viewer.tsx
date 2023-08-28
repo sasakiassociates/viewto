@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react';
-import { Viewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
+import { DebugViewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
 import { useRef, useEffect } from 'react';
 import { useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
@@ -99,49 +99,71 @@ export default observer(function Viewer() {
 
                 /* adjust the camera view to focus on the point cloud */
 
-                // copy the tree from the viewer
-                const tree = viewer.current?.getDataTree();
-                console.log('tree', tree);
+                const worldTree = viewer.current?.getWorldTree();
 
-                const world = viewer.current?.getWorldTree();
-                console.log('world', world);
-
-                const render = world?.getRenderTree();
-                console.log('render', render);
+                const renderTree = worldTree?.getRenderTree();
 
                 // serach for our point cloud object
-                const clouds = tree?.findAll((guid, obj) => {
-                    return obj.speckle_type === 'Objects.Geometry.Pointcloud';
-                });
+                const renderViews = renderTree?.getRenderableRenderViews(SpeckleType.Pointcloud);
 
                 // sad
-                if (clouds === undefined) return;
+                if (renderViews === undefined) return;
 
-                for (const cloud of clouds) {
-                    console.log('cloud', cloud);
+                console.log('renderable nodes found', renderViews.length);
 
-                    // currently not sure how to access the cloud object to modify it's color data
-                    // setting the color fill does not seem to be doing the trick
+                const pointCloud = renderViews[0];
 
-                    // @ts-ignore
-                    const pointCount = cloud.points?.length / 3;
-                    console.log('point count', pointCount);
-
-                    cloud.colors = Array(pointCount).fill('rgb(255, 0, 0)');
-
-                    const id = cloud.id as string;
-                    console.log('id', id);
-
-                    // render nodes
-                    const renderNode = render?.getRenderableNodes(SpeckleType.Pointcloud);
-                    if (renderNode === undefined) break;
-
-                    console.log('render', renderNode[0].model.renderView);
+                if (!pointCloud) {
+                    console.log('point cloud is sad');
+                    return;
                 }
 
-                // zoom into the our point cloud
-                const ids = clouds.filter(x => typeof x.id === 'string').map(o => o.id as string);
-                viewer.current?.zoom(ids);
+                console.log('pointcloud', pointCloud);
+
+                console.log('vert start', pointCloud.vertStart);
+                console.log('vert end', pointCloud.vertEnd);
+                console.log('batch start', pointCloud.batchStart);
+                console.log('batch end', pointCloud.batchEnd);
+                console.log('batch count', pointCloud.batchCount);
+
+                const threeObj = viewer.current
+                    ?.getRenderer()
+                    .scene.getObjectByProperty('uuid', pointCloud.batchId);
+
+                if (!threeObj) {
+                    console.log('point cloud is sad');
+                    return;
+                }
+                console.log('three obj', threeObj);
+
+                // get the three.js geometry
+                // @ts-ignore
+                const geometry = threeObj.geometry;
+                console.log('geometry', geometry);
+
+                // point buffer
+                const pointCount = geometry.getAttribute('position').count;
+                console.log('point count', pointCount);
+
+                const colorAttr = geometry.getAttribute('color');
+                console.log('color attribute', colorAttr);
+
+                const newColors = new Float32Array(pointCount);
+                for (let i = 0; i < pointCount; i++) {
+                    newColors[i] = 0;
+                }
+
+                colorAttr.set(newColors);
+                colorAttr.needsUpdate = true;
+
+                const cloudIds = viewer.current
+                    ?.getDataTree()
+                    .findAll((guid, obj) => {
+                        return obj.speckle_type === 'Objects.Geometry.Pointcloud';
+                    })
+                    .map(x => x.id as string);
+
+                viewer.current?.zoom(cloudIds);
             } catch (error) {
                 console.error(error);
             }
