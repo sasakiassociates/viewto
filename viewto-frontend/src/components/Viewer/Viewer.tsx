@@ -33,6 +33,10 @@ export default observer(function Viewer() {
     const viewerRef = useRef<HTMLDivElement>(null);
     const viewer = useRef<SpeckleViewer>();
 
+    const enableCaching = true;
+    const priorty = 1;
+    const zoomFit = false;
+    
     useEffect(() => {
         if (viewer.current) return;
         viewer.current = new SpeckleViewer(viewerRef.current!);
@@ -76,10 +80,9 @@ export default observer(function Viewer() {
 
                 // get all of the objects we need to stream in
                 const references = scenario.study.getAllReferences;
-                // default values for loading with the viewert
-                const enableCaching = true;
-                const priorty = 1;
-                const zoomFit = false;
+                console.log('refernces', references);
+
+
                 // go through each one version ref to pull in
                 for await (const versionRef of references) {
                     const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
@@ -87,6 +90,10 @@ export default observer(function Viewer() {
 
                     await viewer.current?.loadObjectAsync(
                         objUrl,
+                        import.meta.env.VITE_SPECKLE_TOKEN,
+                        enableCaching,
+                        priorty,
+                        zoomFit
                         import.meta.env.VITE_SPECKLE_TOKEN,
                         enableCaching,
                         priorty,
