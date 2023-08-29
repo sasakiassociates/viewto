@@ -36,7 +36,8 @@ export default observer(function Viewer() {
     const enableCaching = true;
     const priorty = 1;
     const zoomFit = false;
-    
+    const bufferItemSize = 3;
+
     useEffect(() => {
         if (viewer.current) return;
         viewer.current = new SpeckleViewer(viewerRef.current!);
@@ -82,7 +83,6 @@ export default observer(function Viewer() {
                 const references = scenario.study.getAllReferences;
                 console.log('refernces', references);
 
-
                 // go through each one version ref to pull in
                 for await (const versionRef of references) {
                     const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
@@ -90,10 +90,6 @@ export default observer(function Viewer() {
 
                     await viewer.current?.loadObjectAsync(
                         objUrl,
-                        import.meta.env.VITE_SPECKLE_TOKEN,
-                        enableCaching,
-                        priorty,
-                        zoomFit
                         import.meta.env.VITE_SPECKLE_TOKEN,
                         enableCaching,
                         priorty,
@@ -146,7 +142,6 @@ export default observer(function Viewer() {
                 // @ts-ignore
                 const geometry = threeObj.geometry;
 
-                const bufferItemSize = 3;
                 const totalCount = scenario.study.getPointCount * bufferItemSize;
                 const colors = new Float32Array(totalCount);
                 for (let i = 0; i < totalCount; i++) {
