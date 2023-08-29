@@ -11,6 +11,10 @@ export default observer(function Viewer() {
     const viewerRef = useRef<HTMLDivElement>(null);
     const viewer = useRef<SpeckleViewer>();
 
+    const enableCaching = true;
+    const priorty = 1;
+    const zoomFit = false;
+    
     useEffect(() => {
         if (viewer.current) return;
         viewer.current = new SpeckleViewer(viewerRef.current!);
@@ -38,9 +42,6 @@ export default observer(function Viewer() {
                 const references = scenario.study.getAllReferences;
                 console.log('refernces', references);
 
-                const enableCaching = true;
-                const priorty = 1;
-                const zoomFit = false;
 
                 // go through each one version ref to pull in
                 for await (const versionRef of references) {
