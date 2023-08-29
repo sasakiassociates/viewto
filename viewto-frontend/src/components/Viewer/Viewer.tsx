@@ -31,6 +31,7 @@ export default observer(function Viewer() {
         // the async call to load each item into the speckle viewer
         (async () => {
             try {
+              
                 if (!scenario.study || scenario.study.isLoading || !scenario.study.hasLoaded) {
                     console.log('study is not ready for the viewer');
                     return;
@@ -74,6 +75,7 @@ export default observer(function Viewer() {
                 // zoom into the our point cloud
                 const ids = clouds.filter(x => typeof x.id === 'string').map(o => o.id as string);
                 viewer.current?.zoom(ids);
+
             } catch (error) {
                 console.error(error);
             }
