@@ -1,7 +1,6 @@
 import { ResultCloud } from './ResultCloud';
-import { ConditionType, ViewCondition } from './ViewCondition'
 import { ExplorerDataModifierSupreme } from './ExplorerDataModifierSupreme';
-import { clamp, getMinMax, normalise } from '../packages/ExplorerUtils/ArrayUtility';
+import { clamp, getMinMax, normalise } from '../packages/ExplorerUtils/ArrayCommands';
 
 export class Explorer {
 
@@ -10,9 +9,9 @@ export class Explorer {
     /**
      *
      */
-    constructor(cloud: ResultCloud, modifiers: ExplorerDataModifierSupreme | undefined) {
+    constructor(cloud: ResultCloud, modifiers: ExplorerDataModifierSupreme | undefined = undefined) {
         this.cloud = cloud;
-        this.modifiers = modifiers ? modifiers : new ExplorerDataModifierSupreme();
+        this.modifiers = modifiers !== undefined ? modifiers : new ExplorerDataModifierSupreme();
     }
 
     /**
@@ -24,7 +23,7 @@ export class Explorer {
      * @returns returns the raw value of the result data
      *
      */
-    public getValuesById(focus: string, obstructor: string, type: string, raw: boolean = false): number[] {
+    public valuesById(focus: string, obstructor: string, raw: boolean = false): number[] {
         let values: number[] = [];
 
         if (!this.cloud) {
@@ -32,23 +31,40 @@ export class Explorer {
             return values;
         }
 
+        console.log(`View Condition Input\nFocus:${focus}\nObstructor:${obstructor}`);
+
         for (let i = 0; i < this.cloud.results.length; i++) {
             const condition = this.cloud.results[i].condition;
-            if (condition.focusId == focus && condition.obstructorId == obstructor && condition.type == type) {
-                values = this.cloud.results[i].values;
-                break;
-            }
 
+            if (condition.focusId !== focus || condition.obstructorId !== obstructor) continue
+
+            values = [...this.cloud.results[i].values];
+            break;
         }
-        // return them raw dog
+
         if (raw) return values;
 
-        // clamp the values by our global min max range (remember, this is for saying what is the range of pixels we want to consider ) 
         const clamped = clamp(values, this.modifiers.solRange.min, this.modifiers.solRange.max)
-        // grab this lists min and max (this might be something we don't need to do)
         const minMax = getMinMax(clamped);
-        // normalize those values 
         return normalise(clamped, minMax[0], minMax[1]);
+    }
+
+    /**
+     * Returns a list of hex based colors from a list of colors
+     *
+     * @param array - a set of normalized values from 0-1
+     * @returns a list of colors 
+     *
+     */
+    public colorsByValue(array: number[]): string[] {
+
+        let values: string[] = [];
+
+        if (!array) {
+            console.warn('Values are not able to be used');
+            return values;
+        }
+        return array.map(x => this.modifiers.gradient.Color(x));
     }
 
 

@@ -7,6 +7,7 @@ import { ViewStudy } from './ViewStudy';
 
 import { View } from './View';
 import { Speckle } from '@strategies/speckle'
+import { Explorer } from './Explorer';
 
 
 @model("viewto/Scenario")
@@ -34,6 +35,7 @@ export class Scenario extends Model({
     }
 
     onInit() {
+
         if (this.project && this.project.complete) {
             (async () => {
                 this.setStudy(await this._loadStudyFromProject());
@@ -60,8 +62,9 @@ export class Scenario extends Model({
         */
     }
 
-
     private async _loadStudyFromProject() {
+        console.log('scenario loading');
+
         // not really necessary, but this is a simple way to make sure we have an authenticated
         console.log(await this.speckle.activeUser);
 

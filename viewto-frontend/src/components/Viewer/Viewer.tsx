@@ -1,9 +1,11 @@
 import { observer } from 'mobx-react';
 import { DebugViewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
 import { useRef, useEffect } from 'react';
-import { useStores } from '@strategies/stores';
+import { stores, useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
 import * as THREE from 'three';
+import { Explorer } from '../../models/Explorer';
+import { ConditionType } from '../../models/ViewCondition';
 
 enum SpeckleType {
     View3D = 'View3D',
@@ -28,7 +30,7 @@ enum SpeckleType {
 // api docs for viewer
 // https://speckle.notion.site/Viewer-API-Documentation-11f7bcbf3d2547c2985b0c988fb9889e
 export default observer(function Viewer() {
-    const { scenario } = useStores<Stores>();
+    const { scenario, focuses, obstructors } = useStores<Stores>();
 
     const viewerRef = useRef<HTMLDivElement>(null);
     const viewer = useRef<SpeckleViewer>();
@@ -50,7 +52,7 @@ export default observer(function Viewer() {
             console.log('load complete', arg);
         });
         viewer.current.on(ViewerEvent.LoadProgress, arg => {
-            console.log('load progress', arg);
+            // console.log('load progress', arg);
         });
         viewer.current.on(ViewerEvent.ObjectClicked, arg => {
             console.log('object clicked', arg);
@@ -76,7 +78,6 @@ export default observer(function Viewer() {
                     console.log('study is not ready for the viewer');
                     return;
                 }
-
                 //#region load the geometry into the viewer
 
                 // get all of the objects we need to stream in
@@ -98,6 +99,31 @@ export default observer(function Viewer() {
                 }
 
                 console.log('study loaded into viewer');
+
+                //#endregion
+
+                //#region Map Values through explorer
+
+                // create a new exploer to handle the data processing
+                const explorer = new Explorer(scenario.study?.results[0]);
+
+                // hard code the condition we want to setup
+                const focus = focuses.all[0];
+                const obstructor = obstructors.all[0];
+
+                const values = explorer.valuesById(focus.sasakiId, focus.sasakiId);
+                const colors = new Float32Array(values.length * bufferItemSize);
+
+                const threeColors = explorer.colorsByValue(values).map(x => {
+                    return new THREE.Color(x);
+                });
+
+                for (let i = 0; i < threeColors.length; i++) {
+                    const i3 = i * 3;
+                    colors[i3 + 0] = threeColors[i].r;
+                    colors[i3 + 1] = threeColors[i].g;
+                    colors[i3 + 2] = threeColors[i].b;
+                }
 
                 //#endregion
 
@@ -127,6 +153,7 @@ export default observer(function Viewer() {
                 this solution connects us to the point cloud object that we need to modify from the ui 
                 */
 
+                // assume we want this point cloud
                 const pointCloud = renderViews[0];
 
                 // the three object we find from the scene with the batch id
@@ -141,13 +168,7 @@ export default observer(function Viewer() {
                 // the geometry where all of the the point cloud data is stored
                 // @ts-ignore
                 const geometry = threeObj.geometry;
-
-                const totalCount = scenario.study.getPointCount * bufferItemSize;
-                const colors = new Float32Array(totalCount);
-                for (let i = 0; i < totalCount; i++) {
-                    colors[i] = Math.random();
-                }
-
+                
                 // appl the new color values to the geometry and trigger an update
                 geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
                 geometry.attributes.color.needsUpdate = true;

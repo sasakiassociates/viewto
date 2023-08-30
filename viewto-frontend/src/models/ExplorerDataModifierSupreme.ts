@@ -1,33 +1,48 @@
+import { Gradient, Virdis } from "../packages/ExplorerUtils/Gradient";
+
 export class ExplorerDataModifierSupreme {
 
-    // the range of sols(pixels) to bound the result data 
+    /**
+     * the range of sols(pixels) to bound the result data
+     * 
+     * @description
+     * A sol is metric for counting the amount of fragments(pixels) that a view has.
+     * 
+     * The main difference between the value between the fragment count and a sol is 
+     * that a sol accounts for the coordinate location of the fragment and creates a value for that fragment 
+     * depending on it's location in the camera. This gives a higher value to fragment that is centered in our view 
+     * vs one that is floating in the corner somewhere.
+     * 
+     * 8191 is the max amount of sols a single camera can have. Most of the data created have 6 viewers total
+     *  
+     * @default
+     * min=0  
+     * max=8191
+     */
     solRange: Range;
 
-    // the range of values when visualizing the normalized data 
+    /**
+     * the range of values when visualizing the normalized data
+     * 
+     * @default
+     * min=0  
+     * max=1   
+    */
     valueRange: Range;
 
-    // the array of colors to map too
-    gradient: Gradient;
-    
     /**
-     *
+     * a list of colors organized to make a happy lil gradient
+     * 
+     */
+    gradient: Gradient;
+
+    /*
      */
     constructor() {
-        this.solRange = new Range(0, Number.MAX_SAFE_INTEGER);
+        // hard coded value for max int 
+        this.solRange = new Range(0, 2147483647);
         this.valueRange = new Range(0, 1);
-    }
-
-}
-
-export class Gradient {
-    // some list of values for gradients
-    // todo: swtich to keys or something for more customization
-    colors: number[]
-
-    // stupid way of getting the color from the index value
-    // todo: fix this shit 
-    color(value: number): number {
-        return this.colors[value];
+        this.gradient = new Virdis();
     }
 
 }
