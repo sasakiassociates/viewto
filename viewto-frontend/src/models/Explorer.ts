@@ -1,17 +1,45 @@
-import { ResultCloud } from './ResultCloud';
-import { ExplorerDataModifierSupreme } from './ExplorerDataModifierSupreme';
-import { clamp, getMinMax, normalise } from '../packages/ExplorerUtils/ArrayCommands';
+import { ViewDataModifierSupreme } from './ViewDataModifierSupreme';
+import { computed, action, makeObservable, observable } from 'mobx';
+import { remapSols } from '../packages/ExplorerUtils/DataMapping';
+import { ViewStudy } from './ViewStudy';
+
 
 export class Explorer {
 
-    cloud: ResultCloud;
-    modifiers: ExplorerDataModifierSupreme;
+    study: ViewStudy;
+    modifiers: ViewDataModifierSupreme;
+
     /**
      *
      */
-    constructor(cloud: ResultCloud, modifiers: ExplorerDataModifierSupreme | undefined = undefined) {
-        this.cloud = cloud;
-        this.modifiers = modifiers !== undefined ? modifiers : new ExplorerDataModifierSupreme();
+    constructor(study: ViewStudy, modifiers: ViewDataModifierSupreme | undefined = undefined) {
+        makeObservable(this);
+        this.study = study;
+        this.modifiers = modifiers !== undefined ? modifiers : new ViewDataModifierSupreme();
+    }
+
+
+
+    @observable
+    values?: number[]
+
+
+    @action
+    setActiveValues(data: number[]) {
+        this.values = data;
+    }
+
+    @observable
+    colors?: string[]
+
+    @computed
+    get cloud() {
+        return this.study?.getActiveResultCloud;
+    }
+
+    @computed
+    get hasLoaded() {
+        return this.study?.hasLoaded && this.cloud && this.values;
     }
 
     /**
@@ -19,11 +47,10 @@ export class Explorer {
      *
      * @param focus - the name of the focus context to look for
      * @param obstructor - the name of the obstructor to look for
-     * @param raw - optional toggle for passing back the raw pixel values or using the modifiers to normalize them
      * @returns returns the raw value of the result data
      *
      */
-    public valuesById(focus: string, obstructor: string, raw: boolean = false): number[] {
+    public setCondition(focus: string, obstructor: string) {
         let values: number[] = [];
 
         if (!this.cloud) {
@@ -42,30 +69,8 @@ export class Explorer {
             break;
         }
 
-        if (raw) return values;
-
-        const clamped = clamp(values, this.modifiers.solRange.min, this.modifiers.solRange.max)
-        const minMax = getMinMax(clamped);
-        return normalise(clamped, minMax[0], minMax[1]);
+        this.values = remapSols(values, this.modifiers.solRange.min, this.modifiers.solRange.max);
+        this.colors = this.values?.map(x => this.modifiers.gradient.Color(x));
     }
-
-    /**
-     * Returns a list of hex based colors from a list of colors
-     *
-     * @param array - a set of normalized values from 0-1
-     * @returns a list of colors 
-     *
-     */
-    public colorsByValue(array: number[]): string[] {
-
-        let values: string[] = [];
-
-        if (!array) {
-            console.warn('Values are not able to be used');
-            return values;
-        }
-        return array.map(x => this.modifiers.gradient.Color(x));
-    }
-
 
 }

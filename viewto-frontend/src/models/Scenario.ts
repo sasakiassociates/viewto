@@ -12,10 +12,8 @@ import { Explorer } from './Explorer';
 
 @model("viewto/Scenario")
 export class Scenario extends Model({
-    // the information linked to the speckle project loaded
-    project: prop<Project>(() => new Project({})),
-    // the list of views stored to apply the settings 
     views: prop<View[]>(() => []),
+    project: prop<Project>(() => new Project({})),
 }) implements Store {
 
     readonly speckle = new Speckle({
@@ -34,6 +32,14 @@ export class Scenario extends Model({
         this.study = data;
     }
 
+    @observable
+    explorer?: Explorer;
+
+    @action
+    setExplorer(obj: Explorer) {
+        this.explorer = obj;
+    }
+
     onInit() {
 
         if (this.project && this.project.complete) {
@@ -50,16 +56,16 @@ export class Scenario extends Model({
                 }
             }
         );
-
-        /*
         reaction(
-            () => [this.study?.id],
+            () => [this.study?.hasLoaded],
             () => {
-                console.log('study id has been changed', this.study);
-                this._loadStudyReferences((reference) => { console.log(reference) });
+                if (!this.study || this.study.isLoading || !this.study.hasLoaded || !this.study.getActiveResultCloud) {
+                    return;
+                }
+                this.setExplorer(new Explorer(this.study))
+                this.explorer?.setCondition(this.study?.focuses[0].sasakiId, this.study?.obstructors[0].sasakiId)
             }
-        );
-        */
+        )
     }
 
     private async _loadStudyFromProject() {
