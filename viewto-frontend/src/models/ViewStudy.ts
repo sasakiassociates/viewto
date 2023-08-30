@@ -77,6 +77,10 @@ export class ViewStudy {
         return [...this.clouds].map(version => version.references).reduce((a, b) => [...a, ...b]);
     }
 
+    @computed
+    get getPointCount() {
+        return this.results.reduce((count, obj) => count + (obj.points.length / 3), 0);
+    }
 
     @computed
     get hasLoaded() {
