@@ -1,6 +1,6 @@
 import { Gradient, Virdis } from "../packages/ExplorerUtils/Gradient";
 
-export class ExplorerDataModifierSupreme {
+export class ViewDataModifierSupreme {
 
     /**
      * the range of sols(pixels) to bound the result data
