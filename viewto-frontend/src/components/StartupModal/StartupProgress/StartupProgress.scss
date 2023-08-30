@@ -1,0 +1,30 @@
+@use 'sass:math';
+@use '@strategies/tokens/animation';
+@use '@strategies/tokens/color';
+@use '@strategies/tokens/layout';
+
+
+.StartupProgress {
+    display: flex;
+    gap: layout.$padding--smallest;
+
+    span {
+        $_size: 10px;
+
+        display: block;
+
+        width: $_size;
+        height: $_size;
+
+        background: color.$blue--light;
+        border-radius: math.div($_size, 2);
+        cursor: pointer;
+        transition: width animation.$speed, background animation.$speed;
+
+        &.current {
+            width: $_size * 2;
+
+            background: color.$blue;
+        }
+    }
+}

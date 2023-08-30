@@ -1,0 +1,19 @@
+@use '@strategies/tokens/animation';
+@use '@strategies/tokens/color';
+
+
+.UserGuide {
+    ol li {
+        svg {
+            color: color.$blue;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity animation.$speed;
+        }
+
+        &.active svg {
+            opacity: 1;
+        }
+    }
+}
