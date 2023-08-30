@@ -1,8 +1,30 @@
 import { observer } from 'mobx-react';
 import { DebugViewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
+import { DebugViewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
 import { useRef, useEffect } from 'react';
 import { useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
+import * as THREE from 'three';
+
+enum SpeckleType {
+    View3D = 'View3D',
+    BlockInstance = 'BlockInstance',
+    Pointcloud = 'Pointcloud',
+    Brep = 'Brep',
+    Mesh = 'Mesh',
+    Point = 'Point',
+    Line = 'Line',
+    Polyline = 'Polyline',
+    Box = 'Box',
+    Polycurve = 'Polycurve',
+    Curve = 'Curve',
+    Circle = 'Circle',
+    Arc = 'Arc',
+    Ellipse = 'Ellipse',
+    RevitInstance = 'RevitInstance',
+    Text = 'Text',
+    Unknown = 'Unknown',
+}
 import * as THREE from 'three';
 
 enum SpeckleType {
@@ -99,6 +121,7 @@ export default observer(function Viewer() {
 
                 console.log(`${scenario.study.name} is loaded into the viewer`);
 
+                //#endregion
                 //#endregion
             } catch (error) {
                 console.error(error);
