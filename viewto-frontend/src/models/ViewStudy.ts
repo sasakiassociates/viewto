@@ -53,6 +53,7 @@ export class ViewStudy {
         this.results = data.objects
             .filter((x: any) => x.speckle_type == ViewObjectTypes.result.speckle_type)
             .map((x: any) => this._resultCloudToWeb(x));
+        this.results[0].active = true;
     }
 
     @observable
@@ -96,6 +97,22 @@ export class ViewStudy {
         return this.getAllReferences.filter(ref => !ref.isLoading).length == 0;
     }
 
+    @computed
+    get getActiveResultCloud() {
+        const active = this.results.filter(ref => ref.active);
+
+        if (!active || active.length === 0) {
+            console.warn('No results are active');
+            return;
+        }
+
+        if (active.length > 1) {
+            console.log(`To many active results(expected 1): ${active.length}\nWill return first item`);
+        }
+
+        return active[0];
+    }
+
 
     // conversions for getting Focus Context from speckle to app
     _focusContextToWeb(obj: any): FocusContext {
@@ -113,7 +130,6 @@ export class ViewStudy {
             obj.References,
             this._isProposed(obj)
         );
-        console.log(item);
         return item;
     }
 
