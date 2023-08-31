@@ -123,7 +123,7 @@
         }
     }
 
-    .content {
+    .Body {
         flex: 1 1 auto;
         padding: layout.$padding--large;
 
@@ -165,7 +165,7 @@
         }
     }
 
-    nav, .content {
+    nav, .Body {
         display: flex;
         flex-direction: column;
 

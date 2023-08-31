@@ -12,6 +12,13 @@ export enum Chart {
     AREA = 'Area',
 }
 
+export enum Startup {
+    USER_GUIDE,
+    LOAD_PROJECT,
+    CREATE_SCENARIO,
+    OPEN_SCENARIO,
+};
+
 
 export default class UIStore extends Store {
 
@@ -53,6 +60,14 @@ export default class UIStore extends Store {
     }
     
     @observable
+    startup: Startup = Startup.USER_GUIDE;
+
+    @action
+    setStartup(startup: Startup) {
+        this.startup = startup;
+    }
+
+   @observable
     startupModalIsOpen: boolean = true;
 
     @action
