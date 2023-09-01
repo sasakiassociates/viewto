@@ -4,16 +4,25 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import Stores from '../stores/Stores';
 
 
-export default class ReferenceObject {
+export default class VersionReference {
 
     readonly id: string;
 
     constructor(id: string) {
         makeObservable(this);
-
         this.id = id;
-
         this.load();
+    }
+
+
+    @computed
+    get hasLoaded() {
+        return this.data !== undefined;
+    }
+
+    @computed
+    get referenceObject() {
+        return this.data?.referencedObject
     }
 
     @observable
@@ -24,18 +33,14 @@ export default class ReferenceObject {
         this.isLoading = isLoading;
     }
 
-    @computed
-    get hasLoaded() {
-        return this.data !== undefined;
-    }
-
     @observable
     data: any = undefined;
 
     @action
-    setData(data: any)  {
+    setData(data: any) {
         this.data = data;
     }
+
 
     @action
     async load() {

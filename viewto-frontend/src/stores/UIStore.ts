@@ -21,6 +21,14 @@ export default class UIStore extends Store {
     }
 
     @observable
+    appRef?: HTMLDivElement;
+
+    @action
+    setAppRef(appRef: HTMLDivElement) {
+        this.appRef = appRef;
+    }
+
+    @observable
     chart: Chart = Chart.VIEWY;
 
     @action
@@ -42,6 +50,14 @@ export default class UIStore extends Store {
     @action
     setCamera(camera: any) {
         this.camera = camera;
+    }
+    
+    @observable
+    startupModalIsOpen: boolean = true;
+
+    @action
+    setStartupModalOpen(isOpen = true) {
+        this.startupModalIsOpen = isOpen;
     }
     
 }

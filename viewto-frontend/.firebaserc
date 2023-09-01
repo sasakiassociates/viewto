@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "viewto-b45b8"
+  },
+  "targets": {
+    "viewto-b45b8": {
+      "hosting": {
+        "staging": [
+          "viewto-b45b8"
+        ],
+        "production": [
+          "viewto"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
