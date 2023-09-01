@@ -5,7 +5,6 @@ import { Model, model, prop } from 'mobx-keystone';
 import { Project } from './Project';
 import { ViewStudy } from './ViewStudy';
 
-import { View } from './View';
 import { PointView } from './View';
 import { Speckle } from '@strategies/speckle'
 import { Explorer } from './Explorer';
@@ -13,7 +12,6 @@ import { Explorer } from './Explorer';
 
 @model("viewto/Scenario")
 export class Scenario extends Model({
-    views: prop<View[]>(() => []),
     views: prop<PointView[]>(() => []),
     project: prop<Project>(() => new Project({})),
 }) implements Store {
@@ -65,7 +63,8 @@ export class Scenario extends Model({
                     return;
                 }
                 this.setExplorer(new Explorer(this.study))
-                this.explorer?.setCondition(this.study?.focuses[0].sasakiId, this.study?.obstructors[0].sasakiId)
+                this.explorer?.setFocuses([this.study?.focuses[0]]);
+                this.explorer?.setObstructors([this.study?.obstructors[0]]);
             }
         )
     }

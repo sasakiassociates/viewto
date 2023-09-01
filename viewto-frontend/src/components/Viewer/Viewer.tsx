@@ -1,30 +1,8 @@
 import { observer } from 'mobx-react';
 import { DebugViewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
-import { DebugViewer as SpeckleViewer, ViewerEvent } from '@speckle/viewer';
 import { useRef, useEffect } from 'react';
 import { useStores } from '@strategies/stores';
 import Stores from '../../stores/Stores';
-import * as THREE from 'three';
-
-enum SpeckleType {
-    View3D = 'View3D',
-    BlockInstance = 'BlockInstance',
-    Pointcloud = 'Pointcloud',
-    Brep = 'Brep',
-    Mesh = 'Mesh',
-    Point = 'Point',
-    Line = 'Line',
-    Polyline = 'Polyline',
-    Box = 'Box',
-    Polycurve = 'Polycurve',
-    Curve = 'Curve',
-    Circle = 'Circle',
-    Arc = 'Arc',
-    Ellipse = 'Ellipse',
-    RevitInstance = 'RevitInstance',
-    Text = 'Text',
-    Unknown = 'Unknown',
-}
 import * as THREE from 'three';
 
 enum SpeckleType {
@@ -50,15 +28,18 @@ enum SpeckleType {
 // api docs for viewer
 // https://speckle.notion.site/Viewer-API-Documentation-11f7bcbf3d2547c2985b0c988fb9889e
 export default observer(function Viewer() {
-    const { scenario, focuses, obstructors } = useStores<Stores>();
+    const { scenario,views } = useStores<Stores>();
 
     const viewerRef = useRef<HTMLDivElement>(null);
     const viewer = useRef<SpeckleViewer>();
 
+    const pointCloudRef = useRef<any>(undefined);
+    
     const enableCaching = true;
     const priorty = 1;
     const zoomFit = false;
     const bufferItemSize = 3;
+
 
     useEffect(() => {
         if (viewer.current) return;
@@ -119,9 +100,37 @@ export default observer(function Viewer() {
 
                 viewer.current?.zoom(cloudIds);
 
+                // find the three point cloud and modify its colors
+                const worldTree = viewer.current?.getWorldTree();
+                const renderTree = worldTree?.getRenderTree();
+                const renderViews = renderTree?.getRenderableRenderViews(SpeckleType.Pointcloud);
+                if (renderViews === undefined) return;
+
+                // assume we want this point cloud
+                const pointCloud = renderViews[0];
+
+                // TODO: chat with the boys about communicating back to the scenario that the viewer is loaded and we can find this id
+                if (!pointCloud) {
+                    console.warn('no point cloud found yet');
+                    return;
+                }
+
+                // the three object we find from the scene with the batch id
+                const threeObj = viewer.current
+                    ?.getRenderer()
+                    .scene.getObjectByProperty('uuid', pointCloud.batchId);
+
+                // NOTE: necessary to do this or point cloud wont should different vertex colors
+                // @ts-ignore
+                threeObj.material[0].vertexColors = true;
+
+                // the geometry where all of the the point cloud data is stored
+                // @ts-ignore
+                pointCloudRef.current = threeObj.geometry;
+                views.setHasActiveCloud(true)
+
                 console.log(`${scenario.study.name} is loaded into the viewer`);
 
-                //#endregion
                 //#endregion
             } catch (error) {
                 console.error(error);
@@ -132,12 +141,16 @@ export default observer(function Viewer() {
     // effect for mapping the active colors from the explorer
     useEffect(() => {
         console.log('Effect from viewer with color changing');
+        
+        if (!views.hasActiveCloud) {
+            console.log('no point cloud active yet in scene');
+            return;
+        }
 
         if (!scenario.explorer?.colors) {
             console.log('no values here');
             return;
         }
-
         const colors = new Float32Array(scenario.explorer.colors.length * bufferItemSize);
 
         const threeColors = scenario.explorer.colors.map(x => {
@@ -149,42 +162,13 @@ export default observer(function Viewer() {
             colors[i3 + 0] = threeColors[i].r;
             colors[i3 + 1] = threeColors[i].g;
             colors[i3 + 2] = threeColors[i].b;
-        }
-
-        //#region post viewer setup
-
-        // find the three point cloud and modify its colors
-        const worldTree = viewer.current?.getWorldTree();
-        const renderTree = worldTree?.getRenderTree();
-        const renderViews = renderTree?.getRenderableRenderViews(SpeckleType.Pointcloud);
-        if (renderViews === undefined) return;
-
-        // assume we want this point cloud
-        const pointCloud = renderViews[0];
-
-        // TODO: chat with the boys about communicating back to the scenario that the viewer is loaded and we can find this id
-        if (!pointCloud) {
-            console.warn('no point cloud found yet');
-            return;
-        }
-
-        // the three object we find from the scene with the batch id
-        const threeObj = viewer.current
-            ?.getRenderer()
-            .scene.getObjectByProperty('uuid', pointCloud.batchId);
-
-        // NOTE: necessary to do this or point cloud wont should different vertex colors
-        // @ts-ignore
-        threeObj.material[0].vertexColors = true;
-
-        // the geometry where all of the the point cloud data is stored
-        // @ts-ignore
-        const geometry = threeObj.geometry;
+        }     
 
         // appl the new color values to the geometry and trigger an update
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-        geometry.attributes.color.needsUpdate = true;
-    }, [scenario.explorer?.colors]);
+        pointCloudRef.current.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        pointCloudRef.current.attributes.color.needsUpdate = true;
+
+    }, [views.hasActiveCloud, scenario.explorer?.colors]);
 
     return <div className="Viewer" ref={viewerRef} />;
 });
