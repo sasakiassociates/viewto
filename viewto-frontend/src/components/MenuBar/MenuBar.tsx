@@ -44,11 +44,7 @@ export default observer(function ViewToMenuBar() {
                         <FiSave />
                     </IconButton>
                 </div>
-                <RadioSlider
-                    value={ui.mode}
-                    options={[UIMode.COMPARE, UIMode.EXPLORE]}
-                    onChange={value => ui.setMode(value as UIMode)}
-                />
+                
             </Body>
         </MenuBar>
     );
