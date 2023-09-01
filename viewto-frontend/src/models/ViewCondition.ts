@@ -16,6 +16,10 @@ export class ViewCondition {
         this.obstructorId = obstructorId;
         this.type = type;
     }
+
+    Equals(focusId: string, obstructorId: string): boolean {
+        return this.focusId === focusId && this.obstructorId === obstructorId;
+    }
 }
 
 export enum ConditionType {
