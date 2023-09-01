@@ -1,24 +1,26 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button } from '@strategies/ui';
 import { FiArrowRight } from 'react-icons/fi';
 import { PiArrowCircleRight } from 'react-icons/pi';
+import { useStores } from '@strategies/stores';
 
-import Logo from '../../../assets/ViewTo.svg';
+import Stores from '../../../stores/Stores';
+import { Startup } from '../../../stores/UIStore';
 import StartupProgress from '../StartupProgress/StartupProgress';
 import steps from './steps';
+import { Nav, Body } from '../StartupModal';
 
 
 export default function UserGuide() {
+    const { ui } = useStores<Stores>();
     const [step, setStep] = useState<number>(0);
     const isAtFinalStep = step === steps.length - 1;
 
+    const next = useCallback(() => ui.setStartup(Startup.LOAD_PROJECT), [ui]);
+
     return (
         <div className="UserGuide">
-            <nav>
-                <header>
-                    <img src={Logo} alt="ViewTo logo" />
-                </header>
-
+            <Nav>
                 <main>
                     <h3>Welcome</h3>
                     <ol>
@@ -36,13 +38,13 @@ export default function UserGuide() {
                 </main>
 
                 <footer>
-                    <Button className={isAtFinalStep ? '' : 'secondary'}>
+                    <Button className={isAtFinalStep ? '' : 'secondary'} onClick={next}>
                         {isAtFinalStep ? 'Load Project' : 'Skip & Load Project'}
                     </Button>
                 </footer>
-            </nav>
+            </Nav>
 
-            <div className="content">
+            <Body>
                 <header>
                     <h2>{steps[step].header}</h2>
                 </header>
@@ -71,7 +73,7 @@ export default function UserGuide() {
                         </Button>
                     )}
                 </footer>
-            </div>
+            </Body>
         </div>
     );
 }
