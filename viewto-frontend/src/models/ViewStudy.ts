@@ -1,4 +1,4 @@
-import { FocusContext, ObstructingContext } from './Context';
+import { FocusContext, ObstructContext } from './Context';
 import { Point } from './Point';
 import { ViewCloud } from './ViewCloud';
 import { ViewCondition, ConditionTypeLookUp } from './ViewCondition';
@@ -23,7 +23,7 @@ export class ViewStudy {
     sasakiId: string;
     name: string;
     focuses: FocusContext[];
-    obstructors: ObstructingContext[];
+    obstructors: ObstructContext[];
     clouds: ViewCloud[];
     results: ResultCloud[];
 
@@ -53,6 +53,7 @@ export class ViewStudy {
         this.results = data.objects
             .filter((x: any) => x.speckle_type == ViewObjectTypes.result.speckle_type)
             .map((x: any) => this._resultCloudToWeb(x));
+
         this.results[0].active = true;
     }
 
@@ -116,10 +117,10 @@ export class ViewStudy {
     }
 
     // conversions for getting Obstructors from speckle to app
-    _obstructorContextToWeb(obj: any, index: number): ObstructingContext {
+    _obstructorContextToWeb(obj: any, index: number): ObstructContext {
         const typeName = this._isProposed(obj) ? 'Proposed' : 'Existing';
         const name = obj.ViewName != null ? obj.ViewName : `${typeName} ${index}`;
-        const item = new ObstructingContext(
+        const item = new ObstructContext(
             obj.id,
             name,
             obj.ViewId,

@@ -6,6 +6,7 @@ import { Project } from './Project';
 import { ViewStudy } from './ViewStudy';
 
 import { View } from './View';
+import { PointView } from './View';
 import { Speckle } from '@strategies/speckle'
 import { Explorer } from './Explorer';
 
@@ -13,6 +14,7 @@ import { Explorer } from './Explorer';
 @model("viewto/Scenario")
 export class Scenario extends Model({
     views: prop<View[]>(() => []),
+    views: prop<PointView[]>(() => []),
     project: prop<Project>(() => new Project({})),
 }) implements Store {
 

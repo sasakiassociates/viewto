@@ -28,7 +28,7 @@ export class Context {
 export class FocusContext extends Context { }
 
 // similar to the context class but can be a toggle for the proposed context type
-export class ObstructingContext extends Context {
+export class ObstructContext extends Context {
 
     // toggle for declaring what group the obstructor is 
     proposed: boolean = false;

@@ -1,12 +1,11 @@
 import { Model, model, prop } from 'mobx-keystone';
 import { action, computed, observable } from 'mobx';
 import { stores } from '@strategies/stores';
-// import { ViewDataCondition, ViewDataFilter } from './ViewData';
 import Stores from '../stores/Stores';
 
 
 @model("viewto/View")
-export class View extends Model({
+export class PointView extends Model({
     // readable name of the view  
     name: prop<string>(''),
     // generated id of view
