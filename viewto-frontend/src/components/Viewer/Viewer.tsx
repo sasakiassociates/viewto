@@ -28,10 +28,18 @@ enum SpeckleType {
 // api docs for viewer
 // https://speckle.notion.site/Viewer-API-Documentation-11f7bcbf3d2547c2985b0c988fb9889e
 export default observer(function Viewer() {
-    const { scenario } = useStores<Stores>();
+    const { scenario,views } = useStores<Stores>();
 
     const viewerRef = useRef<HTMLDivElement>(null);
     const viewer = useRef<SpeckleViewer>();
+
+    const pointCloudRef = useRef<any>(undefined);
+    
+    const enableCaching = true;
+    const priorty = 1;
+    const zoomFit = false;
+    const bufferItemSize = 3;
+
 
     useEffect(() => {
         if (viewer.current) return;
@@ -45,7 +53,7 @@ export default observer(function Viewer() {
             console.log('load complete', arg);
         });
         viewer.current.on(ViewerEvent.LoadProgress, arg => {
-            console.log('load progress', arg);
+            // console.log('load progress', arg);
         });
         viewer.current.on(ViewerEvent.ObjectClicked, arg => {
             console.log('object clicked', arg);
@@ -61,44 +69,26 @@ export default observer(function Viewer() {
 
     // this effect will load each version reference from the study and then load it to the viewer
     useEffect(() => {
-        // check if null
         if (!viewer.current) return;
 
-        // the async call to load each item into the speckle viewer
         (async () => {
             try {
                 if (!scenario.study || scenario.study.isLoading || !scenario.study.hasLoaded) {
                     console.log('study is not ready for the viewer');
                     return;
                 }
-
                 //#region load the geometry into the viewer
 
-                // get all of the objects we need to stream in
-                const references = scenario.study.getAllReferences;
-                // default values for loading with the viewert
-                const enableCaching = true;
-                const priorty = 1;
-                const zoomFit = false;
                 // go through each one version ref to pull in
-                for await (const versionRef of references) {
-                    const url = `https://sasaki.speckle.xyz/streams/${scenario.project.id}`;
-                    const objUrl = `${url}/objects/${versionRef.referenceObject}`;
-
+                for await (const versionRef of scenario.study.getAllReferences) {
                     await viewer.current?.loadObjectAsync(
-                        objUrl,
+                        `https://sasaki.speckle.xyz/streams/${scenario.project.id}/objects/${versionRef.referenceObject}`,
                         import.meta.env.VITE_SPECKLE_TOKEN,
                         enableCaching,
                         priorty,
                         zoomFit
                     );
                 }
-
-                console.log('study loaded into viewer');
-
-                //#endregion
-
-                //#region post viewer setup
 
                 // relocating the camera to the point cloud
                 const cloudIds = viewer.current
@@ -107,6 +97,7 @@ export default observer(function Viewer() {
                         return obj.speckle_type === 'Objects.Geometry.Pointcloud';
                     })
                     .map(x => x.id as string);
+
                 viewer.current?.zoom(cloudIds);
 
                 // find the three point cloud and modify its colors
@@ -115,16 +106,14 @@ export default observer(function Viewer() {
                 const renderViews = renderTree?.getRenderableRenderViews(SpeckleType.Pointcloud);
                 if (renderViews === undefined) return;
 
-                /* 
-                NOTE: this is using the DebugViewer from the @speckle/viewer
-                post the explains the solution 
-                https://speckle.community/t/accessing-threejs-objects-through-viewer/6897/3?u=haitheredavid
-
-                there are some steps that we are assuming here in order to get three js geo 
-                this solution connects us to the point cloud object that we need to modify from the ui 
-                */
-
+                // assume we want this point cloud
                 const pointCloud = renderViews[0];
+
+                // TODO: chat with the boys about communicating back to the scenario that the viewer is loaded and we can find this id
+                if (!pointCloud) {
+                    console.warn('no point cloud found yet');
+                    return;
+                }
 
                 // the three object we find from the scene with the batch id
                 const threeObj = viewer.current
@@ -137,18 +126,10 @@ export default observer(function Viewer() {
 
                 // the geometry where all of the the point cloud data is stored
                 // @ts-ignore
-                const geometry = threeObj.geometry;
+                pointCloudRef.current = threeObj.geometry;
+                views.setHasActiveCloud(true)
 
-                const bufferItemSize = 3;
-                const totalCount = scenario.study.getPointCount * bufferItemSize;
-                const colors = new Float32Array(totalCount);
-                for (let i = 0; i < totalCount; i++) {
-                    colors[i] = Math.random();
-                }
-
-                // appl the new color values to the geometry and trigger an update
-                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                geometry.attributes.color.needsUpdate = true;
+                console.log(`${scenario.study.name} is loaded into the viewer`);
 
                 //#endregion
             } catch (error) {
@@ -156,6 +137,38 @@ export default observer(function Viewer() {
             }
         })();
     }, [scenario.study?.hasLoaded]);
+
+    // effect for mapping the active colors from the explorer
+    useEffect(() => {
+        console.log('Effect from viewer with color changing');
+        
+        if (!views.hasActiveCloud) {
+            console.log('no point cloud active yet in scene');
+            return;
+        }
+
+        if (!scenario.explorer?.colors) {
+            console.log('no values here');
+            return;
+        }
+        const colors = new Float32Array(scenario.explorer.colors.length * bufferItemSize);
+
+        const threeColors = scenario.explorer.colors.map(x => {
+            return new THREE.Color(x);
+        });
+
+        for (let i = 0; i < threeColors.length; i++) {
+            const i3 = i * 3;
+            colors[i3 + 0] = threeColors[i].r;
+            colors[i3 + 1] = threeColors[i].g;
+            colors[i3 + 2] = threeColors[i].b;
+        }     
+
+        // appl the new color values to the geometry and trigger an update
+        pointCloudRef.current.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        pointCloudRef.current.attributes.color.needsUpdate = true;
+
+    }, [views.hasActiveCloud, scenario.explorer?.colors]);
 
     return <div className="Viewer" ref={viewerRef} />;
 });

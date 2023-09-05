@@ -5,16 +5,15 @@ import { Model, model, prop } from 'mobx-keystone';
 import { Project } from './Project';
 import { ViewStudy } from './ViewStudy';
 
-import { View } from './View';
+import { PointView } from './View';
 import { Speckle } from '@strategies/speckle'
+import { Explorer } from './Explorer';
 
 
 @model("viewto/Scenario")
 export class Scenario extends Model({
-    // the information linked to the speckle project loaded
+    views: prop<PointView[]>(() => []),
     project: prop<Project>(() => new Project({})),
-    // the list of views stored to apply the settings 
-    views: prop<View[]>(() => []),
 }) implements Store {
 
     readonly speckle = new Speckle({
@@ -33,7 +32,16 @@ export class Scenario extends Model({
         this.study = data;
     }
 
+    @observable
+    explorer?: Explorer;
+
+    @action
+    setExplorer(obj: Explorer) {
+        this.explorer = obj;
+    }
+
     onInit() {
+
         if (this.project && this.project.complete) {
             (async () => {
                 this.setStudy(await this._loadStudyFromProject());
@@ -48,20 +56,22 @@ export class Scenario extends Model({
                 }
             }
         );
-
-        /*
         reaction(
-            () => [this.study?.id],
+            () => [this.study?.hasLoaded],
             () => {
-                console.log('study id has been changed', this.study);
-                this._loadStudyReferences((reference) => { console.log(reference) });
+                if (!this.study || this.study.isLoading || !this.study.hasLoaded || !this.study.getActiveResultCloud) {
+                    return;
+                }
+                this.setExplorer(new Explorer(this.study))
+                this.explorer?.setFocuses([this.study?.focuses[0]]);
+                this.explorer?.setObstructors([this.study?.obstructors[0]]);
             }
-        );
-        */
+        )
     }
 
-
     private async _loadStudyFromProject() {
+        console.log('scenario loading');
+
         // not really necessary, but this is a simple way to make sure we have an authenticated
         console.log(await this.speckle.activeUser);
 
