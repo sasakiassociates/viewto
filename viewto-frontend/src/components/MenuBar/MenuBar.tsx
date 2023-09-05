@@ -14,7 +14,7 @@ export default observer(function ViewToMenuBar() {
 
 
     return (
-        <MenuBar drawer={true}>
+        <MenuBar drawer={false}>
             <Title>View Analysis Dashboard</Title>
             <Body>
                 <div className='menu-icons' >

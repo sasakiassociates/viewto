@@ -23,6 +23,7 @@
     "@strategies/tokens": "^2.0.2",
     "@strategies/ui": "^1.13.1",
     "@types/three": "^0.155.0",
+    "chroma-js": "^2.4.2",
     "firebase": "^10.1.0",
     "mobx": "^6.10.0",
     "mobx-keystone": "^1.6.4",
@@ -37,6 +38,7 @@
     "vite-plugin-tsc": "^0.1.1"
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
