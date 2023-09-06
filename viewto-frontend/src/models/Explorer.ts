@@ -2,6 +2,7 @@ import { ViewDataModifierSupreme } from './ViewDataModifierSupreme';
 import { computed, action, makeObservable, observable } from 'mobx';
 import { ViewStudy } from './ViewStudy';
 import { FocusContext, ObstructContext } from './Context';
+import { getMinMax, normalise, clamp } from '../util';
 
 export class Explorer {
     study: ViewStudy;

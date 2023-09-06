@@ -1,2 +1,76 @@
+@use '@strategies/tokens/layout';
+@use '@strategies/tokens/color';
+@use '@strategies/tokens/font';
+
+$menu-border-width: 2px;
+$input-slider-radius: 20px;
+
 .MenuBar {
+    width: 100%;
+    flex: auto; 
+
+    .menu-icons {
+
+        .IconButton {
+        &:nth-of-type(2) {
+            border-left-color: color.$blue--lightest;
+            border-left-width: $menu-border-width;
+            border-left-style: solid;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        &:nth-of-type(3) {
+            border-right-color: color.$blue--lightest;
+            border-right-width: $menu-border-width;
+            border-right-style: solid;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+    }
+    
+    .scenario-name-wrapper {
+        display: inline-flex;
+        align-items: center;
+        text-align: center;
+        background: color.$white;
+
+        .scenario-name {
+            display: flex;
+            width: 90%;
+            border-radius: layout.$border-radius;
+            overflow: hidden;
+            margin: auto;
+        }
+
+        label {
+            display: flex;
+            vertical-align: middle;
+            align-items: center;
+            align-content: center;
+            height: auto;
+            padding: layout.$padding--smallest;
+            color: color.$grey;
+            font-size: font.$size--smallest;
+            font-weight: font.$weight--regular;
+            text-transform: uppercase;
+            background: color.$blue--lightest;
+        }
+
+        input {
+            display: inline-block;
+            padding: 0 layout.$padding--smallest;
+            font-size: font.$size--xsmall;
+            text-overflow: ellipsis;
+            background: color.$white;
+            overflow: hidden;
+            outline: none !important;
+            border-top-right-radius: $input-slider-radius;
+            border-bottom-right-radius: $input-slider-radius;
+            border: $menu-border-width solid color.$blue--lightest;
+
+            pointer-events: none !important;
+        }
+    }
 }
