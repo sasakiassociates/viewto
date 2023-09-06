@@ -45,6 +45,8 @@ export default observer(function Viewer() {
         if (viewer.current) return;
         viewer.current = new SpeckleViewer(viewerRef.current!);
 
+        scenario.explorer?.setScene(scene)
+
         /* events that our ui might want to show */
         viewer.current.on(ViewerEvent.DownloadComplete, arg => {
             console.log('dowload complete', arg);
@@ -115,6 +117,8 @@ export default observer(function Viewer() {
                     return;
                 }
 
+  
+
                 // the three object we find from the scene with the batch id
                 const threeObj = viewer.current
                     ?.getRenderer()
@@ -167,6 +171,7 @@ export default observer(function Viewer() {
         // appl the new color values to the geometry and trigger an update
         pointCloudRef.current.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         pointCloudRef.current.attributes.color.needsUpdate = true;
+        viewer.current?.requestRender();
 
     }, [views.hasActiveCloud, scenario.explorer?.colors]);
 
