@@ -45,7 +45,7 @@ export default observer(function Viewer() {
         if (viewer.current) return;
         viewer.current = new SpeckleViewer(viewerRef.current!);
 
-        scenario.explorer?.setScene(scene)
+        scenario.explorer?.setScene(viewer.current?.getRenderer().scene)
 
         /* events that our ui might want to show */
         viewer.current.on(ViewerEvent.DownloadComplete, arg => {
