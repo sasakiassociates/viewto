@@ -2,7 +2,6 @@
 @use '@strategies/tokens/color';
 @use '@strategies/tokens/font';
 
-$menu-border-color: #F2F5FA;
 $menu-border-width: 2px;
 $input-slider-radius: 20px;
 
@@ -14,7 +13,7 @@ $input-slider-radius: 20px;
 
         .IconButton {
         &:nth-of-type(2) {
-            border-left-color: $menu-border-color;
+            border-left-color: color.$blue--lightest;
             border-left-width: $menu-border-width;
             border-left-style: solid;
             border-top-left-radius: 0;
@@ -22,7 +21,7 @@ $input-slider-radius: 20px;
         }
 
         &:nth-of-type(3) {
-            border-right-color: $menu-border-color;
+            border-right-color: color.$blue--lightest;
             border-right-width: $menu-border-width;
             border-right-style: solid;
             border-top-right-radius: 0;
@@ -69,7 +68,7 @@ $input-slider-radius: 20px;
             outline: none !important;
             border-top-right-radius: $input-slider-radius;
             border-bottom-right-radius: $input-slider-radius;
-            border: $menu-border-width solid $menu-border-color;
+            border: $menu-border-width solid color.$blue--lightest;
 
             pointer-events: none !important;
         }

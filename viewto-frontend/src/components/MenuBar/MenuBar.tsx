@@ -34,7 +34,7 @@ export default observer(function ViewToMenuBar() {
                 <div className="scenario-name-wrapper">
                     <div className="scenario-name">
                         <label htmlFor="scenario">Name</label>
-                        <input id="scenario" placeholder="Name ..." value={scenario.study?.name}
+                        <input id="scenario" placeholder="Name ..." value={scenario.study?.name} readOnly
                         // onChange={} 
                         />
                     </div>
