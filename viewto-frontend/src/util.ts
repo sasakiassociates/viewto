@@ -1,4 +1,6 @@
-export type Dict<T = any> = {[key:string]: T};
+import { observable } from "mobx";
+
+export type Dict<T = any> = { [key: string]: T };
 
 export function noop() {}
 
@@ -30,4 +32,17 @@ export function clamp(array: number[], min: number, max: number): number[] {
         else if (array[i] > max) results[i] = max;
     }
     return results;
+}
+
+
+export class Range {
+    constructor(min: number, max: number) {
+        this.min = min;
+        this.max = max;
+    }
+    @observable
+    min: number = 0;
+
+    @observable
+    max: number = 1;
 }

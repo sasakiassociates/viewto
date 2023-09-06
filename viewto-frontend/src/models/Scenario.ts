@@ -1,18 +1,18 @@
-import { Store } from '@strategies/stores';
+import {  Store } from '@strategies/stores';
 import { reaction, observable, action } from 'mobx';
 import { Model, model, prop } from 'mobx-keystone';
 
 import { Project } from './Project';
 import { ViewStudy } from './ViewStudy';
 
-import { PointView } from './View';
+import { View } from './View';
 import { Speckle } from '@strategies/speckle'
 import { Explorer } from './Explorer';
 
 
 @model("viewto/Scenario")
 export class Scenario extends Model({
-    views: prop<PointView[]>(() => []),
+    views: prop<View[]>(() => []),
     project: prop<Project>(() => new Project({})),
 }) implements Store {
 
@@ -31,14 +31,8 @@ export class Scenario extends Model({
     setStudy(data: any) {
         this.study = data;
     }
-
-    @observable
-    explorer?: Explorer;
-
-    @action
-    setExplorer(obj: Explorer) {
-        this.explorer = obj;
-    }
+        
+    readonly explorer?: Explorer = new Explorer();
 
     onInit() {
 
@@ -62,9 +56,8 @@ export class Scenario extends Model({
                 if (!this.study || this.study.isLoading || !this.study.hasLoaded || !this.study.getActiveResultCloud) {
                     return;
                 }
-                this.setExplorer(new Explorer(this.study))
-                this.explorer?.setFocuses([this.study?.focuses[0]]);
-                this.explorer?.setObstructors([this.study?.obstructors[0]]);
+                // this.explorer?.setFocuses([this.study?.focuses[0]]);
+                // this.explorer?.setObstructors([this.study?.obstructors[0]]);
             }
         )
     }
