@@ -2,12 +2,12 @@ import { stores, Store } from '@strategies/stores';
 import { action, computed, makeObservable, observable } from 'mobx';
 
 import Stores from './Stores';
-import { PointView } from '../models/View';
+import { View } from '../models/View';
 
 
 export default class ViewsStore extends Store {
 
-    private readonly virtual = new PointView({});
+    private readonly virtual = new View({});
 
     constructor() {
         super();
@@ -20,7 +20,7 @@ export default class ViewsStore extends Store {
     }
 
     @computed
-    get active(): PointView {
+    get active(): View {
         return this.all.filter(v => v.active)[0] || this.virtual;
     }
 
