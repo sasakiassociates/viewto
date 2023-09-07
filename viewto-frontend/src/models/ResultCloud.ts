@@ -2,8 +2,9 @@ import { stores } from '@strategies/stores';
 import Stores from '../stores/Stores';
 import { ViewResult } from './ViewResult';
 import { computed, makeObservable } from 'mobx';
-import { clamp, getMinMax, normalise } from '../util';
-
+import { clamp, getMinMax, norm, normalise, normaliseArray } from '../util';
+import { ConditionType, ViewCondition } from './ViewCondition';
+import { Range } from '../util';
 
 export class ResultCloud {
     id: string;
@@ -11,67 +12,79 @@ export class ResultCloud {
     points: number[];
     results: ViewResult[];
     active: boolean;
+    resultCount: number;
 
     /**
      *
      */
     constructor(id: string, sasakiId: string, points: number[], results: ViewResult[]) {
         makeObservable(this);
-
         this.id = id;
         this.sasakiId = sasakiId;
         this.points = points;
         this.results = results;
         this.active = false;
+        this.resultCount = results[0].values.length;
     }
 
     @computed
     get values(): number[] {
         const view = (stores as Stores).views.active;
 
-        let rawValues: number[] = [];
-        const obstructors = view.obstructors;
+        if (!view.conditions || view.conditions.length === 0) {
+            return this._blankArrayFromCount();
+        }
+        console.log('conditions', view.conditions);
+        
 
-        view.focuses?.forEach(focus => {
-            const focusId = focus.sasakiId;
-            
-            // note: when there is no obstructor object we set use the focus id as the obstructor and focus item in the condition.
-            const obstructorIds =
-                obstructors && obstructors.length > 0
-                    ? obstructors.map(x => x.sasakiId)
-                    : [focus.sasakiId];
+        const maxValues = this._compositeConditionValues(
+            view.conditions.filter(x => x.type === ConditionType.POTENTIAL),
+            view.solRange
+        );
 
-            console.log('obstructor ids', obstructorIds);
+        // no obstructors so lets just pass it back 
+        if(view.obstructors.length === 0) return norm(maxValues);
 
-            obstructorIds?.forEach(obstructorId => {
-                let conditionRawValues: number[] = [];
+        const minValues = this._blankArrayFromCount();
 
-                for (let i = 0; i < this.results.length; i++) {
-                    const condition = this.results[i].condition;
+        const inputValues = this._compositeConditionValues(
+            view.conditions.filter(x => x.type !== ConditionType.POTENTIAL),
+            view.solRange
+        );
 
-                    if (condition.Equals(focusId, obstructorId)) continue;
+        return normaliseArray(inputValues, minValues, maxValues);
+    }
 
-                    conditionRawValues = clamp(
-                        [...this.results[i].values],
-                        view.solRange.min,
-                        view.solRange.max
-                    );
+    private _compositeConditionValues(
+        conditions: ViewCondition[],
+        bounds: Range,
+        clampValues: boolean = false
+    ): number[] {
+        let compositeValues = this._blankArrayFromCount();
+
+        for (let i = 0; i < conditions.length; i++) {
+            let values = this._blankArrayFromCount();
+
+            for (let l = 0; l < this.results.length; l++) {
+                const layer = this.results[l];
+
+                if (layer.condition.Equals(conditions[i].focusId, conditions[i].obstructorId)) {
+                    values = clampValues
+                        ? clamp([...layer.values], bounds.min, bounds.max)
+                        : [...layer.values];
                     break;
                 }
-                if (rawValues.length == 0) {
-                    rawValues = [...conditionRawValues];
-                } else {
-                    for (let i = 0; i < rawValues.length; i++) {
-                        rawValues[i] += conditionRawValues[i];
-                    }
-                }
-                for (let i = 0; i < 10; i++) {
-                    console.log(rawValues[i]);
-                }
-            });
-        });
+            }
 
-        const clampedMinMax = getMinMax(rawValues);
-        return normalise(rawValues, clampedMinMax[0], clampedMinMax[1]);
+            for (let i = 0; i < compositeValues.length; i++) {
+                compositeValues[i] += values[i];
+            }
+        }
+
+        return compositeValues;
+    }
+
+    private _blankArrayFromCount(value: number = 0): number[] {
+        return new Array(this.resultCount).fill(value);
     }
 }

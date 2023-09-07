@@ -4,6 +4,7 @@ import { stores } from '@strategies/stores';
 import Stores from '../stores/Stores';
 import chroma, { Scale } from 'chroma-js';
 import { Range } from '../util';
+import { ConditionType, ViewCondition } from './ViewCondition';
 
 @model('viewto/View')
 export class View extends Model({
@@ -18,6 +19,34 @@ export class View extends Model({
     @computed
     get obstructors() {
         return this.obstructorIds.map(id => (stores as Stores).obstructors.byId[id]);
+    }
+
+    @computed
+    get conditions() {
+        let conditions: ViewCondition[] = [];
+
+        if (!this.focuses || this.focuses.length === 0) {
+            console.log('no focuses selected');
+            return conditions;
+        }
+
+        this.focuses.forEach(focus => {
+            conditions.push(
+                new ViewCondition(focus.sasakiId, focus.sasakiId, ConditionType.POTENTIAL)
+            );
+        });
+
+        if (!this.obstructors || this.obstructors.length === 0) {
+            console.log('no obstructors selected');
+            return conditions;
+        }
+
+        this.obstructors.forEach(obstructor => {
+            this.focuses.forEach(focus => {
+                conditions.push(new ViewCondition(focus.sasakiId, obstructor.sasakiId, obstructor.proposed ? ConditionType.PROPOSED : ConditionType.EXISTING))
+            })
+        })
+        return conditions;
     }
 
     @observable
@@ -74,4 +103,3 @@ export class View extends Model({
         return value;
     }
 }
-

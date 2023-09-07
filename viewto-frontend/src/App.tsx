@@ -20,7 +20,7 @@ export default function App() {
 
     return (
         <div className="ViewTo" ref={el => el && !ui.appRef && ui.setAppRef(el)}>
-            <StartupModal />
+            {/* <StartupModal /> */}
 
             <div className="ViewTo__layout">
                 <MenuBar />
