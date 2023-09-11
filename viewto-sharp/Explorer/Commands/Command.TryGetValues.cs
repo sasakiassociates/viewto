@@ -8,7 +8,7 @@ namespace ViewTo.Cmd
 {
 
   /// <summary>
-  ///   <para>Searches through a list of <see cref="IResultCloudData" /> to find a given object with a matching id and stage</para>
+  ///   <para>Searches through a list of <see cref="IResultLayer" /> to find a given object with a matching id and stage</para>
   /// </summary>
   internal class GetValuesFromDataCommand : ICmdWithArgs<ValuesRawForExplorerArgs>
   {
@@ -20,7 +20,7 @@ namespace ViewTo.Cmd
     /// <summary>
     ///   the list of data to search through
     /// </summary>
-    readonly IReadOnlyCollection<IResultCloudData> _data;
+    readonly IReadOnlyCollection<IResultLayer> _data;
 
     /// <summary>
     ///   stage the data is linked with
@@ -34,12 +34,12 @@ namespace ViewTo.Cmd
     /// </summary>
     /// <param name="data"></param>
     /// <param name="option"></param>
-    public GetValuesFromDataCommand(IReadOnlyCollection<IResultCloudData> data, IContentOption option)
+    public GetValuesFromDataCommand(IReadOnlyCollection<IResultLayer> data, IContentOption option)
     {
       this._data = data;
       this._stage = option.stage;
-      this._targetId = option.target.ViewId;
-      this._contentId = option.content.ViewId;
+      this._targetId = option.target.appId;
+      this._contentId = option.content.appId;
     }
 
     public void Execute()
@@ -56,12 +56,12 @@ namespace ViewTo.Cmd
         return;
       }
 
-      IResultCloudData dataFound = default;
+      IResultLayer dataFound = default;
 
       foreach(var d in _data)
       {
-        if(d.info.target.ViewId.Equals(_targetId) &&
-           d.info.content.ViewId.Equals(_contentId) &&
+        if(d.info.target.guid.Equals(_targetId) &&
+           d.info.content.guid.Equals(_contentId) &&
            d.info.stage == _stage)
         {
           dataFound = d;

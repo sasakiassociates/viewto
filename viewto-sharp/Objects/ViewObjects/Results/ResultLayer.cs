@@ -8,10 +8,10 @@ namespace ViewObjects.Results
 
   /// <inheritdoc />
   [Serializable]
-  public class ResultCloudData : IResultCloudData
+  public class ResultLayer : IResultLayer
   {
 
-    public ResultCloudData()
+    public ResultLayer()
     { }
 
     /// <summary>
@@ -19,14 +19,14 @@ namespace ViewObjects.Results
     /// </summary>
     /// <param name="values"></param>
     /// <param name="content"></param>
-    public ResultCloudData(List<int> values, ContentOption content)
+    public ResultLayer(List<int> values, ContentOption content)
     {
       this.info = content;
       this.values = values;
       this.count = values.Count;
     }
 
-    public ResultCloudData(List<int> values, IContentInfo target, IContentInfo content, ViewContentType type, int count)
+    public ResultLayer(List<int> values, IContentInfo target, IContentInfo content, ViewContentType type, int count)
     {
       this.info = new ContentOption(target, content, type);
       this.values = values;

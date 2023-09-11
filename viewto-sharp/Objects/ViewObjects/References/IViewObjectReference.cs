@@ -1,11 +1,11 @@
-﻿using ViewObjects.Common;
+﻿using Sasaki.Common;
 
 namespace ViewObjects.References
 {
 
   public interface IViewObjectReference : IViewObject
   {
-    public IReferenceObject Reference { get; set; }
+    public IVersionReference Reference { get; set; }
   }
 
 }

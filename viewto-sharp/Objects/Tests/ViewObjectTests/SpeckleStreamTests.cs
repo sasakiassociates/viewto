@@ -165,7 +165,7 @@ namespace ViewTo.Tests.Objects
 
       var cloud = study.FindObject<ResultCloud>();
 
-      foreach(var data in cloud.Data)
+      foreach(var data in cloud.layers)
       {
         var min = 1;
         var max = 1;
@@ -194,7 +194,7 @@ namespace ViewTo.Tests.Objects
           if(d < minD) minD = d;
           else if(d > maxD) maxD = d;
         }
-        Console.WriteLine($"Values for {opts[i].content.ViewName}-{opts[i].stage} min={minD} : max={maxD}");
+        Console.WriteLine($"Values for {opts[i].content.name}-{opts[i].stage} min={minD} : max={maxD}");
 
       }
 

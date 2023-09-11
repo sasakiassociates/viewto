@@ -10,8 +10,9 @@ namespace ViewObjects.Studies
 
     public ViewStudy()
     {
+      name = "nada";
       objects = new List<IViewObject>();
-      ViewId = Guid.NewGuid().ToString();
+      appId = Guid.NewGuid().ToString();
     }
 
     /// <summary>
@@ -26,18 +27,18 @@ namespace ViewObjects.Studies
     public ViewStudy(List<IViewObject> objects, string viewName, string viewId = null)
     {
       this.objects = objects;
-      ViewName = viewName;
-      ViewId = ObjUtils.CheckIfValidId(viewId);
+      name = viewName;
+      appId = ObjUtils.CheckIfValidId(viewId);
     }
 
     /// <inheritdoc />
-    public string ViewName { get; set; }
+    public string name {get;set;}
 
     /// <inheritdoc />
-    public string ViewId { get; set; }
+    public string appId {get;set;}
 
     /// <inheritdoc />
-    public List<IViewObject> objects { get; set; }
+    public List<IViewObject> objects {get;set;}
   }
 
 }

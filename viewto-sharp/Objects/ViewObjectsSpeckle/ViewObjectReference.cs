@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using ViewObjects.Common;
+using Sasaki.Common;
 
 namespace ViewObjects.Speckle
 {
 
   /// <summary>
   /// </summary>
-  public class ViewObjectReference : ViewObjectBase, IReferenceObject
+  public class ViewObjectReference : ViewObjectBase, IVersionReference
   {
     /// <summary>
     /// 
@@ -22,7 +22,7 @@ namespace ViewObjects.Speckle
     /// <param name="references"></param>
     public ViewObjectReference(List<string> references)
     {
-      References = references;
+      this.references = references;
     }
 
     /// <summary>
@@ -33,22 +33,22 @@ namespace ViewObjects.Speckle
     /// <param name="viewName"></param>
     public ViewObjectReference(List<string> references, string viewId, string viewName = null)
     {
-      References = references;
-      ViewId = ObjUtils.CheckIfValidId(viewId);
-      ViewName = viewName;
+      this.references = references;
+      appId = SasakiTools.CheckIfValidId(viewId);
+      name = viewName;
     }
 
     /// <inheritdoc />
-    public List<string> References { get; set; }
+    public List<string> references { get; set; }
 
     /// <inheritdoc />
-    public string ViewName { set; get; }
+    public string name { set; get; }
 
     /// <inheritdoc />
-    public string ViewId { get; set; }
+    public string appId { get; set; }
 
     /// <inheritdoc />
-    [JsonIgnore] public Type Type { get; set; }
+    [JsonIgnore] public Type type { get; set; }
   }
 
   /// <summary>
@@ -68,16 +68,16 @@ namespace ViewObjects.Speckle
     /// <param name="obj"></param>
     public ViewObjectReference(TObj obj)
     {
-      Type = typeof(TObj);
+      type = typeof(TObj);
 
-      if(typeof(IId).IsAssignableFrom(Type) && obj is IId i)
+      if(typeof(IHaveId).IsAssignableFrom(type) && obj is IHaveId i)
       {
-        ViewId = ObjUtils.CheckIfValidId(i.ViewId);
+        appId = SasakiTools.CheckIfValidId(i.appId);
       }
 
-      if(typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
+      if(typeof(IHaveName).IsAssignableFrom(type) && obj is IHaveName n)
       {
-        ViewName = n.ViewName;
+        name = n.name;
       }
     }
 
@@ -88,16 +88,16 @@ namespace ViewObjects.Speckle
     /// <param name="references"></param>
     public ViewObjectReference(TObj obj, List<string> references) : base(references)
     {
-      Type = typeof(TObj);
+      type = typeof(TObj);
 
-      if(typeof(IId).IsAssignableFrom(Type) && obj is IId i)
+      if(typeof(IHaveId).IsAssignableFrom(type) && obj is IHaveId i)
       {
-        ViewId = ObjUtils.CheckIfValidId(i.ViewId);
+        appId = SasakiTools.CheckIfValidId(i.appId);
       }
 
-      if(typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
+      if(typeof(IHaveName).IsAssignableFrom(type) && obj is IHaveName n)
       {
-        ViewName = n.ViewName;
+        name = n.name;
       }
     }
 
@@ -109,7 +109,7 @@ namespace ViewObjects.Speckle
     /// <param name="viewName"></param>
     public ViewObjectReference(List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
     {
-      Type = typeof(TObj);
+      type = typeof(TObj);
     }
 
   }

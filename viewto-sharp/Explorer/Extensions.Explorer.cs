@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
 using ViewTo.Cmd;
@@ -355,7 +355,7 @@ namespace ViewTo
     /// <param name="addToList">if true it adds the option to the <see cref="ExplorerMetaData.activeOptions"/></param>
     static void TrySetOption(this IExplorer obj, ContentOption option, bool addToList = false)
     {
-      if(option?.target == null || !option.target.ViewId.Valid() || option.content == null || !option.content.ViewId.Valid())
+      if(option?.target == null || !option.target.appId.Valid() || option.content == null || !option.content.appId.Valid())
       {
         return;
       }
@@ -366,8 +366,8 @@ namespace ViewTo
       }
 
       if(!obj.meta.activeOptions.Any(x => x.stage == option.stage
-                                          && x.target.ViewId.Equals(option.target.ViewId)
-                                          && x.content.ViewId.Equals(option.content.ViewId)))
+                                          && x.target.appId.Equals(option.target.appId)
+                                          && x.content.appId.Equals(option.content.appId)))
       {
         obj.meta.activeOptions.Add(option);
       }

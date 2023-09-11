@@ -6,10 +6,10 @@ namespace ViewObjects.References
 {
 
   [Serializable]
-  public class ViewCloudReference : ViewObjectReference<ViewCloud>
+  public class ViewCloudReference : ViewObjectReference<Cloud>
   {
     /// <inheritdoc />
-    public ViewCloudReference(ViewCloud obj, List<string> references) : base(obj, references)
+    public ViewCloudReference(Cloud obj, List<string> references) : base(obj, references)
     { }
 
     /// <inheritdoc />

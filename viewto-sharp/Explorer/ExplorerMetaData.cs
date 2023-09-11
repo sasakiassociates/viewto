@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 
 namespace ViewTo

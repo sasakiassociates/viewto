@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sasaki.Common;
 using ViewObjects.Common;
 
 namespace ViewObjects.References
 {
 
   [Serializable]
-  public class ViewObjectReference : IReferenceObject, IViewObject
+  public class ViewObjectReference : IVersionReference, IViewObject
   {
     /// <summary>
     /// </summary>
@@ -17,7 +18,7 @@ namespace ViewObjects.References
     /// </summary>
     public ViewObjectReference(List<string> references)
     {
-      References = references;
+      this.references = references;
     }
 
     /// <summary>
@@ -27,9 +28,9 @@ namespace ViewObjects.References
     /// <param name="viewName"></param>
     public ViewObjectReference(List<string> references, string viewId, string viewName = null)
     {
-      ViewName = viewName;
-      References = references;
-      ViewId = ObjUtils.CheckIfValidId(viewId);
+      name = viewName;
+      this.references = references;
+      appId = ObjUtils.CheckIfValidId(viewId);
     }
 
     /// <summary>
@@ -40,23 +41,23 @@ namespace ViewObjects.References
     /// <param name="viewName"></param>
     public ViewObjectReference(List<string> references, Type type, string viewId, string viewName = null)
     {
-      Type = type;
-      ViewName = viewName;
-      References = references;
-      ViewId = ObjUtils.CheckIfValidId(viewId);
+      this.type = type;
+      name = viewName;
+      this.references = references;
+      appId = ObjUtils.CheckIfValidId(viewId);
     }
 
     /// <inheritdoc />
-    public string ViewId { get; protected set; }
+    public string appId { get; protected set; }
 
     /// <inheritdoc />
-    public string ViewName { get; set; }
+    public string name { get; set; }
 
     /// <inheritdoc />
-    public Type Type { get; protected set; }
+    public Type type { get; protected set; }
 
     /// <inheritdoc />
-    public List<string> References { get; protected set; } = new();
+    public List<string> references { get; protected set; } = new();
   }
 
 }

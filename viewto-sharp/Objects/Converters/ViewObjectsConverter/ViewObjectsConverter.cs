@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.References;
 using ViewObjects.Studies;
@@ -92,15 +92,15 @@ namespace ViewObjects.Converter
     {
       switch(@object)
       {
-        case IReferenceObject _:
+        case IVersionReference _:
           return true;
-        case ISasakiStudy<IViewObject> _:
+        case IStudy<IViewObject> _:
           return true;
-        case ISasakiStudy<IViewObjectReference> _:
+        case IStudy<IViewObjectReference> _:
           return true;
         case IResultCloud _:
           return true;
-        case IViewCloud _:
+        case ICloud _:
           return true;
         case IContent _:
           return true;
@@ -132,7 +132,7 @@ namespace ViewObjects.Converter
           return true;
         case VS.ResultCloud _:
           return true;
-        case VS.ResultCloudData _:
+        case VS.ResultLayer _:
           return true;
         default:
           return false;
@@ -143,7 +143,7 @@ namespace ViewObjects.Converter
     {
       switch(@object)
       {
-        case ISasakiStudy<IViewObject> o:
+        case IStudy<IViewObject> o:
           return StudyToSpeckle(o);
         case ILayout o:
           return LayoutToSpeckle(o);
@@ -154,7 +154,7 @@ namespace ViewObjects.Converter
 
         case IResultCloud o:
           return ResultCloudToSpeckle(o);
-        case IResultCloudData o:
+        case IResultLayer o:
           return ResultCloudDataToSpeckle(o);
 
         case ContentReference o:

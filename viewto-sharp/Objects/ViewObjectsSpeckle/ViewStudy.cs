@@ -1,7 +1,7 @@
 ﻿using Speckle.Core.Api;
 using Speckle.Core.Kits;
 using System.Collections.Generic;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Studies;
 
 namespace ViewObjects.Speckle
@@ -10,7 +10,7 @@ namespace ViewObjects.Speckle
   /// <summary>
   ///   A simple view study as a speckle object
   /// </summary>
-  public class ViewStudy : ViewObjectBase, ISasakiStudy<ViewObjectBase>
+  public class ViewStudy : ViewObjectBase, IStudy<ViewObjectBase>
   {
 
     /// <summary>
@@ -32,15 +32,15 @@ namespace ViewObjects.Speckle
     public ViewStudy(List<ViewObjectBase> objects, string viewName, string viewId = null)
     {
       this.objects = objects;
-      ViewName = viewName;
-      ViewId = ObjUtils.CheckIfValidId(viewId);
+      name = viewName;
+      guid = SasakiTools.CheckIfValidId(viewId);
     }
 
     /// <inheritdoc />
-    public string ViewName { get; set; }
+    public string name { get; set; }
 
     /// <inheritdoc />
-    public string ViewId { get; set; }
+    public string guid { get; set; }
 
     /// <inheritdoc />
     public List<ViewObjectBase> objects { get; set; } = new List<ViewObjectBase>();

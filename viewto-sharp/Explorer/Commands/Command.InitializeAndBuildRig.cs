@@ -2,7 +2,7 @@
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.Systems;
 using ViewObjects.Systems.Layouts;
@@ -12,12 +12,12 @@ namespace ViewTo.Cmd
 
   internal class InitializeAndBuildRig : ICmdWithArgs<SimpleResultArgs>
   {
-    private IReadOnlyList<IViewCloud> _clouds;
+    private IReadOnlyList<ICloud> _clouds;
     private IReadOnlyList<IContent> _contents;
     private IRig _rig;
     private IReadOnlyList<IViewer> _viewers;
 
-    public InitializeAndBuildRig(IRig rig, IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers)
+    public InitializeAndBuildRig(IRig rig, IReadOnlyList<IContent> contents, IReadOnlyList<ICloud> clouds, IReadOnlyList<IViewer> viewers)
     {
       _rig = rig;
       _contents = contents;
@@ -70,10 +70,10 @@ namespace ViewTo.Cmd
     public RigParameters CreateRigParams(
       IEnumerable<ILayout> viewers,
       IEnumerable<IContent> contents,
-      IEnumerable<IId> clouds
+      IEnumerable<IHaveId> clouds
     )
     {
-      return CreateRigParams(viewers, contents, clouds.Where(x => x != default(object)).Select(x => x.ViewId).ToList());
+      return CreateRigParams(viewers, contents, clouds.Where(x => x != default(object)).Select(x => x.appId).ToList());
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ namespace ViewTo.Cmd
     {
       return new RigParameters(
         clouds.ToList(),
-        contents.Where(x => x != null && x.type == ViewContentType.Potential).Select(x => x.Color).ToList(),
+        contents.Where(x => x != null && x.contentType == ViewContentType.Potential).Select(x => x.Color).ToList(),
         viewers.ToList()
       );
     }

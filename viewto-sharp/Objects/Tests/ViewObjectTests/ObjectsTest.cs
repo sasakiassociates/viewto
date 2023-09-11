@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.Converter;
 using ViewObjects.References;
@@ -40,8 +40,8 @@ namespace ViewTo.Tests.Objects
       {
         var obj = new ContentReference(new Content(contentType), new List<string>() {"123443q312"});
         var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
-        Assert.IsTrue(res.ViewId.Equals(obj.ViewId));
-        Assert.IsTrue(res.type == obj.type);
+        Assert.IsTrue(res.appId.Equals(obj.ViewId));
+        Assert.IsTrue(res.contentType == obj.contentType);
       }
 
     }
@@ -52,7 +52,7 @@ namespace ViewTo.Tests.Objects
       var objs = new List<IViewObject>
       {
         new ContentReference(new Content(ViewContentType.Potential), new List<string>() {"123443q312"}),
-        new ViewCloudReference(new List<string> {"256ff84cf7"}, ObjUtils.InitGuid),
+        new ViewCloudReference(new List<string> {"256ff84cf7"}, SasakiTools.InitGuid),
         new Viewer()
       };
 
@@ -65,8 +65,8 @@ namespace ViewTo.Tests.Objects
       Assert.IsTrue(res is ViewObjects.Speckle.ViewStudy);
 
       var casted = res as ViewObjects.Speckle.ViewStudy;
-      Assert.IsTrue(obj.ViewId.Equals(casted.ViewId));
-      Assert.IsTrue(obj.ViewName.Equals(casted.ViewName));
+      Assert.IsTrue(obj.ViewId.Equals(casted.guid));
+      Assert.IsTrue(obj.name.Equals(casted.name));
       Assert.IsTrue(obj.objects.Count.Equals(casted.objects.Count));
     }
     
@@ -81,14 +81,14 @@ namespace ViewTo.Tests.Objects
       Assert.IsTrue(res is ViewObjects.Speckle.ResultCloud);
 
       var casted = res as ViewObjects.Speckle.ResultCloud;
-      Assert.IsTrue(obj.ViewId.Equals(casted.ViewId));
+      Assert.IsTrue(obj.guid.Equals(casted.guid));
       Assert.IsTrue(obj.Points.Length == casted.Points.Length);
-      Assert.IsTrue(obj.Data.Count == casted.Data.Count);
+      Assert.IsTrue(obj.layers.Count == casted.layers.Count);
 
-      for(var i = 0; i<obj.Data.Count; i++)
+      for(var i = 0; i<obj.layers.Count; i++)
       {
-        var dataOg = obj.Data[i];
-        var dataCasted = casted.Data[i];
+        var dataOg = obj.layers[i];
+        var dataCasted = casted.layers[i];
 
         dataOg.Similar(dataCasted);
 

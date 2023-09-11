@@ -6,15 +6,15 @@ using ViewObjects.Contents;
 namespace ViewTo.Cmd;
 
 /// <summary>
-/// Retrieves a list of values from a list of <seealso cref="IResultCloudData"/>. The values are selected by the input parameter of <seealso cref="IContentOption"/>
+/// Retrieves a list of values from a list of <seealso cref="IResultLayer"/>. The values are selected by the input parameter of <seealso cref="IContentOption"/>
 /// </summary>
 internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
 {
 
   readonly IContentOption _option;
-  readonly IReadOnlyCollection<IResultCloudData> _data;
+  readonly IReadOnlyCollection<IResultLayer> _data;
 
-  public ValueFromOption(IReadOnlyCollection<IResultCloudData> data, IContentOption option)
+  public ValueFromOption(IReadOnlyCollection<IResultLayer> data, IContentOption option)
   {
     this._data = data;
     this._option = option;
@@ -36,12 +36,12 @@ internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
       return;
     }
 
-    IResultCloudData dataFound = default;
+    IResultLayer dataFound = default;
 
     foreach(var d in _data)
     {
-      if(_option.content.ViewId.Equals(d.info.content.ViewId)
-         && _option.target.ViewId.Equals(d.info.target.ViewId)
+      if(_option.content.appId.Equals(d.info.content.guid)
+         && _option.target.appId.Equals(d.info.target.guid)
          && _option.stage == d.info.stage)
       {
         dataFound = d;
@@ -58,8 +58,8 @@ internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
 
   static string ToStringHack(IContentOption o)
   {
-    return$"{o.target.ViewName}({nameof(o.target)})={o.target.type} : {o.target.ViewId}\n" +
-          $"{o.content.ViewName}({nameof(o.content)})={o.content.type} : {o.content.ViewId}\n" +
+    return$"{o.target.name}({nameof(o.target)})={o.target.contentType} : {o.target.appId}\n" +
+          $"{o.content.name}({nameof(o.content)})={o.content.contentType} : {o.content.appId}\n" +
           $"({nameof(o.content)})={o.stage}\n";
   }
 

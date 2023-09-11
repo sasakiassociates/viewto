@@ -1,6 +1,6 @@
 ﻿using Grasshopper.Kernel.Types;
 using ViewObjects;
-using ViewObjects.Common;
+using Sasaki.Common;
 
 namespace ViewTo.RhinoGh.Goo
 {

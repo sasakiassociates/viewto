@@ -1,5 +1,5 @@
 ﻿using System;
-using ViewObjects.Common;
+using Sasaki.Common;
 
 namespace ViewObjects.Contents
 {
@@ -14,30 +14,30 @@ namespace ViewObjects.Contents
 
     public ContentInfo(string viewId, string viewName)
     {
-      ViewName = viewName;
-      ViewId = viewId;
+      name = viewName;
+      appId = viewId;
     }
 
     public ContentInfo(IContent obj)
     {
-      ViewName = obj.ViewName;
-      ViewId = obj.ViewId;
-      type = obj.type;
+      name = obj.name;
+      appId = obj.appId;
+      contentType = obj.contentType;
     }
 
 
     /// <inheritdoc />
-    public string ViewName { get; set; }
+    public string name { get; set; }
 
-    public ViewContentType type { get; set; }
+    public ViewContentType contentType { get; set; }
 
 
     /// <inheritdoc />
-    public string ViewId { get; set; }
+    public string appId { get; set; }
 
     public bool Equals(IContentInfo obj)
     {
-      return obj != default(object) && ViewId.Valid() && ViewId.Equals(obj.ViewId);
+      return obj != default(object) && appId.Valid() && appId.Equals(obj.appId);
     }
 
 

@@ -1,4 +1,4 @@
-﻿using ViewObjects.Common;
+﻿using Sasaki.Common;
 
 namespace ViewObjects.Contents
 {
@@ -6,10 +6,10 @@ namespace ViewObjects.Contents
   /// <summary>
   /// Interface for passing around view content data
   /// </summary>
-  public interface IContentInfo : INameable, IId
+  public interface IContentInfo : IHaveName, IHaveId
   {
 
-    public ViewContentType type { get; }
+    public ViewContentType contentType { get; }
 
   }
 

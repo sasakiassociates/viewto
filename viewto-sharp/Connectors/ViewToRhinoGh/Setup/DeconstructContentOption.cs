@@ -72,10 +72,10 @@ namespace ViewTo.RhinoGh.Setup
 
         foreach(var opt in resultCloud.GetAllOpts())
         {
-          targetNames.Add(opt.target.ViewName);
-          targetIds.Add(opt.target.ViewId);
-          contentNames.Add(opt.content.ViewName);
-          contentIds.Add(opt.content.ViewId);
+          targetNames.Add(opt.target.name);
+          targetIds.Add(opt.target.guid);
+          contentNames.Add(opt.content.name);
+          contentIds.Add(opt.content.guid);
           stages.Add($"{opt.stage}");
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.References;
 using ViewObjects.Results;
 using ViewObjects.Studies;
@@ -15,7 +15,7 @@ namespace ViewObjects.Converter
   {
     IViewObject StudyToNative(Speckle.ViewStudy obj)
     {
-      var result = new ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, objects = new List<IViewObject>()};
+      var result = new ViewStudy() {appId = obj.guid, name = obj.name, objects = new List<IViewObject>()};
 
       foreach(var o in obj.objects)
       {
@@ -48,27 +48,27 @@ namespace ViewObjects.Converter
 
     IViewObject ResultCloudToNative(Speckle.ResultCloud obj)
     {
-      return new ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.ViewId);
+      return new ResultCloud(obj.Points, obj.layers.Where(x => x != null).Select(ResultCloudDataToNative).ToList(), obj.guid);
     }
 
-    IResultCloudData ResultCloudDataToNative(IResultCloudData obj)
+    IResultLayer ResultCloudDataToNative(IResultLayer obj)
     {
-      return new ResultCloudData(obj.values, obj.info);
+      return new ResultLayer(obj.values, obj.info);
     }
 
     IViewObject ContentReferenceToNative(Speckle.ContentReference obj)
     {
-      return new ContentReference(obj.References, obj.type, obj.ViewId, obj.ViewName);
+      return new ContentReference(obj.references, obj.contentType, obj.appId, obj.name);
     }
 
-    IViewObject ViewCloudReferenceToNative(IReferenceObject obj)
+    IViewObject ViewCloudReferenceToNative(IVersionReference obj)
     {
-      return new ViewCloudReference(obj.References, obj.ViewId);
+      return new ViewCloudReference(obj.references, obj.appId);
     }
 
-    ViewObjectReference ReferenceToNative(IReferenceObject obj)
+    ViewObjectReference ReferenceToNative(IVersionReference obj)
     {
-      return new ViewObjectReference(obj.References, obj.Type, obj.ViewId, obj.ViewName);
+      return new ViewObjectReference(obj.references, obj.type, obj.appId, obj.name);
     }
   }
 

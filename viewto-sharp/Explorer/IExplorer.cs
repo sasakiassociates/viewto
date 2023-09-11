@@ -16,7 +16,7 @@ namespace ViewTo
     /// <summary>
     ///   Container for result values being explored
     /// </summary>
-    public List<IResultCloudData> data { get; }
+    public List<IResultLayer> data { get; }
 
     /// <summary>
     ///  A container of content options that relate to the result data

@@ -18,7 +18,7 @@ namespace ViewTo
     public ExplorerMetaData meta { get; internal set; } = new();
 
     /// <inheritdoc />
-    public List<IResultCloudData> data => cloud?.Data ?? new List<IResultCloudData>();
+    public List<IResultLayer> data => cloud?.layers ?? new List<IResultLayer>();
 
     /// <inheritdoc />
     public void Load(IResultCloud cloud)

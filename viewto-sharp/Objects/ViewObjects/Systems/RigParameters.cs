@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sasaki.Common;
+using System;
 using System.Collections.Generic;
 using ViewObjects.Clouds;
 using ViewObjects.Contents;
@@ -20,7 +21,7 @@ namespace ViewObjects.Systems
     public List<ILayout> Viewer { get; set; }
 
     /// <summary>
-    ///   The lists of <see cref="IViewCloud" /> by <see cref="IViewCloud.ViewId" /> associated with the args
+    ///   The lists of <see cref="ICloud" /> by <see cref="IntIHaveIdid" /> associated with the args
     /// </summary>
     public List<string> Clouds { get; }
 

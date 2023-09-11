@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ViewObjects.Common;
+using Sasaki.Common;
 
 namespace ViewObjects.References
 {
@@ -15,7 +15,7 @@ namespace ViewObjects.References
     protected ViewObjectReference(List<string> references, string viewId, string viewName = null) :
       base(references, viewId, viewName)
     {
-      Type = typeof(TObj);
+      type = typeof(TObj);
     }
 
     /// <summary>
@@ -29,16 +29,16 @@ namespace ViewObjects.References
         return;
       }
 
-      Type = obj.GetType();
+      type = obj.GetType();
 
-      if(typeof(IId).IsAssignableFrom(Type) && obj is IId i)
+      if(typeof(IHaveId).IsAssignableFrom(type) && obj is IHaveId i)
       {
-        ViewId = i.ViewId;
+        appId = i.appId;
       }
 
-      if(typeof(INameable).IsAssignableFrom(Type) && obj is INameable n)
+      if(typeof(IHaveName).IsAssignableFrom(type) && obj is IHaveName n)
       {
-        ViewName = n.ViewName;
+        name = n.name;
       }
     }
 

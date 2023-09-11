@@ -1,4 +1,6 @@
-﻿namespace ViewObjects.Studies;
+﻿using Sasaki;
 
-public interface IViewStudy : ISasakiStudy<IViewObject>
+namespace ViewObjects.Studies;
+
+public interface IViewStudy : IStudy<IViewObject>
 { }

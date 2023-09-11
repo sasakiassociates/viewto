@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Studies;
+using ViewObjects.Common;
+
 
 namespace ViewObjects.Contents
 {
@@ -13,11 +15,11 @@ namespace ViewObjects.Contents
   {
 
     /// <summary>
-    /// Creates a new content object with a randomize <see cref="ViewId"/>
+    /// Creates a new content object with a randomize <see cref="appId"/>
     /// </summary>
     public Content()
     {
-      ViewId = Guid.NewGuid().ToString();
+      appId = Guid.NewGuid().ToString();
     }
 
     /// <summary>
@@ -31,19 +33,19 @@ namespace ViewObjects.Contents
     /// </param>
     public Content(ViewContentType type, string viewId = null, string viewName = null)
     {
-      this.type = type;
-      ViewName = viewName;
-      ViewId = ObjUtils.CheckIfValidId(viewId);
+      this.contentType = type;
+      name = viewName;
+      appId = ObjUtils.CheckIfValidId(viewId);
     }
 
     /// <inheritdoc />
-    public string ViewId { get; }
+    public string appId { get; }
 
     /// <inheritdoc />
-    public string ViewName { get; set; }
+    public string name { get; set; }
 
     /// <inheritdoc />
-    public ViewContentType type { get; }
+    public ViewContentType contentType { get; }
 
     /// <inheritdoc />
     public ViewColor Color { get; set; }
@@ -58,7 +60,7 @@ namespace ViewObjects.Contents
     /// <returns></returns>
     public bool Equals(IContent obj)
     {
-      return obj != default(object) && ViewId.Equals(obj.ViewId) && type == obj.type;
+      return obj != default(object) && appId.Equals(obj.appId) && contentType == obj.contentType;
     }
   }
 

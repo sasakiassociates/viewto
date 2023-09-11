@@ -9,13 +9,13 @@ namespace ViewTo.Cmd
 
   internal class CanStudyRun : ICmdWithArgs<SimpleResultArgs>
   {
-    private IReadOnlyList<IViewCloud> _clouds;
+    private IReadOnlyList<ICloud> _clouds;
     private IReadOnlyList<IContent> _contents;
 
     private StudyObjectValidator _receiver;
     private IReadOnlyList<IViewer> _viewers;
 
-    public CanStudyRun(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers)
+    public CanStudyRun(IReadOnlyList<IContent> contents, IReadOnlyList<ICloud> clouds, IReadOnlyList<IViewer> viewers)
     {
       _contents = contents;
       _clouds = clouds;

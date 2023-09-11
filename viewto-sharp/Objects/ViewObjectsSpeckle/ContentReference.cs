@@ -26,24 +26,24 @@ namespace ViewObjects.Speckle
     [SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObject.Schema.Category, "Objects")]
     public ContentReference(References.ContentReference obj) : base(obj)
     {
-      this.Type = obj.Type;
       this.type = obj.type;
-      this.ViewId = obj.ViewId;
-      this.ViewName = obj.ViewName;
-      this.References = obj.References;
+      this.contentType = obj.contentType;
+      this.appId = obj.appId;
+      this.name = obj.name;
+      this.references = obj.references;
     }
 
     /// <inheritdoc />
-    public ContentReference(ViewContentType type, List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
+    public ContentReference(ViewContentType contentType, List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
     {
-      this.type = type;
-      this.ViewId = viewId;
-      this.ViewName = viewName;
-      this.References = references;
+      this.contentType = contentType;
+      this.appId = viewId;
+      this.name = viewName;
+      this.references = references;
     }
 
     /// <inheritdoc />
-    [JsonIgnore] public ViewContentType type
+    [JsonIgnore] public ViewContentType contentType
     {
       get => (ViewContentType)Enum.Parse(typeof(ViewContentType), (string)this[CONTENT_TYPE]);
       set => this[CONTENT_TYPE] = value.ToString();
@@ -59,7 +59,7 @@ namespace ViewObjects.Speckle
     /// <returns></returns>
     public bool Equals(IContent obj)
     {
-      return obj != default(object) && ViewId.Equals(obj.ViewId) && type == obj.type;
+      return obj != default(object) && appId.Equals(obj.appId) && contentType == obj.contentType;
     }
 
   }

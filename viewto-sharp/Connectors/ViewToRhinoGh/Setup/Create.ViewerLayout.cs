@@ -57,7 +57,7 @@ namespace ViewTo.RhinoGh.Setup
       }
       else
       {
-        DA.SetData(0, new ViewerLinked(new List<ILayout> {layout}, clouds.Where(x => x != null).Select(x => x.ViewId).ToList()));
+        DA.SetData(0, new ViewerLinked(new List<ILayout> {layout}, clouds.Where(x => x != null).Select(x => x.guid).ToList()));
       }
     }
   }

@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.Results;
 using ViewObjects.Studies;
@@ -171,7 +171,7 @@ namespace ViewTo.RhinoGh.Results
       if(wrapper?.Value is ViewStudy obj)
       {
 
-        if(_study == default(object) || !_study.ViewId.Equals(obj.ViewId))
+        if(_study == default(object) || !_study.guid.Equals(obj.guid))
         {
           _study = obj;
         }

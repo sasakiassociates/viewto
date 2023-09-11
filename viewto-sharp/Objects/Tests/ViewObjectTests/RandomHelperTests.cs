@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Converter;
 using ViewObjects.References;
 using ViewObjects.Studies;
@@ -42,15 +42,15 @@ namespace ViewTo.Tests.Objects
     {
       var contents = new List<IViewObject>
       {
-        new ContentReference(new List<string> {"2e14d7936c"}, ViewContentType.Potential, ObjUtils.InitGuid, "Park"),
-        new ContentReference(new List<string> {"a7af04b287"}, ViewContentType.Potential, ObjUtils.InitGuid, "Water"),
-        new ContentReference(new List<string> {"afc4a766e5"}, ViewContentType.Potential, ObjUtils.InitGuid, "Landmark"),
-        new ContentReference(new List<string> {"e91a49c540"}, ViewContentType.Potential, ObjUtils.InitGuid, "Mountain"),
-        new ContentReference(new List<string> {"bc49a5e0b0"}, ViewContentType.Potential, ObjUtils.InitGuid, "Mountain-Top-View-Deck"),
-        new ContentReference(new List<string> {"813d4062e8"}, ViewContentType.Existing, ObjUtils.InitGuid, "Topo"),
-        new ContentReference(new List<string> {"b2fe722cb8"}, ViewContentType.Existing, ObjUtils.InitGuid, "Buildings-Adjacent"),
-        new ContentReference(new List<string> {"bfe46788b8"}, ViewContentType.Existing, ObjUtils.InitGuid, "Buildings-Context"),
-        new ViewCloudReference(new List<string> {"e01e2058b2"}, ObjUtils.InitGuid),
+        new ContentReference(new List<string> {"2e14d7936c"}, ViewContentType.Potential, SasakiTools.InitGuid, "Park"),
+        new ContentReference(new List<string> {"a7af04b287"}, ViewContentType.Potential, SasakiTools.InitGuid, "Water"),
+        new ContentReference(new List<string> {"afc4a766e5"}, ViewContentType.Potential, SasakiTools.InitGuid, "Landmark"),
+        new ContentReference(new List<string> {"e91a49c540"}, ViewContentType.Potential, SasakiTools.InitGuid, "Mountain"),
+        new ContentReference(new List<string> {"bc49a5e0b0"}, ViewContentType.Potential, SasakiTools.InitGuid, "Mountain-Top-View-Deck"),
+        new ContentReference(new List<string> {"813d4062e8"}, ViewContentType.Existing, SasakiTools.InitGuid, "Topo"),
+        new ContentReference(new List<string> {"b2fe722cb8"}, ViewContentType.Existing, SasakiTools.InitGuid, "Buildings-Adjacent"),
+        new ContentReference(new List<string> {"bfe46788b8"}, ViewContentType.Existing, SasakiTools.InitGuid, "Buildings-Context"),
+        new ViewCloudReference(new List<string> {"e01e2058b2"}, SasakiTools.InitGuid),
         new Viewer(new List<ILayout> {new LayoutHorizontal()})
       };
 
@@ -162,7 +162,7 @@ namespace ViewTo.Tests.Objects
           study.objects.RemoveAt(i);
           study.objects.Insert(i, new ResultCloud(
             cloud.Points,
-            cloud.Data,
+            cloud.layers,
             "39d20718-e961-47f3-8f26-fb4296c32228"));
         }
       }

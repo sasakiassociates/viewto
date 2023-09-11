@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.Studies;
 using ViewObjects.Systems;
@@ -51,7 +51,7 @@ namespace ViewTo
     //   return reports;
     // }
 
-    public static void GatherLooseLayouts<TObj>(this ISasakiStudy<TObj> study)
+    public static void GatherLooseLayouts<TObj>(this IStudy<TObj> study)
       where TObj : IViewObject
     {
       // var layouts = study.GetAll<ILayout>();
@@ -67,7 +67,7 @@ namespace ViewTo
       // look for layouts as well since there could be a layout not attached to a 
       study.GatherLooseLayouts();
       var viewers = study.GetAll<IViewer>();
-      var clouds = study.GetAll<IViewCloud>();
+      var clouds = study.GetAll<ICloud>();
       var contents = study.GetAll<IContent>();
 
       var reports = new List<string>();

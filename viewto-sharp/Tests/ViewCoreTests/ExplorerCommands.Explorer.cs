@@ -61,7 +61,7 @@ public class ExplorerCommands
     _explorer = new Explorer();
     _explorer.Load(rc);
 
-    CheckLoadingExplorer(rc.ViewId);
+    CheckLoadingExplorer(rc.guid);
 
     var options = rc.GetAllOpts();
     Assert.IsNotEmpty(options);
@@ -98,7 +98,7 @@ public class ExplorerCommands
     _explorer = new Explorer();
     _explorer.Load(rc);
 
-    CheckLoadingExplorer(rc.ViewId);
+    CheckLoadingExplorer(rc.guid);
 
     // Set commands 
     // NOTE: direct reference from the commit in stream 
@@ -107,20 +107,20 @@ public class ExplorerCommands
     var option = new ContentOption(targetToSelect, contentToSelect, ViewContentType.Proposed);
 
     // you only need to pass in a specific content if using the proposed type 
-    Assert.IsTrue(_explorer.cloud.HasTarget(targetToSelect.ViewId));
-    Assert.IsTrue(_explorer.cloud.HasOpt(targetToSelect.ViewId, contentToSelect.ViewId, option.stage));
+    Assert.IsTrue(_explorer.cloud.HasTarget(targetToSelect.appId));
+    Assert.IsTrue(_explorer.cloud.HasOpt(targetToSelect.appId, contentToSelect.appId, option.stage));
 
-    _explorer.SetOption(targetToSelect.ViewId, ViewContentType.Existing);
+    _explorer.SetOption(targetToSelect.appId, ViewContentType.Existing);
     Assert.IsTrue(_explorer.meta.activeOptions.Count == 1, "This command should create a new list and add the option to it");
     Assert.IsTrue(_explorer.meta.activeOptions.First().stage == ViewContentType.Existing);
-    Assert.IsTrue(_explorer.meta.activeOptions.First().target.ViewId.Equals(targetToSelect.ViewId));
-    Assert.IsTrue(_explorer.meta.activeOptions.First().content.ViewId.Equals(targetToSelect.ViewId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().target.appId.Equals(targetToSelect.appId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().content.appId.Equals(targetToSelect.appId));
 
-    _explorer.SetOption(targetToSelect.ViewId, contentToSelect.ViewId, option.stage);
+    _explorer.SetOption(targetToSelect.appId, contentToSelect.appId, option.stage);
     Assert.IsTrue(_explorer.meta.activeOptions.Count == 1, "This command should create a new list and add the option to it");
     Assert.IsTrue(_explorer.meta.activeOptions.First().stage == option.stage);
-    Assert.IsTrue(_explorer.meta.activeOptions.First().target.ViewId.Equals(targetToSelect.ViewId));
-    Assert.IsTrue(_explorer.meta.activeOptions.First().content.ViewId.Equals(contentToSelect.ViewId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().target.appId.Equals(targetToSelect.appId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().content.appId.Equals(contentToSelect.appId));
   }
 
 
@@ -140,7 +140,7 @@ public class ExplorerCommands
       var item = study.objects[i];
       if(item is ViewObjects.Speckle.ResultCloud rc)
       {
-        rc.ViewId = Guid.NewGuid().ToString();
+        rc.guid = Guid.NewGuid().ToString();
         study.objects[i] = rc;
         isValid = true;
         break;
@@ -240,9 +240,9 @@ public class ExplorerCommands
     var valueOption = options[2];
     var maxOption = options[0];
 
-    Console.WriteLine($"Max Option\nTarget: {maxOption.target.ViewName}\nContent: {maxOption.content.ViewName}\nType: {maxOption.target.type}\n"+
+    Console.WriteLine($"Max Option\nTarget: {maxOption.target.name}\nContent: {maxOption.content.name}\nType: {maxOption.target.contentType}\n"+
                       "-------------------------\n"+
-                      $"Value Option\nTarget: {valueOption.target.ViewName}\nContent: {valueOption.content.ViewName}\nType: {valueOption.target.type}");
+                      $"Value Option\nTarget: {valueOption.target.name}\nContent: {valueOption.content.name}\nType: {valueOption.target.contentType}");
 
     const double modifier = 0.001;
     var max = (int)Math.Floor(2147483647*modifier);
@@ -273,10 +273,10 @@ public class ExplorerCommands
   void CheckLoadingExplorer(string rc)
   {
     Assert.IsNotNull(_explorer.cloud, $"{nameof(Explorer)} should have a {nameof(IResultCloud)} attached");
-    Assert.IsTrue(_explorer.cloud.ViewId.Equals(rc), $"{nameof(Explorer)} should have the same ids");
+    Assert.IsTrue(_explorer.cloud.guid.Equals(rc), $"{nameof(Explorer)} should have the same ids");
 
     // all of the basic data for loading
-    Assert.IsNotNull(_explorer.data, $"{nameof(Explorer)} should have a {nameof(IResultCloudData)} attached");
+    Assert.IsNotNull(_explorer.data, $"{nameof(Explorer)} should have a {nameof(IResultLayer)} attached");
     Assert.IsNotNull(_explorer.settings, $"{nameof(Explorer)} should have a {nameof(ExplorerSettings)} attached");
     Assert.IsNotNull(_explorer.meta, $"{nameof(Explorer)} should have a {nameof(ExplorerMetaData)} attached");
 

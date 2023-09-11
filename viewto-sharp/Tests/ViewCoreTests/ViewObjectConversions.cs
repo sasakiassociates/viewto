@@ -62,7 +62,7 @@ namespace ViewCoreTests
       var lines = new string[cloud.Points.Length + 1];
 
       lines[0] = "x,y,z,";
-      foreach(var d in cloud.Data)
+      foreach(var d in cloud.layers)
       {
         lines[0] += $"{d.info.target}-{d.info.content}-{d.info.stage},";
       }
@@ -75,7 +75,7 @@ namespace ViewCoreTests
         var ptn = cloud.Points[i];
         var line = $"{ptn.x},{ptn.y},{ptn.z}";
 
-        foreach(var d in cloud.Data)
+        foreach(var d in cloud.layers)
         {
           line += $",{d.values[i]}";
         }
@@ -84,7 +84,7 @@ namespace ViewCoreTests
 
       }
 
-      File.WriteAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"{viewStudy.ViewName}.csv"), lines);
+      File.WriteAllLines(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"{viewStudy.name}.csv"), lines);
 
 
 

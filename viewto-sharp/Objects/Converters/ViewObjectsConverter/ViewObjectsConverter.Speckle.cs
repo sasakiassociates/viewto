@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.References;
 using ViewObjects.Results;
 using ViewObjects.Studies;
@@ -18,10 +18,10 @@ namespace ViewObjects.Converter
   public partial class ViewObjectsConverter
   {
 
-    private VS.ViewStudy StudyToSpeckle(ISasakiStudy<IViewObject> obj)
+    private VS.ViewStudy StudyToSpeckle(IStudy<IViewObject> obj)
     {
 
-      var result = new VS.ViewStudy() {ViewId = obj.ViewId, ViewName = obj.ViewName, objects = new List<VS.ViewObjectBase>()};
+      var result = new VS.ViewStudy() {guid = obj.guid, name = obj.name, objects = new List<VS.ViewObjectBase>()};
 
       foreach(var o in obj.objects)
       {
@@ -51,9 +51,9 @@ namespace ViewObjects.Converter
       return new VS.ViewCloudReference(obj);
     }
 
-    private VS.ViewObjectReference ReferenceToSpeckle(IReferenceObject obj)
+    private VS.ViewObjectReference ReferenceToSpeckle(IVersionReference obj)
     {
-      return new VS.ViewObjectReference(obj.References, obj.ViewId, obj.ViewId) { };
+      return new VS.ViewObjectReference(obj.references, obj.appId, obj.appId) { };
     }
 
     private VS.Layout LayoutToSpeckle(ILayout obj)
@@ -75,12 +75,12 @@ namespace ViewObjects.Converter
 
     private VS.ResultCloud ResultCloudToSpeckle(IResultCloud obj)
     {
-      return new VS.ResultCloud(obj.Points, obj.Data.Where(x => x != null).Select(ResultCloudDataToSpeckle).ToList(), obj.ViewId);
+      return new VS.ResultCloud(obj.Points, obj.layers.Where(x => x != null).Select(ResultCloudDataToSpeckle).ToList(), obj.guid);
     }
 
-    private VS.ResultCloudData ResultCloudDataToSpeckle(IResultCloudData obj)
+    private VS.ResultLayer ResultCloudDataToSpeckle(IResultLayer obj)
     {
-      return new VS.ResultCloudData(obj.values, obj.info, obj.count);
+      return new VS.ResultLayer(obj.values, obj.info, obj.count);
     }
 
     private IViewObject HandleDefault(Base @base)

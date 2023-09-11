@@ -11,7 +11,7 @@ namespace ViewObjects.Speckle
 
   /// <summary>
   /// </summary>
-  public class ResultCloudData : ViewObjectBase, IResultCloudData
+  public class ResultLayer : ViewObjectBase, IResultLayer
   {
 
     const string TARGET_NAME = "Target_Name";
@@ -22,7 +22,7 @@ namespace ViewObjects.Speckle
 
     /// <summary>
     /// </summary>
-    public ResultCloudData()
+    public ResultLayer()
     { }
 
     /// <summary>
@@ -37,7 +37,7 @@ namespace ViewObjects.Speckle
     /// <param name="name"></param>
     /// <param name="count">Viewer count meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultCloudData(List<int> values, string targetId, string targetName, string contentId, string contentName, ViewContentType stage, int count)
+    public ResultLayer(List<int> values, string targetId, string targetName, string contentId, string contentName, ViewContentType stage, int count)
     {
       this.values = values;
       this.count = count;
@@ -51,7 +51,7 @@ namespace ViewObjects.Speckle
     /// <param name="option"></param>
     /// <param name="count">Viewer count meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultCloudData(List<int> values, ContentOption option, int count )
+    public ResultLayer(List<int> values, ContentOption option, int count )
     {
       this.values = values;
       this.count = count;
@@ -76,10 +76,10 @@ namespace ViewObjects.Speckle
       set
       {
         this[STAGE] = value.stage.ToString();
-        this[TARGET_ID] = value.target.ViewId;
-        this[TARGET_NAME] = value.target.ViewName;
-        this[CONTENT_ID] = value.content.ViewId;
-        this[CONTENT_NAME] = value.content.ViewName;
+        this[TARGET_ID] = value.target.appId;
+        this[TARGET_NAME] = value.target.name;
+        this[CONTENT_ID] = value.content.appId;
+        this[CONTENT_NAME] = value.content.name;
       }
     }
   }

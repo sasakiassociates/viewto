@@ -1,7 +1,9 @@
-﻿namespace ViewObjects
+﻿using Sasaki.Common;
+
+namespace ViewObjects
 {
 
-  public interface IViewObject
+  public interface IViewObject : ISasakiObject
   { }
 
 }

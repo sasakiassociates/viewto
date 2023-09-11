@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Sasaki;
+using System.Collections.Generic;
 using System.Linq;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.References;
 using ViewObjects.Studies;
@@ -12,7 +13,7 @@ namespace ViewObjects
 
   public static class Extensions
   {
-    public static List<IContentOption> FindObject(this IResultCloud<IResultCloudData> obj)
+    public static List<IContentOption> FindObject(this IResultCloud<IResultLayer> obj)
     {
       return new();
     }
@@ -58,7 +59,7 @@ namespace ViewObjects
     /// <summary>
     ///   <para>
     ///     Checks if a view study has the correct data necessary to run a view study.
-    ///     The correct data is at least one <see cref="IViewCloud" />, one <see cref="IViewer" />,
+    ///     The correct data is at least one <see cref="ICloud" />, one <see cref="IViewer" />,
     ///     one <see cref="Content" /> marked as <see cref="ViewContentType.Potential" /> and one marked as
     ///     <see cref="ViewContentType.Existing" />
     ///   </para>
@@ -67,7 +68,7 @@ namespace ViewObjects
     /// <returns></returns>
     public static bool CanRun(this IViewStudy study)
     {
-      return study.Has<IViewCloud>() && study.Has<IViewer>() && study.Has(ViewContentType.Potential) && study.Has(ViewContentType.Existing);
+      return study.Has<ICloud>() && study.Has<IViewer>() && study.Has(ViewContentType.Potential) && study.Has(ViewContentType.Existing);
     }
 
     /// <summary>
@@ -99,7 +100,7 @@ namespace ViewObjects
 
       foreach(var obj in study.GetAll<IContent>())
       {
-        if(obj.type != type)
+        if(obj.contentType != type)
         {
           continue;
         }
@@ -110,7 +111,7 @@ namespace ViewObjects
           return true;
         }
 
-        if(obj is IId objWithID && objWithID.ViewId.Equals(id))
+        if(obj is IHaveId objWithID && objWithID.appId.Equals(id))
         {
           return true;
         }
@@ -139,7 +140,7 @@ namespace ViewObjects
           return true;
         }
 
-        if(obj is IId objWithID && objWithID.ViewId.Equals(id))
+        if(obj is IHaveId objWithID && objWithID.appId.Equals(id))
         {
           return true;
         }
@@ -153,8 +154,8 @@ namespace ViewObjects
       return obj == default(object) ?
         new List<ContentInfo>() :
         obj.FindObjects<ContentReference>()
-          .Where(x => x != null && x.type == ViewContentType.Potential)
-          .Select(x => new ContentInfo(x.ViewId, x.ViewName))
+          .Where(x => x != null && x.contentType == ViewContentType.Potential)
+          .Select(x => new ContentInfo(x.appId, x.name))
           .ToList();
     }
 
@@ -171,7 +172,7 @@ namespace ViewObjects
     ///   <para>Gets a list of objects of a specific type</para>
     /// </summary>
     /// <param name="study">study to check</param>
-    public static List<TObjectType> GetAll<TObj, TObjectType>(this ISasakiStudy<TObj> study)
+    public static List<TObjectType> GetAll<TObj, TObjectType>(this IStudy<TObj> study)
       where TObj : IViewObject => study.objects.OfType<TObjectType>().ToList();
 
     /// <summary>
@@ -189,7 +190,7 @@ namespace ViewObjects
           return obj;
         }
 
-        if(obj is IId objWithID && objWithID.ViewId.Equals(id))
+        if(obj is IHaveId objWithID && objWithID.appId.Equals(id))
         {
           return obj;
         }
@@ -215,9 +216,9 @@ namespace ViewObjects
       {
         var contents = obj.GetAll<IContent>();
 
-        targetCount = contents.Count(x => x.type == ViewContentType.Potential);
-        existingCount = contents.Count(x => x.type == ViewContentType.Existing);
-        proposedCount = contents.Count(x => x.type == ViewContentType.Proposed);
+        targetCount = contents.Count(x => x.contentType == ViewContentType.Potential);
+        existingCount = contents.Count(x => x.contentType == ViewContentType.Existing);
+        proposedCount = contents.Count(x => x.contentType == ViewContentType.Proposed);
       }
     }
 
@@ -230,9 +231,9 @@ namespace ViewObjects
     /// <param name="proposedCount"></param>
     public static void ContentCount(this List<IContent> contents, out int targetCount, out int existingCount, out int proposedCount)
     {
-      targetCount = contents.Count(x => x.type == ViewContentType.Potential);
-      existingCount = contents.Count(x => x.type == ViewContentType.Existing);
-      proposedCount = contents.Count(x => x.type == ViewContentType.Proposed);
+      targetCount = contents.Count(x => x.contentType == ViewContentType.Potential);
+      existingCount = contents.Count(x => x.contentType == ViewContentType.Existing);
+      proposedCount = contents.Count(x => x.contentType == ViewContentType.Proposed);
     }
   }
 

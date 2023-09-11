@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ViewObjects;
 using ViewObjects.Clouds;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewObjects.Contents;
 
 namespace ViewTo
@@ -23,11 +23,11 @@ namespace ViewTo
     {
       List<ContentOption> result = new();
 
-      if(obj == default(object) || !obj.Data.Valid())
+      if(obj == default(object) || !obj.layers.Valid())
       {
         return result;
       }
-      result = obj.Data.Where(x => x?.info != null).Select(x => x.info).ToList();
+      result = obj.layers.Where(x => x?.info != null).Select(x => x.info).ToList();
 
       return result;
     }
@@ -55,7 +55,7 @@ namespace ViewTo
     {
       ContentOption result = Fabricate<ContentOption>();
 
-      if(obj == default(object) || !obj.Data.Valid() || !targetId.Valid() || !contentId.Valid())
+      if(obj == default(object) || !obj.layers.Valid() || !targetId.Valid() || !contentId.Valid())
       {
         return result;
       }
@@ -65,12 +65,12 @@ namespace ViewTo
         return result;
       }
 
-      foreach(var d in obj.Data)
+      foreach(var d in obj.layers)
       {
         if(d?.info == null ||
            d.info.stage != stage ||
-           !d.info.target.ViewId.Equals(targetId) ||
-           !d.info.content.ViewId.Equals(contentId))
+           !d.info.target.guid.Equals(targetId) ||
+           !d.info.content.guid.Equals(contentId))
         {
           continue;
         }
@@ -90,14 +90,14 @@ namespace ViewTo
     {
       List<IContentInfo> result = new();
 
-      if(obj == default(object) || !obj.Data.Valid())
+      if(obj == default(object) || !obj.layers.Valid())
       {
         return result;
       }
 
-      foreach(var d in obj.Data)
+      foreach(var d in obj.layers)
       {
-        if(d?.info == null || result.Any(x => x.ViewId.Equals(d.info.target.ViewId)))
+        if(d?.info == null || result.Any(x => x.appId.Equals(d.info.target.guid)))
         {
           continue;
         }
@@ -119,7 +119,7 @@ namespace ViewTo
     {
       IContentInfo result = Fabricate<ContentInfo>();
 
-      if(obj == default(object) || !obj.Data.Valid() || !targetId.Valid())
+      if(obj == default(object) || !obj.layers.Valid() || !targetId.Valid())
       {
         return result;
       }
@@ -129,9 +129,9 @@ namespace ViewTo
         return result;
       }
 
-      foreach(var d in obj.Data)
+      foreach(var d in obj.layers)
       {
-        if(d?.info == null || !d.info.target.ViewId.Equals(targetId))
+        if(d?.info == null || !d.info.target.guid.Equals(targetId))
         {
           continue;
         }
@@ -154,12 +154,12 @@ namespace ViewTo
     /// <returns></returns>
     public static bool HasOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
     {
-      if(obj == default(object) || !obj.Data.Valid() || !Guid.TryParse(targetId, out _) || !Guid.TryParse(contentId, out _))
+      if(obj == default(object) || !obj.layers.Valid() || !Guid.TryParse(targetId, out _) || !Guid.TryParse(contentId, out _))
       {
         return false;
       }
 
-      return obj.Data.Any(x => x.info.stage == stage && x.info.target.ViewId.Equals(targetId) && x.info.content.ViewId.Equals(contentId));
+      return obj.layers.Any(x => x.info.stage == stage && x.info.target.guid.Equals(targetId) && x.info.content.guid.Equals(contentId));
     }
 
     /// <summary>
@@ -176,12 +176,12 @@ namespace ViewTo
     /// <returns></returns>
     public static bool HasOpt(this IResultCloud obj, string targetId, ViewContentType stage)
     {
-      if(obj == default(object) || !obj.Data.Valid() || !Guid.TryParse(targetId, out _))
+      if(obj == default(object) || !obj.layers.Valid() || !Guid.TryParse(targetId, out _))
       {
         return false;
       }
 
-      return obj.Data.Any(x => x.info.stage == stage && x.info.target.ViewId.Equals(targetId) && x.info.content.ViewId.Equals(targetId));
+      return obj.layers.Any(x => x.info.stage == stage && x.info.target.guid.Equals(targetId) && x.info.content.guid.Equals(targetId));
     }
 
     /// <summary>
@@ -193,15 +193,15 @@ namespace ViewTo
     /// <returns></returns>
     public static bool HasTarget(this IResultCloud obj, string targetByIdOrName, ViewContentType stage)
     {
-      if(obj == default(object) || !obj.Data.Valid() || !targetByIdOrName.Valid())
+      if(obj == default(object) || !obj.layers.Valid() || !targetByIdOrName.Valid())
       {
         return false;
       }
 
       // is an id so search for that
       return Guid.TryParse(targetByIdOrName, out _) ?
-        obj.Data.Any(x => x.info.target.ViewId.Equals(targetByIdOrName) && x.info.stage == stage)
-        : obj.Data.Any(x => x.info.target.ViewName.Equals(targetByIdOrName) && x.info.stage == stage);
+        obj.layers.Any(x => x.info.target.guid.Equals(targetByIdOrName) && x.info.stage == stage)
+        : obj.layers.Any(x => x.info.target.name.Equals(targetByIdOrName) && x.info.stage == stage);
     }
 
     /// <summary>
@@ -212,15 +212,15 @@ namespace ViewTo
     /// <returns></returns>
     public static bool HasTarget(this IResultCloud obj, string targetByIdOrName)
     {
-      if(obj == default(object) || !obj.Data.Valid() || !targetByIdOrName.Valid())
+      if(obj == default(object) || !obj.layers.Valid() || !targetByIdOrName.Valid())
       {
         return false;
       }
 
       // is an id so search for that
       return Guid.TryParse(targetByIdOrName, out _) ?
-        obj.Data.Any(x => x.info.target.ViewId.Equals(targetByIdOrName)) :
-        obj.Data.Any(x => x.info.target.ViewName.Equals(targetByIdOrName));
+        obj.layers.Any(x => x.info.target.guid.Equals(targetByIdOrName)) :
+        obj.layers.Any(x => x.info.target.name.Equals(targetByIdOrName));
     }
   }
 

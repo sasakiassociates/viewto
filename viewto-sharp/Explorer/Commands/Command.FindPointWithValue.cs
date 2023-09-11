@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ViewObjects.Common;
+using Sasaki.Common;
 using ViewTo.Receivers;
 
 namespace ViewTo.Cmd

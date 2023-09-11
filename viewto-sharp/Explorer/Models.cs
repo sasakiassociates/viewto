@@ -61,7 +61,7 @@ namespace ViewTo
     /// <param name="proposed"></param>
     /// <param name="existing"></param>
     /// <param name="targets"></param>
-    public DeconstructedStudy(List<IViewer> viewers, List<IViewCloud> clouds, List<IResultCloud> results, List<IContent> proposed, List<IContent> existing, List<IContent> targets)
+    public DeconstructedStudy(List<IViewer> viewers, List<ICloud> clouds, List<IResultCloud> results, List<IContent> proposed, List<IContent> existing, List<IContent> targets)
     {
       this.viewers = viewers;
       this.clouds = clouds;
@@ -72,7 +72,7 @@ namespace ViewTo
     }
 
     public List<IViewer> viewers {get;private set;}
-    public List<IViewCloud> clouds {get;private set;}
+    public List<ICloud> clouds {get;private set;}
     public List<IResultCloud> results {get;private set;}
     public List<IContent> proposed {get;private set;}
     public List<IContent> existing {get;private set;}

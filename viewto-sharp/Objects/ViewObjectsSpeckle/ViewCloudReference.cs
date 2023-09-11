@@ -24,7 +24,7 @@ namespace ViewObjects.Speckle
     [SchemaInfo("View Cloud", "Simple Object type for structuring geometry for a view study", ViewObject.Schema.Category, "Objects")]
     public ViewCloudReference(References.ViewCloudReference obj) : base(obj)
     {
-      References = obj.References;
+      references = obj.references;
     }
 
     /// <inheritdoc />

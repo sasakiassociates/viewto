@@ -28,7 +28,7 @@ namespace ViewTo.Receivers
       return!string.IsNullOrEmpty(message);
     }
 
-    public bool CompareClouds(IEnumerable<IViewer> viewers, IReadOnlyList<IViewCloud> clouds, out string message)
+    public bool CompareClouds(IEnumerable<IViewer> viewers, IReadOnlyList<ICloud> clouds, out string message)
     {
       message = "";
 
@@ -43,9 +43,9 @@ namespace ViewTo.Receivers
 
           foreach(var cloudId in sys.Clouds)
           {
-            if(!clouds.Any(x => x.ViewId.Equals(cloudId)))
+            if(!clouds.Any(x => x.guid.Equals(cloudId)))
             {
-              message = $"No Id for {nameof(IViewCloud)} found. Looking for id {cloudId}";
+              message = $"No Id for {nameof(ICloud)} found. Looking for id {cloudId}";
               return false;
             }
           }
@@ -55,11 +55,11 @@ namespace ViewTo.Receivers
       return true;
     }
 
-    public bool CheckData(IReadOnlyList<IContent> contents, IReadOnlyList<IViewCloud> clouds, IReadOnlyList<IViewer> viewers, out string message)
+    public bool CheckData(IReadOnlyList<IContent> contents, IReadOnlyList<ICloud> clouds, IReadOnlyList<IViewer> viewers, out string message)
     {
-      var countTarget = contents.Count(x => x.type == ViewContentType.Potential);
-      var countExisting = contents.Count(x => x.type == ViewContentType.Existing);
-      var countProposed = contents.Count(x => x.type == ViewContentType.Proposed);
+      var countTarget = contents.Count(x => x.contentType == ViewContentType.Potential);
+      var countExisting = contents.Count(x => x.contentType == ViewContentType.Existing);
+      var countProposed = contents.Count(x => x.contentType == ViewContentType.Proposed);
       var countViewerLinked = viewers.Count(x => x is IViewerLinked);
 
       var countTotalPoints = 0;
@@ -84,7 +84,7 @@ namespace ViewTo.Receivers
                 + $"{nameof(ViewContentType.Potential)}={countTarget}, "
                 + $"{nameof(ViewContentType.Existing)}={countExisting}, "
                 + $"{nameof(ViewContentType.Proposed)}={countProposed}\n"
-                + $"{nameof(IViewCloud)}s: "
+                + $"{nameof(ICloud)}s: "
                 + $"Total={clouds.Count}, "
                 + $"Points={countTotalPoints}\n"
                 + $"{nameof(IViewer)}s: "
