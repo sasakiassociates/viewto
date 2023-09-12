@@ -21,31 +21,31 @@ namespace ViewTo
 
       if(options.Valid())
       {
-        activeTarget = options.FirstOrDefault().target;
+        activeTarget = options.FirstOrDefault().focus;
         activeStage = options.FirstOrDefault().stage;
-        activeOptions = new List<ContentOption>() {options.FirstOrDefault()};
+        activeOptions = new List<ResultCondition>() {options.FirstOrDefault()};
       }
     }
 
     /// <summary>
     /// the content info for the active target 
     /// </summary>
-    public IContentInfo activeTarget { get; internal set; }
+    public IContextInfo activeTarget { get; internal set; }
 
     /// <summary>
     /// the current stage that explorer is using to visualize the data
     /// </summary>
-    public ViewContentType activeStage { get; internal set; }
+    public ViewContextType activeStage { get; internal set; }
 
     /// <summary>
     /// A cached list of the active options used in visualization of the explorer
     /// </summary>
-    public List<ContentOption> activeOptions { get; internal set; } = new List<ContentOption>();
+    public List<ResultCondition> activeOptions { get; internal set; } = new List<ResultCondition>();
 
     /// <summary>
     /// The cached list of all options from the result data 
     /// </summary>
-    public List<ContentOption> options { get; internal set; } = new List<ContentOption>();
+    public List<ResultCondition> options { get; internal set; } = new List<ResultCondition>();
 
   }
 

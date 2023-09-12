@@ -21,7 +21,7 @@ namespace ViewTo.RhinoGh.Setup
     public CreateViewContent(string name, string nickname, string description) : base(name, nickname, description, ConnectorInfo.Nodes.CONTENT)
     { }
 
-    protected abstract ViewContentType viewContentType { get; }
+    protected abstract ViewContextType viewContextType { get; }
 
     protected override void RegisterInputParams(GH_InputParamManager pManager)
     {
@@ -47,9 +47,9 @@ namespace ViewTo.RhinoGh.Setup
       var items = new List<GH_String>();
       DA.GetDataList(_input.References, items);
 
-      DA.SetData(0, new ContentReference(
+      DA.SetData(0, new ContextReferences(
         items.Where(x => x != null).Select(x => x.Value).ToList(),
-        viewContentType,
+        viewContextType,
         ObjUtils.InitGuid,
         tempName?.Value)
       );
@@ -65,7 +65,7 @@ namespace ViewTo.RhinoGh.Setup
       "Setup target content that will be analyzed in a view study")
     { }
 
-    protected override ViewContentType viewContentType => ViewContentType.Potential;
+    protected override ViewContextType viewContextType => ViewContextType.Potential;
 
     protected override Bitmap Icon => new Bitmap(Icons.CreateContentTarget);
 
@@ -85,7 +85,7 @@ namespace ViewTo.RhinoGh.Setup
 
     protected override Bitmap Icon => new Bitmap(Icons.CreateContentProposed);
 
-    protected override ViewContentType viewContentType => ViewContentType.Proposed;
+    protected override ViewContextType viewContextType => ViewContextType.Proposed;
   }
 
   public class CreateViewContentExisting : CreateViewContent
@@ -101,7 +101,7 @@ namespace ViewTo.RhinoGh.Setup
 
     public override Guid ComponentGuid => new Guid("ca8eb77a-521e-4361-93c5-c44ff074e18f");
 
-    protected override ViewContentType viewContentType => ViewContentType.Existing;
+    protected override ViewContextType viewContextType => ViewContextType.Existing;
   }
 
 }

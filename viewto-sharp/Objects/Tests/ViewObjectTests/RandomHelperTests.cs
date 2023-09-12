@@ -42,16 +42,16 @@ namespace ViewTo.Tests.Objects
     {
       var contents = new List<IViewObject>
       {
-        new ContentReference(new List<string> {"2e14d7936c"}, ViewContentType.Potential, SasakiTools.InitGuid, "Park"),
-        new ContentReference(new List<string> {"a7af04b287"}, ViewContentType.Potential, SasakiTools.InitGuid, "Water"),
-        new ContentReference(new List<string> {"afc4a766e5"}, ViewContentType.Potential, SasakiTools.InitGuid, "Landmark"),
-        new ContentReference(new List<string> {"e91a49c540"}, ViewContentType.Potential, SasakiTools.InitGuid, "Mountain"),
-        new ContentReference(new List<string> {"bc49a5e0b0"}, ViewContentType.Potential, SasakiTools.InitGuid, "Mountain-Top-View-Deck"),
-        new ContentReference(new List<string> {"813d4062e8"}, ViewContentType.Existing, SasakiTools.InitGuid, "Topo"),
-        new ContentReference(new List<string> {"b2fe722cb8"}, ViewContentType.Existing, SasakiTools.InitGuid, "Buildings-Adjacent"),
-        new ContentReference(new List<string> {"bfe46788b8"}, ViewContentType.Existing, SasakiTools.InitGuid, "Buildings-Context"),
+        new ContextReferences(new List<string> {"2e14d7936c"}, ViewContextType.Potential, SasakiTools.InitGuid, "Park"),
+        new ContextReferences(new List<string> {"a7af04b287"}, ViewContextType.Potential, SasakiTools.InitGuid, "Water"),
+        new ContextReferences(new List<string> {"afc4a766e5"}, ViewContextType.Potential, SasakiTools.InitGuid, "Landmark"),
+        new ContextReferences(new List<string> {"e91a49c540"}, ViewContextType.Potential, SasakiTools.InitGuid, "Mountain"),
+        new ContextReferences(new List<string> {"bc49a5e0b0"}, ViewContextType.Potential, SasakiTools.InitGuid, "Mountain-Top-View-Deck"),
+        new ContextReferences(new List<string> {"813d4062e8"}, ViewContextType.Existing, SasakiTools.InitGuid, "Topo"),
+        new ContextReferences(new List<string> {"b2fe722cb8"}, ViewContextType.Existing, SasakiTools.InitGuid, "Buildings-Adjacent"),
+        new ContextReferences(new List<string> {"bfe46788b8"}, ViewContextType.Existing, SasakiTools.InitGuid, "Buildings-Context"),
         new ViewCloudReference(new List<string> {"e01e2058b2"}, SasakiTools.InitGuid),
-        new Viewer(new List<ILayout> {new LayoutHorizontal()})
+        new Layouts(new List<ILayout> {new LayoutHorizontal()})
       };
 
       _client = new Client(AccountManager.GetDefaultAccount());

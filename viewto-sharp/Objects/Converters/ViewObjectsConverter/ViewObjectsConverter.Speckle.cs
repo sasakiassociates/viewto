@@ -41,9 +41,9 @@ namespace ViewObjects.Converter
 
     // VS.ContentReference ViewContentToSpeckle(IContent obj) => new VS.ContentReference(obj, new List<string>());
 
-    private VS.ContentReference ViewContentToSpeckle(ContentReference obj)
+    private VS.ContextReference ViewContentToSpeckle(ContextReferences obj)
     {
-      return new VS.ContentReference(obj);
+      return new VS.ContextReference(obj);
     }
 
     private VS.ViewCloudReference ViewCloudToSpeckle(ViewCloudReference obj)
@@ -51,14 +51,14 @@ namespace ViewObjects.Converter
       return new VS.ViewCloudReference(obj);
     }
 
-    private VS.ViewObjectReference ReferenceToSpeckle(IVersionReference obj)
+    private VS.ViewObjectReference ReferenceToSpeckle(IHaveRefs obj)
     {
-      return new VS.ViewObjectReference(obj.references, obj.appId, obj.appId) { };
+      return new VS.ViewObjectReference(obj.items, obj.appId, obj.appId) { };
     }
 
     private VS.Layout LayoutToSpeckle(ILayout obj)
     {
-      return new VS.Layout(obj.Viewers);
+      return new VS.Layout(obj.viewers);
     }
 
     private VS.Viewer ViewerToSpeckle(IViewer<ILayout> o)

@@ -1,7 +1,6 @@
 ﻿using Sasaki;
 using System.Collections.Generic;
 using System.Linq;
-using ViewObjects.Clouds;
 using Sasaki.Common;
 using ViewObjects.Contents;
 using ViewObjects.References;
@@ -13,7 +12,7 @@ namespace ViewObjects
 
   public static class Extensions
   {
-    public static List<IContentOption> FindObject(this IResultCloud<IResultLayer> obj)
+    public static List<IResultCondition> FindObject(this IResultCloud<IResultLayer> obj)
     {
       return new();
     }
@@ -60,15 +59,15 @@ namespace ViewObjects
     ///   <para>
     ///     Checks if a view study has the correct data necessary to run a view study.
     ///     The correct data is at least one <see cref="ICloud" />, one <see cref="IViewer" />,
-    ///     one <see cref="Content" /> marked as <see cref="ViewContentType.Potential" /> and one marked as
-    ///     <see cref="ViewContentType.Existing" />
+    ///     one <see cref="Context" /> marked as <see cref="ViewContextType.Potential" /> and one marked as
+    ///     <see cref="ViewContextType.Existing" />
     ///   </para>
     /// </summary>
     /// <param name="study">object to check</param>
     /// <returns></returns>
     public static bool CanRun(this IViewStudy study)
     {
-      return study.Has<ICloud>() && study.Has<IViewer>() && study.Has(ViewContentType.Potential) && study.Has(ViewContentType.Existing);
+      return study.Has<ICloud>() && study.Has<IViewer>() && study.Has(ViewContextType.Potential) && study.Has(ViewContextType.Existing);
     }
 
     /// <summary>
@@ -85,20 +84,20 @@ namespace ViewObjects
     }
 
     /// <summary>
-    ///   <para>Checks for a specific type of <see cref="IContent" /> object that fits the <see cref="ViewContentType" /></para>
+    ///   <para>Checks for a specific type of <see cref="IContext" /> object that fits the <see cref="ViewContextType" /></para>
     /// </summary>
     /// <param name="study">study to check</param>
     /// <param name="type">type of content to find</param>
     /// <param name="id">optional id to use</param>
     /// <returns></returns>
-    public static bool Has(this IViewStudy study, ViewContentType type, string id = "")
+    public static bool Has(this IViewStudy study, ViewContextType type, string id = "")
     {
       if(study?.objects == null || !study.objects.Any())
       {
         return false;
       }
 
-      foreach(var obj in study.GetAll<IContent>())
+      foreach(var obj in study.GetAll<IContext>())
       {
         if(obj.contentType != type)
         {
@@ -149,13 +148,13 @@ namespace ViewObjects
       return false;
     }
 
-    public static List<ContentInfo> GetAllTargetContentInfo(this IViewStudy obj)
+    public static List<ContextInfo> GetAllTargetContentInfo(this IViewStudy obj)
     {
       return obj == default(object) ?
-        new List<ContentInfo>() :
-        obj.FindObjects<ContentReference>()
-          .Where(x => x != null && x.contentType == ViewContentType.Potential)
-          .Select(x => new ContentInfo(x.appId, x.name))
+        new List<ContextInfo>() :
+        obj.FindObjects<ContextReferences>()
+          .Where(x => x != null && x.contentType == ViewContextType.Potential)
+          .Select(x => new ContextInfo(x.appId, x.name))
           .ToList();
     }
 
@@ -214,11 +213,11 @@ namespace ViewObjects
 
       if(obj != default(object))
       {
-        var contents = obj.GetAll<IContent>();
+        var contents = obj.GetAll<IContext>();
 
-        targetCount = contents.Count(x => x.contentType == ViewContentType.Potential);
-        existingCount = contents.Count(x => x.contentType == ViewContentType.Existing);
-        proposedCount = contents.Count(x => x.contentType == ViewContentType.Proposed);
+        targetCount = contents.Count(x => x.contentType == ViewContextType.Potential);
+        existingCount = contents.Count(x => x.contentType == ViewContextType.Existing);
+        proposedCount = contents.Count(x => x.contentType == ViewContextType.Proposed);
       }
     }
 
@@ -229,11 +228,11 @@ namespace ViewObjects
     /// <param name="targetCount"></param>
     /// <param name="existingCount"></param>
     /// <param name="proposedCount"></param>
-    public static void ContentCount(this List<IContent> contents, out int targetCount, out int existingCount, out int proposedCount)
+    public static void ContentCount(this List<IContext> contents, out int targetCount, out int existingCount, out int proposedCount)
     {
-      targetCount = contents.Count(x => x.contentType == ViewContentType.Potential);
-      existingCount = contents.Count(x => x.contentType == ViewContentType.Existing);
-      proposedCount = contents.Count(x => x.contentType == ViewContentType.Proposed);
+      targetCount = contents.Count(x => x.contentType == ViewContextType.Potential);
+      existingCount = contents.Count(x => x.contentType == ViewContextType.Existing);
+      proposedCount = contents.Count(x => x.contentType == ViewContextType.Proposed);
     }
   }
 

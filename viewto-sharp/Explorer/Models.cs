@@ -12,16 +12,16 @@ namespace ViewTo
 {
 
   /// <summary>
-  /// A simple input object to use when searching a <see cref="IResultCloud"/> for a specific <see cref="IContentOption"/>
+  /// A simple input object to use when searching a <see cref="IResultCloud"/> for a specific <see cref="IResultCondition"/>
   /// </summary>
   public class ContentOptionInput
   {
     /// <summary>
-    /// Constructor for searching for <see cref="IContentOption"/> that is a <see cref="ViewContentType.Potential"/> or <see cref="ViewContentType.Existing"/> type
+    /// Constructor for searching for <see cref="IResultCondition"/> that is a <see cref="ViewContextType.Potential"/> or <see cref="ViewContextType.Existing"/> type
     /// </summary>
     /// <param name="stage">Stage to search for </param>
     /// <param name="targetId">The target id to find</param>
-    public ContentOptionInput(ViewContentType stage, string targetId)
+    public ContentOptionInput(ViewContextType stage, string targetId)
     {
       this.stage = stage;
       this.targetId = targetId;
@@ -29,19 +29,19 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Constructor for searching for <see cref="IContentOption"/> that is only a <see cref="ViewContentType.Proposed"/> type
+    /// Constructor for searching for <see cref="IResultCondition"/> that is only a <see cref="ViewContextType.Proposed"/> type
     /// </summary>
     /// <param name="stage">Stage to search for </param>
     /// <param name="contentId">The proposed content in option</param>
     /// <param name="targetId">The target in option</param>
-    public ContentOptionInput(ViewContentType stage, string contentId, string targetId)
+    public ContentOptionInput(ViewContextType stage, string contentId, string targetId)
     {
       this.stage = stage;
       this.contentId = contentId;
       this.targetId = targetId;
     }
 
-    public ViewContentType stage {get;private set;}
+    public ViewContextType stage {get;private set;}
     public string contentId {get;private set;}
     public string targetId {get;private set;}
   }
@@ -61,7 +61,7 @@ namespace ViewTo
     /// <param name="proposed"></param>
     /// <param name="existing"></param>
     /// <param name="targets"></param>
-    public DeconstructedStudy(List<IViewer> viewers, List<ICloud> clouds, List<IResultCloud> results, List<IContent> proposed, List<IContent> existing, List<IContent> targets)
+    public DeconstructedStudy(List<IViewer> viewers, List<ICloud> clouds, List<IResultCloud> results, List<IContext> proposed, List<IContext> existing, List<IContext> targets)
     {
       this.viewers = viewers;
       this.clouds = clouds;
@@ -74,9 +74,9 @@ namespace ViewTo
     public List<IViewer> viewers {get;private set;}
     public List<ICloud> clouds {get;private set;}
     public List<IResultCloud> results {get;private set;}
-    public List<IContent> proposed {get;private set;}
-    public List<IContent> existing {get;private set;}
-    public List<IContent> targets {get;private set;}
+    public List<IContext> proposed {get;private set;}
+    public List<IContext> existing {get;private set;}
+    public List<IContext> targets {get;private set;}
 
   }
 

@@ -8,7 +8,7 @@ namespace ViewObjects.Speckle
 
   /// <summary>
   /// </summary>
-  public class ViewObjectReference : ViewObjectBase, IVersionReference
+  public class ViewObjectReference : ViewObjectBase, IRefVersion
   {
     /// <summary>
     /// 

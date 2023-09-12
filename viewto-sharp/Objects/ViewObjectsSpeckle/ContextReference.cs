@@ -11,7 +11,7 @@ namespace ViewObjects.Speckle
   /// <summary>
   ///   View Content Object adapted to <see cref="Base" />
   /// </summary>
-  public class ContentReference : ViewObjectReference<References.ContentReference>, IContent
+  public class ContextReference : ViewObjectReference<References.ContextReferences>, IContext
   {
 
     private const string CONTENT_TYPE = "Content_Type";
@@ -19,33 +19,33 @@ namespace ViewObjects.Speckle
     /// <summary>
     /// 
     /// </summary>
-    public ContentReference()
+    public ContextReference()
     { }
 
     /// <inheritdoc />
     [SchemaInfo("View Content", "Simple Object type for structuring geometry for a view study", ViewObject.Schema.Category, "Objects")]
-    public ContentReference(References.ContentReference obj) : base(obj)
+    public ContextReference(References.ContextReferences obj) : base(obj)
     {
       this.type = obj.type;
-      this.contentType = obj.contentType;
+      this.contextType = obj.contentType;
       this.appId = obj.appId;
       this.name = obj.name;
-      this.references = obj.references;
+      this.references = obj.items;
     }
 
     /// <inheritdoc />
-    public ContentReference(ViewContentType contentType, List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
+    public ContextReference(ViewContextType contextType, List<string> references, string viewId, string viewName = null) : base(references, viewId, viewName)
     {
-      this.contentType = contentType;
+      this.contextType = contextType;
       this.appId = viewId;
       this.name = viewName;
       this.references = references;
     }
 
     /// <inheritdoc />
-    [JsonIgnore] public ViewContentType contentType
+    [JsonIgnore] public ViewContextType contextType
     {
-      get => (ViewContentType)Enum.Parse(typeof(ViewContentType), (string)this[CONTENT_TYPE]);
+      get => (ViewContextType)Enum.Parse(typeof(ViewContextType), (string)this[CONTENT_TYPE]);
       set => this[CONTENT_TYPE] = value.ToString();
     }
 
@@ -57,9 +57,9 @@ namespace ViewObjects.Speckle
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    public bool Equals(IContent obj)
+    public bool Equals(IContext obj)
     {
-      return obj != default(object) && appId.Equals(obj.appId) && contentType == obj.contentType;
+      return obj != default(object) && appId.Equals(obj.appId) && contextType == obj.contentType;
     }
 
   }

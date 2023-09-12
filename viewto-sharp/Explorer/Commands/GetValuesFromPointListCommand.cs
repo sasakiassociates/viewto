@@ -17,7 +17,7 @@ internal class GetValuesFromPointListCommand : ICmdWithArgs<ValuesRawForExplorer
 
 
   /// <summary>
-  /// Finds a data set that matches the <seealso cref="IContentOption.target"/> id 
+  /// Finds a data set that matches the <seealso cref="IRIResultCondition.focus> id 
   /// </summary>
   /// <param name="data"></param>
   /// <param name="index"></param>

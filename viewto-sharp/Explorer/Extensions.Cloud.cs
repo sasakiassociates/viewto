@@ -15,13 +15,13 @@ namespace ViewTo
     private static TObj Fabricate<TObj>() => Activator.CreateInstance<TObj>();
 
     /// <summary>
-    /// Finds all <see cref="IContentOption"/> within a <see cref="IResultCloud"/>
+    /// Finds all <see cref="IResultCondition"/> within a <see cref="IResultCloud"/>
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    public static List<ContentOption> GetAllOpts(this IResultCloud obj)
+    public static List<ResultCondition> GetAllOpts(this IResultCloud obj)
     {
-      List<ContentOption> result = new();
+      List<ResultCondition> result = new();
 
       if(obj == default(object) || !obj.layers.Valid())
       {
@@ -33,27 +33,27 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Finds all <see cref="IContentOption"/> within a <see cref="IResultCloud"/> with a specific <see cref="ViewContentType"/>
+    /// Finds all <see cref="IResultCondition"/> within a <see cref="IResultCloud"/> with a specific <see cref="ViewContextType"/>
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="type">the type to filter by</param>
     /// <returns></returns>
-    public static List<ContentOption> GetAllOpts(this IResultCloud obj, ViewContentType type)
+    public static List<ResultCondition> GetAllOpts(this IResultCloud obj, ViewContextType type)
     {
       return obj.GetAllOpts().Where(x => x.stage == type).ToList();
     }
 
     /// <summary>
-    /// Gets a single <see cref="ContentOption"/> that matches the ids of the <seealso cref="ContentOption.target"/> and <see cref="ContentOption.content"/> content 
+    /// Gets a single <see cref="ResultCondition"/> that matches the ids of the <seealso cref="ResultCondition.focus"/> and <see cref="ReResultCondition.obstruct> content 
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetId"></param>
     /// <param name="contentId"></param>
     /// <param name="stage"></param>
     /// <returns></returns>
-    public static ContentOption GetOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
+    public static ResultCondition GetOpt(this IResultCloud obj, string targetId, string contentId, ViewContextType stage)
     {
-      ContentOption result = Fabricate<ContentOption>();
+      ResultCondition result = Fabricate<ResultCondition>();
 
       if(obj == default(object) || !obj.layers.Valid() || !targetId.Valid() || !contentId.Valid())
       {
@@ -82,13 +82,13 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Grabs all of the targets as a list of <see cref="IContentInfo"/>
+    /// Grabs all of the targets as a list of <see cref="IContextInfo"/>
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
-    public static List<IContentInfo> GetAllTargets(this IResultCloud obj)
+    public static List<IContextInfo> GetAllTargets(this IResultCloud obj)
     {
-      List<IContentInfo> result = new();
+      List<IContextInfo> result = new();
 
       if(obj == default(object) || !obj.layers.Valid())
       {
@@ -110,14 +110,14 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Grabs a <see cref="IContentInfo"/> that is linked to a target type
+    /// Grabs a <see cref="IContextInfo"/> that is linked to a target type
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetId">the target id to search for</param>
     /// <returns></returns>
-    public static IContentInfo GetTarget(this IResultCloud obj, string targetId)
+    public static IContextInfo GetTarget(this IResultCloud obj, string targetId)
     {
-      IContentInfo result = Fabricate<ContentInfo>();
+      IContextInfo result = Fabricate<ContextInfo>();
 
       if(obj == default(object) || !obj.layers.Valid() || !targetId.Valid())
       {
@@ -145,14 +145,14 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Searches for a <see cref="ContentOption"/> that has a similar target, content, and stage type
+    /// Searches for a <see cref="ResultCondition"/> that has a similar target, content, and stage type
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetId"></param>
     /// <param name="contentId"></param>
     /// <param name="stage"></param>
     /// <returns></returns>
-    public static bool HasOpt(this IResultCloud obj, string targetId, string contentId, ViewContentType stage)
+    public static bool HasOpt(this IResultCloud obj, string targetId, string contentId, ViewContextType stage)
     {
       if(obj == default(object) || !obj.layers.Valid() || !Guid.TryParse(targetId, out _) || !Guid.TryParse(contentId, out _))
       {
@@ -163,18 +163,18 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// <para>Searches for a <see cref="ContentOption"/> that has a similar target and stage type. This will select the target by id
-    /// and the stage it was captured. Any content options that are not set as a <see cref="ViewContentType.Proposed"/> will have the
+    /// <para>Searches for a <see cref="ResultCondition"/> that has a similar target and stage type. This will select the target by id
+    /// and the stage it was captured. Any content options that are not set as a <see cref="ViewContextType.Proposed"/> will have the
     /// same target and content id value, with the stage being the only thing needed to separate them</para>
     /// 
-    /// <para>Use <see cref="HasOpt(ViewObjects.Clouds.IResultCloud,string,string,ViewObjects.ViewContentType)"/>
-    /// to look for options with <see cref="ViewContentType.Proposed"/></para>
+    /// <para>Use <see cref="HasOpt(ViewObjects.Clouds.IResultCloud,string,string,ViewContextType)"/>
+    /// to look for options with <see cref="ViewContextType.Proposed"/></para>
     /// </summary>
     /// <param name="obj">cloud being used</param>
     /// <param name="targetId">the target id to search for</param>
     /// <param name="stage">the stage to make sure it has</param>
     /// <returns></returns>
-    public static bool HasOpt(this IResultCloud obj, string targetId, ViewContentType stage)
+    public static bool HasOpt(this IResultCloud obj, string targetId, ViewContextType stage)
     {
       if(obj == default(object) || !obj.layers.Valid() || !Guid.TryParse(targetId, out _))
       {
@@ -185,13 +185,13 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Searches for a <see cref="IContentInfo"/> that has a similar target and stage type
+    /// Searches for a <see cref="IContextInfo"/> that has a similar target and stage type
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetByIdOrName"></param>
     /// <param name="stage"></param>
     /// <returns></returns>
-    public static bool HasTarget(this IResultCloud obj, string targetByIdOrName, ViewContentType stage)
+    public static bool HasTarget(this IResultCloud obj, string targetByIdOrName, ViewContextType stage)
     {
       if(obj == default(object) || !obj.layers.Valid() || !targetByIdOrName.Valid())
       {
@@ -205,7 +205,7 @@ namespace ViewTo
     }
 
     /// <summary>
-    /// Searched for a ><see cref="IContentInfo"/> that has the same target name or id
+    /// Searched for a ><see cref="IContextInfo"/> that has the same target name or id
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="targetByIdOrName"></param>

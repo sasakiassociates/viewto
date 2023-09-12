@@ -126,7 +126,7 @@ namespace ViewTo.RhinoGh.Results
       {
         var options = obj.Get<ResultCloud>().GetAllOpts()
           .Where(x => x != null)
-          .Select(x => new ContentOption(x.target, x.content, x.stage))
+          .Select(x => new ResultCondition(x.target, x.content, x.stage))
           .ToList();
 
         DA.SetDataList(0,options );

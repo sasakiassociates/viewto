@@ -34,14 +34,14 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Convert_Content()
     {
-      var values = Enum.GetValues<ViewContentType>();
+      var values = Enum.GetValues<ViewContextType>();
 
       foreach(var contentType in values)
       {
-        var obj = new ContentReference(new Content(contentType), new List<string>() {"123443q312"});
-        var res = _converter.ConvertToSpeckle(obj) as VS.ContentReference;
+        var obj = new ContextReferences(new Context(contentType), new List<string>() {"123443q312"});
+        var res = _converter.ConvertToSpeckle(obj) as VS.ContextReference;
         Assert.IsTrue(res.appId.Equals(obj.ViewId));
-        Assert.IsTrue(res.contentType == obj.contentType);
+        Assert.IsTrue(res.contextType == obj.contentType);
       }
 
     }
@@ -51,9 +51,9 @@ namespace ViewTo.Tests.Objects
     {
       var objs = new List<IViewObject>
       {
-        new ContentReference(new Content(ViewContentType.Potential), new List<string>() {"123443q312"}),
+        new ContextReferences(new Context(ViewContextType.Potential), new List<string>() {"123443q312"}),
         new ViewCloudReference(new List<string> {"256ff84cf7"}, SasakiTools.InitGuid),
-        new Viewer()
+        new Layouts()
       };
 
       var obj = new ViewStudy(objs, "Test View Study");

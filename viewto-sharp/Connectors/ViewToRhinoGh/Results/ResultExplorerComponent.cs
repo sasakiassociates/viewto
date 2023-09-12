@@ -143,10 +143,10 @@ namespace ViewTo.RhinoGh.Results
 
 
       GH_ObjectWrapper wrapper = null;
-      ContentOption opA = default;
-      ContentOption opB = default;
+      ResultCondition opA = default;
+      ResultCondition opB = default;
       DA.GetData(_input.OptionA, ref wrapper);
-      if(wrapper?.Value is ContentOption oa)
+      if(wrapper?.Value is ResultCondition oa)
       {
         opA = oa;
       }
@@ -155,7 +155,7 @@ namespace ViewTo.RhinoGh.Results
         return;
       }
       DA.GetData(_input.OptionB, ref wrapper);
-      if(wrapper?.Value is ContentOption ob)
+      if(wrapper?.Value is ResultCondition ob)
       {
         opB = ob;
       }

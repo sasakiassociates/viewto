@@ -58,11 +58,11 @@ namespace ViewTo.RhinoGh.Objects
         DA.SetDataList(_output.Clouds, obj.FindObjects<ViewCloudReference>());
         DA.SetDataList(_output.ResultClouds, obj.FindObjects<ResultCloud>());
 
-        DA.SetDataList(_output.Targets, obj.FindObjects<ContentReference>().Where(x => x.type == ViewContentType.Potential));
-        DA.SetDataList(_output.Existing, obj.FindObjects<ContentReference>().Where(x => x.type == ViewContentType.Existing));
-        DA.SetDataList(_output.Proposals, obj.FindObjects<ContentReference>().Where(x => x.type == ViewContentType.Proposed));
+        DA.SetDataList(_output.Targets, obj.FindObjects<ContextReferences>().Where(x => x.type == ViewContextType.Potential));
+        DA.SetDataList(_output.Existing, obj.FindObjects<ContextReferences>().Where(x => x.type == ViewContextType.Existing));
+        DA.SetDataList(_output.Proposals, obj.FindObjects<ContextReferences>().Where(x => x.type == ViewContextType.Proposed));
 
-        DA.SetDataList(_output.Viewers, obj.FindObjects<Viewer>());
+        DA.SetDataList(_output.Viewers, obj.FindObjects<Layouts>());
         DA.SetDataList(_output.Options, obj.GetAllTargetContentInfo());
       }
     }

@@ -33,7 +33,7 @@ namespace ViewTo.Tests.Objects
     [Test]
     public void Serialize_Content()
     {
-      var obj_v2 = Serialize_Process(new VS.ContentReference());
+      var obj_v2 = Serialize_Process(new VS.ContextReference());
     }
 
     [Test]

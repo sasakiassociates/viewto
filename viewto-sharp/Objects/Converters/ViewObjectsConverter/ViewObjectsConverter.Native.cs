@@ -15,7 +15,7 @@ namespace ViewObjects.Converter
   {
     IViewObject StudyToNative(Speckle.ViewStudy obj)
     {
-      var result = new ViewStudy() {appId = obj.guid, name = obj.name, objects = new List<IViewObject>()};
+      var result = new ViewStudy() {appId = obj.guid, name = obj.name, items = new List<IViewObject>()};
 
       foreach(var o in obj.objects)
       {
@@ -25,7 +25,7 @@ namespace ViewObjects.Converter
           // throw 
           continue;
         }
-        result.objects.Add(res);
+        result.items.Add(res);
       }
 
       return result;
@@ -33,12 +33,12 @@ namespace ViewObjects.Converter
 
     IViewObject LayoutToNative(ILayout obj)
     {
-      return new Layout(obj.Viewers);
+      return new Layout(obj.viewers);
     }
 
     IViewObject ViewerToNative(IViewer<Speckle.Layout> o)
     {
-      return new Viewer(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<ILayout>().ToList());
+      return new Layouts(o.Layouts.Where(x => x != null).Select(LayoutToNative).Cast<ILayout>().ToList());
     }
 
     IViewObject ViewerToNative(IViewerLinked<Speckle.Layout> o)
@@ -53,22 +53,22 @@ namespace ViewObjects.Converter
 
     IResultLayer ResultCloudDataToNative(IResultLayer obj)
     {
-      return new ResultLayer(obj.values, obj.info);
+      return new ViewResultLayer(obj.values, obj.info);
     }
 
-    IViewObject ContentReferenceToNative(Speckle.ContentReference obj)
+    IViewObject ContentReferenceToNative(Speckle.ContextReference obj)
     {
-      return new ContentReference(obj.references, obj.contentType, obj.appId, obj.name);
+      return new ContextReferences(obj.references, obj.contextType, obj.appId, obj.name);
     }
 
-    IViewObject ViewCloudReferenceToNative(IVersionReference obj)
+    IViewObject ViewCloudReferenceToNative(IHaveRefs obj)
     {
-      return new ViewCloudReference(obj.references, obj.appId);
+      return new ViewCloudReference(obj.items, obj.appId);
     }
 
-    ViewObjectReference ReferenceToNative(IVersionReference obj)
+    ViewObjectReference ReferenceToNative(IHaveRefs obj)
     {
-      return new ViewObjectReference(obj.references, obj.type, obj.appId, obj.name);
+      return new ViewObjectReference(obj.items, obj.type, obj.appId, obj.name);
     }
   }
 

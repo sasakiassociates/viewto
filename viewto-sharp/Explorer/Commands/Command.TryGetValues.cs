@@ -25,21 +25,21 @@ namespace ViewTo.Cmd
     /// <summary>
     ///   stage the data is linked with
     /// </summary>
-    readonly ViewContentType _stage;
+    readonly ViewContextType _stage;
 
     public ValuesRawForExplorerArgs args {get;private set;}
 
     /// <summary>
-    /// Finds a data set that matches the <seealso cref="IContentOption.target"/> id 
+    /// Finds a data set that matches the <seealso cref="IRIResultCondition.focus> id 
     /// </summary>
     /// <param name="data"></param>
     /// <param name="option"></param>
-    public GetValuesFromDataCommand(IReadOnlyCollection<IResultLayer> data, IContentOption option)
+    public GetValuesFromDataCommand(IReadOnlyCollection<IResultLayer> data, IResultCondition option)
     {
       this._data = data;
       this._stage = option.stage;
-      this._targetId = option.target.appId;
-      this._contentId = option.content.appId;
+      this._targetId = option.focus.appId;
+      this._contentId = option.obstruct.appId;
     }
 
     public void Execute()

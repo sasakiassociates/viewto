@@ -18,7 +18,7 @@ namespace ViewObjects.Speckle
     const string TARGET_ID = "Target_Id";
     const string CONTENT_ID = "Content_Id";
     const string CONTENT_NAME = "Content_Name";
-    const string STAGE = nameof(ViewContentType);
+    const string STAGE = nameof(ViewContextType);
 
     /// <summary>
     /// </summary>
@@ -37,11 +37,11 @@ namespace ViewObjects.Speckle
     /// <param name="name"></param>
     /// <param name="count">Viewer count meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultLayer(List<int> values, string targetId, string targetName, string contentId, string contentName, ViewContentType stage, int count)
+    public ResultLayer(List<int> values, string targetId, string targetName, string contentId, string contentName, ViewContextType stage, int count)
     {
       this.values = values;
       this.count = count;
-      this.info = new ContentOption(new ContentInfo(targetId, targetName), new ContentInfo(contentId, contentName), stage);
+      this.info = new ResultCondition(new ContextInfo(targetId, targetName), new ContextInfo(contentId, contentName), stage);
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ namespace ViewObjects.Speckle
     /// <param name="option"></param>
     /// <param name="count">Viewer count meta data</param>
     [SchemaInfo("View Result Data", "Container of data for a view cloud", ViewObject.Schema.Category, "Objects")]
-    public ResultLayer(List<int> values, ContentOption option, int count )
+    public ResultLayer(List<int> values, ResultCondition option, int count )
     {
       this.values = values;
       this.count = count;
@@ -65,21 +65,21 @@ namespace ViewObjects.Speckle
     [Chunkable] public List<int> values { get; set; } = new List<int>();
 
     /// <inheritdoc />
-    [JsonIgnore] public ContentOption info
+    [JsonIgnore] public ResultCondition info
     {
-      get => new ContentOption
+      get => new ResultCondition
       (
-        new ContentInfo((string)this[TARGET_ID], (string)this[TARGET_NAME]),
-        new ContentInfo((string)this[CONTENT_ID], (string)this[CONTENT_NAME]),
-        (ViewContentType)Enum.Parse(typeof(ViewContentType), (string)this[STAGE])
+        new ContextInfo((string)this[TARGET_ID], (string)this[TARGET_NAME]),
+        new ContextInfo((string)this[CONTENT_ID], (string)this[CONTENT_NAME]),
+        (ViewContextType)Enum.Parse(typeof(ViewContextType), (string)this[STAGE])
       );
       set
       {
         this[STAGE] = value.stage.ToString();
-        this[TARGET_ID] = value.target.appId;
-        this[TARGET_NAME] = value.target.name;
-        this[CONTENT_ID] = value.content.appId;
-        this[CONTENT_NAME] = value.content.name;
+        this[TARGET_ID] = value.focus.appId;
+        this[TARGET_NAME] = value.focus.name;
+        this[CONTENT_ID] = value.obstruct.appId;
+        this[CONTENT_NAME] = value.obstruct.name;
       }
     }
   }

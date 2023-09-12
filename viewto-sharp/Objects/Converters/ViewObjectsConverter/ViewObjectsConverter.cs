@@ -92,7 +92,7 @@ namespace ViewObjects.Converter
     {
       switch(@object)
       {
-        case IVersionReference _:
+        case IHaveRefs _:
           return true;
         case IStudy<IViewObject> _:
           return true;
@@ -102,7 +102,7 @@ namespace ViewObjects.Converter
           return true;
         case ICloud _:
           return true;
-        case IContent _:
+        case IContext _:
           return true;
         case ILayout _:
           return true;
@@ -122,7 +122,7 @@ namespace ViewObjects.Converter
           return true;
         case VS.ViewCloudReference _:
           return true;
-        case VS.ContentReference _:
+        case VS.ContextReference _:
           return true;
         case VS.Layout _:
           return true;
@@ -157,7 +157,7 @@ namespace ViewObjects.Converter
         case IResultLayer o:
           return ResultCloudDataToSpeckle(o);
 
-        case ContentReference o:
+        case ContextReferences o:
           return ViewContentToSpeckle(o);
 
         case ViewCloudReference o:
@@ -177,7 +177,7 @@ namespace ViewObjects.Converter
           return StudyToNative(o);
         case VS.ViewCloudReference o:
           return ViewCloudReferenceToNative(o);
-        case VS.ContentReference o:
+        case VS.ContextReference o:
           return ContentReferenceToNative(o);
         case VS.Layout o:
           return LayoutToNative(o);

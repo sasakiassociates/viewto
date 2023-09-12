@@ -102,25 +102,25 @@ public class ExplorerCommands
 
     // Set commands 
     // NOTE: direct reference from the commit in stream 
-    var targetToSelect = new ContentInfo("904caeed-54e7-4a76-a811-0187d33d1c43", "water");
-    var contentToSelect = new ContentInfo("27288995-a549-4979-a0ab-8d973e0c9260", "ae-1");
-    var option = new ContentOption(targetToSelect, contentToSelect, ViewContentType.Proposed);
+    var targetToSelect = new ContextInfo("904caeed-54e7-4a76-a811-0187d33d1c43", "water");
+    var contentToSelect = new ContextInfo("27288995-a549-4979-a0ab-8d973e0c9260", "ae-1");
+    var option = new ResultCondition(targetToSelect, contentToSelect, ViewContextType.Proposed);
 
     // you only need to pass in a specific content if using the proposed type 
     Assert.IsTrue(_explorer.cloud.HasTarget(targetToSelect.appId));
     Assert.IsTrue(_explorer.cloud.HasOpt(targetToSelect.appId, contentToSelect.appId, option.stage));
 
-    _explorer.SetOption(targetToSelect.appId, ViewContentType.Existing);
+    _explorer.SetOption(targetToSelect.appId, ViewContextType.Existing);
     Assert.IsTrue(_explorer.meta.activeOptions.Count == 1, "This command should create a new list and add the option to it");
-    Assert.IsTrue(_explorer.meta.activeOptions.First().stage == ViewContentType.Existing);
-    Assert.IsTrue(_explorer.meta.activeOptions.First().target.appId.Equals(targetToSelect.appId));
-    Assert.IsTrue(_explorer.meta.activeOptions.First().content.appId.Equals(targetToSelect.appId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().stage == ViewContextType.Existing);
+    Assert.IsTrue(_explorer.meta.activeOptions.First().focus.appId.Equals(targetToSelect.appId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().obstruct.appId.Equals(targetToSelect.appId));
 
     _explorer.SetOption(targetToSelect.appId, contentToSelect.appId, option.stage);
     Assert.IsTrue(_explorer.meta.activeOptions.Count == 1, "This command should create a new list and add the option to it");
     Assert.IsTrue(_explorer.meta.activeOptions.First().stage == option.stage);
-    Assert.IsTrue(_explorer.meta.activeOptions.First().target.appId.Equals(targetToSelect.appId));
-    Assert.IsTrue(_explorer.meta.activeOptions.First().content.appId.Equals(contentToSelect.appId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().focus.appId.Equals(targetToSelect.appId));
+    Assert.IsTrue(_explorer.meta.activeOptions.First().obstruct.appId.Equals(contentToSelect.appId));
   }
 
 
@@ -281,10 +281,10 @@ public class ExplorerCommands
     Assert.IsNotNull(_explorer.meta, $"{nameof(Explorer)} should have a {nameof(ExplorerMetaData)} attached");
 
     // tests for for checking values match up 
-    Assert.IsNotNull(_explorer.meta.activeStage, $"{nameof(ExplorerMetaData)} should have {nameof(ViewContentType)} attached");
-    Assert.IsNotNull(_explorer.meta.activeTarget, $"{nameof(ExplorerMetaData)} should have a target {nameof(IContentInfo)} attached");
-    Assert.IsNotEmpty(_explorer.meta.options, $"{nameof(ExplorerMetaData)} should contain {nameof(IContentOption)}");
-    Assert.IsNotEmpty(_explorer.meta.activeOptions, $"{nameof(ExplorerMetaData)} should should contain the first {nameof(IContentOption)}");
+    Assert.IsNotNull(_explorer.meta.activeStage, $"{nameof(ExplorerMetaData)} should have {nameof(ViewContextType)} attached");
+    Assert.IsNotNull(_explorer.meta.activeTarget, $"{nameof(ExplorerMetaData)} should have a target {nameof(IContextInfo)} attached");
+    Assert.IsNotEmpty(_explorer.meta.options, $"{nameof(ExplorerMetaData)} should contain {nameof(IResultCondition)}");
+    Assert.IsNotEmpty(_explorer.meta.activeOptions, $"{nameof(ExplorerMetaData)} should should contain the first {nameof(IResultCondition)}");
   }
 
   async Task<IViewStudy> CheckStudyReceive()

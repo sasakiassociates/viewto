@@ -21,9 +21,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\..\Sasaki\sasaki-net\sasaki-net\SasakiNet\SasakiObjects\SasakiObjects.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Clouds\" />
-    </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(IsDesktopBuild)' == true">
         <Exec Condition="$([MSBuild]::IsOsPlatform('Windows'))" Command="xcopy /Y /S &quot;$(TargetDir)$(AssemblyName).dll&quot; &quot;$(AppData)\Speckle\Kits\ViewTo\&quot;" />

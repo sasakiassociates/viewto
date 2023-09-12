@@ -13,11 +13,11 @@ namespace ViewTo.Cmd
   internal class InitializeAndBuildRig : ICmdWithArgs<SimpleResultArgs>
   {
     private IReadOnlyList<ICloud> _clouds;
-    private IReadOnlyList<IContent> _contents;
+    private IReadOnlyList<IContext> _contents;
     private IRig _rig;
     private IReadOnlyList<IViewer> _viewers;
 
-    public InitializeAndBuildRig(IRig rig, IReadOnlyList<IContent> contents, IReadOnlyList<ICloud> clouds, IReadOnlyList<IViewer> viewers)
+    public InitializeAndBuildRig(IRig rig, IReadOnlyList<IContext> contents, IReadOnlyList<ICloud> clouds, IReadOnlyList<IViewer> viewers)
     {
       _rig = rig;
       _contents = contents;
@@ -69,7 +69,7 @@ namespace ViewTo.Cmd
     /// <param name="clouds"></param>
     public RigParameters CreateRigParams(
       IEnumerable<ILayout> viewers,
-      IEnumerable<IContent> contents,
+      IEnumerable<IContext> contents,
       IEnumerable<IHaveId> clouds
     )
     {
@@ -88,13 +88,13 @@ namespace ViewTo.Cmd
     /// <param name="clouds"></param>
     public RigParameters CreateRigParams(
       IEnumerable<ILayout> viewers,
-      IEnumerable<IContent> contents,
+      IEnumerable<IContext> contents,
       IEnumerable<string> clouds
     )
     {
       return new RigParameters(
         clouds.ToList(),
-        contents.Where(x => x != null && x.contentType == ViewContentType.Potential).Select(x => x.Color).ToList(),
+        contents.Where(x => x != null && x.contentType == ViewContextType.Potential).Select(x => x.Color).ToList(),
         viewers.ToList()
       );
     }

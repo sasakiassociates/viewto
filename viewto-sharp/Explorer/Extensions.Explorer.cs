@@ -55,7 +55,7 @@ namespace ViewTo
     /// <param name="optionA"></param>
     /// <param name="optionB"></param>
     /// <returns></returns>
-    public static bool TryGetSols(this IExplorer exp, ContentOption optionA, ContentOption optionB, out IEnumerable<double> results)
+    public static bool TryGetSols(this IExplorer exp, ResultCondition optionA, ResultCondition optionB, out IEnumerable<double> results)
     {
       results = Array.Empty<double>();
 
@@ -89,7 +89,7 @@ namespace ViewTo
     /// <param name="valueOption">the option to find</param>
     /// <param name="pixelRange">by default this will be set with a min of 0 and max of 2147483647</param>
     /// <returns></returns>
-    public static int[] GetViewsRaw(this IExplorer exp, ContentOption valueOption, IntRange pixelRange)
+    public static int[] GetViewsRaw(this IExplorer exp, ResultCondition valueOption, IntRange pixelRange)
     {
       var results = Array.Empty<int>();
 
@@ -122,7 +122,7 @@ namespace ViewTo
     /// <param name="pixelRange">by default this will be set with a min of 0 and max of 2147483647</param>
     /// <param name="indexes">A list of indexes to filter by</param>
     /// <returns></returns>
-    public static int[] GetViewsRaw(this IExplorer exp, ContentOption valueOption, IntRange pixelRange, int[] indexes)
+    public static int[] GetViewsRaw(this IExplorer exp, ResultCondition valueOption, IntRange pixelRange, int[] indexes)
     {
       var results = exp.GetViewsRaw(valueOption: valueOption, pixelRange: pixelRange);
 
@@ -141,7 +141,7 @@ namespace ViewTo
     }
 
 
-    public static IEnumerable<double> GetSols(this IExplorer exp, ContentOption valueOption, ContentOption maxOption, ExplorerFilterInput filter, bool normalizeByFilter = false)
+    public static IEnumerable<double> GetSols(this IExplorer exp, ResultCondition valueOption, ResultCondition maxOption, ExplorerFilterInput filter, bool normalizeByFilter = false)
     {
       var results = Array.Empty<double>();
       filter ??= new ExplorerFilterInput();
@@ -197,7 +197,7 @@ namespace ViewTo
     /// <param name="normalizeByFilter">When false this will use the list provided by the <see cref="maxOption"/> as the normalizing value
     /// If set to true it will find the max and min values from the list of values from <see cref="maxOption"/> after being filtered by <see cref="indexes"/></param>
     /// <returns></returns>
-    public static IEnumerable<double> GetSols(this IExplorer exp, ContentOption valueOption, ContentOption maxOption, List<int> indexes, bool normalizeByFilter = true)
+    public static IEnumerable<double> GetSols(this IExplorer exp, ResultCondition valueOption, ResultCondition maxOption, List<int> indexes, bool normalizeByFilter = true)
     {
       var results = Array.Empty<double>();
 
@@ -289,7 +289,7 @@ namespace ViewTo
     /// <param name="results"></param>
     /// <param name="optionA"></param>
     /// <returns></returns>
-    public static bool TryGetRawViews(this IExplorer exp, ContentOption optionA, out IEnumerable<int> results)
+    public static bool TryGetRawViews(this IExplorer exp, ResultCondition optionA, out IEnumerable<int> results)
     {
       results = Array.Empty<int>();
 
@@ -353,49 +353,49 @@ namespace ViewTo
     /// <param name="obj"></param>
     /// <param name="option">the option to use</param>
     /// <param name="addToList">if true it adds the option to the <see cref="ExplorerMetaData.activeOptions"/></param>
-    static void TrySetOption(this IExplorer obj, ContentOption option, bool addToList = false)
+    static void TrySetOption(this IExplorer obj, ResultCondition option, bool addToList = false)
     {
-      if(option?.target == null || !option.target.appId.Valid() || option.content == null || !option.content.appId.Valid())
+      if(option?.focus == null || !option.focus.appId.Valid() || option.obstruct == null || !option.obstruct.appId.Valid())
       {
         return;
       }
 
       if(!addToList)
       {
-        obj.meta.activeOptions = new List<ContentOption>();
+        obj.meta.activeOptions = new List<ResultCondition>();
       }
 
       if(!obj.meta.activeOptions.Any(x => x.stage == option.stage
-                                          && x.target.appId.Equals(option.target.appId)
-                                          && x.content.appId.Equals(option.content.appId)))
+                                          && x.focus.appId.Equals(option.focus.appId)
+                                          && x.obstruct.appId.Equals(option.obstruct.appId)))
       {
         obj.meta.activeOptions.Add(option);
       }
 
-      obj.meta.activeTarget = option.target;
+      obj.meta.activeTarget = option.focus;
 
     }
 
 
-    public static void GetStages(this ExplorerValueType type, out ViewContentType stageA, out ViewContentType stageB)
+    public static void GetStages(this ExplorerValueType type, out ViewContextType stageA, out ViewContextType stageB)
     {
       switch(type)
       {
         case ExplorerValueType.ExistingOverPotential:
-          stageA = ViewContentType.Existing;
-          stageB = ViewContentType.Potential;
+          stageA = ViewContextType.Existing;
+          stageB = ViewContextType.Potential;
           break;
         case ExplorerValueType.ProposedOverExisting:
-          stageA = ViewContentType.Proposed;
-          stageB = ViewContentType.Existing;
+          stageA = ViewContextType.Proposed;
+          stageB = ViewContextType.Existing;
           break;
         case ExplorerValueType.ProposedOverPotential:
-          stageA = ViewContentType.Proposed;
-          stageB = ViewContentType.Potential;
+          stageA = ViewContextType.Proposed;
+          stageB = ViewContextType.Potential;
           break;
         default:
-          stageA = ViewContentType.Potential;
-          stageB = ViewContentType.Potential;
+          stageA = ViewContextType.Potential;
+          stageB = ViewContextType.Potential;
           break;
       }
     }
@@ -408,7 +408,7 @@ namespace ViewTo
     /// <param name="contentId"></param>
     /// <param name="stage"></param>
     /// <returns></returns>
-    public static void SetOption(this IExplorer obj, string targetId, string contentId, ViewContentType stage)
+    public static void SetOption(this IExplorer obj, string targetId, string contentId, ViewContextType stage)
     {
       if(obj.cloud == null || !obj.cloud.HasOpt(targetId, contentId, stage))
       {
@@ -424,7 +424,7 @@ namespace ViewTo
     /// <param name="obj"></param>
     /// <param name="targetId"></param>
     /// <param name="stage"></param>
-    public static void SetOption(this IExplorer obj, string targetId, ViewContentType stage)
+    public static void SetOption(this IExplorer obj, string targetId, ViewContextType stage)
     {
       obj.SetOption(targetId, targetId, stage);
     }

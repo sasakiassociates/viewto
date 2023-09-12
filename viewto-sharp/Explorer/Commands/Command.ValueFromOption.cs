@@ -6,15 +6,15 @@ using ViewObjects.Contents;
 namespace ViewTo.Cmd;
 
 /// <summary>
-/// Retrieves a list of values from a list of <seealso cref="IResultLayer"/>. The values are selected by the input parameter of <seealso cref="IContentOption"/>
+/// Retrieves a list of values from a list of <seealso cref="IResultLayer"/>. The values are selected by the input parameter of <seealso cref="IResultCondition"/>
 /// </summary>
 internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
 {
 
-  readonly IContentOption _option;
+  readonly IResultCondition _option;
   readonly IReadOnlyCollection<IResultLayer> _data;
 
-  public ValueFromOption(IReadOnlyCollection<IResultLayer> data, IContentOption option)
+  public ValueFromOption(IReadOnlyCollection<IResultLayer> data, IResultCondition option)
   {
     this._data = data;
     this._option = option;
@@ -24,9 +24,9 @@ internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
 
   public void Execute()
   {
-    if(_option?.target == null || _option.content == null)
+    if(_option?.focus == null || _option.obstruct == null)
     {
-      args = new ValuesRawForExplorerArgs($"Input parameters, {typeof(IContentOption)}, is not valid");
+      args = new ValuesRawForExplorerArgs($"Input parameters, {typeof(IResultCondition)}, is not valid");
       return;
     }
 
@@ -40,8 +40,8 @@ internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
 
     foreach(var d in _data)
     {
-      if(_option.content.appId.Equals(d.info.content.guid)
-         && _option.target.appId.Equals(d.info.target.guid)
+      if(_option.obstruct.appId.Equals(d.info.content.guid)
+         && _option.focus.appId.Equals(d.info.target.guid)
          && _option.stage == d.info.stage)
       {
         dataFound = d;
@@ -56,11 +56,11 @@ internal class ValueFromOption : ICmdWithArgs<ValuesRawForExplorerArgs>
       args = new ValuesRawForExplorerArgs(dataFound.values, $"Data found!({dataFound.values.Count})\n{ToStringHack(_option)}");
   }
 
-  static string ToStringHack(IContentOption o)
+  static string ToStringHack(IResultCondition o)
   {
-    return$"{o.target.name}({nameof(o.target)})={o.target.contentType} : {o.target.appId}\n" +
-          $"{o.content.name}({nameof(o.content)})={o.content.contentType} : {o.content.appId}\n" +
-          $"({nameof(o.content)})={o.stage}\n";
+    return$"{o.focus.name}({nameof(o.focus)})={o.focus.contentType} : {o.focus.appId}\n" +
+          $"{o.obstruct.name}({nameof(o.obstruct)})={o.obstruct.contentType} : {o.obstruct.appId}\n" +
+          $"({nameof(o.obstruct)})={o.stage}\n";
   }
 
 }

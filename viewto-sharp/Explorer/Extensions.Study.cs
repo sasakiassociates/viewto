@@ -68,7 +68,7 @@ namespace ViewTo
       study.GatherLooseLayouts();
       var viewers = study.GetAll<IViewer>();
       var clouds = study.GetAll<ICloud>();
-      var contents = study.GetAll<IContent>();
+      var contents = study.GetAll<IContext>();
 
       var reports = new List<string>();
 
@@ -98,7 +98,7 @@ namespace ViewTo
       if(layouts.Valid())
       {
         // if layouts are loose we add them to a default viewer since they will run on a global viewer 
-        study.objects.Add(new Viewer(layouts));
+        study.objects.Add(new Layouts(layouts));
       }
     }
 

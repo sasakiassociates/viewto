@@ -40,13 +40,13 @@ namespace ViewTo.RhinoGh.Setup
       var ids = new List<string>();
       DA.GetDataList(_input.Ids, ids);
 
-      var options = new List<ContentInfo>();
+      var options = new List<ContextInfo>();
 
       if(ids.Valid() && names.Valid() && names.Count == ids.Count)
       {
         for(var i = 0; i < ids.Count; i++)
         {
-          options.Add(new ContentInfo(ids[i], names[i]));
+          options.Add(new ContextInfo(ids[i], names[i]));
         }
       }
 

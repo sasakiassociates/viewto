@@ -55,11 +55,11 @@ namespace ViewTo.Receivers
       return true;
     }
 
-    public bool CheckData(IReadOnlyList<IContent> contents, IReadOnlyList<ICloud> clouds, IReadOnlyList<IViewer> viewers, out string message)
+    public bool CheckData(IReadOnlyList<IContext> contents, IReadOnlyList<ICloud> clouds, IReadOnlyList<IViewer> viewers, out string message)
     {
-      var countTarget = contents.Count(x => x.contentType == ViewContentType.Potential);
-      var countExisting = contents.Count(x => x.contentType == ViewContentType.Existing);
-      var countProposed = contents.Count(x => x.contentType == ViewContentType.Proposed);
+      var countTarget = contents.Count(x => x.contentType == ViewContextType.Potential);
+      var countExisting = contents.Count(x => x.contentType == ViewContextType.Existing);
+      var countProposed = contents.Count(x => x.contentType == ViewContextType.Proposed);
       var countViewerLinked = viewers.Count(x => x is IViewerLinked);
 
       var countTotalPoints = 0;
@@ -80,10 +80,10 @@ namespace ViewTo.Receivers
         }
       }
 
-      message = $"{nameof(IContent)}s: "
-                + $"{nameof(ViewContentType.Potential)}={countTarget}, "
-                + $"{nameof(ViewContentType.Existing)}={countExisting}, "
-                + $"{nameof(ViewContentType.Proposed)}={countProposed}\n"
+      message = $"{nameof(IContext)}s: "
+                + $"{nameof(ViewContextType.Potential)}={countTarget}, "
+                + $"{nameof(ViewContextType.Existing)}={countExisting}, "
+                + $"{nameof(ViewContextType.Proposed)}={countProposed}\n"
                 + $"{nameof(ICloud)}s: "
                 + $"Total={clouds.Count}, "
                 + $"Points={countTotalPoints}\n"

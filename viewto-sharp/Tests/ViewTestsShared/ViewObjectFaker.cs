@@ -21,9 +21,9 @@ namespace ViewTo.Tests
     public static IViewStudy ViewStudy(string name = "test")
     {
       List<IViewObject> objects = new();
-      List<Content> content = new();
+      List<Context> content = new();
 
-      foreach(ViewContentType type in Enum.GetValues(typeof(ViewContentType)))
+      foreach(ViewContextType type in Enum.GetValues(typeof(ViewContextType)))
       {
         content.Add(Content(type, $"test-{type}"));
       }
@@ -31,8 +31,8 @@ namespace ViewTo.Tests
       var cloud = Cloud<Cloud>(100);
 
       objects.Add(new ViewCloudReference(cloud, new List<string>()));
-      objects.AddRange(content.Select(x => new ContentReference(x, new List<string>() { })).ToList());
-      objects.Add(new Viewer(new List<ILayout>
+      objects.AddRange(content.Select(x => new ContextReferences(x, new List<string>() { })).ToList());
+      objects.Add(new Layouts(new List<ILayout>
         {new LayoutCube()}));
       return new ViewStudy(objects, name);
     }
@@ -41,9 +41,9 @@ namespace ViewTo.Tests
     public static IViewStudy Study(string name = "test", bool hasResults = true)
     {
       List<IViewObject> objects = new();
-      List<Content> content = new();
+      List<Context> content = new();
 
-      foreach(ViewContentType type in Enum.GetValues(typeof(ViewContentType)))
+      foreach(ViewContextType type in Enum.GetValues(typeof(ViewContextType)))
       {
         content.Add(Content(type, $"test-{type}"));
       }
@@ -51,13 +51,13 @@ namespace ViewTo.Tests
       var cloud = Cloud<Cloud>(100);
 
       objects.Add(new ViewCloudReference(cloud, new List<string>()));
-      objects.AddRange(content.Select(x => new ContentReference(x, new List<string>() { })).ToList());
-      objects.Add(new Viewer(new List<ILayout>
+      objects.AddRange(content.Select(x => new ContextReferences(x, new List<string>() { })).ToList());
+      objects.Add(new Layouts(new List<ILayout>
         {new LayoutCube()}));
       return new ViewStudy(objects, name);
     }
 
-    public static Content Content(ViewContentType type, string name = "test")
+    public static Context Content(ViewContextType type, string name = "test")
     {
       return new(type, SasakiTools.InitGuid, name);
     }
@@ -83,25 +83,25 @@ namespace ViewTo.Tests
     {
       var values = new List<IResultLayer>();
       var random = new Random();
-      var targets = new List<IContentInfo>();
+      var targets = new List<IContextInfo>();
 
       // setup the targets 
-      for(var c = 0; c<colorCount; c++) targets.Add(new ContentInfo(SasakiTools.InitGuid, c.ToString()));
+      for(var c = 0; c<colorCount; c++) targets.Add(new ContextInfo(SasakiTools.InitGuid, c.ToString()));
 
       // setup other data items
-      var existing = new Content(ViewContentType.Existing, SasakiTools.InitGuid);
-      var proposed = new Content(ViewContentType.Existing, SasakiTools.InitGuid);
+      var existing = new Context(ViewContextType.Existing, SasakiTools.InitGuid);
+      var proposed = new Context(ViewContextType.Existing, SasakiTools.InitGuid);
 
       // setup data for each target
       foreach(var target in targets)
       {
-        var potentialOption = new ContentOption(target, target, ViewContentType.Potential);
-        var existingOption = new ContentOption(target, existing, ViewContentType.Existing);
-        var proposedOption = new ContentOption(target, proposed, ViewContentType.Proposed);
+        var potentialOption = new ResultCondition(target, target, ViewContextType.Potential);
+        var existingOption = new ResultCondition(target, existing, ViewContextType.Existing);
+        var proposedOption = new ResultCondition(target, proposed, ViewContextType.Proposed);
 
-        values.Add(new ResultLayer(Values(pointCount, random), potentialOption));
-        values.Add(new ResultLayer(Values(pointCount, random), existingOption));
-        values.Add(new ResultLayer(Values(pointCount, random), proposedOption));
+        values.Add(new ViewResultLayer(Values(pointCount, random), potentialOption));
+        values.Add(new ViewResultLayer(Values(pointCount, random), existingOption));
+        values.Add(new ViewResultLayer(Values(pointCount, random), proposedOption));
       }
 
       return values;

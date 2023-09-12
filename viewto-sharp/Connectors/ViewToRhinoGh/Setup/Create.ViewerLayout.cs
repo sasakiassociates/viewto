@@ -41,19 +41,19 @@ namespace ViewTo.RhinoGh.Setup
       DA.GetDataList(0, wrappers);
       var clouds = wrappers.Unwrap<ViewCloudReference>();
 
-      var layout = new Layout(new List<ViewDirection>
+      var layout = new Layout(new List<CubeFace>
       {
-        ViewDirection.Front,
-        ViewDirection.Right,
-        ViewDirection.Back,
-        ViewDirection.Left,
-        ViewDirection.Up,
-        ViewDirection.Down
+        CubeFace.Front,
+        CubeFace.Right,
+        CubeFace.Back,
+        CubeFace.Left,
+        CubeFace.Up,
+        CubeFace.Down
       });
 
       if(!clouds.Any())
       {
-        DA.SetData(0, new Viewer(new List<ILayout> {layout}));
+        DA.SetData(0, new Layouts(new List<ILayout> {layout}));
       }
       else
       {
